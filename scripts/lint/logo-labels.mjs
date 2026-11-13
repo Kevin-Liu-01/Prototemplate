@@ -25,8 +25,8 @@
  * --dom (logo-dom.mjs) reads the page in a browser as a reader sees it.
  */
 
-/** What a label says: the note in src/lib/previous-mark.ts, a film's note, or a caption's own words: the previous mark (the monogram) or the previous logo (the 11-06 globe). */
-export const LABEL = /previous (?:mark|logo)|before the (?:logo|globe|refined (?:logo|globe))|predates the logo/i;
+/** What a label says: the note in src/lib/previous-mark.ts, a film's note, or a caption's own words: the previous mark (the monogram), the previous logo (the 11-06 globe) or the previous speed-mark system (the speed marks, Kevin, 2026-11-13). */
+export const LABEL = /previous (?:speed[- ])?(?:mark|logo)|before the (?:logo|globe|refined (?:logo|globe))|predates the logo/i;
 
 const VOID = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr']);
 const SCOPES = new Set(['figure', 'p', 'li', 'article', 'tr', 'section']);

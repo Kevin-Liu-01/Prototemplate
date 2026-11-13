@@ -129,17 +129,17 @@ All are defined in `head.html`; check there before writing slide CSS.
 
 ## 9. Speed marks
 
-Slides 17 to 23 present the seven race-type marks Kevin chose on 2026-09-29, a separate approved system that never stands in for the logo. Each slide pastes its file from `public/marks`, and The lockup also pastes `bar-monogram.svg` at 375, 187 and 94 px on a paper and an ink ground:
+Slides 17 to 23 show the seven race-type marks Kevin chose on 2026-09-29 as the previous speed-mark system, built on the bar monogram (Kevin, 2026-11-13), in the past tense, each `.split` a `data-previous-mark` figure that names it (`DECK-GRAMMAR.md`). Each slide pastes its file from `public/marks`, and The lockup also pastes `bar-monogram.svg` at 375, 187 and 94 px on a paper and an ink ground:
 
 | Slide | File |
 | --- | --- |
-| 17 The bar monogram | `bar-monogram.svg` |
-| 18 The lockup | `bar-monogram-lockup.svg` |
-| 19 The plate | `plate-inverted.svg` |
-| 20 Double cut | `double-cut.svg` |
-| 21 Livery stack | `livery-stack.svg` |
-| 22 The dithered monogram | `bar-monogram-dithered.svg` |
-| 23 The monogram in ASCII | `bar-monogram-ascii.svg` |
+| 17 | `bar-monogram.svg` |
+| 18 | `bar-monogram-lockup.svg` |
+| 19 | `plate-inverted.svg` |
+| 20 | `double-cut.svg` |
+| 21 | `livery-stack.svg` |
+| 22 | `bar-monogram-dithered.svg` |
+| 23 | `bar-monogram-ascii.svg` |
 
 - Paste the file's `<svg>` whole and add `width` and `height` in px before `xmlns`, keeping the viewBox's aspect. The monogram is 1100 by 282 for its 499.6 by 128 viewBox. The files fill with currentColor, so a mark takes the slide's ink in both themes.
 - A mark is never redrawn or edited by hand in a slide. To change one, edit `scripts/build/speed-marks.mjs`, run `pnpm build:marks`, paste the new markup over the old, re-crop the marks page capture for Skills and marks (slide 71, `deck/shots/proto-marks-speed-*.jpg`), and rebuild the deck.

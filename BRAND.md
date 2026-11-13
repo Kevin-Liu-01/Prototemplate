@@ -323,7 +323,8 @@ The identity is applied on four kinds of surface today.
 - **The marks.** The logo, the refined globe, is the mark in this site's
   chrome, on `/brand` and in the deck since 2026-11-12, after Axis and
   meridian behind from 2026-11-08 (section 4). The shortlist on `/marks` opens on it and its state, Oval globe,
-  axis behind. The speed marks chosen on 2026-09-29 sit beside the
+  axis behind. The speed marks chosen on 2026-09-29 are the previous
+  speed-mark system, built on the bar monogram; they sit beside the
   doubled-line monogram, the previous mark. The title badge in the
   `/brand` head holds the logo alone, with its hover; the explorations
   stay on `/marks`.

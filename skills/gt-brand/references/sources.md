@@ -15,6 +15,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 - gt-cloud at origin/main e17fce499 (2026-10-05): `apps/landing/src/lib/fonts.ts`, `apps/landing/src/lib/fonts-prose.ts`, `apps/dashboard/src/app/brand-tokens.css`, `tooling/oxlint-plugins/gt-ui.ts`, `packages/ui/src/components/icons/BrandMark.tsx`, `packages/ui/src/components/ui/LocaleFlag.tsx`.
 - rsms.me/inter (the quick start's `font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */`) and rsms.me/inter/dynmetrics (removed), read 2026-10-05; the font file read with fontkit.
 - Kevin, 2026-10-05: enforce the correct Rasmus Inter, one type system in tokens, held by a lint.
+- Kevin, 2026-11-13: the speed marks are the previous system, built on the bar monogram; the deck keeps slides 17 to 23 in the past tense inside labelled figures.
 - Kevin, 2026-09-29: the speed set chosen; regenerate from the script.
 - Kevin, 2026-09-25: the dashboard verdict ("kerning needs to be adjusted"), the deck as the standard, and the tracking ladder measured from the deck and the landing.
 - Kevin, 2026-09-18: "change switzer to inter everywhere" (gt-cloud PR 4887).

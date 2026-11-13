@@ -2763,63 +2763,63 @@
     },
     {
       "path": "public/marks/bar-monogram*",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "public/marks/double-cut.svg",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "public/marks/livery-stack.svg",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "public/marks/plate-inverted.svg",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "public/marks/two-way*.svg",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "public/marks/globe-g*.svg",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "scripts/build/speed-marks.mjs",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "deck/slides/17-speed-monogram.html",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "deck/slides/18-speed-lockup.html",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "deck/slides/19-speed-plate.html",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "deck/slides/20-speed-double-cut.html",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "deck/slides/21-speed-livery.html",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "deck/slides/22-speed-dithered.html",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "deck/slides/23-speed-ascii.html",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "deck/shots/proto-marks-speed-*",
-      "reason": "speed marks are a separate approved system"
+      "reason": "the speed marks, the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "public/media/gt-globe-glyphs*",
@@ -2843,11 +2843,11 @@
     },
     {
       "path": "public/media/mark-sting-film.mp4",
-      "reason": "the bar monogram's sting, which plays on /marks; speed marks are a separate approved system"
+      "reason": "the bar monogram's sting, which plays on /marks; the speed marks are the previous speed-mark system built on the bar monogram"
     },
     {
       "path": "public/media/mark-sting-poster.jpg",
-      "reason": "the bar monogram sting's poster, which plays on /marks; speed marks are a separate approved system"
+      "reason": "the bar monogram sting's poster, which plays on /marks; the speed marks are the previous speed-mark system built on the bar monogram"
     }
   ],
   "checked": [
@@ -3588,12 +3588,12 @@
     },
     {
       "path": "deck/shots/proto-marks-speed-light.jpg",
-      "reason": "a capture of the speed set on /marks (bar monogram, lockup, plate, double cut, livery, dithered, ASCII, two-way, globe G); no globe logo; the speed marks are a separate approved system, deck slide 73; checked by eye on 2026-11-12",
+      "reason": "a capture of the speed set on /marks (bar monogram, lockup, plate, double cut, livery, dithered, ASCII, two-way, globe G); no globe logo; the speed marks are the previous speed-mark system, in a labelled figure on deck slide 73; checked by eye on 2026-11-12",
       "sha256": "290558b7798536dd09b6e0455414b61f60ff350108b83b99672a20361845148d"
     },
     {
       "path": "deck/shots/proto-marks-speed-dark.jpg",
-      "reason": "a capture of the speed set on /marks (bar monogram, lockup, plate, double cut, livery, dithered, ASCII, two-way, globe G); no globe logo; the speed marks are a separate approved system, deck slide 73; checked by eye on 2026-11-12",
+      "reason": "a capture of the speed set on /marks (bar monogram, lockup, plate, double cut, livery, dithered, ASCII, two-way, globe G); no globe logo; the speed marks are the previous speed-mark system, in a labelled figure on deck slide 73; checked by eye on 2026-11-12",
       "sha256": "70dbe6761b1ad26ef004b538e5c6f1383b931c45c8b6587c1278961e6a56fbc9"
     }
   ],

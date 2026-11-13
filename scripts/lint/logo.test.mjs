@@ -474,6 +474,11 @@ describe('lint:logo current pages (rule 13)', () => {
     assert.equal(unmarked(`<figure data-previous-mark>${BADGE}<figcaption>The previous logo.</figcaption></figure>`, site, previous).length, 0);
   });
 
+  it('takes a figure that names the previous speed-mark system as a label', () => {
+    assert.equal(unmarked(`<div data-previous-mark>${BADGE}<p>The previous speed-mark system.</p></div>`, site, previous).length, 0);
+    assert.equal(unmarked(`<div data-previous-mark>${BADGE}<p>The speed set.</p></div>`, site, previous).length, 1);
+  });
+
   it('on /marks reads the production card and the live strip only', () => {
     const scope = currentPage('/marks').scope;
     const inScope = (element) => scope.attrs.test(` ${element.attrs}`);
