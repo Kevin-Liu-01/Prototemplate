@@ -34,7 +34,7 @@ const PARTS = [
 /** the lockup numbers, in cap heights of the name */
 const NUMBERS = [
   ['Unit', 'the name’s cap height, the height of the T'],
-  ['Name', `${LOCKUP.face} at weight ${LOCKUP.weight}, tracking ${LOCKUP.tracking} em, with the font’s own kerning, drawn as outlines; both lines start at one pen origin`],
+  ['Name', `${LOCKUP.face} at weight ${LOCKUP.weight}, tracking ${fix(LOCKUP.tracking, 4)} em, with the font’s own kerning, drawn as outlines; both lines start at one pen origin`],
   ['Line gap', `${LOCKUP.rhythm} cap from the first baseline to the second cap line: the cap height less the x-height`],
   ['Stacked mark', `${LOCKUP.mark} cap tall, centred on the name’s ink from the G’s top to the foot of the a`],
   ['One-line mark', `${LOCKUP.oneLine} cap tall, where the ring (${fix(RING_SHARE * 100, 2)} percent of the mark) is as thick as the name’s stems (${fix(LOCKUP.oneLine * RING_SHARE, 3)} cap)`],

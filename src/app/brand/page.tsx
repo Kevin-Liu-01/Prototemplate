@@ -335,7 +335,7 @@ const PAGES: readonly BrandPage[] = [
         <p>
           In the lockup the logo stands beside the stacked name, &ldquo;General&rdquo; over
           &ldquo;Translation&rdquo;, {LOCKUP.mark} cap heights tall and centred on the name&rsquo;s ink.
-          The name is Katagami Text at weight {LOCKUP.weight} and {LOCKUP.tracking} em, both lines from
+          The name is Katagami Text at weight {LOCKUP.weight} and {stated(LOCKUP.tracking, 4)} em, both lines from
           one pen origin, drawn as outlines. Katagami Text is also the face of running copy, headings and interface
           text; this site still renders Inter until its own switch.
         </p>
