@@ -298,10 +298,10 @@ export const GLOBE_ROWS: readonly GlobeRow[] = [
   },
 ];
 
-/** The name that ends every row, in Katagami Text 400 outlines at -0.05 em and currentColor (pnpm build:lockup). Its box starts at the top of a globe's drawn box and is NAME_WIDTH globes wide, so the globe beside it is centred on the name's ink, as in the stacked lockup; both numbers are rows in public/brand/gt-globe-lockup.json, and pnpm test:marks holds them to it. */
+/** The name that ends every row, in Katagami Text 400 outlines at -0.0496 em and currentColor (pnpm build:lockup). Its box starts at the top of a globe's drawn box and is NAME_WIDTH globes wide, so the globe beside it is centred on the name's ink, as in the stacked lockup; both numbers are rows in public/brand/gt-globe-lockup.json, and pnpm test:marks holds them to it. */
 export const NAME_FILE = '/marks/graticule/rows/name.svg';
-export const NAME_WIDTH = 2.557;
-export const NAME_ASPECT = 2.5823;
+export const NAME_WIDTH = 2.5591;
+export const NAME_ASPECT = 2.5844;
 
 /** A count with its noun. */
 export const marksIn = (n: number) => `${n} ${n === 1 ? 'mark' : 'marks'}`;

@@ -1,5 +1,5 @@
 {
- "font": "Katagami Text Version 1.200, wght 400, letter-spacing -0.05 em, GPOS kerning, as outlines",
+ "font": "Katagami Text Version 1.200, wght 400, letter-spacing -0.049645 em, GPOS kerning, as outlines",
  "units": "Katagami Text font units (2048 per em) at the name's size",
  "cap": 1430.0,
  "markInCaps": 2.3643,
@@ -9,7 +9,7 @@
  "viewBox": [
   0.0,
   0.0,
-  25233.3403,
+  25240.6107,
   3380.949
  ],
  "marks": [
@@ -41,7 +41,7 @@
  "name": {
   "x": 16588.3403,
   "y": 33.127,
-  "w": 8645.0,
+  "w": 8652.2704,
   "h": 3314.695
  },
  "stages": [

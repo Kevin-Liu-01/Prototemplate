@@ -34,7 +34,7 @@ export const LOGO = {
 /**
  * The logo lockup: the logo beside the stacked name, "General" over
  * "Translation" (Kevin, 2026-11-12, from his wordmark file). The name is
- * Katagami Text at weight 400, tracked -0.05 em, with the font's kerning
+ * Katagami Text at weight 400, tracked -0.0496 em, with the font's kerning
  * (at 400 only T-r applies), drawn as outlines (Kevin, 2026-11-08:
  * "remember the word mark of general translation text uses katagami
  * text!"); running copy is Katagami Text too (BRAND.md section 6). The two
@@ -53,8 +53,12 @@ export const LOGO = {
 export const LOCKUP = {
   face: 'Katagami Text',
   weight: 400,
-  /** letter-spacing in em, after each advance */
-  tracking: -0.05,
+  /**
+   * letter-spacing in em, after each advance: -0.0496 em (101.67 font units),
+   * the least-squares fit of every glyph's position in Kevin's wordmark on
+   * both lines, from one pen origin with the font's kerning at 400
+   */
+  tracking: -0.049645,
   /** white between the first baseline and the second cap line, in cap heights */
   rhythm: 0.2865,
   /** the first line's cap line to the second line's baseline: 2 + rhythm */

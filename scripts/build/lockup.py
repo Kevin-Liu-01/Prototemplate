@@ -2,9 +2,11 @@
 """Draw the General Translation logo lockup, the logo beside "General" over "Translation", from Katagami Text 400 as outlines.
 
 Kevin, 2026-11-08: "remember the word mark of general translation text uses katagami text!" The name in the
-lockup is Katagami Text at wght 400, tracked -0.05 em (102.4 units after each advance), with the font's GPOS
-kerning at that instance (only T-r applies), every glyph as a path, so no page loads the face. The numbers are
-measured on Kevin's wordmark file of 2026-11-12. The construction, in the font's units (2048 per em) at the
+lockup is Katagami Text at wght 400, tracked LOCKUP.tracking em (-0.049645 em, 101.67 units after each advance),
+with the font's GPOS kerning at that instance (only T-r applies), every glyph as a path, so no page loads the face.
+The numbers are measured on Kevin's wordmark file of 2026-11-12 and read from LOCKUP in src/lib/logo.ts; the
+tracking is the least-squares fit of every glyph's position on both lines (shared pen origin, kerning at 400),
+within 0.13 px of each glyph at the file's 295 px size. The construction, in the font's units (2048 per em) at the
 name's size, with CAP the T's flat top:
 
   the name     "General" over "Translation", both lines from one pen origin (so the T's ink stands left of the
@@ -33,7 +35,7 @@ committed, so the site builds without the checkout. GSUB is not applied: no defa
 locl, rlig, liga, clig, calt, rclt) substitutes in these two words, which the build checks and refuses otherwise.
 
 Requires: python3 with fontTools (pip install fonttools).
-Last real run: 2026-11-12, Prototemplate session (the refined lockup: 400, -0.05 em, pen origin).
+Last real run: 2026-11-12, Prototemplate session (the refined lockup: 400, -0.049645 em, pen origin).
 """
 import json
 import os
@@ -55,10 +57,18 @@ from fontTools.varLib import instancer
 ROOT = Path(__file__).resolve().parents[2]
 NAME = ('General', 'Translation')
 WGHT = 400
-TRACK_EM = -0.05  # letter-spacing after each advance (Kevin's wordmark, 2026-11-12)
-RHYTHM = 0.2865  # caps of white between the first baseline and the second cap line (Kevin's wordmark: 265 px pitch at a 205.981 px cap); within 0.3 units of the cap height less the x-height
-MARK = 2.3643  # the logo's height in caps, centred on the name's ink box (Kevin's wordmark: 487 / 205.981)
-GAP = 0.5826  # caps of white from the logo's ink to the name's leftmost ink (Kevin's wordmark: 120 / 205.981)
+
+
+def lockup_number(field):
+    """One number of LOCKUP in src/lib/logo.ts (pure data), so the build and the site read one value."""
+    block = re.search(r'export const LOCKUP = \{(.*?)\n\} as const;', (ROOT / 'src/lib/logo.ts').read_text(), re.S).group(1)
+    return float(re.search(rf'\n  {field}: (-?[0-9.]+),', block).group(1))
+
+
+TRACK_EM = lockup_number('tracking')  # letter-spacing after each advance in em (fitted on Kevin's wordmark, 2026-11-12)
+RHYTHM = lockup_number('rhythm')  # caps of white between the first baseline and the second cap line (Kevin's wordmark: 265 px pitch at a 205.981 px cap); within 0.3 units of the cap height less the x-height
+MARK = lockup_number('mark')  # the logo's height in caps, centred on the name's ink box (Kevin's wordmark: 487 / 205.981)
+GAP = lockup_number('gap')  # caps of white from the logo's ink to the name's leftmost ink (Kevin's wordmark: 120 / 205.981)
 DEFAULT_GSUB = ('rvrn', 'ccmp', 'locl', 'rlig', 'liga', 'clig', 'calt', 'rclt')
 
 
