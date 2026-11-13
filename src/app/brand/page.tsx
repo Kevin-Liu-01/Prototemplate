@@ -16,6 +16,7 @@ import LogoSystem from './LogoSystem';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import GlyphGlobe from '@/components/shared/GlyphGlobe';
 import { LOCKUP, STRIP } from '@/lib/logo';
+import { CLEAR_ONE_LINE, CLEAR_STACKED, stated } from '@/lib/logo-numbers';
 import { PAGE_NAMES } from '@/lib/page-names';
 import { filmNote } from '@/lib/previous-mark';
 import { readingMinutes } from '@/lib/reading';
@@ -369,8 +370,8 @@ const PAGES: readonly BrandPage[] = [
           On one line, where height is short, the logo is {LOCKUP.oneLine} cap heights tall and centred
           on the cap band, the size at which its ring is as thick as the name&rsquo;s stems. In both
           lockups the logo&rsquo;s ink stands {LOCKUP.gap} cap height from the name. Clear space is a
-          quarter of the logo&rsquo;s height on every side: {Number((LOCKUP.mark / 4).toFixed(2))} cap
-          height around the stacked lockup and {Number((LOCKUP.oneLine / 4).toFixed(3))} around the
+          quarter of the logo&rsquo;s height on every side: {stated(CLEAR_STACKED, 2)} cap
+          height around the stacked lockup and {stated(CLEAR_ONE_LINE, 2)} around the
           one-line lockup. The logo alone is at least 24px tall, and 16px only as a tab
           icon; a lockup keeps a cap height of at least 9px.
         </p>

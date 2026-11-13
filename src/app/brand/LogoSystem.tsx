@@ -4,6 +4,7 @@ import { headingId } from './brand-sections';
 import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { LOCKUP, LOGO } from '@/lib/logo';
 import CONSTRUCTION from '@/lib/logo-construction.json';
+import { CLEAR_ONE_LINE, CLEAR_STACKED, RING_SHARE, stated } from '@/lib/logo-numbers';
 
 /**
  * The logo system section: the construction drawing, the three states
@@ -11,18 +12,15 @@ import CONSTRUCTION from '@/lib/logo-construction.json';
  * replaced. Every number is read from LOGO and LOCKUP in src/lib/logo.ts
  * and from the logo's construction, src/lib/logo-construction.json (the
  * ring, the two ovals with their own centres and radii, the weight, the
- * bar and the stem, in the 256 unit square), so the section moves with the
- * drawing.
+ * bar and the stem, in the 256 unit square), and written with `stated`,
+ * the one rounding rule (src/lib/logo-numbers.ts), so the section moves
+ * with the drawing and agrees with the brand kit.
  */
 const { ring: RING, meridian: MER, latitude: LAT, weight: STROKE, stem: STEM } = CONSTRUCTION.new;
 const cx = 128;
 const cy = 128;
 const r = RING.mid;
-const fix = (n: number, d = 1) => Number(n.toFixed(d)).toString();
-/** the drawn box's side: the ring's outer diameter */
-const BOX = 2 * RING.outer;
-/** the ring's weight over the mark's height */
-const RING_SHARE = STROKE / BOX;
+const fix = (n: number, d = 1) => stated(n, d);
 
 /** the drawing's parts, in the order the figure numbers them */
 const PARTS = [
@@ -41,7 +39,7 @@ const NUMBERS = [
   ['Stacked mark', `${LOCKUP.mark} cap tall, centred on the name’s ink from the G’s top to the foot of the a`],
   ['One-line mark', `${LOCKUP.oneLine} cap tall, where the ring (${fix(RING_SHARE * 100, 2)} percent of the mark) is as thick as the name’s stems (${fix(LOCKUP.oneLine * RING_SHARE, 3)} cap)`],
   ['Gap to the name', `${LOCKUP.gap} cap from the mark’s ink to the name’s nearest ink in both lockups: the T stacked, the G on one line`],
-  ['Clear space', `a quarter of the mark’s height on every side: ${fix(LOCKUP.mark / 4, 2)} cap around the stacked lockup and ${fix(LOCKUP.oneLine / 4, 2)} around the one-line lockup`],
+  ['Clear space', `a quarter of the mark’s height on every side: ${fix(CLEAR_STACKED, 2)} cap around the stacked lockup and ${fix(CLEAR_ONE_LINE, 2)} around the one-line lockup`],
   ['Smallest size', 'the mark 24 px tall alone, and 16 px only as a tab icon; a lockup or a wordmark at a 9 px cap height'],
 ] as const;
 
