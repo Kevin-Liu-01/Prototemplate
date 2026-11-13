@@ -155,68 +155,68 @@
     {
       "path": "public/brand/kit/png/gt-mark-ink-on-transparent-1024.png",
       "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)",
-      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
-      "sha256": "c5607ac96b7f9f0027885e0a5f97c415ed6aff33b36ad198d3b92d6c3390be3b"
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "9e95dd886724978bfca91edc41da1c9f2e89783ceae8468a4473963fc5e089bb"
     },
     {
       "path": "public/brand/kit/png/gt-mark-white-on-transparent-1024.png",
       "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)",
-      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
-      "sha256": "c145bc2680a37322228974a04e170d9dac82bb996cef460ef160b54c112bf392"
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "434a52ecbc5284988a1a32629341e3d83fb06199fef22265deda4cfed01f6d71"
     },
     {
       "path": "public/brand/kit/png/gt-lockup-horizontal-ink-on-transparent-1024.png",
       "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)",
-      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
-      "sha256": "f1a75efe6ca6dd28cedeb4b2d9994090adca6d4179cd9edc5e1cc9f8b71c4746"
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "9139b8500294371ccfb0f66940215b5ac1ef79d48c191506a5004b9bb70f17bb"
     },
     {
       "path": "public/brand/kit/png/gt-lockup-horizontal-white-on-transparent-1024.png",
       "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)",
-      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
-      "sha256": "78c8932de5ab65792712f4111ca78d84a18f0c1ed8728af69e275a12831cb6db"
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "fee10223e88749de7803d35a13757f94a405e47c9e6e5e3b46c4536015816024"
     },
     {
       "path": "public/brand/kit/png/gt-lockup-stacked-ink-on-transparent-1024.png",
       "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)",
-      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
-      "sha256": "54efe28b4ccc91772c8bb04f6d6a46a1cf3c67cd997e164e22b8ea24adf2b383"
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "b4276662efc321c559537539bced46c72884737fa970cdb274e8efe0241b426f"
     },
     {
       "path": "public/brand/kit/png/gt-lockup-stacked-white-on-transparent-1024.png",
       "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)",
-      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
-      "sha256": "fb23b7dc7816ff75b9a935626f610d71cbc55cfc668921f6daaed5e890b03b7c"
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "aeb58af633922a9b479d0642b7b94f764fe1982409a744accde0770c6e7a1c3c"
     },
     {
       "path": "public/brand/kit/sheets/brand-sheet.webp",
       "generator": "pnpm build:brand-kit (cuts the brand kit's guide sheet, which draws LOGO)",
-      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
-      "sha256": "c6c49c10471b2da9ac017fd92beded5ffef62122551c841b08c2a7a99062fdfc"
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "d29cd8d4b3fb67e7394c1df19adadd1ad4001fd8252a006a4dba3165ce2b1d1a"
     },
     {
       "path": "public/brand/kit/sheets/clear-space.webp",
       "generator": "pnpm build:brand-kit (cuts the brand kit's guide sheet, which draws LOGO)",
-      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
-      "sha256": "c5f34de6fffae3ebbc96ca5903f2b6a0541c874bb6bf16d0fb7bc1d99a1b3e1e"
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "53c94aaa79257814e638e77bd13aee5046527affc788e03e2820c8a024e34ba9"
     },
     {
       "path": "public/brand/kit/sheets/minimum-size.webp",
       "generator": "pnpm build:brand-kit (cuts the brand kit's guide sheet, which draws LOGO)",
-      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
-      "sha256": "8309c47f9b9b3efe178b2faeb8c975595ec4037aee30ee03846af5d2c23b47f9"
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "898133dd8f15346c4041da44faebc3db8eff9d2c6eb07ae2201b1e77256ee83e"
     },
     {
       "path": "public/brand/kit/sheets/variant-sheet.webp",
       "generator": "pnpm build:brand-kit (cuts the brand kit's guide sheet, which draws LOGO)",
-      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
-      "sha256": "23fa01149f72287b5b170b0be482cb405b91bfc761b12b9594702876d5bae1d6"
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "7905ccb8061af52a6cab4506c57546dc2c48331b7309c548e4faf3c8d3dc5153"
     },
     {
       "path": "public/brand/kit/sheets/frames-sheet.webp",
       "generator": "pnpm build:brand-kit (cuts the brand kit's guide sheet, which draws LOGO)",
-      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
-      "sha256": "7f66690d03a8f6c708876f9092e97e6b1311578533b58fe7bce8c0c3d803ebe6"
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "b991792917470c955ae4c0286ef673a0f637f49c704a29c698089a10744e85bf"
     },
     {
       "path": "src/components/brand/GtLogoMotion.geometry.ts",
