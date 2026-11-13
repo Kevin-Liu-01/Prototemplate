@@ -70,15 +70,15 @@ export default function BadgeCycleDemo() {
         </>
       }
       height={200}
-      label={`The Brand title with a badge cutting through ${n} marks`}
+      label={`A title with a badge cutting through ${n} shortlisted marks`}
       moves
       phoneHeight={180}
       stageClassName={still ? 'dmo-badge is-still' : 'dmo-badge'}
-      tag='<BadgeCycle frames={badgeMarks(gtAspect).map((mark) => badgeMark(mark.file, boxMask(mark.box)))} />'
+      tag='<BadgeCycle frames={badgeMarks(logoWidth / logoHeight).map((mark) => badgeMark(mark.file, boxMask(mark.box)))} />'
     >
       <p className={`dmo-badge-title is-${size}`}>
         <span className='pt-book-title-end'>
-          Brand
+          Marks
           <span aria-hidden='true' className='pt-book-badge' key={n}>
             <BadgeCycle frames={BADGE_MARKS.slice(0, n)} />
           </span>
