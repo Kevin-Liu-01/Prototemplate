@@ -37,6 +37,7 @@
     "build:deck": "node scripts/build/deck.mjs",
     "build:marks": "node scripts/build/speed-marks.mjs",
     "build:logo": "node scripts/build/logo.mjs",
+    "build:logo-armillary": "node scripts/build/logo-armillary.mjs",
     "build:logo-ascii": "node scripts/build/logo-ascii.mjs",
     "build:logo-motion": "node scripts/build/logo-motion.mjs",
     "build:previous-mark": "node scripts/build/previous-mark.mjs",

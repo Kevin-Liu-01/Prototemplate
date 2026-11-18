@@ -38,12 +38,14 @@ export const LOADER_SIZES: readonly { size: number; where: string }[] = [
 export const ARMILLARY_ID = 'armillary';
 export const ARMILLARY_TITLE = 'The armillary';
 export const ARMILLARY_LEAD =
-  'The logo read as an armillary sphere. The ring is the outer ring seen face on, the meridian and the latitude are rings turned about their own axes, and the stem and the bar are those rings seen edge on. Once a lap the logo rests, then both rings turn once, passing over and under as the logo’s own crossings do, and land on the logo again.';
+  'The logo read as an armillary sphere. The ring is the outer ring seen face on, the meridian and the latitude are rings turned about their own axes, and the stem and the bar are those rings seen edge on. Once a lap the meridian and the G draw back, both rings swing out of their hinges, a full turn and a half turn, passing over and under as the logo’s own crossings do, and the logo draws back on.';
 
-/** The beats of the armillary as rows of its timing table, from GtLogoArmillary.frame.ts. */
-export const armillaryRows = (beats: { rest: number; swing: number }): readonly { name: string; ms: number; note: string }[] => [
+/** The beats of the armillary as rows of its timing table, from GtLogoArmillary.geometry.ts. */
+export const armillaryRows = (beats: { rest: number; open: number; swing: number; close: number }): readonly { name: string; ms: number; note: string }[] => [
   { name: 'Rest', ms: Math.round(beats.rest * 1000), note: 'The still logo, its own path.' },
-  { name: 'Swing', ms: Math.round(beats.swing * 1000), note: 'The meridian turns once about the polar axis and the latitude once the other way about the node axis, easing in and out; the ring, the bar and the stem hold still.' },
+  { name: 'Open', ms: Math.round(beats.open * 1000), note: 'The meridian draws back along its oval and the G back from its tip into the right node, on the loader’s own layers, to the stand: the ring, the bar and the stem.' },
+  { name: 'Swing', ms: Math.round(beats.swing * 1000), note: 'Both rings grow out of their hinges, the meridian turns a full turn about the polar axis and the latitude a half turn about the node axis, easing in and out, and they shrink back. The stand holds still.' },
+  { name: 'Close', ms: Math.round(beats.close * 1000), note: 'Open run backward, landing on the logo.' },
 ];
 
 /** The armillary at the sizes it is made for; below 32 px the vector loader above runs instead. */
@@ -153,6 +155,10 @@ export const BUILD_PARTS: readonly { term: string; body: string }[] = [
   {
     term: 'Over and under',
     body: 'The meridian passes over everything wherever it faces the viewer and under everything wherever it faces away, and the latitude passes over the bar and the stem and under the meridian’s near half. The line underneath is cut by the line on top widened by 5.75 units each side, the mean of the logo’s gaps. The ring is never cut.',
+  },
+  {
+    term: 'Seams',
+    body: 'Every seam of the armillary’s lap is the logo, the stand, or a ring 0 long at its hinge, so no hand-off moves a pixel: Open and Close move the loader’s own layers, and the rings start and end inside the stand.',
   },
   {
     term: 'Script',

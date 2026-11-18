@@ -1,8 +1,10 @@
+import type { GT_LOGO_ARMILLARY } from './GtLogoArmillary.geometry';
+
 /**
  * The logo read as lines on a sphere, the model both turning loaders share
  * (GtLogoArmillary, and GtLogoAscii's generator, scripts/build/logo-ascii.mjs).
- * It has no imports, so Node's type stripping loads it in the tests and the
- * generator. The ring is the
+ * Its only import is a type, so Node's type stripping loads it in the tests
+ * and the generators; the lap's numbers come in as an argument. The ring is the
  * sphere's outline seen face on; the meridian is a ring of radius 96.2566
  * turned 57.81 degrees about the polar (vertical) axis, so it projects to the
  * logo's meridian oval (rx 51.2808); the latitude is a ring of radius 96.2524
@@ -11,13 +13,12 @@
  * rings' edge-on circles. Numbers are src/lib/logo-construction.json's
  * motion block, in the logo's 256 unit square, y down.
  *
- * Each ring keeps the logo's own opening as it turns: the meridian is drawn
+ * `from` and `to` are the stretch of each ring the logo draws: the meridian
  * from 128.22 to 412.38 degrees (0 at the north pole, clockwise on screen),
  * which leaves out its stretch through the right node where the bar runs,
  * and the latitude from 180 to 496.47 degrees (0 at the left node, 90 at the
- * top, 180 at the right node), which leaves out the G's mouth between its tip
- * and the right node. A turn is rigid, so the openings turn with
- * their rings.
+ * top, 180 at the right node), which leaves out the G's mouth. The ASCII
+ * loader turns those stretches rigidly; the armillary turns whole rings.
  */
 
 const DEG = Math.PI / 180;
@@ -90,69 +91,97 @@ export function easeInOut(u: number): number {
 
 /**
  * The armillary loader's frames as a pure function of time, shared by the
- * component, its tests and the docs. A lap is 3.5 s on the 0.5 s beat grid:
+ * component, its tests and the docs. A lap is 3.5 s on the 0.5 s beat grid
+ * (GtLogoArmillary.geometry.ts, from scripts/build/logo-motion.json):
  *
- * - rest, 1.0 s: the still logo, LOGO.d itself;
- * - swing, 2.5 s: the meridian turns once about the polar axis and the
- *   latitude once about the node axis the other way, both easing in and
- *   out, while the ring, the bar and the stem hold still. Each ring keeps
- *   the logo's opening as it turns (the model above).
+ * - rest, 0.5 s: the still logo, LOGO.d itself;
+ * - open, 0.5 s: GtLogoMotion's loader layers draw the meridian back along
+ *   its oval (the hover's course) and the G back from its tip round the
+ *   equator into the right node, and land on the stand: the ring, the bar
+ *   from its free end and the stem whole;
+ * - swing, 2 s: two whole rings at the logo's weight grow out of their
+ *   hinges (the meridian out of both poles, the latitude out of both nodes)
+ *   as dashes 0 long at the hinge, whole after `grow` seconds, while the
+ *   meridian turns a full turn about the polar axis and the latitude a half
+ *   turn about the node axis, both easing in and out; in the last `grow`
+ *   seconds they shrink back into their hinges. The stand never moves;
+ * - close, 0.5 s: open run backward, landing on LOGO.d.
  *
- * Over and under follow the logo's own crossings: the meridian passes over
- * everything wherever it faces the viewer and under everything wherever it
- * faces away, and the latitude passes over the bar and the stem and under
- * the meridian's near half. The line underneath is cut by the line on top
- * widened by the logo's gap each side. The ring is never cut.
- *
- * At both ends of the swing the turn is a whole number of turns, so the
- * frame's lines lie on the logo's own; the component draws LOGO.d itself
- * whenever `moving` is false, so a host that swaps the resting loader for
- * the still logo changes no pixel.
+ * Every seam is the logo, the stand, or a dash 0 long, so no hand-off moves
+ * a pixel. Over and under follow the logo's own crossings: the meridian
+ * passes over everything wherever it faces the viewer and under everything
+ * wherever it faces away, and the latitude passes over the bar and the stem
+ * and under the meridian's near half. The line underneath is cut by the line
+ * on top widened by the logo's gap each side. Near its hinges a ring lies in
+ * the sphere's outline, where the logo runs the bar and the stem into the
+ * ring, so it cuts them only where it stands DEEP out of the outline. The
+ * outer ring is never cut.
  */
 
-/** The beats in seconds. */
-export const ARMILLARY_BEATS = { rest: 1, swing: 2.5 } as const;
+/** The lap's numbers, GtLogoArmillary.geometry.ts. */
+export type ArmillaryGeometry = typeof GT_LOGO_ARMILLARY;
 
-/** One lap in seconds. */
-export const ARMILLARY_LAP = ARMILLARY_BEATS.rest + ARMILLARY_BEATS.swing;
+/** A dash: its length and its start along its path, in the logo's units. */
+export type Dash = { len: number; off: number };
 
-/** How far each ring turns in one swing, in degrees: the meridian forward, the latitude back. */
-export const ARMILLARY_TURN = { meridian: 360, latitude: -360 } as const;
+/** GtLogoMotion's loader channels in one frame. */
+export type ArmillaryChannels = { meridian: Dash; under: Dash; fill: Dash; head: Dash };
 
-/** Degrees between the points of a drawn ring. */
-const STEP = 2;
-
-export type ArmillaryFrame = {
-  /** false on the rest beat, where the component draws LOGO.d */
-  moving: boolean;
-  /** the swing's progress, 0 to 1 */
-  u: number;
-  /** the meridian's stretches facing the viewer, as path data */
+/** The swing's rings in one frame, as path data. */
+export type ArmillaryRings = {
+  /** the meridian's stretches facing the viewer */
   meridianFront: string;
   /** the meridian's stretches facing away */
   meridianBack: string;
   /** the latitude */
   latitude: string;
-  /** the stretches that cut the bar and the stem: the meridian's near half and the latitude, each away from where it meets the ring (DEEP) */
+  /** the stretches that cut the bar and the stem (the meridian's near half and the latitude, away from the outline) */
   standCut: string;
 };
 
-/**
- * How far from the sphere's outline, as a share of the radius towards the
- * viewer, a ring must be to cut the bar or the stem. Where the meridian
- * reaches its poles and the latitude its nodes, the ring lies in the
- * outline, where the logo runs the bar and the stem whole into the ring.
- */
+export type ArmillaryFrame = {
+  phase: 'rest' | 'open' | 'swing' | 'close';
+  /** progress through the phase, 0 to 1 */
+  x: number;
+  /** the loader layers' channels; null on the rest beat, where the component draws LOGO.d */
+  channels: ArmillaryChannels | null;
+  /** the rings; null outside the swing */
+  rings: ArmillaryRings | null;
+};
+
+/** Degrees between the points of a drawn ring. */
+const STEP = 2;
+/** How far out of the sphere's outline, as a share of the radius, a ring must stand to cut the bar or the stem. */
 const DEEP = 0.3;
 
 const f = (v: number) => Math.round(v * 1000) / 1000;
 
+/** A channel's dash at Open progress x, between its stops. */
+function at(stops: readonly (readonly number[])[], x: number): Dash {
+  if (x <= stops[0][0]) return { len: stops[0][1], off: stops[0][2] };
+  for (let i = 1; i < stops.length; i++) {
+    const [x1, l1, o1] = stops[i];
+    if (x <= x1) {
+      const [x0, l0, o0] = stops[i - 1];
+      const k = x1 > x0 ? (x - x0) / (x1 - x0) : 1;
+      return { len: l0 + (l1 - l0) * k, off: o0 + (o1 - o0) * k };
+    }
+  }
+  const last = stops[stops.length - 1];
+  return { len: last[1], off: last[2] };
+}
+
+/** The loader layers' channels at Open progress x (Close is 1 - x). */
+export function armillaryChannels(A: ArmillaryGeometry, x: number): ArmillaryChannels {
+  return { meridian: at(A.open.meridian, x), under: at(A.open.under, x), fill: at(A.open.fill, x), head: at(A.open.head, x) };
+}
+
 /** Polylines through the points, split into runs where `keep` holds. */
-function runs(points: readonly SpherePoint[], keep: (p: SpherePoint) => boolean): string {
+function runs(points: readonly (SpherePoint | null)[], keep: (p: SpherePoint) => boolean): string {
   let d = '';
   let open = false;
   for (const p of points) {
-    if (keep(p)) {
+    if (p && keep(p)) {
       d += `${open ? 'L' : 'M'}${f(p.x)} ${f(p.y)}`;
       open = true;
     } else {
@@ -162,50 +191,68 @@ function runs(points: readonly SpherePoint[], keep: (p: SpherePoint) => boolean)
   return d;
 }
 
-/** The swing's progress at `u`, 0 to 1, as each ring's angle. */
-export function armillaryAngles(u: number): { meridian: number; latitude: number } {
+/** Each ring's angle at swing progress u, 0 to 1. */
+export function armillaryAngles(A: ArmillaryGeometry, u: number): { meridian: number; latitude: number } {
   const e = easeInOut(u);
-  return {
-    meridian: SPHERE.meridian.rest + ARMILLARY_TURN.meridian * e,
-    latitude: SPHERE.latitude.rest + ARMILLARY_TURN.latitude * e,
-  };
+  return { meridian: SPHERE.meridian.rest + A.turns.meridian * e, latitude: SPHERE.latitude.rest + A.turns.latitude * e };
 }
 
-/** The lines at swing progress `u`. */
-export function armillaryAt(u: number): ArmillaryFrame {
-  const moving = u > 0 && u < 1;
-  const a = armillaryAngles(u);
+/** How far each ring has grown out of its hinges at swing progress u, in degrees either side of each hinge (90 is whole). */
+export function armillaryReach(A: ArmillaryGeometry, u: number): number {
+  const g = A.grow / A.beats.swing;
+  if (u <= 0 || u >= 1) return 0;
+  if (u < g) return 90 * easeInOut(u / g);
+  if (u > 1 - g) return 90 * easeInOut((1 - u) / g);
+  return 90;
+}
+
+/** The ring's points every STEP degrees, null where it has not grown: within `reach` of either hinge (0 and 180). */
+function grown(reach: number, point: (t: number) => SpherePoint): (SpherePoint | null)[] {
+  const out: (SpherePoint | null)[] = [];
+  if (reach <= 0) return out;
+  for (const hinge of [0, 180]) {
+    const n = Math.max(1, Math.ceil((2 * reach) / STEP));
+    for (let i = 0; i <= n; i++) out.push(point(hinge - reach + (2 * reach * i) / n));
+    out.push(null);
+  }
+  return out;
+}
+
+/** The rings at swing progress u. */
+export function armillaryRings(A: ArmillaryGeometry, u: number): ArmillaryRings {
+  const a = armillaryAngles(A, u);
+  const reach = armillaryReach(A, u);
   const m = SPHERE.meridian;
   const l = SPHERE.latitude;
-  const meridian = stretch(m.from, m.to, STEP, (t) => meridianPoint(t, a.meridian));
-  const latitude = stretch(l.from, l.to, STEP, (t) => latitudePoint(t, a.latitude));
+  const meridian = grown(reach, (t) => meridianPoint(t, a.meridian));
+  const latitude = grown(reach, (t) => latitudePoint(t, a.latitude));
   return {
-    moving,
-    u,
     meridianFront: runs(meridian, (p) => p.z >= 0),
     meridianBack: runs(meridian, (p) => p.z <= 0),
     latitude: runs(latitude, () => true),
-    standCut:
-      runs(meridian, (p) => p.z >= DEEP * m.r) + runs(latitude, (p) => Math.abs(p.z) >= DEEP * l.r),
+    standCut: runs(meridian, (p) => p.z >= DEEP * m.r) + runs(latitude, (p) => Math.abs(p.z) >= DEEP * l.r),
   };
 }
 
-/** The frame `t` seconds into the loop. */
-export function armillaryFrame(t: number): ArmillaryFrame {
-  const s = ((t % ARMILLARY_LAP) + ARMILLARY_LAP) % ARMILLARY_LAP;
-  return armillaryAt(s <= ARMILLARY_BEATS.rest ? 0 : (s - ARMILLARY_BEATS.rest) / ARMILLARY_BEATS.swing);
+/** One lap in seconds. */
+export function armillaryLap(A: ArmillaryGeometry): number {
+  return A.beats.rest + A.beats.open + A.beats.swing + A.beats.close;
 }
 
-/**
- * The meridian and the latitude where the logo draws them, as path data:
- * through the swing the still logo shows everywhere but in these bands,
- * where the bar and the stem are drawn whole and the turning rings take
- * over (the stand).
- */
-export const ARMILLARY_REST_LINES: string = (() => {
-  const m = SPHERE.meridian;
-  const l = SPHERE.latitude;
-  const meridian = stretch(m.from, m.to, STEP, (t) => meridianPoint(t, m.rest));
-  const latitude = stretch(l.from, l.to, STEP, (t) => latitudePoint(t, l.rest));
-  return runs(meridian, () => true) + runs(latitude, () => true);
-})();
+/** The frame `t` seconds into the lap. */
+export function armillaryFrame(A: ArmillaryGeometry, t: number): ArmillaryFrame {
+  const lap = armillaryLap(A);
+  const s = ((t % lap) + lap) % lap;
+  const { rest, open, swing } = A.beats;
+  if (s < rest) return { phase: 'rest', x: s / rest, channels: null, rings: null };
+  if (s <= rest + open) {
+    const x = (s - rest) / open;
+    return { phase: 'open', x, channels: armillaryChannels(A, x), rings: null };
+  }
+  if (s < rest + open + swing) {
+    const x = (s - rest - open) / swing;
+    return { phase: 'swing', x, channels: armillaryChannels(A, 1), rings: armillaryRings(A, x) };
+  }
+  const x = Math.min(1, (s - rest - open - swing) / A.beats.close);
+  return { phase: 'close', x, channels: armillaryChannels(A, 1 - x), rings: null };
+}

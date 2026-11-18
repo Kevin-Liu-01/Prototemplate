@@ -5,7 +5,7 @@ import type { MouseEvent, ReactNode, RefObject } from 'react';
 import { useRef } from 'react';
 
 import GtLogoArmillary from '@/components/brand/GtLogoArmillary';
-import { ARMILLARY_BEATS } from '@/components/brand/GtLogoArmillary.frame';
+import { GT_LOGO_ARMILLARY } from '@/components/brand/GtLogoArmillary.geometry';
 import GtLogoAscii from '@/components/brand/GtLogoAscii';
 import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { BookHead } from '@/components/viewer/BookView';
@@ -325,7 +325,7 @@ function LoadingBook({ sheetRef, jumpRef, activeOut, updated, timing }: BookProp
               </figcaption>
             </figure>
             <table className='ld-timing'>
-              <caption>One lap takes {Math.round((ARMILLARY_BEATS.rest + ARMILLARY_BEATS.swing) * 1000)} ms and repeats while the page loads.</caption>
+              <caption>One lap takes {Math.round((GT_LOGO_ARMILLARY.beats.rest + GT_LOGO_ARMILLARY.beats.open + GT_LOGO_ARMILLARY.beats.swing + GT_LOGO_ARMILLARY.beats.close) * 1000)} ms and repeats while the page loads.</caption>
               <thead>
                 <tr>
                   <th scope='col'>Beat</th>
@@ -334,7 +334,7 @@ function LoadingBook({ sheetRef, jumpRef, activeOut, updated, timing }: BookProp
                 </tr>
               </thead>
               <tbody>
-                {armillaryRows(ARMILLARY_BEATS).map((row) => (
+                {armillaryRows(GT_LOGO_ARMILLARY.beats).map((row) => (
                   <tr key={row.name}>
                     <th scope='row'>{row.name}</th>
                     <td>{row.ms} ms</td>

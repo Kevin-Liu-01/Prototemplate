@@ -1,5 +1,5 @@
 {
-  "$comment": "Inputs of pnpm build:logo-ascii (scripts/build/logo-ascii.mjs), which writes src/components/brand/GtLogoAscii.frames.ts. The grid is 45 columns by 21 rows of 10 by 20 px cells at 450 px (16 px type at a 0.625 em advance); cell centres sit at px (9 + 10c, 25 + 20r) and the ring's centre at px (224, 223.5), 2.015 px a logo unit across and 1.972 down. pose is the camera's yaw, pitch and roll in degrees (fitted: the logo's lines read as rings on a sphere, the latitude's top half and the bar and stem towards the viewer, the far hemisphere hidden). ramp is the ink glyphs from least to most; a cell takes one when the share of its 4 by 8 sample points within half a line of a drawn line is at least floor, and its level is coverage times (ambient + (1 - ambient) times the Lambert shade), with full ink at scale. light is the direction the light comes from (x right, y down, z towards the viewer). Glyph-free cells inside the ring's hole take a dot from the 4 by 4 Bayer screen below threshold dots. reference is the glyph map measured on the reference rendering ('#' or '+' a glyph, '.' a dot, ' ' empty), a measurement and not the picture; the generator reports the still's agreement with it.",
+  "$comment": "Inputs of pnpm build:logo-ascii (scripts/build/logo-ascii.mjs), which writes src/components/brand/GtLogoAscii.frames.ts. The grid is 45 columns by 21 rows of 10 by 20 px cells at 450 px (16 px type at a 0.625 em advance); cell centres sit at px (9 + 10c, 25 + 20r) and the ring's centre at px (224, 223.5), 2.015 px a logo unit across and 1.972 down. pose is the camera's yaw, pitch and roll in degrees and turn the rings' angles at the still against the logo's rest angles (the reference shows the meridian a little nearer edge on): the logo's lines read as rings on a sphere, the latitude's top half and the bar and stem towards the viewer, points nearer the far side than depth hidden. A cell samples a 4 by 8 grid over sample of its width and height; a sample within line units of a drawn line, or within ringLine of the ring's circle of radius ringR, is ink. A cell takes a glyph when its ink share is at least floor; its level is the share times gain (lines or ring, capped at 1) times (ambient + (1 - ambient) times the Lambert shade), and the glyph is the ramp's entry above as many of cuts as the level reaches. cuts are set so the still's glyphs fall in the reference's shares (least ink first: 5, 3, 16, 23, 32, 12 and 9 percent). light is the direction the light comes from (x right, y down, z towards the viewer). bar and stem place the T's two edge-on circles (y of the bar, x of the stem, and where each starts). Glyph-free cells inside the ring's hole take a dot from the 4 by 4 Bayer screen below threshold dots. reference is the glyph map measured from the reference rendering's pixels ('#' a cell with glyph ink, '.' a dot, ' ' empty), a measurement and not the picture; the generator reports the still's agreement with it.",
   "grid": {
     "cols": 45,
     "rows": 21,
@@ -22,19 +22,49 @@
   },
   "ramp": "-=+*#%@",
   "pose": {
-    "yaw": 16,
-    "pitch": -22,
-    "roll": -2
+    "yaw": 17,
+    "pitch": -21.227,
+    "roll": -2.56
+  },
+  "turn0": {
+    "meridian": -0.851,
+    "latitude": -0.043
   },
   "light": [
-    -0.55,
+    -0.45,
     -0.6,
     0.58
   ],
-  "ambient": 0.35,
-  "scale": 0.62,
-  "floor": 0.12,
-  "line": 6.6,
+  "ambient": 0.362,
+  "gain": {
+    "line": 1.15,
+    "ring": 1.7
+  },
+  "floor": 0.1087,
+  "line": 6.288,
+  "ringLine": 5.176,
+  "ringR": 95.299,
+  "sample": [
+    1,
+    0.942
+  ],
+  "depth": 0.901,
+  "bar": {
+    "y": 0.116,
+    "from": -54.064
+  },
+  "stem": {
+    "x": 4.587,
+    "from": 10.928
+  },
+  "cuts": [
+    0.1172,
+    0.1541,
+    0.3068,
+    0.3625,
+    0.7017,
+    0.8361
+  ],
   "hole": 88,
   "dots": 11,
   "fps": 24,
@@ -47,24 +77,24 @@
   "reference": [
     "                 ##########                  ",
     "            ####################             ",
-    "         ######...  ### .....######          ",
-    "       #####.. ... ### ... .....#####        ",
-    "     ####+ ... ...###.  ..  ... ...####      ",
-    "    #### . .     ###.    .      .   ####     ",
-    "   ###+ ..   ..  ###.     .    ...  ..###    ",
-    "  ###+  ........###......#############.#+#   ",
-    "  ###+..........###.##################++++   ",
-    "  ### .   ####  ###+##      .     .....+++   ",
-    " ####.########+### .       ........... ++++  ",
-    "  #######+     ###   .............  ###+++   ",
-    "  ####+........###...........#########++++   ",
-    "  ###+.........###.################ .  +++   ",
-    "   ###+    .   ### .    ...###+    .  +++    ",
-    "    ####       ###      ...###+    .++++     ",
-    "     ####  ..   ###..  ... ##    ..++++      ",
-    "       #####..  ###+. ...   .  .+++++        ",
-    "         ######. ###.... ++. #++++#          ",
-    "            ####+#+++++++++++++#             ",
-    "                 ##+++++##+                  "
+    "         ######...  ###......######          ",
+    "       #####.......###..........#####        ",
+    "     ##### ... ...###.  ..  ... ...####      ",
+    "    #### ...  .. ###.    ..   ... ..####     ",
+    "   #### ..   ..  ###.     .    ...  ..###    ",
+    "  #### .........###......#############.###   ",
+    "  ####..........###.######################   ",
+    "  ###..   ####. ######     ..     .....###   ",
+    " ####.############..       ........... ####  ",
+    "  ########..   ###.. ............. .######   ",
+    "  #####........###...........#############   ",
+    "  ####.........###.################..  ###   ",
+    "   ####    .   ###..    ...####    .  ###    ",
+    "    ####   .   ###..    ...####   ..####     ",
+    "     ####  ..   ###..  ... ##    ..####      ",
+    "       #####..  ####. ...  ..  .#####        ",
+    "         ######..###.... ##. ######          ",
+    "            ####################             ",
+    "                 ##########                  "
   ]
 }

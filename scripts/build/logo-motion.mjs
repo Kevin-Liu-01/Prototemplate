@@ -276,7 +276,7 @@ function lapAt(t) {
 
 /* ------------------------------------------------------------ keyframes */
 /** samples of fn over seconds at the source's rate, simplified to the stops a straight line between neighbours cannot stand for */
-function stops(fn, seconds) {
+export function stops(fn, seconds) {
   const n = Math.round(seconds * rate);
   const raw = [];
   for (let i = 0; i <= n; i++) raw.push({ t: i / n, ...fn((seconds * i) / n) });
@@ -1014,6 +1014,30 @@ export const COURSE = {
   fill: (t) => gAt(t).fill,
   head: (t) => gAt(t).head,
   lengths: { meridian: MER.length, under: LAT.length, fill: LAT.length, head: LAT.length, lap: LAP.length },
+};
+
+/* the armillary's Open beat (scripts/build/logo-armillary.mjs), x from 0
+   to 1: the meridian's draw-back on the hover's course, and the G drawn
+   back from its tip round the equator into the right node, both landing on
+   the stand (the ring, the bar from its free end and the stem whole). The
+   G's undrawn stretch is [from, to]: `from` runs from the tip to the right
+   node, and `to` from the tip to PAST_TIP past it, so the stretch starts
+   empty and no edge of it lies on the tip's face once it has passed. The
+   head stays empty. Close is Open run backward. */
+const smooth = (u) => {
+  const v = clamp01(u);
+  return v * v * v * (v * (6 * v - 15) + 10);
+};
+function openG(x) {
+  const from = S_TIP * (1 - smooth(x));
+  const to = Math.min(S_TIP + PAST_TIP, 2 * S_TIP - from);
+  return { under: to > from ? span(from, to) : none(from), fill: stemFill(from, S_TIP), head: none(S_TIP - HEAD_IN) };
+}
+export const OPEN = {
+  meridian: (x) => meridianBack(x),
+  under: (x) => openG(x).under,
+  fill: (x) => openG(x).fill,
+  head: (x) => openG(x).head,
 };
 
 if (import.meta.main) {

@@ -11,7 +11,11 @@
  * sets the logo in a 45 by 21 character grid: a cell takes a glyph from the
  * ramp when enough of its 4 by 8 sample points lie within half a line of a
  * drawn line or the ring, its level the coverage times the Lambert shade
- * (the sphere's normal for the inner lines, the outline's for the ring).
+ * (the sphere's normal for the inner lines, the outline's for the ring),
+ * and the glyph the ramp's entry past as many of the json's cuts as the
+ * level reaches, cuts set so the still's glyphs fall in the reference's
+ * shares. The numbers were fitted to the reference rendering's measured
+ * glyph map.
  * Frame 0 is the still: the rings at rest. The lap holds the still, then
  * both rings turn once at 24 frames a second, easing in and out, and land on
  * the still again. Only the glyph rows are written; the component lays the
@@ -76,8 +80,10 @@ function lines(a, g) {
     pts.push([p.x - cx0, p.y - cy0, p.z]);
   }
   /* the bar and the stem: the front stretches of the two edge-on circles */
-  for (let x = -45; x <= 90.3; x += 0.5) pts.push([x, 0.32, Math.sqrt(R * R - x * x)]);
-  for (let y = 7.2; y <= 96; y += 0.5) pts.push([-0.52, y, Math.sqrt(Math.max(R * R - y * y, 0))]);
+  const { y: by, from: bx0 } = C.bar;
+  const { x: sx, from: sy0 } = C.stem;
+  for (let x = bx0; x <= 90.3; x += 0.5) pts.push([x, by, Math.sqrt(Math.max(R * R - x * x - by * by, 0))]);
+  for (let y = sy0; y <= 96; y += 0.5) pts.push([sx, y, Math.sqrt(Math.max(R * R - y * y - sx * sx, 0))]);
   return pts;
 }
 
@@ -98,7 +104,7 @@ function frame(a, g) {
   const M = camera(C.pose);
   const pts = lines(a, g)
     .map((p) => apply(M, p))
-    .filter((p) => p[2] >= 0);
+    .filter((p) => p[2] >= C.depth);
   /* bucket the points by 8 units for the distance search */
   const B = 8;
   const grid = new Map();
@@ -128,10 +134,10 @@ function frame(a, g) {
       let inRing = 0;
       for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 8; j++) {
-          const u = x + ((i + 0.5) / 4 - 0.5) * cellU;
-          const v = y + ((j + 0.5) / 8 - 0.5) * cellV;
+          const u = x + ((i + 0.5) / 4 - 0.5) * cellU * C.sample[0];
+          const v = y + ((j + 0.5) / 8 - 0.5) * cellV * C.sample[1];
           if (near(u, v) < C.line) inLine++;
-          else if (Math.abs(Math.hypot(u, v) - SPHERE.ring) < C.line) inRing++;
+          else if (Math.abs(Math.hypot(u, v) - C.ringR) < C.ringLine) inRing++;
         }
       }
       const cov = (inLine + inRing) / 32;
@@ -145,8 +151,9 @@ function frame(a, g) {
           ? [x / R, y / R, Math.sqrt(Math.max(R * R - rr * rr, 0)) / R]
           : [x / Math.max(rr, 1e-6), y / Math.max(rr, 1e-6), 0];
       const shade = Math.max(0, n[0] * L[0] + n[1] * L[1] + n[2] * L[2]);
-      const level = cov * (C.ambient + (1 - C.ambient) * shade);
-      row += C.ramp[Math.min(C.ramp.length - 1, Math.floor((level / C.scale) * C.ramp.length))];
+      const gain = inLine >= inRing ? C.gain.line : C.gain.ring;
+      const level = Math.min(1, cov * gain) * (C.ambient + (1 - C.ambient) * shade);
+      row += C.ramp[C.cuts.filter((cut) => level >= cut).length];
     }
     rows.push(row);
   }
@@ -154,8 +161,8 @@ function frame(a, g) {
 }
 
 /* the lap: the still, then the turn at fps */
-const m0 = SPHERE.meridian.rest;
-const g0 = SPHERE.latitude.rest;
+const m0 = SPHERE.meridian.rest + C.turn0.meridian;
+const g0 = SPHERE.latitude.rest + C.turn0.latitude;
 const still = frame(m0, g0);
 const turnFrames = Math.round(C.turn * C.fps);
 const turn = [];

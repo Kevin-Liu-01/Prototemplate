@@ -4,6 +4,12 @@
     "gTail0": 169.7,
     "gHead0": 493.222
   },
+  "armillary": {
+    "about": "The armillary loader's lap (scripts/build/logo-armillary.mjs): rest, open (the meridian and the G draw back to the stand), swing (both rings grow out of their hinges, turn and shrink back into them, grow seconds each way), close (open run backward). Seconds, on the 0.5 s beat grid; turns in degrees, the meridian about the polar axis and the latitude about the node axis.",
+    "beats": { "rest": 0.5, "open": 0.5, "swing": 2, "close": 0.5 },
+    "grow": 0.5,
+    "turns": { "meridian": 360, "latitude": -180 }
+  },
   "timing": {
     "hover": 0.6,
     "beats": {
