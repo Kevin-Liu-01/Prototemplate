@@ -98,6 +98,21 @@ const PILL_LOCS = ['en-GB', 'es', 'ja', 'ar-EG', 'ko', 'zh-Hant', 'hi', 'pt'] as
  * caption's separator follows a no-break space, so a wrapped caption never
  * starts a line with the dot.
  */
+/** The email headers gt-cloud sends (#5936), copied to public/media: file stem and the word each one sets. */
+const EMAIL_HEADERS: readonly (readonly [string, string])[] = [
+  ['welcome', 'Welcome'],
+  ['start', 'Start'],
+  ['auth', 'Sign in'],
+  ['translate', 'Translate'],
+  ['live', 'Live'],
+  ['locadex', 'Automate'],
+  ['usage', 'Usage'],
+  ['credits', 'Credits'],
+  ['billing', 'Billing'],
+  ['billing-alert', 'Alert'],
+  ['enterprise', 'Enterprise'],
+];
+
 const FILMS = [
   {
     file: 'fuma-nama-film.mp4',
@@ -619,6 +634,26 @@ const PAGES: readonly BrandPage[] = [
                 <Link href={film.post}>read {film.authors}&rsquo;s post</Link>
               </p>
             </div>
+          ))}
+        </div>
+        <h3 id={headingId('made-with-the-system', 'email-headers')}>Email headers</h3>
+        <p>
+          Every email generaltranslation.com sends opens on one of these headers, 1200 by
+          380&nbsp;px: the logo, then the email&rsquo;s word in English, Spanish, Chinese,
+          Japanese and Arabic, one second each.
+        </p>
+        <div className='ptb-media ptb-mails'>
+          {EMAIL_HEADERS.map(([file, word]) => (
+            <figure className='ptb-shot' key={file}>
+              <img
+                alt={`The ${word} email header: the logo, then the word ${word} in five languages`}
+                height={380}
+                loading='lazy'
+                src={`/media/email-header-${file}.gif`}
+                width={1200}
+              />
+              <figcaption>{word}</figcaption>
+            </figure>
           ))}
         </div>
         <h3 id={headingId('made-with-the-system', 'partnership-globes')}>Partnership globes</h3>

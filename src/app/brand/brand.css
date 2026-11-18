@@ -597,6 +597,18 @@
   background-clip: padding-box;
 }
 
+/* the email headers: two a row from 720px, a quiet ground of the headers'
+   own #1a1a1a until each GIF arrives */
+@media (min-width: 720px) {
+  .ptb-mails {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.ptb-mails .ptb-shot > img {
+  background-color: #1a1a1a;
+}
+
 /* the films are on ink in both themes; the box shows ink until the poster paints */
 .ptb-media .ptb-shot video {
   background-color: #070707;

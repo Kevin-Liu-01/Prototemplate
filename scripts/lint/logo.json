@@ -4106,6 +4106,61 @@
       "path": "public/static/videos/kb-what-is-translation-memory.jpg",
       "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "d7ecabd62e48598efa8b441201691511bd081c45c842119d48ff10ff5e364101"
+    },
+    {
+      "path": "public/media/email-header-auth.gif",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-auth.gif, copied byte for byte): the refined logo, then the word Sign in in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "sha256": "16c96bcc4b5f766d013a1338ec293dbe061b0c74a1fd5698d2859f5640054f29"
+    },
+    {
+      "path": "public/media/email-header-billing.gif",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-billing.gif, copied byte for byte): the refined logo, then the word Billing in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "sha256": "64ffd144c8265e5f46199863459899414991ade3152bb4d6a2fc9cb7528e040b"
+    },
+    {
+      "path": "public/media/email-header-billing-alert.gif",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-billing-alert.gif, copied byte for byte): the refined logo, then the word Alert in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "sha256": "0ab9a71c598f4cf4d3b0ae760b2f27f79be03d0cf9c0b15d886756c0edabc4d5"
+    },
+    {
+      "path": "public/media/email-header-credits.gif",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-credits.gif, copied byte for byte): the refined logo, then the word Credits in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "sha256": "2c4a4d8b21dfe0cfda7ba6f3aa26ca99664db496b99dc809009168503bc8facf"
+    },
+    {
+      "path": "public/media/email-header-enterprise.gif",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-enterprise.gif, copied byte for byte): the refined logo, then the word Enterprise in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "sha256": "b1e34cade29ef3b7ebae0b18e71a623ae5f1f12ce79f3cde3aa5e21456a8c351"
+    },
+    {
+      "path": "public/media/email-header-live.gif",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-live.gif, copied byte for byte): the refined logo, then the word Live in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "sha256": "bb76e30990d60782cac718ed0f93a0fc8b74077a55c37e4bf7f0a6ccaa9f5053"
+    },
+    {
+      "path": "public/media/email-header-locadex.gif",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-locadex.gif, copied byte for byte): the refined logo, then the word Automate in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "sha256": "012e82ef6c898a44808e4b82dcdc6d121e01d52ce0e44a4314a75fc88739c910"
+    },
+    {
+      "path": "public/media/email-header-start.gif",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-start.gif, copied byte for byte): the refined logo, then the word Start in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "sha256": "098d27189ca261089cf5414305ccabe13af82ed30b008b76748ec156a552fe5c"
+    },
+    {
+      "path": "public/media/email-header-translate.gif",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-translate.gif, copied byte for byte): the refined logo, then the word Translate in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "sha256": "3674073ef763844c5af0bad0e227bbc239fcf32370461fca40e753fd9bfd5735"
+    },
+    {
+      "path": "public/media/email-header-usage.gif",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-usage.gif, copied byte for byte): the refined logo, then the word Usage in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "sha256": "5dec2f0d69552aff6e17cc6737d7c35a2a01fb2a73022072275febea08989086"
+    },
+    {
+      "path": "public/media/email-header-welcome.gif",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-welcome.gif, copied byte for byte): the refined logo, then the word Welcome in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "sha256": "37cd66c5f47bb04db13e0ee3104b5b8eeba099bb8fb23499d5036fa64993033c"
     }
   ],
   "external": [
