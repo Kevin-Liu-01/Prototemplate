@@ -16,7 +16,7 @@ function Mark({ mark }: { mark: FooterLink['mark'] }) {
       return (
         <img
           className='ct-foot-lx'
-          src='/brand/no-bg-locadex-logo-light.png'
+          src='/brand/locadex-logo-light.svg'
           alt=''
           width={14}
           height={14}

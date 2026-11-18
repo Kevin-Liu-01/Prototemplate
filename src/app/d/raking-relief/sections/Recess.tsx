@@ -32,7 +32,7 @@ export default function Recess() {
             <div className='rr-stele-title'>
               <Image
                 className='rr-lx is-inverted'
-                src='/brand/no-bg-locadex-logo-light.png'
+                src='/brand/locadex-logo-light.svg'
                 alt='Locadex'
                 width={36}
                 height={36}

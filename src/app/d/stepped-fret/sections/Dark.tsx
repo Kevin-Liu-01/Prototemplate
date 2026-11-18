@@ -84,7 +84,7 @@ export default function Dark() {
                     {i === count - 1 ? (
                       <Image
                         className='sf-dark-step-mark'
-                        src='/brand/no-bg-locadex-logo-light.png'
+                        src='/brand/locadex-logo-light.svg'
                         alt=''
                         aria-hidden
                         width={16}

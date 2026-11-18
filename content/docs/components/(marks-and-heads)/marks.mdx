@@ -127,7 +127,7 @@ Under reduced motion the hover does nothing and the loader shows the still logo 
 
 ## The turning loaders
 
-Two more loaders read the logo as an armillary sphere: the ring is the outer ring seen face on, the meridian oval is a ring of radius 96.26 turned 57.81 degrees about the polar axis, the latitude oval a ring of radius 96.25 turned 57.93 degrees about the node axis, and the stem and the bar lie on those rings seen edge on. `GtLogoArmillary` rests on the logo for a second, then turns both rings once, the meridian one way and the latitude the other, passing over and under as the logo's own crossings do, and lands on the logo again. `GtLogoAscii` sets the logo, turned on its sphere, in a 45 by 21 monospace grid and turns the rings once a lap, so they pass behind the globe. [/marks/loading](/marks/loading#armillary) runs both live.
+Two more loaders read the logo as an armillary sphere: the ring is the outer ring seen face on, the meridian oval is a ring of radius 96.26 turned 57.81 degrees about the polar axis, the latitude oval a ring of radius 96.25 turned 57.93 degrees about the node axis, and the stem and the bar lie on those rings seen edge on. `GtLogoArmillary` rests on the logo, draws the meridian and the G back to the stand (the ring, the bar and the stem) on `GtLogoMotion`'s own loader layers, grows both rings out of their hinges and turns them, the meridian a full turn and the latitude a half turn, passing over and under as the logo's own crossings do, shrinks them back and draws the logo on again. Every seam is the logo, the stand, or a ring 0 long, so no hand-off moves a pixel. `GtLogoAscii` sets the logo, turned on its sphere, in a 45 by 21 monospace grid and turns the rings once a lap, so they pass behind the globe. [/marks/loading](/marks/loading#armillary) runs both live.
 
 <GtLogoTurnDemo />
 
@@ -147,11 +147,11 @@ import GtLogoAscii from '@/components/brand/GtLogoAscii';
 | `width` (ASCII) | number | `450` | The grid's width in CSS pixels, at least 225. The height is 420 / 450 of it. |
 | `palette` (ASCII) | `'ink'` or `'image'` | `'ink'` | `ink` sets the glyphs in `currentColor`, lit at the upper left; `image` uses blues on their own dark ground. |
 | `label` | string | `'Loading'` | Hidden text in a polite live region. |
-| `loading` | boolean | `true` | When it turns false the lap finishes on the still, in at most 0.6 s (armillary) or 0.75 s (ASCII), then `onRest` runs. |
+| `loading` | boolean | `true` | When it turns false the lap finishes on the still, in at most 0.85 s (armillary) or 0.75 s (ASCII), then `onRest` runs. |
 | `onRest` | function | none | Called once the frame is the still after `loading` turns false. |
 | `at` | number | none | Draws the frame this many seconds into the lap and does not animate, for tests and figures. |
 
-`GtLogoArmillary.frame.ts` is the sphere and the frames as pure functions of time; the component draws its rest beat as `LOGO.d` itself and, through the turn, the still logo away from the rings with the bar and the stem whole under them, the rings stroked at the logo's weight and the gaps as masks 5.75 units wide each side of the line on top. `pnpm build:logo-ascii` writes `GtLogoAscii.frames.ts` from `scripts/build/logo-ascii.json` and the same sphere, and `--check` fails when the file is out of date. `pnpm test:marks` checks that the armillary's rest frames are the logo, that its turn starts and ends at rest with no speed, and that the ASCII frames use only the ramp, start and end on the still and keep the dots out of the glyphs.
+`GtLogoArmillary.frame.ts` is the sphere and the frames as pure functions of time, and `pnpm build:logo-armillary` writes `GtLogoArmillary.geometry.ts`, the beats and the Open course of the loader's channels, from `scripts/build/logo-motion.json` and the course `pnpm build:logo-motion` uses. The component draws its rest beat as `LOGO.d` itself, Open and Close on `GtLogoMotion`'s loader layers, and through the swing the stand with the rings stroked at the logo's weight and the gaps as masks 5.75 units wide each side of the line on top. `pnpm build:logo-ascii` writes `GtLogoAscii.frames.ts` from `scripts/build/logo-ascii.json` and the same sphere, and `--check` fails when the file is out of date. `pnpm test:marks` checks in Chrome that each of the armillary's hand-offs changes no pixel, that its turns start and end at rest with no speed, and that the ASCII frames use only the ramp, start and end on the still and keep the dots out of the glyphs.
 
 ### When to use it
 
@@ -180,7 +180,7 @@ const { from, to } = shineTravel(cover); // the sweep's endpoints
 
 <DitheredMark
   id='ldx'
-  href='/brand/locadex-mark.svg'
+  href='/brand/locadex-logo-mark.svg'
   plane={plane(14)}
   markHalf={35}
   cover={cover}

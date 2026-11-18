@@ -306,7 +306,7 @@ export default function EnterpriseEvidence() {
                   <span>
                     <Image
                       className='sge-pr-agent'
-                      src='/brand/locadex-light-no-bg.svg'
+                      src='/brand/locadex-logo-light.svg'
                       alt=''
                       width={13}
                       height={13}

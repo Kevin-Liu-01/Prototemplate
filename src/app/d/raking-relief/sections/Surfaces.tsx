@@ -97,7 +97,7 @@ export default function Surfaces() {
               <div className='rr-agent'>
                 <Image
                   className='rr-lx'
-                  src='/brand/no-bg-locadex-logo-light.png'
+                  src='/brand/locadex-logo-light.svg'
                   alt='Locadex'
                   width={28}
                   height={28}

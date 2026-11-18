@@ -153,7 +153,7 @@ export default function InnerCourt() {
                 <div className='gb-lx'>
                   <div className='gb-lx-mark'>
                     <Image
-                      src='/brand/no-bg-locadex-logo-light.png'
+                      src='/brand/locadex-logo-light.svg'
                       alt='Locadex'
                       width={44}
                       height={44}

@@ -93,7 +93,7 @@ export default function SurfacesTablet() {
             <h3>
               <img
                 className='ct-lx-mark'
-                src='/brand/no-bg-locadex-logo-light.png'
+                src='/brand/locadex-logo-light.svg'
                 alt=''
                 width={22}
                 height={22}

@@ -364,7 +364,7 @@ and quality. ("your ?ll system" partially clipped in capture)
 - "Run the Locadex agent. Connect your repository to our custom-built
   AI agent. Just merge a PR." — the iso stays (mock card: PR #218 ·
   +38 −6 · checks passed); ADD the Locadex logo to the agent slab
-  (public/brand/locadex-mark.svg, mask-rendered).
+  (public/brand/locadex-logo-mark.svg, mask-rendered).
 - "Integrate with any tool. Just a few clicks to integrate with your
   Google Drive, CMS platform, or docs framework." [need visuals for
   this section] → build a real connector visual, not a marks row.

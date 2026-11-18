@@ -124,7 +124,7 @@ export default function SurfacesPanel() {
               <header className='sfc-cell-head'>
                 <img
                   className='sfc-locadex-mark is-head'
-                  src='/brand/no-bg-locadex-logo-light.png'
+                  src='/brand/locadex-logo-light.svg'
                   alt='Locadex'
                   width={22}
                   height={22}

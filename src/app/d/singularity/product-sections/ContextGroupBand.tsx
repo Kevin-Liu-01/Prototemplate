@@ -35,7 +35,7 @@ const SOURCES: readonly FlowNode[] = [
 
 const OUTPUTS: readonly FlowNode[] = [
   { name: 'npx gt translate', value: 'build time' },
-  { name: 'locadex', value: 'PR #218 · agent', mark: '/brand/no-bg-locadex-logo-light.png' },
+  { name: 'locadex', value: 'PR #218 · agent', mark: '/brand/locadex-logo-light.svg' },
   { name: 'tx()', value: 'runtime' },
   { name: 'Translation Editor', value: 'review' },
 ];

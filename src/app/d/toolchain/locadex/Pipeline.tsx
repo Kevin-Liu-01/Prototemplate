@@ -306,7 +306,7 @@ export default function Pipeline() {
                     </div>
                     <div className='ldx-pr-meta'>
                       <span className='ldx-bot'>
-                        <Image src='/brand/no-bg-locadex-logo-light.png' alt='' width={16} height={16} />
+                        <Image src='/brand/locadex-logo-light.svg' alt='' width={16} height={16} />
                         locadex[bot]
                       </span>
                       <span>wants to merge</span>

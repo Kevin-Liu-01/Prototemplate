@@ -74,7 +74,7 @@ const DOCS_MENU: readonly MenuColumn[] = [
     title: 'Platform',
     items: [
       { label: 'Platform', desc: 'Dashboard', href: 'https://dash.generaltranslation.com', icon: LayoutDashboard, external: true },
-      { label: 'Locadex', desc: 'AI Agent', href: '/d/toolchain/locadex', img: '/brand/no-bg-locadex-logo-light.png', invertsInDark: true },
+      { label: 'Locadex', desc: 'AI Agent', href: '/d/toolchain/locadex', img: '/brand/locadex-logo-light.svg', invertsInDark: true },
     ],
   },
 ];

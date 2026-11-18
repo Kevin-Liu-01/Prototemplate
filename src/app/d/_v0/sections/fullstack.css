@@ -795,8 +795,8 @@
    GLYPH spans the 16px box the lucide icons set, never the padding. */
 .toolchain-root .tcb .v0-stack-ldx {
   display: inline-block;
-  -webkit-mask: url('/brand/locadex-mark.svg') center / 225.23% no-repeat;
-  mask: url('/brand/locadex-mark.svg') center / 225.23% no-repeat;
+  -webkit-mask: url('/brand/locadex-logo-mark.svg') center / 225.23% no-repeat;
+  mask: url('/brand/locadex-logo-mark.svg') center / 225.23% no-repeat;
   background-color: currentColor;
 }
 

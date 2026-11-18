@@ -126,7 +126,7 @@ export default function NightPanel() {
             <div className='sfc-night-agent'>
               <img
                 className='sfc-locadex-mark is-night'
-                src='/brand/no-bg-locadex-logo-light.png'
+                src='/brand/locadex-logo-light.svg'
                 alt='Locadex'
                 width={40}
                 height={40}

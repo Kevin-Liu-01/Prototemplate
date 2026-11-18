@@ -137,10 +137,11 @@ The static seat, as on the Locadex slab:
 
 The shimmer seat moves `plane()` inside the mask and keeps the rects in screen space (section 6).
 
-Assets in `public/brand/` (Prototemplate and the gt-cloud landing carry the same files):
+Assets in `public/brand/` (the Locadex files are the hub's; the gt-cloud landing still carries the earlier mark):
 
-- `locadex-mark.svg` for large seats. Its viewBox is 500 square and the drawn glyph spans 199 by 222 of it, so size the image box from the glyph: `markHalf = glyphWidth * (500 / 199) / 2`. The tower seats a 28-unit glyph in a 70-unit image box. The Locadex slab's image box is 32 units, so its glyph is about 13 units wide.
-- `no-bg-locadex-logo-light.png` for small seats (a 16-unit image box on the pricing platform). The SVG's ring geometry breaks at small sizes.
+- `locadex-logo-mark.svg` (the Locadex logo, written by `pnpm build:locadex-logo`) for large seats. Its viewBox is 500 square and the drawn glyph spans 199 units of its width, so size the image box from the glyph: `markHalf = glyphWidth * (500 / 199) / 2`. The tower seats a 28-unit glyph in a 70-unit image box. The Locadex slab's image box is 32 units, so its glyph is about 13 units wide.
+- `locadex-logo-light.svg` for small seats (a 16-unit image box on the pricing platform), the logo on its own 256 unit square.
+- The production mirror (`/d/production`) keeps gt-cloud's `locadex-mark.svg` and `no-bg-locadex-logo-light.png` until gt-cloud ships the new logo.
 - `no-bg-gt-globe-logo-light.png` or `gt-globe-logo.svg` for the General Translation logo. The mask reads alpha only, so the light or dark variant makes no difference.
 - Third-party marks: render the icon component white inside the mask (the GitHub mark on the repository's front-left module is `SiGithub` at a half size of 4.6).
 

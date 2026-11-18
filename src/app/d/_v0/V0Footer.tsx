@@ -46,7 +46,7 @@ function LocadexMark({ className }: MarkProps) {
       aria-hidden
       className={`${className ?? ""} is-locadex`}
       height={14}
-      src="/brand/no-bg-locadex-logo-light.png"
+      src="/brand/locadex-logo-light.svg"
       width={14}
     />
   );

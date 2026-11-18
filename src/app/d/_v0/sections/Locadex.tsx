@@ -299,7 +299,7 @@ function LocadexIso() {
           style={{ maskType: 'alpha' }}
         >
           <image
-            href='/brand/locadex-mark.svg'
+            href='/brand/locadex-logo-mark.svg'
             x={-MARK_HALF}
             y={-MARK_HALF}
             width={MARK_HALF * 2}
@@ -602,7 +602,7 @@ function IntegrateDiagram() {
           style={{ maskType: 'alpha' }}
         >
           <image
-            href='/brand/locadex-mark.svg'
+            href='/brand/locadex-logo-mark.svg'
             x={INT_MARK_X}
             y={117 - INT_MARK / 2}
             width={INT_MARK}

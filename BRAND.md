@@ -135,9 +135,12 @@ written by `pnpm build:locadex-logo` from its catalog file
 `/marks/locadex/doubled-lambda.svg`): every stroke is two parallel
 lines, one gap apart through both bends, the arm and foot cut parallel
 to the long leg, and the short leg's inner line runs into the long leg.
-generaltranslation.com still draws the earlier traced lambda
-(`/brand/locadex-mark.svg`, which the production mirror keeps) until it
-takes the new file.
+Every hub surface draws it, the `/d` directions and the isometric
+diagrams included (`/brand/locadex-logo-mark.svg` keeps the old file's
+500 unit frame). The Locadex section of `/marks` also holds its outlined
+and ringed variants. generaltranslation.com still draws the earlier
+traced lambda (`/brand/locadex-mark.svg`, which only the production
+mirror keeps) until it takes the new file.
 
 The brand kit opens `/brand`: every logo file (the mark, both lockups and
 both wordmarks as SVG, PDF and PNG, with the transparent PNGs in one

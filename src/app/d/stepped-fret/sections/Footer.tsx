@@ -53,7 +53,7 @@ export default function Footer() {
                           {Mark === 'locadex' ? (
                             <Image
                               className='sf-foot-mark is-locadex'
-                              src='/brand/no-bg-locadex-logo-light.png'
+                              src='/brand/locadex-logo-light.svg'
                               alt=''
                               aria-hidden
                               width={14}

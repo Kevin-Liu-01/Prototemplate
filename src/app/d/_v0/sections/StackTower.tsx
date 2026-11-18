@@ -823,7 +823,7 @@ function TopGlyph({ id }: { id: string }) {
               fullstack.css and FullStack's sweep driver stay untouched */}
           <DitheredMark
             id='v0s-ldx'
-            href='/brand/locadex-mark.svg'
+            href='/brand/locadex-logo-mark.svg'
             plane={MARK_PLANE}
             markHalf={MARK_HALF}
             cover={LDX_COVER}

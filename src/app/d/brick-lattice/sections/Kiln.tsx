@@ -157,7 +157,7 @@ export default function Kiln() {
             <div className='bl-ch'>
               <div className='bl-agent-mark'>
                 <Image
-                  src='/brand/no-bg-locadex-logo-light.png'
+                  src='/brand/locadex-logo-light.svg'
                   alt='Locadex'
                   width={22}
                   height={22}

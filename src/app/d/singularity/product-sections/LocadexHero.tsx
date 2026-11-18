@@ -61,7 +61,7 @@ export default function LocadexHero() {
         <div>
           <Image
             className='sgx-hero-mark'
-            src='/brand/no-bg-locadex-logo-light.png'
+            src='/brand/locadex-logo-light.svg'
             alt='Locadex'
             width={34}
             height={34}

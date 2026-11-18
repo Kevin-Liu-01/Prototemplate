@@ -235,7 +235,7 @@ function PlaneGlyphs({ id, zf }: { id: string; zf: number }) {
           <IsoPlane x={-4} y={-20.75} z={zf} w={8} d={4.5} tone='hair' fill='none' />
           <image
             className='ldxi-stamp'
-            href='/brand/no-bg-locadex-logo-light.png'
+            href='/brand/locadex-logo-light.svg'
             width={30}
             height={30}
             transform={flatStamp(2, 0, zf)}
@@ -316,7 +316,7 @@ export default function LocadexIso() {
         <div className='tc-card ldxi-card'>
           <div className='ldxi-bar'>
             <span className='ldxi-bar-brand'>
-              <Image src='/brand/no-bg-locadex-logo-light.png' alt='' width={14} height={14} />
+              <Image src='/brand/locadex-logo-light.svg' alt='' width={14} height={14} />
               locadex · run #1184 — exploded
             </span>
             <span>push e4f21c9 → PR #218</span>

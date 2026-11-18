@@ -62,7 +62,7 @@ function product(base: string): readonly MenuColumn[] {
     {
       title: 'Product',
       items: [
-        { label: 'Locadex', desc: 'AI Agent', href: `${base}/locadex`, img: '/brand/no-bg-locadex-logo-light.png', invertsInDark: true },
+        { label: 'Locadex', desc: 'AI Agent', href: `${base}/locadex`, img: '/brand/locadex-logo-light.svg', invertsInDark: true },
         { label: 'Context', desc: 'One source of context', href: `${base}/context`, icon: BookOpen },
         { label: 'Infrastructure', desc: 'Global delivery network', href: '#infrastructure', icon: Globe },
       ],
@@ -121,7 +121,7 @@ function docsMenu(base: string): readonly MenuColumn[] {
       title: 'Platform',
       items: [
         { label: 'Platform', desc: 'Dashboard', href: 'https://dash.generaltranslation.com', icon: LayoutDashboard, external: true },
-        { label: 'Locadex', desc: 'AI Agent', href: `${base}/locadex`, img: '/brand/no-bg-locadex-logo-light.png', invertsInDark: true },
+        { label: 'Locadex', desc: 'AI Agent', href: `${base}/locadex`, img: '/brand/locadex-logo-light.svg', invertsInDark: true },
       ],
     },
   ];

@@ -408,8 +408,8 @@
   width: 343px;
   height: 343px;
   transform: translate(25%, -50%);
-  -webkit-mask: url('/brand/locadex-mark.svg') center / 225.23% no-repeat;
-  mask: url('/brand/locadex-mark.svg') center / 225.23% no-repeat;
+  -webkit-mask: url('/brand/locadex-logo-mark.svg') center / 225.23% no-repeat;
+  mask: url('/brand/locadex-logo-mark.svg') center / 225.23% no-repeat;
   background-color: currentColor;
 }
 

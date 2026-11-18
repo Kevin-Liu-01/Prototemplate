@@ -62,7 +62,7 @@ export default function LocadexHero() {
         <div className='tc-cell ldx2-hero'>
           <Image
             className='ldx2-mark'
-            src='/brand/no-bg-locadex-logo-light.png'
+            src='/brand/locadex-logo-light.svg'
             alt='Locadex'
             width={36}
             height={36}

@@ -129,7 +129,7 @@ export default function Surfaces() {
             aria-hidden
             className='tb-ldx-mark'
             height={28}
-            src='/brand/no-bg-locadex-logo-light.png'
+            src='/brand/locadex-logo-light.svg'
             width={28}
           />
           <h3>Locadex</h3>

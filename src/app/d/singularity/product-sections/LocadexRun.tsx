@@ -295,7 +295,7 @@ export default function LocadexRun() {
                 </div>
                 <div className='sgx-pr-meta'>
                   <span className='sgx-bot'>
-                    <Image src='/brand/no-bg-locadex-logo-light.png' alt='' width={15} height={15} />
+                    <Image src='/brand/locadex-logo-light.svg' alt='' width={15} height={15} />
                     locadex[bot]
                   </span>
                   <span>wants to merge</span>

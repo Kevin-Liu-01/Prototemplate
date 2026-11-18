@@ -1043,7 +1043,7 @@ export default function StoryCinema() {
               <rect className='tc-cinema-agent-ring' data-agent-ring='i' rx='4' x='0' y='0' width='0' height='0' />
             </svg>
             <span className='tc-cinema-agent-chip' data-agent-chip aria-hidden>
-              <Image alt='' height={26} src='/brand/no-bg-locadex-logo-light.png' width={26} />
+              <Image alt='' height={26} src='/brand/locadex-logo-light.svg' width={26} />
               Locadex
             </span>
           </div>

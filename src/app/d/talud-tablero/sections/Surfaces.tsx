@@ -84,7 +84,7 @@ export default function Surfaces() {
             <h3>
               <img
                 className='tt-lx-mark'
-                src='/brand/no-bg-locadex-logo-light.png'
+                src='/brand/locadex-logo-light.svg'
                 alt=''
                 width={18}
                 height={18}

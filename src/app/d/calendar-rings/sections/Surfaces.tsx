@@ -124,7 +124,7 @@ function Locadex() {
       <div className='cr-locadex'>
         <Image
           className='cr-locadex-mark'
-          src='/brand/no-bg-locadex-logo-light.png'
+          src='/brand/locadex-logo-light.svg'
           alt='Locadex'
           width={52}
           height={52}
