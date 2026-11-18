@@ -1274,6 +1274,10 @@
       "reason": "the ground of a dated blog post's cover, cut from a docs capture made before the globe; no page shows it"
     },
     {
+      "path": "graphics/shots/rewriting-og-ground.png",
+      "reason": "the ground of a dated blog post's social card, cut from the same docs capture made before the globe (graphics/build/rewriting-covers.py); its docs header shows the doubled-line monogram; no page shows it"
+    },
+    {
       "path": "graphics/rec/react-stopmo2.mp4",
       "reason": "stop-motion clips recorded from the docs before the globe, kept as references for the stop-motion guide; no page plays them"
     },
