@@ -332,8 +332,8 @@ const PAGES: readonly BrandPage[] = [
             <figcaption>paper on ink</figcaption>
           </figure>
           <figure className='ptb-mark is-paper'>
-            <img alt='The Locadex mark' decoding='async' loading='lazy' src='/brand/locadex-mark.svg' />
-            <figcaption>Locadex, the agent&rsquo;s own mark</figcaption>
+            <img alt='The Locadex logo, a lambda drawn in doubled lines' decoding='async' loading='lazy' src='/brand/locadex-logo-light.svg' />
+            <figcaption>Locadex, the agent&rsquo;s own logo</figcaption>
           </figure>
         </div>
         <p>

@@ -129,7 +129,15 @@ gaps where a line passes behind another are narrower
 (`src/lib/logo-construction.json`). On hover, on sign-in and while loading it takes its state, Oval
 globe, axis behind, the same globe without its meridian. Both lead the
 shortlist on `/marks`, and `/marks/graticule` shows the marks that led to
-them. Locadex carries its own mark (`/brand/locadex-mark.svg`).
+them. Locadex carries its own logo, a lambda drawn in doubled lines
+(2026-11-18; `/brand/locadex-logo.svg`, `-light.svg` and `-dark.svg`,
+written by `pnpm build:locadex-logo` from its catalog file
+`/marks/locadex/doubled-lambda.svg`): every stroke is two parallel
+lines, one gap apart through both bends, the arm and foot cut parallel
+to the long leg, and the short leg's inner line runs into the long leg.
+generaltranslation.com still draws the earlier traced lambda
+(`/brand/locadex-mark.svg`, which the production mirror keeps) until it
+takes the new file.
 
 The brand kit opens `/brand`: every logo file (the mark, both lockups and
 both wordmarks as SVG, PDF and PNG, with the transparent PNGs in one
