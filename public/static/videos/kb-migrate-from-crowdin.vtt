@@ -1,0 +1,67 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.552
+A move from Crowdin keeps
+your resource files,
+
+2
+00:00:03.552 --> 00:00:06.639
+i18n library, and
+reviewed translations.
+
+3
+00:00:07.150 --> 00:00:10.749
+General Translation keeps those
+files and translates only new
+
+4
+00:00:10.749 --> 00:00:12.165
+and changed strings.
+
+5
+00:00:13.650 --> 00:00:16.796
+First, turn on Skip
+untranslated strings,
+
+6
+00:00:16.796 --> 00:00:19.442
+so source text is not
+imported as translations.
+
+7
+00:00:20.150 --> 00:00:21.671
+Then run crowdin download,
+
+8
+00:00:21.671 --> 00:00:25.235
+and clear the Sync Schedule so
+Crowdin's Git integration stops
+
+9
+00:00:25.235 --> 00:00:26.558
+pushing translations.
+
+10
+00:00:27.150 --> 00:00:30.598
+Point gt.config.json
+at the same files,
+
+11
+00:00:30.598 --> 00:00:33.093
+and import your glossary
+into a Context Group.
+
+12
+00:00:33.650 --> 00:00:39.014
+Run npx gt upload before
+the first npx gt translate,
+
+13
+00:00:39.014 --> 00:00:40.545
+which then runs in your build.
+
+14
+00:00:41.150 --> 00:00:43.692
+Your team now ships
+German with each release.

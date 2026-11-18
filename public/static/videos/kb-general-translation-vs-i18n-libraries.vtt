@@ -1,0 +1,62 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.724
+Libraries such as i18next and
+next-intl display translations
+
+2
+00:00:04.724 --> 00:00:06.755
+you supply in a file per language.
+
+3
+00:00:07.155 --> 00:00:09.082
+They are mature and free,
+
+4
+00:00:09.082 --> 00:00:10.801
+and they format plurals,
+
+5
+00:00:10.801 --> 00:00:13.214
+dates, and numbers for each locale.
+
+6
+00:00:13.650 --> 00:00:15.589
+General Translation
+does the same job,
+
+7
+00:00:15.589 --> 00:00:17.190
+and also does the translating.
+
+8
+00:00:18.650 --> 00:00:20.438
+Your team writes copy inline,
+
+9
+00:00:20.438 --> 00:00:21.946
+inside a T component.
+
+10
+00:00:22.650 --> 00:00:26.563
+Then npx gt translate writes
+every target locale as a build
+
+11
+00:00:26.563 --> 00:00:27.038
+step.
+
+12
+00:00:27.650 --> 00:00:30.820
+Or keep i18next or next-intl,
+
+13
+00:00:30.820 --> 00:00:33.907
+and let the gt CLI
+translate their files.
+
+14
+00:00:34.650 --> 00:00:37.377
+Your team now ships
+Japanese with each release.

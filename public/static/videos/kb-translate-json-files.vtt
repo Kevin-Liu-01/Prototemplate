@@ -1,0 +1,60 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.190
+JSON locale files map
+keys to UI strings,
+
+2
+00:00:04.190 --> 00:00:06.477
+and a translation has to keep keys,
+
+3
+00:00:06.477 --> 00:00:08.938
+placeholders, and tags intact.
+
+4
+00:00:09.650 --> 00:00:13.040
+General Translation translates
+the values and keeps keys and
+
+5
+00:00:13.040 --> 00:00:14.653
+placeholders unchanged.
+
+6
+00:00:16.150 --> 00:00:18.379
+Plural keys differ by language,
+
+7
+00:00:18.379 --> 00:00:21.792
+so Polish also needs
+inbox_few and inbox_many.
+
+8
+00:00:22.150 --> 00:00:27.130
+Point files.json.include in
+gt.config.json at a locale pattern.
+
+9
+00:00:27.530 --> 00:00:31.686
+Then npx gt translate reads the
+English files and writes the
+
+10
+00:00:31.686 --> 00:00:32.521
+German ones.
+
+11
+00:00:33.150 --> 00:00:35.774
+Parse the JSON, compare the keys,
+
+12
+00:00:35.774 --> 00:00:38.223
+and check each plural
+family before review.
+
+13
+00:00:38.650 --> 00:00:41.261
+Your team now ships
+German with each release.

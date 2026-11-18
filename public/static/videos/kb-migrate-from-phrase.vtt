@@ -1,0 +1,70 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:02.298
+Leaving Phrase Strings,
+
+2
+00:00:02.298 --> 00:00:04.132
+you keep your locale files,
+
+3
+00:00:04.132 --> 00:00:07.730
+your i18n library, and
+your verified translations.
+
+4
+00:00:08.150 --> 00:00:11.273
+General Translation
+imports your locale files,
+
+5
+00:00:11.273 --> 00:00:14.035
+then translates each
+new or changed string.
+
+6
+00:00:15.150 --> 00:00:19.353
+Run phrase pull without
+untranslated keys or fallbacks,
+
+7
+00:00:19.353 --> 00:00:20.687
+so gaps are left out.
+
+8
+00:00:21.150 --> 00:00:23.472
+Then deactivate each Repo Sync,
+
+9
+00:00:23.472 --> 00:00:27.070
+and remove phrase push and
+phrase pull steps from your CI.
+
+10
+00:00:27.650 --> 00:00:30.425
+Import your term base
+into a Context Group,
+
+11
+00:00:30.425 --> 00:00:33.222
+and move key descriptions
+to per-key context.
+
+12
+00:00:33.650 --> 00:00:36.587
+Run npx gt upload first,
+
+13
+00:00:36.587 --> 00:00:39.246
+which stores your
+translations as completed,
+
+14
+00:00:39.246 --> 00:00:41.579
+then run npx gt translate.
+
+15
+00:00:42.150 --> 00:00:45.551
+Your team now ships Brazilian
+Portuguese with each release.

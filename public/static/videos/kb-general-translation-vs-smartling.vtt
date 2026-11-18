@@ -1,0 +1,60 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.132
+With Smartling, resource files
+go through a translation job
+
+2
+00:00:04.132 --> 00:00:05.675
+and return through a connector.
+
+3
+00:00:06.150 --> 00:00:07.822
+Smartling does this well,
+
+4
+00:00:07.822 --> 00:00:10.805
+with AI and human
+translation from one vendor.
+
+5
+00:00:11.650 --> 00:00:14.878
+General Translation generates
+app translations from your code
+
+6
+00:00:14.878 --> 00:00:16.467
+as part of each release.
+
+7
+00:00:17.650 --> 00:00:20.402
+Keep the copy readable
+inside a T component,
+
+8
+00:00:20.402 --> 00:00:21.736
+with a note for intent.
+
+9
+00:00:22.150 --> 00:00:25.424
+Put npx gt translate
+before the app build,
+
+10
+00:00:25.424 --> 00:00:26.979
+so French ships with it.
+
+11
+00:00:27.650 --> 00:00:31.586
+Or configure Locadex to open
+translation pull requests from
+
+12
+00:00:31.586 --> 00:00:32.757
+repository events.
+
+13
+00:00:33.150 --> 00:00:35.808
+Your team now ships
+French with each release.

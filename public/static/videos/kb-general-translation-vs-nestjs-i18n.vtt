@@ -1,0 +1,60 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:06.559
+With nestjs-i18n, each language
+has a folder of JSON catalogs
+
+2
+00:00:06.559 --> 00:00:07.370
+that you write.
+
+3
+00:00:08.150 --> 00:00:09.683
+It does its part well,
+
+4
+00:00:09.683 --> 00:00:11.145
+with language resolvers,
+
+5
+00:00:11.145 --> 00:00:13.165
+typed keys, and plurals.
+
+6
+00:00:13.650 --> 00:00:16.541
+General Translation
+translates the catalogs,
+
+7
+00:00:16.541 --> 00:00:19.373
+and gt-node translates
+runtime content.
+
+8
+00:00:20.650 --> 00:00:23.367
+Point the gt config at
+the catalog folders,
+
+9
+00:00:23.367 --> 00:00:26.419
+and run npx gt translate in CI.
+
+10
+00:00:27.150 --> 00:00:29.982
+Each run then translates
+only what changed.
+
+11
+00:00:30.650 --> 00:00:32.751
+For content your users write,
+
+12
+00:00:32.751 --> 00:00:36.512
+gt-node translates at run
+time in the same language.
+
+13
+00:00:37.150 --> 00:00:39.529
+Your team now ships
+German with each release.

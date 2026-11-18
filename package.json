@@ -57,6 +57,7 @@
     "lint:registries": "node scripts/lint/registries.mjs",
     "skills:install": "node scripts/skills/install.mjs",
     "test:skills": "node --test scripts/skills/install.test.mjs scripts/skills/script-tests.test.mjs scripts/build/skills.test.mjs",
+    "build:kb-films": "node scripts/build/kb-films.mjs",
     "build:motion": "node scripts/build/motion.mjs",
     "build:updated": "node scripts/build/updated.mjs",
     "lint:updated": "node scripts/build/updated.mjs --check",

@@ -1,0 +1,64 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.923
+With a TMS, engineers
+extract strings,
+
+2
+00:00:03.923 --> 00:00:06.500
+send them out, and
+wire translations back.
+
+3
+00:00:07.150 --> 00:00:09.135
+It coordinates people well,
+
+4
+00:00:09.135 --> 00:00:10.703
+with translation memory,
+
+5
+00:00:10.703 --> 00:00:13.627
+glossaries, review, and linguists.
+
+6
+00:00:14.150 --> 00:00:17.412
+General Translation translates
+your content in code and ships
+
+7
+00:00:17.412 --> 00:00:18.642
+it with each release.
+
+8
+00:00:20.150 --> 00:00:22.066
+Keep the copy in your components,
+
+9
+00:00:22.066 --> 00:00:25.025
+inside a T component from
+its open-source libraries.
+
+10
+00:00:25.650 --> 00:00:27.786
+Add Korean to your config file,
+
+11
+00:00:27.786 --> 00:00:30.560
+and the next build
+translates the whole project.
+
+12
+00:00:31.150 --> 00:00:35.852
+Then npx gt translate or a
+Locadex pull request translates
+
+13
+00:00:35.852 --> 00:00:36.850
+each change.
+
+14
+00:00:37.650 --> 00:00:40.226
+Your team now ships
+Korean with each release.

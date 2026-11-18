@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:04.670
+In Sapporo, a Japanese reader
+finds your app is still in English.
+
+2
+00:00:05.080 --> 00:00:09.230
+Your agent ran gt init without
+flags, and it waits for an answer.
+
+3
+00:00:10.100 --> 00:00:14.020
+General Translation lets
+your agent set up i18n
+
+4
+00:00:14.060 --> 00:00:16.590
+with the prompt from Setup for Agents.
+
+5
+00:00:17.400 --> 00:00:21.030
+The prompt has your agent run
+gt login, which you approve.
+
+6
+00:00:21.580 --> 00:00:27.350
+It runs gt init with a flag for every
+question, so the command asks nothing.
+
+7
+00:00:27.860 --> 00:00:31.690
+Then it wraps your page in the T
+component, adds a LocaleSelector,
+
+8
+00:00:31.820 --> 00:00:33.570
+and runs gt translate.
+
+9
+00:00:34.120 --> 00:00:36.950
+It builds the app and reports
+what it actually verified.
+
+10
+00:00:37.440 --> 00:00:42.570
+Your app opens in Spanish and French,
+and in Japanese for the reader in Sapporo.

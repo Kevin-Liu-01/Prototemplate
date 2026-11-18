@@ -1,0 +1,62 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.202
+With i18next, each
+string gets a key,
+
+2
+00:00:04.202 --> 00:00:06.442
+and every language
+gets its own file.
+
+3
+00:00:07.150 --> 00:00:10.389
+It renders messages
+and selects plurals,
+
+4
+00:00:10.389 --> 00:00:13.326
+and the translations come
+from a separate service.
+
+5
+00:00:14.150 --> 00:00:17.505
+General Translation keeps your
+copy inline and generates the
+
+6
+00:00:17.505 --> 00:00:18.433
+translations.
+
+7
+00:00:19.650 --> 00:00:22.622
+Write the copy inline
+inside a T component,
+
+8
+00:00:22.622 --> 00:00:24.096
+with no keys to manage.
+
+9
+00:00:24.650 --> 00:00:29.631
+Then npx gt translate writes
+every language before each build,
+
+10
+00:00:29.631 --> 00:00:31.952
+with your JSX as context.
+
+11
+00:00:32.650 --> 00:00:36.806
+If you keep i18next, General
+Translation can translate its
+
+12
+00:00:36.806 --> 00:00:38.001
+existing catalogs.
+
+13
+00:00:38.650 --> 00:00:41.192
+Your team now ships
+French with each release.

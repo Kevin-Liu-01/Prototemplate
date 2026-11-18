@@ -1,0 +1,68 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:02.750
+A translation management system,
+
+2
+00:00:02.750 --> 00:00:07.418
+or TMS, stores source content
+and translations and runs the
+
+3
+00:00:07.418 --> 00:00:08.833
+translation workflow.
+
+4
+00:00:09.233 --> 00:00:11.834
+That workflow covers
+translation memory,
+
+5
+00:00:11.834 --> 00:00:15.189
+glossaries, review,
+machine translation,
+
+6
+00:00:15.189 --> 00:00:16.395
+and integrations.
+
+7
+00:00:17.150 --> 00:00:20.529
+General Translation connects
+translation generation and review
+
+8
+00:00:20.529 --> 00:00:21.735
+to your code releases.
+
+9
+00:00:23.150 --> 00:00:26.447
+Crowdin, Lokalise, Phrase,
+
+10
+00:00:26.447 --> 00:00:29.477
+Smartling, and Transifex
+are common examples.
+
+11
+00:00:30.150 --> 00:00:32.019
+With General Translation,
+
+12
+00:00:32.019 --> 00:00:36.419
+npx gt upload imports
+existing translations,
+
+13
+00:00:36.419 --> 00:00:40.110
+and npx gt translate reuses matches.
+
+14
+00:00:40.650 --> 00:00:44.551
+A TMS still fits when language
+vendors and CAT editors organize
+
+15
+00:00:44.551 --> 00:00:45.131
+the work.

@@ -1,0 +1,60 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.260
+Translation APIs such as DeepL,
+
+2
+00:00:04.260 --> 00:00:06.268
+Google Cloud Translation,
+
+3
+00:00:06.268 --> 00:00:09.727
+OpenAI, and Claude fit
+a pipeline you own.
+
+4
+00:00:10.127 --> 00:00:13.029
+Translation management
+systems such as Lokalise,
+
+5
+00:00:13.029 --> 00:00:16.779
+Crowdin, and Phrase run
+AI inside their editors.
+
+6
+00:00:17.150 --> 00:00:19.588
+General Translation manages context,
+
+7
+00:00:19.588 --> 00:00:22.792
+consistency, review,
+and delivery together.
+
+8
+00:00:24.150 --> 00:00:25.833
+With General Translation,
+
+9
+00:00:25.833 --> 00:00:29.363
+&lt;T&gt; sends JSX with its context,
+
+10
+00:00:29.363 --> 00:00:32.230
+and a shared Glossary
+keeps terms consistent.
+
+11
+00:00:32.630 --> 00:00:34.546
+Reviewers edit in the Dashboard,
+
+12
+00:00:34.546 --> 00:00:39.781
+and npx gt translate in CI
+translates only what changed.
+
+13
+00:00:40.150 --> 00:00:42.622
+Your team now ships
+Spanish with each release.

@@ -1,0 +1,63 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.424
+With gettext, the tools extract,
+
+2
+00:00:03.424 --> 00:00:06.662
+merge, and compile, and
+people finish every entry.
+
+3
+00:00:07.150 --> 00:00:09.298
+The gettext tools do this well,
+
+4
+00:00:09.298 --> 00:00:11.585
+with plural rules, context,
+
+5
+00:00:11.585 --> 00:00:12.780
+and safe merges.
+
+6
+00:00:13.150 --> 00:00:16.877
+General Translation generates
+and maintains the PO files,
+
+7
+00:00:16.877 --> 00:00:18.815
+and gettext keeps the rest.
+
+8
+00:00:20.150 --> 00:00:22.994
+Point the gt config
+at your POT template,
+
+9
+00:00:22.994 --> 00:00:24.828
+with a transform for each language.
+
+10
+00:00:25.650 --> 00:00:31.397
+Then npx gt translate runs between
+xgettext and msgfmt in your
+
+11
+00:00:31.397 --> 00:00:31.872
+build.
+
+12
+00:00:32.650 --> 00:00:35.030
+It keeps translator
+notes and context,
+
+13
+00:00:35.030 --> 00:00:37.084
+and reviewers edit in the Dashboard.
+
+14
+00:00:37.650 --> 00:00:40.470
+Your team now ships
+German with each release.

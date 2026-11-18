@@ -1,0 +1,79 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.179
+Your next-intl messages
+are already ICU,
+
+2
+00:00:04.179 --> 00:00:06.674
+so most components
+change only imports.
+
+3
+00:00:07.150 --> 00:00:10.610
+General Translation's gt-next
+keeps your messages while you
+
+4
+00:00:10.610 --> 00:00:11.805
+move copy inline.
+
+5
+00:00:13.150 --> 00:00:15.031
+Swap next-intl's plugin,
+
+6
+00:00:15.031 --> 00:00:18.130
+middleware, and
+provider for gt-next's.
+
+7
+00:00:18.650 --> 00:00:22.597
+Load messages/en.json
+as a dictionary,
+
+8
+00:00:22.597 --> 00:00:25.360
+and match next-intl's
+locale prefix setting.
+
+9
+00:00:26.150 --> 00:00:30.864
+Add loadDictionary.ts at the
+project root to load your existing
+
+10
+00:00:30.864 --> 00:00:31.861
+translations.
+
+11
+00:00:33.150 --> 00:00:35.762
+The config covers standard prefixes,
+
+12
+00:00:35.762 --> 00:00:39.697
+so map localized pathnames before
+removing next-intl's routing.
+
+13
+00:00:40.150 --> 00:00:43.157
+Then move copy into the T component,
+
+14
+00:00:43.157 --> 00:00:44.363
+one route at a time.
+
+15
+00:00:45.150 --> 00:00:49.817
+Run npx gt translate with the
+dictionary flag while you keep
+
+16
+00:00:49.817 --> 00:00:50.524
+the catalog.
+
+17
+00:00:51.150 --> 00:00:53.494
+Your team now ships
+German with each release.

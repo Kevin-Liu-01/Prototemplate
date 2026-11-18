@@ -1,0 +1,52 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.724
+A multilingual sitemap lists
+every language version of a page
+
+2
+00:00:04.724 --> 00:00:06.813
+as its own url entry.
+
+3
+00:00:07.213 --> 00:00:09.001
+Each entry lists every version,
+
+4
+00:00:09.001 --> 00:00:12.750
+including itself, as
+xhtml:link alternates.
+
+5
+00:00:13.150 --> 00:00:17.213
+Split files at 50,000 URLs or 50MB.
+
+6
+00:00:17.650 --> 00:00:22.445
+General Translation's gt-next
+gives each locale its own URL
+
+7
+00:00:22.445 --> 00:00:23.884
+for the sitemap to list.
+
+8
+00:00:25.150 --> 00:00:28.621
+Keep pathConfig and
+localeRoutes in one module,
+
+9
+00:00:28.621 --> 00:00:33.137
+and import it into the
+middleware and app/sitemap.ts.
+
+10
+00:00:33.650 --> 00:00:37.736
+The sitemap then lists exactly
+the URLs your app serves.
+
+11
+00:00:38.150 --> 00:00:41.504
+Each build now lists every
+language version of each page.

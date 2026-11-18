@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:04.070
+In Shanghai, a reader of
+Chinese opens your page,
+
+2
+00:00:04.140 --> 00:00:06.250
+and the lunch sentence is in English.
+
+3
+00:00:06.720 --> 00:00:10.010
+Home or work comes from a
+ternary of English words,
+
+4
+00:00:10.260 --> 00:00:12.910
+and nothing in the app
+translates the sentence.
+
+5
+00:00:13.840 --> 00:00:16.260
+General Translation lets
+you wrap whole sentences
+
+6
+00:00:16.300 --> 00:00:18.850
+in T and express conditions with Branch.
+
+7
+00:00:19.700 --> 00:00:24.910
+Run npx gt init, choose Japanese
+and Chinese, and sign in.
+
+8
+00:00:25.760 --> 00:00:30.890
+Put the sentence in a T component with a
+Branch, so the translator sees it whole.
+
+9
+00:00:31.440 --> 00:00:36.930
+Run npx gt translate to write Japanese and
+Chinese with the place before the verb.
+
+10
+00:00:37.440 --> 00:00:42.530
+In Shanghai, the page now shows the
+Chinese sentence for home and for work.

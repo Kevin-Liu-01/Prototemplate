@@ -1,0 +1,65 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.494
+Django extracts and
+renders messages,
+
+2
+00:00:03.494 --> 00:00:06.000
+and translators fill
+in each PO file.
+
+3
+00:00:06.650 --> 00:00:10.795
+Django does its part well: it
+marks strings anywhere and formats
+
+4
+00:00:10.795 --> 00:00:12.106
+dates per locale.
+
+5
+00:00:12.650 --> 00:00:15.785
+General Translation
+fills Django's PO files,
+
+6
+00:00:15.785 --> 00:00:17.607
+plural forms included,
+
+7
+00:00:17.607 --> 00:00:18.651
+with your terms.
+
+8
+00:00:20.150 --> 00:00:21.880
+Keep running makemessages,
+
+9
+00:00:21.880 --> 00:00:24.642
+and point the gt config
+at your locale folders.
+
+10
+00:00:25.150 --> 00:00:29.620
+Then npx gt translate fills every
+language before compilemessages
+
+11
+00:00:29.620 --> 00:00:30.675
+runs in CI.
+
+12
+00:00:31.150 --> 00:00:33.646
+A Glossary keeps terms consistent,
+
+13
+00:00:33.646 --> 00:00:36.826
+and reviewers can edit each
+entry in the Dashboard.
+
+14
+00:00:37.650 --> 00:00:40.099
+Your team now ships
+Russian with each release.

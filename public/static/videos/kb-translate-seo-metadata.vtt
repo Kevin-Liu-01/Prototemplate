@@ -1,0 +1,65 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.039
+Each language version of a page
+needs its own title and meta
+
+2
+00:00:04.039 --> 00:00:06.987
+description, in that
+market's search terms.
+
+3
+00:00:07.650 --> 00:00:11.957
+General Translation's gt-next
+translates titles and descriptions
+
+4
+00:00:11.957 --> 00:00:12.943
+with getGT.
+
+5
+00:00:14.150 --> 00:00:18.759
+In generateMetadata, getGT
+returns a translation function for
+
+6
+00:00:18.759 --> 00:00:20.024
+the request's locale.
+
+7
+00:00:20.424 --> 00:00:23.292
+The $context option tells the
+translator that the string is
+
+8
+00:00:23.292 --> 00:00:24.870
+an SEO title.
+
+9
+00:00:25.270 --> 00:00:28.916
+Run npx gt translate
+before next build,
+
+10
+00:00:28.916 --> 00:00:31.086
+and each locale gets its own title.
+
+11
+00:00:31.650 --> 00:00:35.644
+Then localize the tags
+around them: Open Graph,
+
+12
+00:00:35.644 --> 00:00:39.464
+canonical, hreflang, lang,
+
+13
+00:00:39.464 --> 00:00:40.751
+and structured data.
+
+14
+00:00:41.150 --> 00:00:43.703
+Your team now ships
+German with each release.

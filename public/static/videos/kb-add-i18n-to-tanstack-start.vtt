@@ -1,0 +1,61 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.248
+TanStack Start leaves
+i18n to a library,
+
+2
+00:00:04.248 --> 00:00:06.964
+which resolves the locale
+for each server request.
+
+3
+00:00:07.364 --> 00:00:11.369
+The library reads a URL prefix
+or cookie and loads the messages
+
+4
+00:00:11.369 --> 00:00:12.321
+before render.
+
+5
+00:00:13.150 --> 00:00:17.341
+General Translation's gt-tanstack-start
+translates copy written
+
+6
+00:00:17.341 --> 00:00:19.070
+inline in JSX.
+
+7
+00:00:20.150 --> 00:00:24.422
+Register gtMiddleware
+in src/start.ts,
+
+8
+00:00:24.422 --> 00:00:27.696
+and it resolves the locale from
+the cookie or Accept-Language.
+
+9
+00:00:28.150 --> 00:00:32.759
+Or run npx gt init, and the
+setup wizard makes these changes
+
+10
+00:00:32.759 --> 00:00:33.269
+for you.
+
+11
+00:00:33.650 --> 00:00:35.902
+Wrap copy in the T component,
+
+12
+00:00:35.902 --> 00:00:39.419
+and run npx gt translate.
+
+13
+00:00:40.150 --> 00:00:42.808
+Your team now ships
+Spanish with each release.

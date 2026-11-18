@@ -1,0 +1,62 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.213
+In navigator.languages and
+the Accept-Language header,
+
+2
+00:00:04.213 --> 00:00:06.952
+browsers report the
+user's languages in order.
+
+3
+00:00:07.650 --> 00:00:10.460
+Match that list to
+your supported locales,
+
+4
+00:00:10.460 --> 00:00:12.908
+with a default locale
+as the fallback.
+
+5
+00:00:13.650 --> 00:00:17.666
+General Translation resolves the
+locale for you on every request.
+
+6
+00:00:19.150 --> 00:00:24.456
+In Next.js, add createNextMiddleware
+to proxy.ts as its default
+
+7
+00:00:24.456 --> 00:00:25.128
+export.
+
+8
+00:00:25.528 --> 00:00:28.430
+It checks the URL,
+then the saved cookie,
+
+9
+00:00:28.430 --> 00:00:30.125
+then the Accept-Language header.
+
+10
+00:00:30.525 --> 00:00:34.263
+An unsupported locale falls back
+to the closest supported match,
+
+11
+00:00:34.263 --> 00:00:35.911
+then to your defaultLocale.
+
+12
+00:00:36.650 --> 00:00:39.947
+It saves the result in the
+generaltranslation.locale cookie
+
+13
+00:00:39.947 --> 00:00:41.189
+for later requests.

@@ -1,0 +1,62 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:02.518
+With most React libraries,
+
+2
+00:00:02.518 --> 00:00:04.340
+your team fills in the catalogs.
+
+3
+00:00:05.150 --> 00:00:09.806
+Choose react-i18next for
+i18next catalogs and plugins,
+
+4
+00:00:09.806 --> 00:00:11.930
+Lingui for compiled catalogs,
+
+5
+00:00:11.930 --> 00:00:14.089
+and React Intl for ICU.
+
+6
+00:00:14.650 --> 00:00:18.458
+General Translation's gt-react
+also generates translations,
+
+7
+00:00:18.458 --> 00:00:20.268
+from inline JSX.
+
+8
+00:00:21.650 --> 00:00:23.949
+Wrap the copy in a T component,
+
+9
+00:00:23.949 --> 00:00:25.922
+so reviewers read it in each diff.
+
+10
+00:00:26.650 --> 00:00:30.435
+Then npx gt translate writes
+every target locale before your
+
+11
+00:00:30.435 --> 00:00:30.968
+build.
+
+12
+00:00:31.650 --> 00:00:33.763
+Or keep react-i18next,
+
+13
+00:00:33.763 --> 00:00:36.978
+and the gt CLI translates
+its JSON files.
+
+14
+00:00:37.650 --> 00:00:40.331
+Your team now ships
+Japanese with each release.

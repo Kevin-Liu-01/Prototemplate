@@ -1,0 +1,60 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.933
+With Tolgee, each string is
+a key with a default value,
+
+2
+00:00:04.933 --> 00:00:06.871
+synced to a Tolgee project.
+
+3
+00:00:07.650 --> 00:00:09.148
+Tolgee does this well,
+
+4
+00:00:09.148 --> 00:00:11.655
+with self-hosting,
+in-context editing,
+
+5
+00:00:11.655 --> 00:00:13.233
+and AI translation.
+
+6
+00:00:13.650 --> 00:00:17.156
+General Translation keeps
+readable copy in components,
+
+7
+00:00:17.156 --> 00:00:19.071
+and translates it with no keys.
+
+8
+00:00:20.150 --> 00:00:22.809
+Wrap the heading and
+count in a T component,
+
+9
+00:00:22.809 --> 00:00:24.178
+with the forms in Plural.
+
+10
+00:00:24.650 --> 00:00:27.598
+Adding Swedish takes one
+line in the config file.
+
+11
+00:00:28.150 --> 00:00:32.957
+The next build runs npx gt
+translate and writes every Swedish
+
+12
+00:00:32.957 --> 00:00:33.443
+form.
+
+13
+00:00:34.150 --> 00:00:36.726
+Your team now ships
+Swedish with each release.

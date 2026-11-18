@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.771
+A String Catalog holds every
+language of an iOS app in one
+
+2
+00:00:04.771 --> 00:00:08.241
+JSON file, and Xcode
+syncs it on each build.
+
+3
+00:00:08.650 --> 00:00:10.426
+Add your languages in Xcode,
+
+4
+00:00:10.426 --> 00:00:14.895
+and write text with localizable
+APIs such as SwiftUI Text.
+
+5
+00:00:15.295 --> 00:00:18.963
+Then build, and Xcode collects
+those strings into the catalog.
+
+6
+00:00:19.650 --> 00:00:23.029
+General Translation translates
+the catalog with each release
+
+7
+00:00:23.029 --> 00:00:24.676
+and shares its terminology.
+
+8
+00:00:26.150 --> 00:00:31.548
+Point an xcstrings entry in
+gt.config.json at each catalog.
+
+9
+00:00:31.948 --> 00:00:35.709
+Then run npx gt translate
+before the build.
+
+10
+00:00:36.150 --> 00:00:38.645
+Your team now ships
+Spanish with each release.

@@ -1,0 +1,68 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.842
+A multilingual site
+can use subdirectories,
+
+2
+00:00:03.842 --> 00:00:06.164
+country domains, subdomains,
+
+3
+00:00:06.164 --> 00:00:10.261
+or URL parameters, and Google
+ranks none above the others.
+
+4
+00:00:10.650 --> 00:00:13.587
+General Translation
+supports subdirectories,
+
+5
+00:00:13.587 --> 00:00:15.827
+the practical default
+for a shared site.
+
+6
+00:00:17.150 --> 00:00:20.401
+Subdirectories fit when one
+product shares a site and release
+
+7
+00:00:20.401 --> 00:00:21.108
+process.
+
+8
+00:00:21.508 --> 00:00:24.143
+Only a country domain
+signals a country,
+
+9
+00:00:24.143 --> 00:00:26.383
+and subdomains allow
+separate hosting.
+
+10
+00:00:26.783 --> 00:00:30.997
+Google discourages language
+parameters and treats vanity domains
+
+11
+00:00:30.997 --> 00:00:33.411
+such as .io as generic.
+
+12
+00:00:34.150 --> 00:00:38.353
+In gt-next, createNextMiddleware
+routes each locale under a
+
+13
+00:00:38.353 --> 00:00:42.659
+path prefix, and pathConfig
+maps localized slugs.
+
+14
+00:00:43.059 --> 00:00:45.531
+Your team now ships
+French with each release.

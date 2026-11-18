@@ -1,0 +1,59 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.086
+With Rails I18n, views call t,
+
+2
+00:00:04.086 --> 00:00:06.767
+and someone writes each
+locale's YAML file.
+
+3
+00:00:07.150 --> 00:00:09.983
+Rails I18n does its part well,
+
+4
+00:00:09.983 --> 00:00:11.932
+with lazy lookup and fallbacks.
+
+5
+00:00:12.650 --> 00:00:15.622
+General Translation
+produces the translations,
+
+6
+00:00:15.622 --> 00:00:17.781
+and keeps them current
+as English changes.
+
+7
+00:00:19.150 --> 00:00:21.077
+Keep English working files,
+
+8
+00:00:21.077 --> 00:00:22.946
+and point the gt config at them.
+
+9
+00:00:23.650 --> 00:00:28.735
+Then npx gt translate and a short
+export write the Rails catalogs
+
+10
+00:00:28.735 --> 00:00:29.721
+in CI.
+
+11
+00:00:30.150 --> 00:00:32.426
+A Glossary keeps terms consistent,
+
+12
+00:00:32.426 --> 00:00:35.072
+and your team reviews
+translations in the Dashboard.
+
+13
+00:00:35.650 --> 00:00:38.343
+Your team now ships
+Spanish with each release.

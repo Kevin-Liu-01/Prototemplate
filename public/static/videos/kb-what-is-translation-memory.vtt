@@ -1,0 +1,61 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.550
+Translation memory stores earlier
+source and target segments,
+
+2
+00:00:04.550 --> 00:00:06.756
+and a tool searches it for exact,
+
+3
+00:00:06.756 --> 00:00:09.031
+in-context, and fuzzy matches.
+
+4
+00:00:09.650 --> 00:00:14.015
+With AI, you still want approved
+wording reused and past translations
+
+5
+00:00:14.015 --> 00:00:14.943
+as context.
+
+6
+00:00:15.650 --> 00:00:19.237
+General Translation reuses earlier
+translations and keeps your
+
+7
+00:00:19.237 --> 00:00:20.177
+team's edits.
+
+8
+00:00:21.650 --> 00:00:26.282
+Run npx gt translate, and only
+content whose source changed
+
+9
+00:00:26.282 --> 00:00:27.640
+is translated again.
+
+10
+00:00:28.040 --> 00:00:31.476
+A matching translation from an
+earlier file version is reused.
+
+11
+00:00:31.876 --> 00:00:34.755
+Reviewers edit translations
+in the Dashboard,
+
+12
+00:00:34.755 --> 00:00:39.944
+and you can sync edits from downloaded
+files with npx gt save-local.
+
+13
+00:00:40.650 --> 00:00:43.064
+Your team now ships
+French with each release.

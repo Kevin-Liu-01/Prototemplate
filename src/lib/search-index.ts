@@ -3,7 +3,8 @@ import { docHref } from '@/components/book/model';
 import type { IconName } from '@/components/viewer/icons';
 import { BLOG_POSTS, BLOG_RELEASES } from '@/lib/blog-posts';
 import { formatDay } from '@/lib/dates';
-import { MOTION_FILMS, MOTION_SCRIPT_WORDS, MOTION_SECTIONS, MOTION_STATUS_LABEL, motionHref } from '@/lib/motion';
+import { MOTION_SCRIPT_WORDS, MOTION_STATUS_LABEL, motionHref } from '@/lib/motion';
+import { ROSTER_FILMS as MOTION_FILMS, ROSTER_SECTIONS as MOTION_SECTIONS } from '@/lib/motion-roster';
 import { isLocked } from '@/lib/seo/policy';
 import { SKILL_AREAS, SKILLS, skillHref } from '@/lib/skills';
 import { SITE_SURFACES } from '@/lib/surfaces';
@@ -294,7 +295,8 @@ const BLOG_ROWS: readonly SearchEntry[] = [
 ];
 
 /**
- * One row per film on the motion roster (the generated src/lib/motion.ts),
+ * One row per film on /motion (src/lib/motion-roster.ts: the generated
+ * src/lib/motion.ts with generaltranslation.com's knowledge base films),
  * in page order: a series film opens its package page, every other film
  * its row on /motion. The meta line names the section and the status; the
  * keywords carry the length and, for a series film, its series line and

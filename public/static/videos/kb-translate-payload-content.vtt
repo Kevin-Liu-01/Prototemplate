@@ -1,0 +1,59 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.504
+Payload stores one value per
+locale for each localized field
+
+2
+00:00:04.504 --> 00:00:05.559
+but doesn't fill them.
+
+3
+00:00:06.150 --> 00:00:10.121
+General Translation's gt-payload
+plugin writes each target
+
+4
+00:00:10.121 --> 00:00:11.977
+locale from a Translate button.
+
+5
+00:00:13.150 --> 00:00:16.111
+Add localization to
+your Payload config,
+
+6
+00:00:16.111 --> 00:00:18.420
+and mark each field localized.
+
+7
+00:00:19.150 --> 00:00:21.542
+Add gtPlugin to the plugins list,
+
+8
+00:00:21.542 --> 00:00:25.175
+and set your project ID
+and API key on the server.
+
+9
+00:00:25.650 --> 00:00:27.995
+Open a document, choose Translate,
+
+10
+00:00:27.995 --> 00:00:29.573
+and pick the target locales.
+
+11
+00:00:29.973 --> 00:00:33.270
+Each locale is saved as a
+draft where drafts are enabled,
+
+12
+00:00:33.270 --> 00:00:34.976
+and the plugin never publishes.
+
+13
+00:00:35.650 --> 00:00:38.308
+Your team now ships
+Spanish with each release.

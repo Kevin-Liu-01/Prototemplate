@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.643
+With Paraglide, messages live
+in a JSON file per locale,
+
+2
+00:00:04.643 --> 00:00:06.546
+and you supply every translation.
+
+3
+00:00:06.946 --> 00:00:09.767
+It compiles each message
+to a typed function,
+
+4
+00:00:09.767 --> 00:00:11.798
+so a page ships only what it uses.
+
+5
+00:00:12.150 --> 00:00:16.213
+General Translation keeps copy inline
+and generates the translations.
+
+6
+00:00:17.650 --> 00:00:20.378
+Your team writes copy
+inside a T component,
+
+7
+00:00:20.378 --> 00:00:21.678
+with no message file.
+
+8
+00:00:22.150 --> 00:00:26.539
+Then npx gt translate writes
+every target locale before the
+
+9
+00:00:26.539 --> 00:00:27.083
+build.
+
+10
+00:00:27.650 --> 00:00:30.146
+Reviewers edit them
+in the Dashboard,
+
+11
+00:00:30.146 --> 00:00:33.617
+and Locadex opens pull
+requests as code changes.
+
+12
+00:00:34.150 --> 00:00:36.738
+Your team now ships
+German with each release.

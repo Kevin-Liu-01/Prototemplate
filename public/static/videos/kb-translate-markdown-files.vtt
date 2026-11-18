@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.051
+Markdown and MDX files
+mix prose with code,
+
+2
+00:00:04.051 --> 00:00:07.998
+imports, and frontmatter that a
+compiler must still parse after
+
+3
+00:00:07.998 --> 00:00:08.868
+translation.
+
+4
+00:00:09.650 --> 00:00:12.761
+General Translation translates
+the prose and keeps code,
+
+5
+00:00:12.761 --> 00:00:16.011
+imports, and link URLs intact.
+
+6
+00:00:17.150 --> 00:00:19.890
+Translate alt text and
+frontmatter titles too,
+
+7
+00:00:19.890 --> 00:00:22.594
+and quote translated YAML values.
+
+8
+00:00:23.150 --> 00:00:27.422
+Add an mdx entry under
+files in gt.config.json.
+
+9
+00:00:27.822 --> 00:00:34.172
+Then npx gt translate reads docs/en
+and writes French and Japanese.
+
+10
+00:00:34.650 --> 00:00:38.168
+Run your site's build and link
+checks on every locale before
+
+11
+00:00:38.168 --> 00:00:38.829
+publishing.
+
+12
+00:00:39.650 --> 00:00:42.110
+Your team now ships
+French with each release.

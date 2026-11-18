@@ -1,0 +1,56 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.596
+With next-intl, your app renders
+translations that a team or
+
+2
+00:00:04.596 --> 00:00:06.546
+a service writes into a catalog.
+
+3
+00:00:06.946 --> 00:00:10.011
+It supports the App Router
+and Server Components,
+
+4
+00:00:10.011 --> 00:00:11.763
+under the MIT license.
+
+5
+00:00:12.150 --> 00:00:15.180
+General Translation writes the
+translations for your catalogs
+
+6
+00:00:15.180 --> 00:00:16.781
+or inline JSX.
+
+7
+00:00:18.150 --> 00:00:22.620
+Keep next-intl, and the gt CLI
+translates its catalogs without
+
+8
+00:00:22.620 --> 00:00:23.873
+touching your components.
+
+9
+00:00:24.650 --> 00:00:29.235
+Or move to gt-next, and write
+each heading inside a T component.
+
+10
+00:00:29.650 --> 00:00:34.039
+Either way, npx gt translate
+writes the German translation
+
+11
+00:00:34.039 --> 00:00:35.175
+before your build.
+
+12
+00:00:35.650 --> 00:00:37.855
+Your team now ships
+German with each release.

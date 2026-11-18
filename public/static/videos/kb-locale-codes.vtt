@@ -1,0 +1,59 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.691
+A locale code names a language and,
+
+2
+00:00:03.691 --> 00:00:06.302
+when it matters, its
+script and region.
+
+3
+00:00:07.150 --> 00:00:11.318
+So en-US is English
+in the United States,
+
+4
+00:00:11.318 --> 00:00:15.473
+and zh-Hant-TW is Traditional
+Chinese in Taiwan.
+
+5
+00:00:15.873 --> 00:00:19.379
+Most software uses BCP 47 tags,
+
+6
+00:00:19.379 --> 00:00:21.120
+built from ISO codes.
+
+7
+00:00:21.650 --> 00:00:26.062
+General Translation uses BCP 47
+codes for your source and target
+
+8
+00:00:26.062 --> 00:00:26.792
+locales.
+
+9
+00:00:28.150 --> 00:00:30.344
+Set defaultLocale to your source,
+
+10
+00:00:30.344 --> 00:00:32.085
+and list the targets in locales.
+
+11
+00:00:32.485 --> 00:00:36.444
+The CLI checks every code before
+it translates and stops on
+
+12
+00:00:36.444 --> 00:00:37.627
+one that is not valid.
+
+13
+00:00:38.150 --> 00:00:41.470
+Your team now ships Brazilian
+Portuguese with each release.

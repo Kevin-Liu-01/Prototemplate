@@ -1,0 +1,63 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.318
+With Google Translate or
+its Cloud Translation API,
+
+2
+00:00:04.318 --> 00:00:07.022
+you send text and build
+the rest yourself.
+
+3
+00:00:07.650 --> 00:00:09.391
+It translates text well,
+
+4
+00:00:09.391 --> 00:00:11.388
+keeps HTML tags intact,
+
+5
+00:00:11.388 --> 00:00:12.781
+and supports glossaries.
+
+6
+00:00:13.150 --> 00:00:16.366
+General Translation understands
+each string's context,
+
+7
+00:00:16.366 --> 00:00:18.234
+and automates the whole workflow.
+
+8
+00:00:19.650 --> 00:00:21.926
+Wrap the copy in a T component,
+
+9
+00:00:21.926 --> 00:00:24.003
+with a note on what Save means here.
+
+10
+00:00:24.650 --> 00:00:26.577
+Values in a Var component,
+
+11
+00:00:26.577 --> 00:00:28.863
+such as the discount,
+are never sent.
+
+12
+00:00:29.650 --> 00:00:33.772
+Then npx gt translate
+writes German in your build,
+
+13
+00:00:33.772 --> 00:00:35.036
+and reviewers edit it.
+
+14
+00:00:35.650 --> 00:00:38.145
+Your team now ships
+German with each release.

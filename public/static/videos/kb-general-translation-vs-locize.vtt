@@ -1,0 +1,59 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.552
+With Locize, new keys go to Locize,
+
+2
+00:00:03.552 --> 00:00:06.267
+and your app loads
+translations from its CDN.
+
+3
+00:00:06.650 --> 00:00:08.461
+It adds AI translation,
+
+4
+00:00:08.461 --> 00:00:11.120
+versions, and in-context editing,
+
+5
+00:00:11.120 --> 00:00:12.768
+and engineers keep the keys.
+
+6
+00:00:13.150 --> 00:00:17.190
+General Translation can be
+your i18n library and translate
+
+7
+00:00:17.190 --> 00:00:19.744
+it, or your i18next files.
+
+8
+00:00:21.150 --> 00:00:25.086
+Keep i18next, point the
+CLI at its JSON files,
+
+9
+00:00:25.086 --> 00:00:28.173
+and run npx gt translate.
+
+10
+00:00:28.650 --> 00:00:30.960
+Or move a feature
+into a T component,
+
+11
+00:00:30.960 --> 00:00:32.306
+with no keys to name.
+
+12
+00:00:33.150 --> 00:00:36.377
+Each run translates only
+new or changed content.
+
+13
+00:00:37.150 --> 00:00:39.773
+Your team now ships
+Spanish with each release.

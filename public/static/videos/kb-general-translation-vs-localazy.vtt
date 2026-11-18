@@ -1,0 +1,65 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.271
+Localazy is a hosted platform
+for keyed files in dozens of
+
+2
+00:00:04.271 --> 00:00:06.952
+formats, with AI and
+human translation.
+
+3
+00:00:07.650 --> 00:00:10.645
+General Translation translates
+your components and files in
+
+4
+00:00:10.645 --> 00:00:12.583
+your build, without keys.
+
+5
+00:00:13.650 --> 00:00:17.493
+Its CLI uploads and
+downloads keys in CI,
+
+6
+00:00:17.493 --> 00:00:20.963
+and it delivers through
+a CDN and mobile updates.
+
+7
+00:00:21.363 --> 00:00:23.348
+Plans scale by source keys,
+
+8
+00:00:23.348 --> 00:00:24.694
+with unlimited seats.
+
+9
+00:00:25.150 --> 00:00:26.891
+With General Translation,
+
+10
+00:00:26.891 --> 00:00:29.225
+copy stays in &lt;T&gt; or your files,
+
+11
+00:00:29.225 --> 00:00:32.463
+and npx gt translate
+runs in your build.
+
+12
+00:00:32.863 --> 00:00:34.848
+Reviewers edit in the Dashboard,
+
+13
+00:00:34.848 --> 00:00:37.541
+and billing follows usage
+instead of key counts.
+
+14
+00:00:38.150 --> 00:00:40.796
+Your team now ships
+Japanese with each release.

@@ -1,0 +1,64 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.910
+A neutral resx file
+holds named strings,
+
+2
+00:00:04.910 --> 00:00:08.067
+and each translation is a copy
+with the culture in its name.
+
+3
+00:00:08.650 --> 00:00:12.412
+General Translation's CLI writes
+those culture files from the
+
+4
+00:00:12.412 --> 00:00:13.479
+neutral source.
+
+5
+00:00:14.650 --> 00:00:16.577
+Translate only each value,
+
+6
+00:00:16.577 --> 00:00:18.400
+and keep names, comments,
+
+7
+00:00:18.400 --> 00:00:21.940
+and placeholders such
+as {0} unchanged.
+
+8
+00:00:22.650 --> 00:00:29.407
+Add a resx entry to gt.config.json
+that puts the culture before
+
+9
+00:00:29.407 --> 00:00:30.323
+the extension.
+
+10
+00:00:30.723 --> 00:00:35.344
+Then npx gt translate writes the
+French file beside the neutral
+
+11
+00:00:35.344 --> 00:00:35.726
+one.
+
+12
+00:00:36.150 --> 00:00:39.320
+At run time, fr-CA falls back to fr,
+
+13
+00:00:39.320 --> 00:00:40.758
+then to the neutral file.
+
+14
+00:00:41.150 --> 00:00:43.657
+Your team now ships
+French with each release.

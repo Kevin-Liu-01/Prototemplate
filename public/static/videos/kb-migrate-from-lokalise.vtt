@@ -1,0 +1,70 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.062
+Lokalise exports your
+keys as resource files,
+
+2
+00:00:04.062 --> 00:00:07.254
+and you keep those files and
+their reviewed translations.
+
+3
+00:00:07.650 --> 00:00:10.657
+General Translation
+imports those files,
+
+4
+00:00:10.657 --> 00:00:13.326
+then translates new
+and changed strings.
+
+5
+00:00:14.650 --> 00:00:17.494
+Export with lokalise2 file download,
+
+6
+00:00:17.494 --> 00:00:20.014
+and set empty translations to skip,
+
+7
+00:00:20.014 --> 00:00:21.557
+so gaps are not imported.
+
+8
+00:00:22.650 --> 00:00:24.624
+Then delete the auto-pull webhook,
+
+9
+00:00:24.624 --> 00:00:26.029
+stop the GitHub trigger,
+
+10
+00:00:26.029 --> 00:00:28.408
+and remove Lokalise's
+GitHub Actions.
+
+11
+00:00:29.150 --> 00:00:32.424
+List the files in gt.config.json,
+
+12
+00:00:32.424 --> 00:00:36.533
+import your glossary, and add key
+descriptions as per-key context.
+
+13
+00:00:37.150 --> 00:00:42.618
+Run npx gt upload before
+the first npx gt translate,
+
+14
+00:00:42.618 --> 00:00:45.392
+so exported translations
+are not overwritten.
+
+15
+00:00:46.150 --> 00:00:48.587
+Your team now ships
+French with each release.

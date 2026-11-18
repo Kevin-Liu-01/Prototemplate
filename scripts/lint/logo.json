@@ -3607,6 +3607,501 @@
       "path": "deck/shots/proto-marks-speed-dark.jpg",
       "reason": "a capture of the speed set on /marks (bar monogram, lockup, plate, double cut, livery, dithered, ASCII, two-way, globe G); no globe logo; the speed marks are the previous speed-mark system, in a labelled figure on deck slide 73; checked by eye on 2026-11-12",
       "sha256": "70dbe6761b1ad26ef004b538e5c6f1383b931c45c8b6587c1278961e6a56fbc9"
+    },
+    {
+      "path": "public/static/videos/kb-add-i18n-to-nextjs-pages-router.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "21a2e5efdfa7f8aca489536936f006d43c417e4e953ca1ebab529ccfd918cf30"
+    },
+    {
+      "path": "public/static/videos/kb-add-i18n-to-nextjs.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "51b574fa2ec51f54b657b4b0badb701c0f347a291f884def4831da94256356d7"
+    },
+    {
+      "path": "public/static/videos/kb-add-i18n-to-tanstack-start.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "2e52fd3a176817d0fe4e625a0d8ae173d609e46845a2d38707bdb3cb78162036"
+    },
+    {
+      "path": "public/static/videos/kb-ai-agent-i18n-setup.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "80515d59958a31656718c097d1f3cafcdf248f269dac40d1cbcf2b50176d250d"
+    },
+    {
+      "path": "public/static/videos/kb-ai-coding-agent-vs-translation-pipeline.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "344be25c89a20567a845cb08c54ee0e0540f724d62ebad5b6ea089f305c8bfe2"
+    },
+    {
+      "path": "public/static/videos/kb-ai-translation-context.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "9cce2b599521fb0b66ef9b8c2f00f808dad9061b2c5488ec7728197f76a1402c"
+    },
+    {
+      "path": "public/static/videos/kb-ai-translation-glossary.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "9863d243ffd1ccad362f6d3c3d3a5982a0c4b439bee5a7195cb3cfbd3e71d2ac"
+    },
+    {
+      "path": "public/static/videos/kb-best-ai-translation-tools.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "c447e2f180c2321d047c907b9921d4378c5f8f41822960ef72138442414ec308"
+    },
+    {
+      "path": "public/static/videos/kb-best-continuous-localization-tools.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "93e22cdbe2c643c2f68912ff567d0a2a16c718f908f33f8a42c76d6c649d3da6"
+    },
+    {
+      "path": "public/static/videos/kb-best-localization-software.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "7646d38aeecc2b3c24f50ee8f9c85ab9393e79b4513f9012b7f5adf8d84379ae"
+    },
+    {
+      "path": "public/static/videos/kb-best-react-i18n-library.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "7b0527b50a8f7d3d3024bb7cc9a7e659b75af5d9d011f27372cc894782a5e237"
+    },
+    {
+      "path": "public/static/videos/kb-build-time-vs-runtime-translation.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "7a04ca32dad73d48fea344dc831daf0bd58935d68c393ff21e8b476fc18ba966"
+    },
+    {
+      "path": "public/static/videos/kb-detect-user-language.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "662e8344d6b889888426676ce1c1edc745b339c5e9c4762f18240db10ac6846e"
+    },
+    {
+      "path": "public/static/videos/kb-find-hardcoded-strings.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "c5d444aebadc01371a501ccc260d5be10306e34be5fb8f03c66b97e4159891d1"
+    },
+    {
+      "path": "public/static/videos/kb-format-numbers-dates-currencies.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "1f1be88a3ffd9b3f633bf7b2289002af6f1148647078a892ab7e168e79fd60e8"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-crowdin.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "f1837a8b0766fc71da301cfbb3963c239450a4de238d24a557de23c79a924f96"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-deepl.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "f8d41ded0dc39bf141e7a3dedc8035e274ba3f897253dc22f0301b275caf85d0"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-django-i18n.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "eaf3aa3efd2ec1297f51e04eacf6b5b607587dfde27bbfd6c18140107ff0bfe8"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-flask-babel.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "4f0e3847d9659ae64ea99a36f93dd7dd39f746bd42c392a95cad62ec0a54f6de"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-gettext.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "41d3431e0a65097947bf730e40693443adcaad34590ed2b30433fdc2feaa6c72"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-google-translate.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "5ba31be38ae25cebdb1da026034822bcbbedb1e76f84b486b569478f9659216f"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-i18n-libraries.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "629a2a98bf587d367718f563a9f629d223bb8b7db36b6323f9df52e6d7b6c576"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-i18n-tasks.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "2b2636f75447a4417d0e5eef3eb164a8f07f02311ef9813f00fceff3fe045640"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-i18next.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "be3ca0310de67831e9e483cd18561b42ac0ab0fb6ebe9923960fa696a94165a3"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-in-house-i18n.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "6c60324ba609d583dfd242c998401836554e437b8eb71a9c49704c96ceebff96"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-intlayer.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "2fc78182adabf64d2f20a91e5f14b498ada3142474c188e1e75e2e2202375d1c"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-lingo-dev.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "d0a4cab231a0d5143f04ada6d8f3198e25893561e3b2fb96cacad5bf03c1e9fc"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-lingui.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "6ed343e5342fceb5717be0cd988d06e37fb65df94f3c56fb45c79b5456131dc6"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-localazy.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "6b13317f239358a54816cf940ff319c3f2a0bcc155ff53f512b3c01205016c8c"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-locize.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "ebf2279ab68ca51e1a4ef6340cab53519a05b976bb5219dabf0404b57da9559b"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-lokalise.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "3b68b91202f3b5085279daa0fe0ae17a5086ee2c0e699a54806ad2b8e4df370f"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-mobility.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "359b36788b5ecd37d758931508cdf41d764527d4d8c3859159003902e6d1d8fd"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-nestjs-i18n.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "6a85c73ccffdf73ccbdebe116c5a565bc5c93c0f3888b8f5ceb00b145de0ffc7"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-paraglide.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "b0b8f76c46469fc6ce4330e33e2745ffef2c08f23093225710809389caca477d"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-phrase.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "e6ac5d9695aab06a8d41822c5fd59f51355a51a65c3ae46c2abb4bfeeabe2131"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-rails-i18n.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "e361540e5743ad60977e544ebca6227975ac9b92c6a42a61f65615a8540371e9"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-react-intl.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "fba632980c5ea17ca77999bddcd6159977a00c8085ff433dc63fcdb9374eae67"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-simplelocalize.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "6737aad4169b7d69fe0f8f26a2188f08411710a042a8cd80581c734d3a05e595"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-smartling.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "b910a9cb6fbb5ca8c8c3738c808eea9279368e98972fca946f79b8343c29391f"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-symfony-translation.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "e5dcfc8064bcc5617923ec98311348ab16e01b937dcd5b78e607a346d70a6e45"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-tms.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "7e0986fe5c70414ab3e62684662413c4202595c7868af6ab8a6a3baabf1bf14a"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-tolgee.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "583659697221c216d0428a4becb2e3e9a28ed2a919febf83bfceafef428ef60c"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-transifex.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "7c219e269dada9246a0c61ec2215135ac296dcc8d8a2be43157f7c6952dc4100"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-vue-i18n.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "6e04833a29aa7dabcc1077ec093a22e41765d105aa3eead09de75fb5ba12a4f9"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-weblate.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "2d2f842670785956dfb74696b32699cb073008e048d0514b7897f4772b333bb4"
+    },
+    {
+      "path": "public/static/videos/kb-general-translation-vs-weglot.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "c005f3a19cd6bb92d041f62cd823b3717ded9c01e375066b345c06b4f3266398"
+    },
+    {
+      "path": "public/static/videos/kb-how-to-handle-plurals-in-react.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "8431d17e6efa5558bf058b22247effdfef6018f0a3c49b318b8022a19cb28570"
+    },
+    {
+      "path": "public/static/videos/kb-i18n-key-naming.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "102491511174d83a511f0bc4a9c1a9f4a147523716d24002d957baf9a1740479"
+    },
+    {
+      "path": "public/static/videos/kb-i18n-without-translation-files.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "6c378eec238971c7a8bb1b647f4481aac487d242f190ecbc883accdf7a870b11"
+    },
+    {
+      "path": "public/static/videos/kb-icu-message-format.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "1dda19b05c92d7766e63d61d6166736ec650af0a580442b34e335ad07d8898b1"
+    },
+    {
+      "path": "public/static/videos/kb-internationalization-vs-localization.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "5f7bc6b3656e3a3ce48b9735c5dc4abbdba0467e8d9bcd5d60688a12eb512266"
+    },
+    {
+      "path": "public/static/videos/kb-is-ai-translation-accurate.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "045a2913ea98ab557b921ac3641e08b1a3c36f25df01fcbb519c60ed65942fe3"
+    },
+    {
+      "path": "public/static/videos/kb-language-switcher.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "7bca26614912eb08b1d3a5d151c2e3826faabff550a00085ac8471a75421f831"
+    },
+    {
+      "path": "public/static/videos/kb-locale-codes.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "77aed84d80241a243fb811b35df7b9cefc1098a6591bf92b0455a1ff146428ad"
+    },
+    {
+      "path": "public/static/videos/kb-locale-routing-seo.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "e68679a8dc8ad2484ae1f9b29b20a92c58d13da996491be7018106b4d46ac62d"
+    },
+    {
+      "path": "public/static/videos/kb-localize-android-app.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "a1e73b045f18894198fd817042b53f7abf4edd5eaa5a73efe2468d892e7fb6e6"
+    },
+    {
+      "path": "public/static/videos/kb-localize-ios-app.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "08acdd4d3e5ec2376bd6c19213b7f998b00b7f698cf20b5f92793656c1759e85"
+    },
+    {
+      "path": "public/static/videos/kb-localize-without-translators.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "4629059db0c95e683305db0b712dba1d3f7747cb0d67fde43fa969931d632c25"
+    },
+    {
+      "path": "public/static/videos/kb-make-website-multilingual.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "c471607a93fc73a76e6c9d6d6ba256da2b53ad3d9fef193cf70c803fdf1a7dec"
+    },
+    {
+      "path": "public/static/videos/kb-migrate-from-crowdin.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "5c64ee17c55c4eafc39e2b3fb146422559c1f7efa59fa19f8d051bf9926da48a"
+    },
+    {
+      "path": "public/static/videos/kb-migrate-from-lokalise.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "98775f0185c5f2a8db62b7021128e4971b658718b6eaba6dad733fdc0534c129"
+    },
+    {
+      "path": "public/static/videos/kb-migrate-from-next-intl.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "bbf109e054ee94a377387ec9a76a55a3d548aab8506bc208809b44e9628bbbaf"
+    },
+    {
+      "path": "public/static/videos/kb-migrate-from-phrase.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "04de02eb6ecd739edf53948a33be8613ca5f1f7e382eb63cdec07628e0ae5779"
+    },
+    {
+      "path": "public/static/videos/kb-migrate-from-react-i18next.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "938397d6a81be38ff98aef072a3b11bd00ecbff961412345f1885ee6b093891f"
+    },
+    {
+      "path": "public/static/videos/kb-migrate-from-vue-i18n.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "7572ae12c0825ec2944b30643cdb17705a13fa4f6f0fa6224fb26d0d6af91f06"
+    },
+    {
+      "path": "public/static/videos/kb-multilingual-app-launch-checklist.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "5e43375a46c7e0b79a65a6e3ce21ee6dd976edabfeda0058449d5c6ec399e5b2"
+    },
+    {
+      "path": "public/static/videos/kb-multilingual-nextjs-seo.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "c71a965c5161064ce83deb91a80d72de4608f135c35cc31c039596fc1c7d279e"
+    },
+    {
+      "path": "public/static/videos/kb-multilingual-sitemap.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "023f698b5fb83dd4e09bb6caa5841c9174cedcc2c8b6ba4f298779cffb488a72"
+    },
+    {
+      "path": "public/static/videos/kb-multilingual-url-structure.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "09ac26a7fa4fc559b650738ddcc74c6bc482ff13080ed23cf539bbeaff395747"
+    },
+    {
+      "path": "public/static/videos/kb-next-intl-vs-gt-next.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "72f7d4e7bdf2f994e653b5b4c44e3a02594e02ac773f767aea2b767ff5e417bb"
+    },
+    {
+      "path": "public/static/videos/kb-pseudo-localization.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "b083ad912472c8a3c529df89c623e128083cacb32f30c271915c7f9f9314ba12"
+    },
+    {
+      "path": "public/static/videos/kb-review-translations.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "f730ee78a56cae16dc8a13ef1d9b463ab90a333ab393f59ae7188540d16bb3b0"
+    },
+    {
+      "path": "public/static/videos/kb-right-to-left-css.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "0f07c397b9abbb118769c4541df260df649da5a5cf43abf3fc488bc71c93b551"
+    },
+    {
+      "path": "public/static/videos/kb-translate-conditional-jsx.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "e580ad3a08525fb331af0965949c53bdbe5487053954fe1b5619bbd90aa6c197"
+    },
+    {
+      "path": "public/static/videos/kb-translate-google-slides.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "eeccd7666e14377fa929e1d1dfdb83a5d1f3e3ce8781c284b088eb1ca5a710c0"
+    },
+    {
+      "path": "public/static/videos/kb-translate-json-files.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "646a5fa8815baa86a0de918f48d3ca3fc1c092539f1a9645945dbac8e7b5f909"
+    },
+    {
+      "path": "public/static/videos/kb-translate-lottie-animations.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "b11472e098820c4c1ce58b4d405215ba48f544a29333e1b08075afe1561be067"
+    },
+    {
+      "path": "public/static/videos/kb-translate-markdown-files.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "d11e69aa1b973db4ed0a92723ac3d53ff6a441183336396135e3eff451dc5e49"
+    },
+    {
+      "path": "public/static/videos/kb-translate-mintlify-docs.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "d2434ee61744f00c7445179c7f868243047456716640ac7c3cb470d91a968af0"
+    },
+    {
+      "path": "public/static/videos/kb-translate-node-app.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "8f071b836cecc770e9c2db2a3d0c01e8a39adb737866305c0a68538af2517dc0"
+    },
+    {
+      "path": "public/static/videos/kb-translate-payload-content.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "47f5625ede453a825c297cf18fab36b87ee96ce14b74f784b6f33811169d5799"
+    },
+    {
+      "path": "public/static/videos/kb-translate-po-files.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "39a68d7958b75fa7c6de046ad95d10baca864ac91a8e04eb2ed14434d87b16af"
+    },
+    {
+      "path": "public/static/videos/kb-translate-python-app.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "8245371e5ae9f203c4acf496c85811e1b0aad5ee6e35a14437f83a4d180bfbc6"
+    },
+    {
+      "path": "public/static/videos/kb-translate-react-app.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "ea14212b0a1aeb3d800ce01d10ad546887c9ed88cbb2839a1afd6851b0a2a21b"
+    },
+    {
+      "path": "public/static/videos/kb-translate-react-native-app.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "c6f70f5e37353cb660a2d8256c77b07d3b0a321479490b5015a17034d9507dc4"
+    },
+    {
+      "path": "public/static/videos/kb-translate-resx-files.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "9d9857d6bb7099ea1a924713d3e309dfa4bbb3c81952ae1c205f5803661df003"
+    },
+    {
+      "path": "public/static/videos/kb-translate-sanity-content.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "20b436117b8697bfb38fcce205d7e0303809232c3406e5e5a55c1cecd2dc5895"
+    },
+    {
+      "path": "public/static/videos/kb-translate-seo-metadata.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "cc81bdac97e4719ac598d32a2945156fc89da172e82809b1b42b33368f50937a"
+    },
+    {
+      "path": "public/static/videos/kb-translate-srt-subtitles.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "ca376905d6813d227296b12881a74b40b1320160b028f2e63b26e2f4274b3df0"
+    },
+    {
+      "path": "public/static/videos/kb-translate-storyblok-content.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "6ced0e42cb86dfa132eba04c5206e713796d4fc3d5741acb2388502fe2ded266"
+    },
+    {
+      "path": "public/static/videos/kb-translate-strings-outside-jsx.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "304f62c1d01f5fc14217a86b311695308dc7966bf99690d28b1df98ea15921f3"
+    },
+    {
+      "path": "public/static/videos/kb-translate-vue-app.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "17286fe2b05a320643b1df3b60cb9c9fc418a1797bbd5dca558a18aaf8a28174"
+    },
+    {
+      "path": "public/static/videos/kb-translate-yaml-files.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "030a15c4a27c2d9ea4fe93aa13fda26da44f13a8ffcd52ae2c2cccbeb6e26c68"
+    },
+    {
+      "path": "public/static/videos/kb-translation-pricing-without-seat-fees.jpg",
+      "reason": "a knowledge base poster from gt-cloud (pnpm build:kb-films): a table with no GT mark; checked by eye on 2026-11-18",
+      "sha256": "c269aeb02bb801809db653944b763b1c448447dc3ddbc69a715758237118d4b0"
+    },
+    {
+      "path": "public/static/videos/kb-translations-in-ci.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "deaddfaad30318ad3bc0336e3a7ff02ac28041bff05f86849ee01cb723bc055f"
+    },
+    {
+      "path": "public/static/videos/kb-what-is-a-translation-management-system.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "856f1e4900cef31ffd0c81e84ca1ac735be5a4e079eda4c891f9efa445a273c7"
+    },
+    {
+      "path": "public/static/videos/kb-what-is-hreflang.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "174beab33036ee9dc2548b4c3e40e477eb92a1b6eadc8107919871445820bd8a"
+    },
+    {
+      "path": "public/static/videos/kb-what-is-locadex.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "c637b1b7b46751cac128dba1946885e66b478133e1c69bbf66187950295b428d"
+    },
+    {
+      "path": "public/static/videos/kb-what-is-translation-memory.jpg",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "sha256": "d7ecabd62e48598efa8b441201691511bd081c45c842119d48ff10ff5e364101"
     }
   ],
   "external": [

@@ -1,0 +1,59 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.064
+With hand-rolled i18n,
+
+2
+00:00:03.064 --> 00:00:06.325
+you keep a dictionary per
+language and a small t helper.
+
+3
+00:00:07.150 --> 00:00:09.100
+It suits one or two languages,
+
+4
+00:00:09.100 --> 00:00:10.865
+but growth brings plurals,
+
+5
+00:00:10.865 --> 00:00:12.768
+fallbacks, and file syncing.
+
+6
+00:00:13.150 --> 00:00:15.751
+General Translation
+handles rendering,
+
+7
+00:00:15.751 --> 00:00:18.188
+and generates and
+updates translations.
+
+8
+00:00:19.650 --> 00:00:22.204
+Write the copy inside a T component,
+
+9
+00:00:22.204 --> 00:00:24.131
+with counts in a Plural component.
+
+10
+00:00:24.650 --> 00:00:29.165
+Then npx gt translate writes
+every language before each build.
+
+11
+00:00:29.650 --> 00:00:30.892
+To keep your dictionary,
+
+12
+00:00:30.892 --> 00:00:33.933
+move it to JSON files
+for the CLI to translate.
+
+13
+00:00:34.650 --> 00:00:37.296
+Your team now ships
+Arabic with each release.

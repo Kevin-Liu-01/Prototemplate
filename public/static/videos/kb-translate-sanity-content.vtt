@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.900 --> 00:00:05.410
+In Buenos Aires, your site shows its
+spring product update only in English.
+
+2
+00:00:05.900 --> 00:00:10.310
+Sanity stores the article as one
+English document with no language field.
+
+3
+00:00:11.180 --> 00:00:14.640
+General Translation lets you click
+Translate on a Sanity document with the
+
+4
+00:00:14.680 --> 00:00:16.230
+gt-sanity plugin.
+
+5
+00:00:17.120 --> 00:00:23.410
+Add gtPlugin to sanity.config.ts
+with your locales and document types.
+
+6
+00:00:23.880 --> 00:00:28.550
+Give the article a language field, and
+store your API key in a private document.
+
+7
+00:00:29.080 --> 00:00:30.750
+Click Translate on the article,
+
+8
+00:00:31.220 --> 00:00:34.330
+and the plugin imports each
+translation as a draft.
+
+9
+00:00:34.800 --> 00:00:38.650
+Publish the drafts, then query each
+language by its language field.
+
+10
+00:00:39.140 --> 00:00:43.010
+Chinese, Japanese and Spanish readers
+now each get their own article.

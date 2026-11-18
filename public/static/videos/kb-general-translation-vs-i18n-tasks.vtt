@@ -1,0 +1,56 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:05.258
+With i18n-tasks, CI finds
+missing and unused keys,
+
+2
+00:00:05.258 --> 00:00:07.173
+and translate-missing
+fills the gaps.
+
+3
+00:00:07.650 --> 00:00:09.241
+It does those checks well,
+
+4
+00:00:09.241 --> 00:00:12.816
+with plural-aware reports and
+exit codes that fail a build.
+
+5
+00:00:13.650 --> 00:00:17.145
+General Translation
+translates whole locale files,
+
+6
+00:00:17.145 --> 00:00:18.827
+with your Glossary and review.
+
+7
+00:00:20.150 --> 00:00:23.470
+Run npx gt translate in CI,
+
+8
+00:00:23.470 --> 00:00:25.722
+and it writes every target locale.
+
+9
+00:00:26.150 --> 00:00:29.470
+Later runs retranslate the
+entries whose English changed.
+
+10
+00:00:30.150 --> 00:00:35.212
+Many teams use both, with the
+i18n-tasks checks after translation
+
+11
+00:00:35.212 --> 00:00:36.198
+in the same job.
+
+12
+00:00:36.650 --> 00:00:39.459
+Your team now ships
+Portuguese with each release.

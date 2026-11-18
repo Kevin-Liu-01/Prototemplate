@@ -1,0 +1,67 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.853
+A language switcher serves the
+reader who cannot read the page
+
+2
+00:00:03.853 --> 00:00:04.688
+they landed on.
+
+3
+00:00:05.088 --> 00:00:07.782
+Name each language
+in its own language,
+
+4
+00:00:07.782 --> 00:00:10.452
+such as Deutsch, and skip flags,
+
+5
+00:00:10.452 --> 00:00:11.983
+which represent countries.
+
+6
+00:00:12.383 --> 00:00:14.043
+Link to the same page,
+
+7
+00:00:14.043 --> 00:00:16.110
+remember the choice in a cookie,
+
+8
+00:00:16.110 --> 00:00:19.267
+and never redirect a localized URL.
+
+9
+00:00:19.650 --> 00:00:23.597
+General Translation labels each
+language in its own name and
+
+10
+00:00:23.597 --> 00:00:24.827
+remembers the choice.
+
+11
+00:00:26.150 --> 00:00:30.898
+In gt-next, the LocaleSelector
+component renders a native select
+
+12
+00:00:30.898 --> 00:00:32.442
+of your configured locales.
+
+13
+00:00:33.150 --> 00:00:37.167
+For public pages, its Link
+component adds crawlable links with
+
+14
+00:00:37.167 --> 00:00:38.397
+hreflang.
+
+15
+00:00:38.797 --> 00:00:41.315
+Your team now ships
+German with each release.

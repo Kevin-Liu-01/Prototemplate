@@ -1,0 +1,61 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.644
+With Flask-Babel, you
+write gettext calls,
+
+2
+00:00:03.644 --> 00:00:06.674
+and translators fill
+each extracted PO file.
+
+3
+00:00:07.150 --> 00:00:10.215
+Babel does its part
+well: it formats dates,
+
+4
+00:00:10.215 --> 00:00:13.326
+numbers, and currencies
+from CLDR data.
+
+5
+00:00:14.150 --> 00:00:18.144
+General Translation fills Babel's
+PO files for every language,
+
+6
+00:00:18.144 --> 00:00:19.780
+so you keep Flask-Babel.
+
+7
+00:00:21.150 --> 00:00:23.008
+Keep an English catalog current,
+
+8
+00:00:23.008 --> 00:00:24.992
+and point the gt config at it.
+
+9
+00:00:25.650 --> 00:00:30.816
+Then npx gt translate fills every
+language before pybabel compile
+
+10
+00:00:30.816 --> 00:00:32.000
+runs in CI.
+
+11
+00:00:32.650 --> 00:00:34.798
+A Glossary keeps terms consistent,
+
+12
+00:00:34.798 --> 00:00:37.502
+and reviewers can edit each
+entry in the Dashboard.
+
+13
+00:00:38.150 --> 00:00:40.808
+Your team now ships
+Spanish with each release.

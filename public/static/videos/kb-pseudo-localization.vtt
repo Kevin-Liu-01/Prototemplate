@@ -1,0 +1,61 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.109
+Pseudo-localization swaps your
+source text for an accented,
+
+2
+00:00:04.109 --> 00:00:05.722
+padded, bracketed version.
+
+3
+00:00:06.150 --> 00:00:08.890
+Hardcoded strings, truncation,
+
+4
+00:00:08.890 --> 00:00:13.371
+broken fonts, and concatenated
+sentences show up before any
+
+5
+00:00:13.371 --> 00:00:14.752
+translation exists.
+
+6
+00:00:15.150 --> 00:00:20.989
+Android ships the en-XA and
+ar-XB pseudo-locales for it.
+
+7
+00:00:21.650 --> 00:00:24.587
+General Translation lets you
+test real translations during
+
+8
+00:00:24.587 --> 00:00:25.318
+development.
+
+9
+00:00:26.650 --> 00:00:30.911
+With a project API key that has
+runtime translation permission,
+
+10
+00:00:30.911 --> 00:00:33.940
+gt-next requests
+translations on demand.
+
+11
+00:00:34.340 --> 00:00:38.264
+For release, generate translations
+with the CLI and review
+
+12
+00:00:38.264 --> 00:00:39.250
+them in the running app.
+
+13
+00:00:39.650 --> 00:00:42.331
+Your team now ships
+German with each release.

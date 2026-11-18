@@ -1,0 +1,55 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.155
+An SRT file is a list of cues,
+
+2
+00:00:04.155 --> 00:00:06.431
+each with a number, a timing line,
+
+3
+00:00:06.431 --> 00:00:08.241
+and one or more lines of text.
+
+4
+00:00:08.650 --> 00:00:12.783
+General Translation translates
+only cue text and keeps numbers
+
+5
+00:00:12.783 --> 00:00:14.733
+and timecodes unchanged.
+
+6
+00:00:16.150 --> 00:00:19.726
+Then check line length and reading
+speed against your platform's
+
+7
+00:00:19.726 --> 00:00:20.352
+guide.
+
+8
+00:00:21.150 --> 00:00:25.305
+Add an srt entry under
+files in gt.config.json.
+
+9
+00:00:25.705 --> 00:00:31.475
+Then npx gt translate reads
+subtitles/en and writes Spanish
+
+10
+00:00:31.475 --> 00:00:32.693
+and German files.
+
+11
+00:00:33.150 --> 00:00:36.528
+Cue numbers and timing lines
+stay exactly as in the source.
+
+12
+00:00:37.150 --> 00:00:39.773
+Your team now ships
+Spanish with each release.

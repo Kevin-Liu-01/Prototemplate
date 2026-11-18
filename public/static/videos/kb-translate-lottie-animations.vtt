@@ -1,0 +1,59 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.168
+A Lottie animation is JSON,
+
+2
+00:00:03.168 --> 00:00:05.490
+and its words sit
+inside text layers.
+
+3
+00:00:05.890 --> 00:00:08.351
+Each translation has to fit its box,
+
+4
+00:00:08.351 --> 00:00:10.406
+use a font that covers the script,
+
+5
+00:00:10.406 --> 00:00:11.787
+and stay as text.
+
+6
+00:00:12.150 --> 00:00:16.144
+General Translation's CLI translates
+dotLottie files and refits
+
+7
+00:00:16.144 --> 00:00:16.851
+the layout.
+
+8
+00:00:18.150 --> 00:00:22.201
+Add a lottie entry and your
+fonts to gt.config.json.
+
+9
+00:00:22.650 --> 00:00:25.576
+Then npx gt stage submits the files,
+
+10
+00:00:25.576 --> 00:00:28.733
+and npx gt download
+fetches each language.
+
+11
+00:00:29.150 --> 00:00:32.935
+In a test, the full German
+label ran past the button,
+
+12
+00:00:32.935 --> 00:00:34.652
+and the refitted label fit.
+
+13
+00:00:35.150 --> 00:00:38.005
+Your team now ships
+German with each release.

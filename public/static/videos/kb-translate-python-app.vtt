@@ -1,0 +1,62 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:05.014
+A Flask or FastAPI app
+marks user-facing strings,
+
+2
+00:00:05.014 --> 00:00:06.756
+picks each request's locale,
+
+3
+00:00:06.756 --> 00:00:08.961
+and loads that
+locale's translations.
+
+4
+00:00:09.650 --> 00:00:11.751
+Flask apps usually use Flask-Babel,
+
+5
+00:00:11.751 --> 00:00:14.943
+which picks the locale and
+loads gettext catalogs.
+
+6
+00:00:15.650 --> 00:00:20.027
+General Translation's CLI fills
+those catalogs for every language
+
+7
+00:00:20.027 --> 00:00:20.607
+you ship.
+
+8
+00:00:22.150 --> 00:00:26.700
+Point a pot entry in gt.config.json
+at the English PO catalog.
+
+9
+00:00:27.150 --> 00:00:31.864
+Run npx gt translate,
+then pybabel compile,
+
+10
+00:00:31.864 --> 00:00:34.196
+and the app loads the
+compiled catalogs.
+
+11
+00:00:34.650 --> 00:00:41.303
+The experimental gt-flask and
+gt-fastapi SDKs translate inline
+
+12
+00:00:41.303 --> 00:00:43.275
+t strings without catalogs.
+
+13
+00:00:43.650 --> 00:00:46.273
+Your team now ships
+Spanish with each release.

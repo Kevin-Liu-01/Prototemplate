@@ -1,0 +1,70 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:05.467
+Yes. AI and your build produce
+translations; someone who reads
+
+2
+00:00:05.467 --> 00:00:07.452
+each language checks the risky copy.
+
+3
+00:00:08.150 --> 00:00:11.401
+General Translation translates
+new and changed copy in your
+
+4
+00:00:11.401 --> 00:00:13.316
+build, with shared terms.
+
+5
+00:00:14.650 --> 00:00:16.809
+Spot-check routine labels,
+
+6
+00:00:16.809 --> 00:00:19.735
+have someone fluent review
+checkout and pricing,
+
+7
+00:00:19.735 --> 00:00:22.312
+and send legal text
+to a professional.
+
+8
+00:00:23.150 --> 00:00:25.658
+Reviewers can be
+bilingual teammates,
+
+9
+00:00:25.658 --> 00:00:27.573
+customers in each market,
+
+10
+00:00:27.573 --> 00:00:29.569
+or a freelancer per language.
+
+11
+00:00:30.150 --> 00:00:32.298
+In React and Next.js apps,
+
+12
+00:00:32.298 --> 00:00:36.395
+Locadex opens pull requests
+that wrap new text in &lt;T&gt;.
+
+13
+00:00:37.150 --> 00:00:41.074
+Then npx gt translate
+runs in your build,
+
+14
+00:00:41.074 --> 00:00:44.382
+and reviewers edit in the
+Dashboard without seat fees.
+
+15
+00:00:45.150 --> 00:00:47.692
+Your team now ships
+Spanish with each release.

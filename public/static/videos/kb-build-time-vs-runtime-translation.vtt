@@ -1,0 +1,58 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.366
+You can bundle
+translations at build time,
+
+2
+00:00:03.366 --> 00:00:06.709
+load them from a CDN,
+or translate on request.
+
+3
+00:00:07.150 --> 00:00:10.575
+General Translation generates
+translations before release,
+
+4
+00:00:10.575 --> 00:00:12.931
+for a bundle or its CDN.
+
+5
+00:00:14.150 --> 00:00:17.563
+Run npx gt translate
+before the build,
+
+6
+00:00:17.563 --> 00:00:20.000
+and a bundle ties
+wording to that release.
+
+7
+00:00:20.650 --> 00:00:24.911
+With the CDN, a published edit
+reaches new renders without
+
+8
+00:00:24.911 --> 00:00:25.874
+a code deploy.
+
+9
+00:00:26.650 --> 00:00:29.563
+Use a proxy when you can't
+change the site's code.
+
+10
+00:00:30.150 --> 00:00:32.739
+For content a visitor needs at once,
+
+11
+00:00:32.739 --> 00:00:35.316
+&lt;Tx&gt; translates it
+while the request runs.
+
+12
+00:00:36.150 --> 00:00:38.680
+Your team now ships
+German with each release.

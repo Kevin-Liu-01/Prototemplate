@@ -1,0 +1,64 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.074
+Internationalization, or i18n,
+
+2
+00:00:04.074 --> 00:00:07.580
+is the code and design work a
+product needs before its first
+
+3
+00:00:07.580 --> 00:00:08.659
+extra locale.
+
+4
+00:00:09.059 --> 00:00:11.520
+Localization, or l10n,
+
+5
+00:00:11.520 --> 00:00:14.400
+is done by translators
+and covers translation,
+
+6
+00:00:14.400 --> 00:00:16.721
+currency, dates, and tone.
+
+7
+00:00:17.150 --> 00:00:22.560
+General Translation handles i18n
+in code and generates translations
+
+8
+00:00:22.560 --> 00:00:23.767
+for each locale.
+
+9
+00:00:25.150 --> 00:00:28.296
+In code, &lt;T&gt; wraps JSX,
+
+10
+00:00:28.296 --> 00:00:31.418
+and &lt;Currency&gt; formats
+values per locale.
+
+11
+00:00:32.150 --> 00:00:38.093
+Run npx gt translate after you
+add a locale in gt.config.json.
+
+12
+00:00:38.650 --> 00:00:40.763
+Context Groups share terminology,
+
+13
+00:00:40.763 --> 00:00:43.560
+and reviewers check each
+translation in the Dashboard.
+
+14
+00:00:44.150 --> 00:00:46.610
+Your team now ships
+German with each release.

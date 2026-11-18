@@ -91,6 +91,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm build:brand-kit` | Copies the brand kit's zip, previews and small files into public/brand/kit and writes public/brand/kit/manifest.json, which the brand kit section on /brand reads for every file's name and size. | `scripts/build/brand-kit.mjs` |
 | `pnpm build:deck` | Builds public/brand-deck.html, the standalone brand deck viewer, from the deck source checked in at deck/. | `scripts/build/deck.mjs` |
 | `pnpm build:inter` | Split the rsms InterVariable roman and italic into unicode-range subsets, and cut the two static Latin TTF instances the social card route draws with (pnpm build:inter; needs fonttools and brotli). | `scripts/build/subset-inter.py` |
+| `pnpm build:kb-films` | Mirrors gt-cloud's knowledge base films into the hub: writes src/lib/kb-films.ts, the typed list /motion's knowledge base section reads, and copies each film's poster and captions to public/static/videos/, the paths generaltranslation.com serves them at. | `scripts/build/kb-films.mjs` |
 | `pnpm build:lockup` | Draw the General Translation logo lockup, the logo beside "General" over "Translation", from Katagami Text 400 as outlines. | `scripts/build/lockup.py` |
 | `pnpm build:logo` | Writes the logo's files from its one drawing, LOGO in src/lib/logo.ts: public/brand/gt-globe-logo.svg currentColor on the drawn box, for masks (the docs lead demo) and inline use public/brand/gt-globe-logo-light.svg #070707 ink on the 256 square ... | `scripts/build/logo.mjs` |
 | `pnpm build:logo-motion` | Writes the live logo motion from its numbers: the hover (the meridian draws back along its oval) and the loader (the same draw-back once, then a line runs once round the meridian and the G draws off and back on once round the equator), drawn with SVG and CSS alone. | `scripts/build/logo-motion.mjs` |
@@ -162,7 +163,8 @@ Each tool reads its setting from a flag first, then the variable, then the defau
 | --- | --- | --- |
 | `PT_BASE` | The base URL for the live lints, the page check and the captures; CAPTURE_BASE and REDESIGN_BASE are older names for it. | `http://localhost:3005` |
 | `CHROME_PATH` | The Chrome for Testing binary the browser tools launch. | playwright-core's `chromium.executablePath()` |
-| `GT_CLOUD` | A gt-cloud checkout, for the tools that compare with it (lint:copies and lint:logo --external notes). | none |
+| `GT_CLOUD` | A gt-cloud checkout, for the tools that compare with it (lint:copies and lint:logo --external notes) and for build:kb-films, which reads it with git. | none (build:kb-films: ~/gt/gt-cloud) |
+| `GT_CLOUD_REF` | The gt-cloud commit build:kb-films reads the knowledge base films at. | `origin/main` |
 | `GLYPHFIELD` | A Glyphfield checkout, for lint:logo --external notes on its copies of the logo. | none |
 | `TURBOSLIDE` | A Turboslide checkout, for lint:logo --external notes on its copies of the logo. | none |
 | `MOTION_DIR` | The motion folder build:motion reads. | `<repo>/motion` |

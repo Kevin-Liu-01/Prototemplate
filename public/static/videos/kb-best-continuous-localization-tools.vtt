@@ -1,0 +1,61 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:06.419
+Crowdin's CLI and Lingo.dev
+translate in CI; repository syncs
+
+2
+00:00:06.419 --> 00:00:08.032
+return a pull request.
+
+3
+00:00:08.650 --> 00:00:11.994
+General Translation translates
+new copy before each build,
+
+4
+00:00:11.994 --> 00:00:13.293
+with shared terms.
+
+5
+00:00:14.650 --> 00:00:16.821
+Its CLI runs before your build,
+
+6
+00:00:16.821 --> 00:00:19.897
+and you wrap JSX in
+&lt;T&gt; with no keys.
+
+7
+00:00:20.297 --> 00:00:25.707
+The Locadex agent opens pull
+requests that wrap new UI text
+
+8
+00:00:25.707 --> 00:00:26.786
+nobody marked.
+
+9
+00:00:27.150 --> 00:00:32.003
+On Vercel, the build command
+runs npx gt translate before next
+
+10
+00:00:32.003 --> 00:00:32.490
+build.
+
+11
+00:00:33.150 --> 00:00:35.275
+Reviewers correct
+wording in the Dashboard,
+
+12
+00:00:35.275 --> 00:00:39.372
+and you can keep your existing
+i18next or next-intl setup.
+
+13
+00:00:40.150 --> 00:00:42.657
+Your team now ships
+Spanish with each release.

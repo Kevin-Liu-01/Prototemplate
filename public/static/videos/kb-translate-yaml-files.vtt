@@ -1,0 +1,58 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.958
+YAML locale files
+map keys to strings,
+
+2
+00:00:03.958 --> 00:00:07.615
+and an unquoted colon or a
+leading percent sign breaks the
+
+3
+00:00:07.615 --> 00:00:08.160
+file.
+
+4
+00:00:08.650 --> 00:00:12.969
+General Translation's CLI
+translates YAML values in place and
+
+5
+00:00:12.969 --> 00:00:14.268
+leaves keys alone.
+
+6
+00:00:15.650 --> 00:00:19.538
+Quote values that contain a colon
+or start with a placeholder.
+
+7
+00:00:20.150 --> 00:00:24.898
+Add a yaml entry to gt.config.json
+with a locale pattern.
+
+8
+00:00:25.298 --> 00:00:29.629
+Then npx gt translate writes
+the German file from the English
+
+9
+00:00:29.629 --> 00:00:30.022
+one.
+
+10
+00:00:30.650 --> 00:00:33.042
+Load the files the
+way your app does,
+
+11
+00:00:33.042 --> 00:00:35.560
+and add any plural keys
+the language needs.
+
+12
+00:00:36.150 --> 00:00:38.680
+Your team now ships
+German with each release.

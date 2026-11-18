@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
 
 import { renderInline } from '@/components/book/markdown';
-import { MOTION_FILMS, MOTION_SECTIONS, MOTION_STATUS_LABEL } from '@/lib/motion';
+import { MOTION_STATUS_LABEL } from '@/lib/motion';
 import type { MotionFilm, MotionLocal, MotionVersion } from '@/lib/motion';
+import { ROSTER_FILMS as MOTION_FILMS, ROSTER_SECTIONS as MOTION_SECTIONS } from '@/lib/motion-roster';
 import { PAGE_NAMES } from '@/lib/page-names';
 import { markNoteFor, withMarkNote } from '@/lib/previous-mark';
 import JsonLd from '@/lib/seo/JsonLd';
@@ -49,7 +50,8 @@ function rosterFilm({ credits, cut, local, versions, ...film }: MotionFilm): Mot
  * and the script hook (lang-text.tsx), and so are the contact sheet and
  * script of each cut of a film with no page of its own (records.tsx), so the client
  * receives elements and the markdown renderer never ships in its bundle.
- * The roster itself is the generated src/lib/motion.ts.
+ * The roster is the generated src/lib/motion.ts with the knowledge base
+ * films of generaltranslation.com (src/lib/motion-roster.ts).
  */
 export default function MotionPage() {
   const summaries: Record<string, ReactNode> = {};

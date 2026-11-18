@@ -1,0 +1,66 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:05.444
+A multilingual website serves
+each page in several languages,
+
+2
+00:00:05.444 --> 00:00:07.243
+each at its own URL.
+
+3
+00:00:07.650 --> 00:00:10.645
+Pick where translations
+live: a proxy,
+
+4
+00:00:10.645 --> 00:00:13.583
+a CMS plugin, a site builder,
+
+5
+00:00:13.583 --> 00:00:16.391
+or your code, before
+you translate anything.
+
+6
+00:00:17.150 --> 00:00:20.261
+General Translation generates
+the translations for sites you
+
+7
+00:00:20.261 --> 00:00:21.213
+build in code.
+
+8
+00:00:22.650 --> 00:00:25.309
+Give each language its own URL,
+
+9
+00:00:25.309 --> 00:00:27.863
+translate titles and
+meta descriptions,
+
+10
+00:00:27.863 --> 00:00:29.429
+and add hreflang.
+
+11
+00:00:29.829 --> 00:00:33.926
+Offer a language switcher instead of
+redirecting visitors automatically.
+
+12
+00:00:34.650 --> 00:00:37.506
+In code, wrap markup
+in the T component,
+
+13
+00:00:37.506 --> 00:00:41.325
+and run npx gt translate
+before the build.
+
+14
+00:00:42.150 --> 00:00:44.738
+Your team now ships
+French with each release.

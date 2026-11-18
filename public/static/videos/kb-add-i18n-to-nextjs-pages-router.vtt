@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.910
+Add an i18n block to next.config.js,
+
+2
+00:00:04.910 --> 00:00:08.903
+and Next.js serves each
+language at its own URL.
+
+3
+00:00:09.650 --> 00:00:13.586
+General Translation's gt-next
+then renders and translates copy
+
+4
+00:00:13.586 --> 00:00:15.477
+written inline in JSX.
+
+5
+00:00:16.650 --> 00:00:20.957
+Next.js also redirects by browser
+language and passes the locale
+
+6
+00:00:20.957 --> 00:00:24.196
+to getStaticProps,
+but renders no text.
+
+7
+00:00:24.650 --> 00:00:29.445
+Wrap next.config.ts
+with withGTConfig,
+
+8
+00:00:29.445 --> 00:00:32.416
+and keep the i18n block for routing.
+
+9
+00:00:33.150 --> 00:00:39.977
+Wrap each page's data function with
+withGTStaticProps or withGTServerSideProps,
+
+10
+00:00:39.977 --> 00:00:42.089
+and mark copy with the T component.
+
+11
+00:00:42.650 --> 00:00:46.422
+Then run npx gt translate
+before next build.
+
+12
+00:00:47.150 --> 00:00:49.634
+Your team now ships
+Spanish with each release.

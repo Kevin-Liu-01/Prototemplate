@@ -1,0 +1,58 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.492
+Android picks text at run time
+from folders named for the device's
+
+2
+00:00:04.492 --> 00:00:05.176
+locale.
+
+3
+00:00:05.576 --> 00:00:12.159
+Keep default text in
+res/values/strings.xml,
+
+4
+00:00:12.159 --> 00:00:16.616
+and add a folder such as
+values-es for each language.
+
+5
+00:00:17.150 --> 00:00:19.960
+Each language file uses
+the same resource names,
+
+6
+00:00:19.960 --> 00:00:22.757
+and plurals list one
+item for each quantity.
+
+7
+00:00:23.150 --> 00:00:27.852
+General Translation's CLI writes
+each folder and rebuilds plurals
+
+8
+00:00:27.852 --> 00:00:29.105
+for every language.
+
+9
+00:00:30.650 --> 00:00:35.642
+Add an androidStrings entry to
+gt.config.json that points at
+
+10
+00:00:35.642 --> 00:00:36.744
+the default file.
+
+11
+00:00:37.144 --> 00:00:40.580
+Then run npx gt translate
+before the build.
+
+12
+00:00:41.150 --> 00:00:43.680
+Your team now ships
+Spanish with each release.

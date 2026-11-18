@@ -1,0 +1,65 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.480
+With Weblate, your community
+or team translates repository
+
+2
+00:00:04.480 --> 00:00:06.616
+files, and Weblate commits them.
+
+3
+00:00:07.150 --> 00:00:08.799
+Weblate does this well,
+
+4
+00:00:08.799 --> 00:00:10.668
+with free self-hosting,
+
+5
+00:00:10.668 --> 00:00:13.685
+Git workflows, and
+about fifty formats.
+
+6
+00:00:14.150 --> 00:00:17.807
+General Translation generates
+translations in each release,
+
+7
+00:00:17.807 --> 00:00:19.536
+with shared product context.
+
+8
+00:00:20.650 --> 00:00:22.229
+Keep your gettext files,
+
+9
+00:00:22.229 --> 00:00:24.225
+and point a pot entry
+at the template.
+
+10
+00:00:24.650 --> 00:00:29.433
+Then npx gt translate writes
+each locale's file before you
+
+11
+00:00:29.433 --> 00:00:30.048
+deploy.
+
+12
+00:00:30.650 --> 00:00:33.773
+To use both, give each
+language one owner,
+
+13
+00:00:33.773 --> 00:00:35.653
+so neither tool
+overwrites the other.
+
+14
+00:00:36.150 --> 00:00:38.924
+Your team now ships
+Spanish with each release.

@@ -1,0 +1,66 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:05.189
+A migration from react-i18next
+replaces each key with its source
+
+2
+00:00:05.189 --> 00:00:05.791
+text.
+
+3
+00:00:06.150 --> 00:00:10.782
+General Translation's gt-react
+runs next to react-i18next as
+
+4
+00:00:10.782 --> 00:00:12.511
+you move components inline.
+
+5
+00:00:13.650 --> 00:00:19.535
+Install gt-react, and have i18next
+read gt-react's locale cookie.
+
+6
+00:00:20.150 --> 00:00:22.298
+Then move one component at a time,
+
+7
+00:00:22.298 --> 00:00:26.151
+from keys and Trans to inline
+copy in the T component.
+
+8
+00:00:27.150 --> 00:00:30.285
+For placeholders and
+other strings outside JSX,
+
+9
+00:00:30.285 --> 00:00:31.433
+call useGT.
+
+10
+00:00:32.150 --> 00:00:37.038
+Run npx gt translate, and General
+Translation translates moved
+
+11
+00:00:37.038 --> 00:00:39.916
+copy with its JSX as context.
+
+12
+00:00:40.316 --> 00:00:42.754
+Your team can correct
+it in the Dashboard,
+
+13
+00:00:42.754 --> 00:00:46.201
+and unmoved components keep
+their reviewed translations.
+
+14
+00:00:46.650 --> 00:00:49.389
+Your team now ships
+Polish with each release.

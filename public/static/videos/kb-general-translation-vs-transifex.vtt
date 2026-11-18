@@ -1,0 +1,66 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:02.646
+With Transifex Native,
+
+2
+00:00:02.646 --> 00:00:06.268
+strings stay in code, and
+translations come from its delivery
+
+3
+00:00:06.268 --> 00:00:06.999
+service.
+
+4
+00:00:07.650 --> 00:00:09.357
+Transifex does this well,
+
+5
+00:00:09.357 --> 00:00:11.133
+with AI quality scores,
+
+6
+00:00:11.133 --> 00:00:13.965
+partner vendors, and a
+snippet for websites.
+
+7
+00:00:14.650 --> 00:00:18.922
+General Translation translates
+your marked JSX with context,
+
+8
+00:00:18.922 --> 00:00:21.035
+and bundles or serves the result.
+
+9
+00:00:22.150 --> 00:00:24.669
+Keep each sentence, with its links,
+
+10
+00:00:24.669 --> 00:00:26.155
+inside a T component.
+
+11
+00:00:26.650 --> 00:00:30.759
+Then npx gt translate writes
+the Japanese before the build.
+
+12
+00:00:31.150 --> 00:00:32.833
+With local translations,
+
+13
+00:00:32.833 --> 00:00:34.633
+the app renders bundled files,
+
+14
+00:00:34.633 --> 00:00:36.234
+with no runtime calls.
+
+15
+00:00:36.650 --> 00:00:39.180
+Your team now ships
+Japanese with each release.

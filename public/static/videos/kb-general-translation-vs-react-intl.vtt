@@ -1,0 +1,62 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:05.200
+With react-intl, you write ICU
+messages inline and extract
+
+2
+00:00:05.200 --> 00:00:07.161
+them into a catalog for translators.
+
+3
+00:00:07.561 --> 00:00:11.474
+Its FormatJS tooling
+serves that workflow well,
+
+4
+00:00:11.474 --> 00:00:14.271
+from typed arguments
+to TMS formatters.
+
+5
+00:00:14.650 --> 00:00:18.981
+General Translation keeps ICU
+message syntax and adds translation
+
+6
+00:00:18.981 --> 00:00:19.781
+generation.
+
+7
+00:00:21.150 --> 00:00:24.529
+Your team moves each
+message into useGT,
+
+8
+00:00:24.529 --> 00:00:26.362
+with its description as context.
+
+9
+00:00:27.150 --> 00:00:32.247
+Then npx gt translate extracts
+and translates every catalog
+
+10
+00:00:32.247 --> 00:00:33.279
+in one command.
+
+11
+00:00:33.650 --> 00:00:35.879
+Reviewers edit the
+results in the Dashboard,
+
+12
+00:00:35.879 --> 00:00:38.107
+with your Glossary
+and Custom Prompts.
+
+13
+00:00:38.650 --> 00:00:41.203
+Your team now ships
+French with each release.

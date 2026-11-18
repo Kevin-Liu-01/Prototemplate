@@ -1,0 +1,61 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.935
+Name each translation key by
+where its text appears and what
+
+2
+00:00:03.935 --> 00:00:07.440
+it means, such as
+checkout.summary.title.
+
+3
+00:00:08.150 --> 00:00:09.996
+Give each use its own key,
+
+4
+00:00:09.996 --> 00:00:13.758
+because German translates the
+button Open as Öffnen and the
+
+5
+00:00:13.758 --> 00:00:15.463
+status Open as Offen.
+
+6
+00:00:16.150 --> 00:00:19.796
+General Translation's &lt;T&gt; component
+keeps English in your code,
+
+7
+00:00:19.796 --> 00:00:21.072
+with no key to name.
+
+8
+00:00:22.150 --> 00:00:27.224
+Wrap JSX in &lt;T&gt;, and npx gt
+translate extracts the English
+
+9
+00:00:27.224 --> 00:00:28.209
+from your source.
+
+10
+00:00:28.650 --> 00:00:31.657
+Distinct uses of Open
+still get context,
+
+11
+00:00:31.657 --> 00:00:34.791
+through the context prop
+or the $context option.
+
+12
+00:00:35.150 --> 00:00:38.505
+Teams that want keys can
+keep them in one dictionary,
+
+13
+00:00:38.505 --> 00:00:40.408
+read with useTranslations.

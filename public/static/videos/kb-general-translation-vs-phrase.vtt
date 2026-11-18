@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.759
+With Phrase, app keys sync
+through Phrase Strings,
+
+2
+00:00:04.759 --> 00:00:07.324
+and documents go through Phrase TMS.
+
+3
+00:00:08.150 --> 00:00:09.462
+Phrase does this well,
+
+4
+00:00:09.462 --> 00:00:11.854
+with many engines, Repo Sync,
+
+5
+00:00:11.854 --> 00:00:13.072
+and vendor management.
+
+6
+00:00:13.650 --> 00:00:16.854
+General Translation translates
+your app and docs together,
+
+7
+00:00:16.854 --> 00:00:18.386
+with one set of terms.
+
+8
+00:00:19.650 --> 00:00:21.914
+Keep app copy in a T component,
+
+9
+00:00:21.914 --> 00:00:24.374
+and add MDX pages to the config.
+
+10
+00:00:25.150 --> 00:00:27.147
+Assign one Context Group,
+
+11
+00:00:27.147 --> 00:00:28.899
+so both use the same terms.
+
+12
+00:00:29.650 --> 00:00:33.829
+Then npx gt translate in CI
+writes the German for both.
+
+13
+00:00:34.650 --> 00:00:37.633
+Your team now ships both in
+German with each release.

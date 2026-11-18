@@ -1,0 +1,65 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.457
+Machine translation engines
+and LLMs treat each request on
+
+2
+00:00:04.457 --> 00:00:07.347
+its own, so terms
+drift between pages.
+
+3
+00:00:07.747 --> 00:00:10.127
+Short strings carry little context,
+
+4
+00:00:10.127 --> 00:00:12.612
+each surface often
+uses its own tool,
+
+5
+00:00:12.612 --> 00:00:14.445
+and case endings change the word.
+
+6
+00:00:15.150 --> 00:00:18.111
+General Translation applies a
+shared Glossary through Context
+
+7
+00:00:18.111 --> 00:00:18.644
+Groups.
+
+8
+00:00:20.150 --> 00:00:24.260
+A Context Group holds each term with
+its definition and a translation
+
+9
+00:00:24.260 --> 00:00:25.385
+for each locale.
+
+10
+00:00:26.150 --> 00:00:28.391
+The same groups
+apply to &lt;T&gt; content,
+
+11
+00:00:28.391 --> 00:00:31.896
+CLI files, and Locadex translations.
+
+12
+00:00:32.650 --> 00:00:34.949
+Wrap values such as names in &lt;Var&gt;,
+
+13
+00:00:34.949 --> 00:00:36.805
+and they are never
+sent for translation.
+
+14
+00:00:37.650 --> 00:00:40.238
+Your team now ships
+German with each release.

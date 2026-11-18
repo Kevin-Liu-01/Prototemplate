@@ -1,0 +1,59 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.480
+DeepL is a machine translation
+API for the text and documents
+
+2
+00:00:04.480 --> 00:00:05.188
+you send it.
+
+3
+00:00:05.650 --> 00:00:07.844
+General Translation adds context,
+
+4
+00:00:07.844 --> 00:00:09.760
+review, consistent terms,
+
+5
+00:00:09.760 --> 00:00:11.408
+and continuous translation.
+
+6
+00:00:12.650 --> 00:00:16.563
+With DeepL, your code writes a
+context string and passes glossary
+
+7
+00:00:16.563 --> 00:00:18.245
+IDs on each request.
+
+8
+00:00:18.645 --> 00:00:22.151
+General Translation takes context
+from your code and applies
+
+9
+00:00:22.151 --> 00:00:24.298
+one Glossary to every project.
+
+10
+00:00:24.650 --> 00:00:28.295
+Reviewers edit each translation
+next to its source in the Dashboard.
+
+11
+00:00:28.650 --> 00:00:34.455
+Then npx gt translate in CI
+translates only content whose source
+
+12
+00:00:34.455 --> 00:00:35.104
+changed.
+
+13
+00:00:35.650 --> 00:00:38.087
+Your team now ships
+Polish with each release.

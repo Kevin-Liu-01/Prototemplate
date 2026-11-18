@@ -1,0 +1,45 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:05.050
+In Montreal, your French page shows the
+line you added this week in English.
+
+2
+00:00:05.520 --> 00:00:09.430
+Your build script runs next build alone,
+so the line was never translated.
+
+3
+00:00:10.300 --> 00:00:15.640
+General Translation keeps translations
+current when your CI runs npx gt translate
+
+4
+00:00:15.680 --> 00:00:16.690
+before the build.
+
+5
+00:00:17.540 --> 00:00:23.950
+Create an API key for CI with the file,
+context and translation queue permissions.
+
+6
+00:00:24.480 --> 00:00:28.930
+Store it and your project ID
+as secrets in your CI provider.
+
+7
+00:00:29.460 --> 00:00:33.910
+Add npx gt translate to your build
+script, before the build command.
+
+8
+00:00:34.360 --> 00:00:39.350
+Run that build on every push to main, for
+example with a GitHub Actions workflow.
+
+9
+00:00:39.860 --> 00:00:44.450
+Each build then ships current translations
+in Spanish, Japanese and French.

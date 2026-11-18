@@ -1,0 +1,59 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:02.867
+For widely spoken languages,
+
+2
+00:00:02.867 --> 00:00:08.102
+AI translation is often accurate.
+Test it on your own strings.
+
+3
+00:00:08.650 --> 00:00:15.349
+In WMT25, Gemini 2.5 Pro matched or
+beat human reference translations
+
+4
+00:00:15.349 --> 00:00:17.531
+in 10 of 16 language pairs.
+
+5
+00:00:18.150 --> 00:00:21.807
+General Translation translates
+with each string's context,
+
+6
+00:00:21.807 --> 00:00:23.118
+and reviewers check it.
+
+7
+00:00:24.650 --> 00:00:28.805
+In React, the context prop on
+&lt;T&gt; explains anything ambiguous.
+
+8
+00:00:29.650 --> 00:00:31.368
+That note picks speichern,
+
+9
+00:00:31.368 --> 00:00:34.050
+for writing to disk, over sparen,
+
+10
+00:00:34.050 --> 00:00:35.292
+for spending less money.
+
+11
+00:00:35.650 --> 00:00:38.970
+Context Groups add a Glossary
+for terms and Custom Prompts
+
+12
+00:00:38.970 --> 00:00:40.003
+for style rules.
+
+13
+00:00:40.650 --> 00:00:44.538
+Reviewers then edit each translation
+on the Translations page.

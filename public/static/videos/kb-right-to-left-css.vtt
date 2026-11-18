@@ -1,0 +1,60 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:02.785
+Arabic, Hebrew, Persian,
+
+2
+00:00:02.785 --> 00:00:05.107
+and Urdu read right to left,
+
+3
+00:00:05.107 --> 00:00:08.624
+and most bugs come from CSS
+that names physical sides.
+
+4
+00:00:09.150 --> 00:00:13.144
+General Translation helps you
+set dir and lang on the html
+
+5
+00:00:13.144 --> 00:00:14.850
+element from the active locale.
+
+6
+00:00:16.150 --> 00:00:19.703
+Then replace physical properties
+like margin-left with logical
+
+7
+00:00:19.703 --> 00:00:21.792
+ones like margin-inline-start.
+
+8
+00:00:22.150 --> 00:00:24.484
+Flex rows, grid columns,
+
+9
+00:00:24.484 --> 00:00:28.594
+and text alignment flip
+on their own; translateX,
+
+10
+00:00:28.594 --> 00:00:30.903
+left, and right do not.
+
+11
+00:00:31.650 --> 00:00:37.663
+In Next.js, the root layout calls
+getLocaleDirection from gt-next.
+
+12
+00:00:38.063 --> 00:00:41.545
+It writes the locale to lang
+and the direction to dir.
+
+13
+00:00:41.945 --> 00:00:44.498
+Your team now ships
+Arabic with each release.

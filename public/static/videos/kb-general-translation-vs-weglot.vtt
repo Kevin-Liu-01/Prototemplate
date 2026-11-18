@@ -1,0 +1,60 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.446
+Weglot is a website translation
+service that translates rendered
+
+2
+00:00:04.446 --> 00:00:06.094
+pages through plugins,
+
+3
+00:00:06.094 --> 00:00:07.939
+a snippet, or a proxy.
+
+4
+00:00:08.339 --> 00:00:12.378
+Weglot 2.0 adds JSON
+translation workflows in GitHub.
+
+5
+00:00:13.150 --> 00:00:15.693
+General Translation
+combines source code,
+
+6
+00:00:15.693 --> 00:00:18.757
+context, review, and locale routing.
+
+7
+00:00:20.150 --> 00:00:23.668
+You wrap copy in &lt;T&gt;, and a
+Context Group shares terms across
+
+8
+00:00:23.668 --> 00:00:24.375
+projects.
+
+9
+00:00:24.775 --> 00:00:28.003
+Its middleware serves each
+language from your app at its own
+
+10
+00:00:28.003 --> 00:00:28.721
+URL.
+
+11
+00:00:29.150 --> 00:00:34.827
+Then npx gt translate in CI
+translates only content whose source
+
+12
+00:00:34.827 --> 00:00:35.453
+changed.
+
+13
+00:00:36.150 --> 00:00:38.634
+Your team now ships
+German with each release.

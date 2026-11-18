@@ -1,0 +1,64 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.470
+Translate complete messages
+with meaning notes,
+
+2
+00:00:03.470 --> 00:00:05.653
+placeholder roles, length limits,
+
+3
+00:00:05.653 --> 00:00:06.952
+and shared terms.
+
+4
+00:00:07.650 --> 00:00:10.947
+General Translation translates
+each marked block with the context
+
+5
+00:00:10.947 --> 00:00:11.956
+note beside it.
+
+6
+00:00:13.150 --> 00:00:15.042
+Free can mean costs nothing,
+
+7
+00:00:15.042 --> 00:00:16.562
+or that a seat is available.
+
+8
+00:00:17.150 --> 00:00:21.224
+In React, the context prop on
+&lt;T&gt; says the seat is available.
+
+9
+00:00:21.650 --> 00:00:23.833
+For existing JSON catalogs,
+
+10
+00:00:23.833 --> 00:00:27.385
+a metadata file beside the source
+adds a note and length limit
+
+11
+00:00:27.385 --> 00:00:28.081
+per key.
+
+12
+00:00:28.650 --> 00:00:32.087
+Your Glossary and Custom Prompts
+apply through Context Groups,
+
+13
+00:00:32.087 --> 00:00:34.524
+and reviewers correct
+output in the Dashboard.
+
+14
+00:00:35.150 --> 00:00:37.843
+Your team now ships
+German with each release.

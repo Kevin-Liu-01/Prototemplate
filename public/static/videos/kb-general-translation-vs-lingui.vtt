@@ -1,0 +1,64 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.354
+With Lingui, you write copy inline,
+
+2
+00:00:03.354 --> 00:00:05.456
+extract it to PO catalogs,
+
+3
+00:00:05.456 --> 00:00:07.486
+translate them, and compile.
+
+4
+00:00:07.886 --> 00:00:10.196
+Its macros need no keys,
+
+5
+00:00:10.196 --> 00:00:12.599
+and its compiled
+runtime stays small.
+
+6
+00:00:13.150 --> 00:00:16.679
+General Translation keeps the
+same inline copy and generates
+
+7
+00:00:16.679 --> 00:00:17.758
+the translations.
+
+8
+00:00:19.150 --> 00:00:22.250
+Your team writes copy
+inline inside a T component,
+
+9
+00:00:22.250 --> 00:00:23.329
+as with Lingui.
+
+10
+00:00:24.150 --> 00:00:28.295
+Then npx gt translate writes
+every catalog before the build,
+
+11
+00:00:28.295 --> 00:00:29.710
+with no compile step.
+
+12
+00:00:30.150 --> 00:00:32.484
+Reviewers edit the
+results in the Dashboard,
+
+13
+00:00:32.484 --> 00:00:35.838
+and each run reuses
+unchanged translations.
+
+14
+00:00:36.650 --> 00:00:39.285
+Your team now ships
+Spanish with each release.

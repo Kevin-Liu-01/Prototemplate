@@ -1,0 +1,63 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.968
+In Symfony, PHP and Twig render
+catalogs that translators or
+
+2
+00:00:04.968 --> 00:00:06.395
+a TMS write.
+
+3
+00:00:07.150 --> 00:00:08.799
+Symfony does its part well,
+
+4
+00:00:08.799 --> 00:00:11.376
+with ICU plurals, fallbacks,
+
+5
+00:00:11.376 --> 00:00:12.919
+and translation providers.
+
+6
+00:00:13.650 --> 00:00:17.121
+General Translation translates
+your catalogs in CI and keeps
+
+7
+00:00:17.121 --> 00:00:18.548
+them current with your source.
+
+8
+00:00:19.650 --> 00:00:21.914
+Point the gt config
+at your catalogs,
+
+9
+00:00:21.914 --> 00:00:23.562
+with the locale in the file name.
+
+10
+00:00:24.150 --> 00:00:29.166
+Run npx gt translate in CI after
+translation:extract adds new
+
+11
+00:00:29.166 --> 00:00:30.024
+English keys.
+
+12
+00:00:30.650 --> 00:00:32.740
+A Glossary keeps terms consistent,
+
+13
+00:00:32.740 --> 00:00:35.398
+and reviewers edit
+translations in the Dashboard.
+
+14
+00:00:36.150 --> 00:00:38.599
+Your team now ships
+French with each release.

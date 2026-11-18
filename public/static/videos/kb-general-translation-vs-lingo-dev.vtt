@@ -1,0 +1,60 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.329
+Lingo.dev is built around
+configurable translation engines.
+
+2
+00:00:04.729 --> 00:00:07.910
+Each engine assigns a model
+to each language pair,
+
+3
+00:00:07.910 --> 00:00:11.520
+and CLI, React, and
+GitHub tools reach it.
+
+4
+00:00:12.150 --> 00:00:14.785
+General Translation
+connects code context,
+
+5
+00:00:14.785 --> 00:00:17.165
+shared terms, and Dashboard review.
+
+6
+00:00:18.650 --> 00:00:20.705
+Its libraries render translations,
+
+7
+00:00:20.705 --> 00:00:23.456
+and you wrap JSX in &lt;T&gt; as written.
+
+8
+00:00:23.856 --> 00:00:27.478
+A Context Group shares one
+Glossary and Custom Prompts across
+
+9
+00:00:27.478 --> 00:00:28.325
+your projects.
+
+10
+00:00:28.725 --> 00:00:32.277
+Your team reviews translations
+in the Dashboard on every plan.
+
+11
+00:00:32.650 --> 00:00:36.284
+Then run npx gt translate in CI,
+
+12
+00:00:36.284 --> 00:00:38.965
+or let Locadex open pull requests.
+
+13
+00:00:39.650 --> 00:00:42.203
+Your team now ships
+Japanese with each release.

@@ -1,0 +1,60 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.271
+With Intlayer, each
+component has a content file,
+
+2
+00:00:04.271 --> 00:00:07.010
+and every string
+lists every language.
+
+3
+00:00:07.410 --> 00:00:10.881
+It types those files and can
+fill a missing locale with your
+
+4
+00:00:10.881 --> 00:00:11.937
+AI provider.
+
+5
+00:00:12.650 --> 00:00:16.191
+General Translation keeps one
+language in your code and generates
+
+6
+00:00:16.191 --> 00:00:16.840
+the rest.
+
+7
+00:00:18.150 --> 00:00:19.950
+Your team writes copy once,
+
+8
+00:00:19.950 --> 00:00:22.363
+in English, inside a T component.
+
+9
+00:00:23.150 --> 00:00:26.970
+Then npx gt translate writes
+every target locale before the
+
+10
+00:00:26.970 --> 00:00:27.433
+build.
+
+11
+00:00:28.150 --> 00:00:30.100
+Reviewers edit in the Dashboard,
+
+12
+00:00:30.100 --> 00:00:33.223
+and Locadex handles updates
+as the code changes.
+
+13
+00:00:33.650 --> 00:00:36.412
+Your team now ships
+Spanish with each release.

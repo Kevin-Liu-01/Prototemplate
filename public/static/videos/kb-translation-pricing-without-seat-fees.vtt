@@ -1,0 +1,66 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.724
+Crowdin and Lokalise include
+unlimited translators or reviewers
+
+2
+00:00:04.724 --> 00:00:07.730
+on paid plans, but charge
+for some other roles.
+
+3
+00:00:08.150 --> 00:00:11.006
+General Translation bills
+for the work you request,
+
+4
+00:00:11.006 --> 00:00:12.572
+with unlimited users.
+
+5
+00:00:13.650 --> 00:00:17.539
+Hosted Weblate includes unlimited
+translators and charges for
+
+6
+00:00:17.539 --> 00:00:19.059
+hosted-string capacity.
+
+7
+00:00:19.459 --> 00:00:23.289
+Phrase subscriptions include
+seats and managed-word capacity.
+
+8
+00:00:23.650 --> 00:00:25.194
+With General Translation,
+
+9
+00:00:25.194 --> 00:00:28.805
+inviting reviewers or
+developers adds no seat fee,
+
+10
+00:00:28.805 --> 00:00:32.275
+and the bill follows
+translation and agent usage.
+
+11
+00:00:32.650 --> 00:00:35.529
+When you run npx gt translate,
+
+12
+00:00:35.529 --> 00:00:38.629
+unchanged source reuses
+completed translations,
+
+13
+00:00:38.629 --> 00:00:40.358
+and new content adds work.
+
+14
+00:00:41.150 --> 00:00:43.889
+Your team now ships
+Italian with each release.

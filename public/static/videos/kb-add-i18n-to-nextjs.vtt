@@ -1,0 +1,53 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:05.070
+In Osaka, your page is in English,
+with no way to choose Japanese.
+
+2
+00:00:05.620 --> 00:00:10.810
+Its text is plain JSX, and
+the app has no i18n library.
+
+3
+00:00:11.660 --> 00:00:16.210
+General Translation lets
+you add i18n with gt-next:
+
+4
+00:00:16.900 --> 00:00:19.970
+wrap text in T and generate translations.
+
+5
+00:00:20.780 --> 00:00:24.730
+Wrap your config in withGTConfig,
+list your languages,
+
+6
+00:00:24.940 --> 00:00:27.470
+and add a file that
+loads their translations.
+
+7
+00:00:27.920 --> 00:00:32.030
+Put the GTProvider in your
+root layout, wrap text in T,
+
+8
+00:00:32.140 --> 00:00:34.310
+and add a LocaleSelector for the menu.
+
+9
+00:00:34.820 --> 00:00:39.870
+Run npx gt translate before next build
+to write a file for each language.
+
+10
+00:00:40.340 --> 00:00:44.810
+In Osaka, the menu now offers
+Spanish, French and Japanese,
+
+11
+00:00:45.160 --> 00:00:47.030
+and the reader picks Japanese.

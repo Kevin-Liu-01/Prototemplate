@@ -1,0 +1,68 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.248
+Googlebot sends no Accept-Language
+header and crawls mostly
+
+2
+00:00:04.248 --> 00:00:05.501
+from US addresses.
+
+3
+00:00:05.901 --> 00:00:09.464
+Pages chosen by cookie or
+header may go unindexed.
+
+4
+00:00:10.150 --> 00:00:13.993
+General Translation lets the
+URL decide the language of every
+
+5
+00:00:13.993 --> 00:00:15.594
+page you want indexed.
+
+6
+00:00:16.650 --> 00:00:18.833
+Resolve the URL first,
+
+7
+00:00:18.833 --> 00:00:20.365
+then the saved cookie,
+
+8
+00:00:20.365 --> 00:00:23.232
+then Accept-Language,
+then the default.
+
+9
+00:00:23.632 --> 00:00:26.117
+Redirect only at a neutral root,
+
+10
+00:00:26.117 --> 00:00:28.856
+with a temporary 302 or 307.
+
+11
+00:00:29.650 --> 00:00:34.607
+In gt-next, createNextMiddleware
+checks the URL locale before
+
+12
+00:00:34.607 --> 00:00:35.257
+the cookie.
+
+13
+00:00:35.657 --> 00:00:37.491
+With prefixDefaultLocale,
+
+14
+00:00:37.491 --> 00:00:41.380
+English lives at slash en
+and French at slash fr.
+
+15
+00:00:42.150 --> 00:00:44.808
+Each language now
+has an indexable URL.

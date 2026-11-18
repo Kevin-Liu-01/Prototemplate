@@ -1,0 +1,56 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.504
+With vue-i18n, each
+string gets a key,
+
+2
+00:00:04.504 --> 00:00:08.241
+and your team or a TMS
+supplies each language.
+
+3
+00:00:08.641 --> 00:00:10.115
+It is a mature plugin,
+
+4
+00:00:10.115 --> 00:00:13.075
+and Nuxt's i18n module builds on it.
+
+5
+00:00:13.650 --> 00:00:17.168
+General Translation generates
+the translations from copy in
+
+6
+00:00:17.168 --> 00:00:18.072
+your templates.
+
+7
+00:00:19.150 --> 00:00:22.946
+Your team writes the English inside
+a T component in each template.
+
+8
+00:00:23.650 --> 00:00:27.911
+Then npx gt translate writes
+every target locale before the
+
+9
+00:00:27.911 --> 00:00:28.409
+build.
+
+10
+00:00:29.150 --> 00:00:31.518
+Reviewers refine the
+results in the Dashboard,
+
+11
+00:00:31.518 --> 00:00:33.561
+with a shared Glossary for terms.
+
+12
+00:00:34.150 --> 00:00:36.680
+Your team now ships
+Spanish with each release.

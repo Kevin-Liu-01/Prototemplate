@@ -1,0 +1,41 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.422
+General Translation recommends
+nine checks in every locale,
+
+2
+00:00:04.422 --> 00:00:05.745
+each with a pass condition.
+
+3
+00:00:07.150 --> 00:00:09.507
+Check journeys, language switching,
+
+4
+00:00:09.507 --> 00:00:12.478
+plurals, currency,
+and text expansion.
+
+5
+00:00:13.150 --> 00:00:15.228
+Then test right-to-left layout,
+
+6
+00:00:15.228 --> 00:00:17.539
+screen readers, production assets,
+
+7
+00:00:17.539 --> 00:00:18.919
+and crawlable URLs.
+
+8
+00:00:19.650 --> 00:00:24.479
+Run gt validate, then npx gt
+translate before each build.
+
+9
+00:00:25.150 --> 00:00:27.726
+Your team now ships
+Hebrew with each release.

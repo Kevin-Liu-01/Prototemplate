@@ -1,0 +1,58 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:04.810
+In Marseille, a French reader sees
+an English headline on your site.
+
+2
+00:00:05.400 --> 00:00:09.630
+The story holds one English headline,
+and the space has no other language.
+
+3
+00:00:10.540 --> 00:00:12.920
+General Translation lets
+you connect your space
+
+4
+00:00:12.960 --> 00:00:15.630
+and translate stories with Sync and apply.
+
+5
+00:00:16.520 --> 00:00:19.970
+In Storyblok, add your target
+languages to the space.
+
+6
+00:00:20.560 --> 00:00:23.630
+In the Dashboard, connect
+the space with its ID,
+
+7
+00:00:23.720 --> 00:00:26.730
+its region and a personal access token.
+
+8
+00:00:27.240 --> 00:00:32.090
+Choose stories and target locales,
+check Auto-enable supported fields,
+
+9
+00:00:32.400 --> 00:00:34.230
+and click Sync and apply.
+
+10
+00:00:34.960 --> 00:00:38.990
+Review the Spanish, Japanese
+and French drafts, publish them,
+
+11
+00:00:39.100 --> 00:00:41.890
+and fetch each language
+with the language parameter.
+
+12
+00:00:42.460 --> 00:00:46.330
+In Marseille, the published home page
+now shows its headline in French.

@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.411
+With Mobility, models store
+translated attributes,
+
+2
+00:00:04.411 --> 00:00:06.836
+and editors or
+translators write them.
+
+3
+00:00:07.650 --> 00:00:09.194
+Mobility does this well,
+
+4
+00:00:09.194 --> 00:00:11.306
+with eight backends and fallbacks.
+
+5
+00:00:12.150 --> 00:00:16.155
+General Translation produces the
+translations through its API,
+
+6
+00:00:16.155 --> 00:00:17.675
+and Mobility stores them.
+
+7
+00:00:19.150 --> 00:00:23.004
+Call the translate endpoint from
+Ruby with a project API key.
+
+8
+00:00:23.650 --> 00:00:26.564
+Translate each new record
+with a context note,
+
+9
+00:00:26.564 --> 00:00:28.595
+and save the result
+through Mobility.
+
+10
+00:00:29.150 --> 00:00:32.517
+Each request uses your
+Glossary and Custom Prompts,
+
+11
+00:00:32.517 --> 00:00:34.641
+so product names stay consistent.
+
+12
+00:00:35.150 --> 00:00:38.493
+Each new post now has its
+Spanish version when it is saved.

@@ -1,0 +1,52 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.028
+With Lokalise, strings
+live as keys in projects,
+
+2
+00:00:04.028 --> 00:00:05.849
+synced with your resource files.
+
+3
+00:00:06.650 --> 00:00:08.264
+Lokalise does this well,
+
+4
+00:00:08.264 --> 00:00:11.676
+with one key set per platform
+and over-the-air updates.
+
+5
+00:00:12.150 --> 00:00:16.283
+General Translation translates
+readable copy in your JSX as
+
+6
+00:00:16.283 --> 00:00:17.490
+part of development.
+
+7
+00:00:18.650 --> 00:00:21.564
+Write the prompt
+inside a T component,
+
+8
+00:00:21.564 --> 00:00:23.305
+with the plan name in Var.
+
+9
+00:00:24.150 --> 00:00:29.803
+Then npx gt translate in CI
+translates new copy for its release.
+
+10
+00:00:30.650 --> 00:00:34.028
+Your team can review and edit
+the result in the Dashboard.
+
+11
+00:00:34.650 --> 00:00:37.296
+Your team now ships
+Korean with each release.

@@ -1,0 +1,56 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.596
+Hreflang tells Google
+which URLs are the English,
+
+2
+00:00:04.596 --> 00:00:07.034
+German, and French
+versions of one page.
+
+3
+00:00:07.650 --> 00:00:11.423
+General Translation gives
+every language its own URL,
+
+4
+00:00:11.423 --> 00:00:13.570
+the prerequisite for hreflang.
+
+5
+00:00:14.650 --> 00:00:18.876
+Add hreflang with HTML link tags,
+
+6
+00:00:18.876 --> 00:00:24.599
+HTTP Link headers, or a sitemap;
+Google treats them as equivalent.
+
+7
+00:00:25.150 --> 00:00:27.553
+Each version lists
+itself and every sibling,
+
+8
+00:00:27.553 --> 00:00:29.735
+and every link must be reciprocal.
+
+9
+00:00:30.150 --> 00:00:33.436
+Codes must be valid, such as en-GB,
+
+10
+00:00:33.436 --> 00:00:36.105
+because Google ignores
+the region in en-UK.
+
+11
+00:00:36.650 --> 00:00:38.345
+With these links in place,
+
+12
+00:00:38.345 --> 00:00:42.245
+Google can now show German
+searchers your German pricing page.

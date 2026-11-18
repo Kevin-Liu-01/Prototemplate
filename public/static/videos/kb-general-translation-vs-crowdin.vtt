@@ -1,0 +1,63 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.585
+With Crowdin, engineers keep
+strings in keyed files and sync
+
+2
+00:00:04.585 --> 00:00:06.151
+them to translation projects.
+
+3
+00:00:06.650 --> 00:00:08.322
+Crowdin does this well,
+
+4
+00:00:08.322 --> 00:00:10.261
+with context-aware AI,
+
+5
+00:00:10.261 --> 00:00:11.827
+vendors, and review.
+
+6
+00:00:12.650 --> 00:00:16.052
+General Translation keeps copy
+in components and translates
+
+7
+00:00:16.052 --> 00:00:17.096
+it in your build.
+
+8
+00:00:18.150 --> 00:00:20.739
+Write the copy inline
+inside a T component,
+
+9
+00:00:20.739 --> 00:00:22.189
+with no keys to manage.
+
+10
+00:00:22.650 --> 00:00:28.107
+Then npx gt translate writes
+every language before each app
+
+11
+00:00:28.107 --> 00:00:28.675
+build.
+
+12
+00:00:29.150 --> 00:00:30.694
+To keep your catalogs,
+
+13
+00:00:30.694 --> 00:00:35.117
+npx gt upload first imports
+your reviewed translations.
+
+14
+00:00:35.650 --> 00:00:38.528
+Your team now ships
+Portuguese with each release.

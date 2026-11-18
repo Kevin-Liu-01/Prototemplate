@@ -1,0 +1,63 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:05.107
+ICU message format is a syntax
+for one translatable string
+
+2
+00:00:05.107 --> 00:00:07.174
+with variables, plurals,
+
+3
+00:00:07.174 --> 00:00:09.402
+select choices, and ordinals.
+
+4
+00:00:10.150 --> 00:00:13.099
+English uses the plural
+categories one and other,
+
+5
+00:00:13.099 --> 00:00:15.385
+while Polish adds few and many.
+
+6
+00:00:16.150 --> 00:00:20.237
+General Translation's useGT
+accepts an ICU message and its
+
+7
+00:00:20.237 --> 00:00:20.874
+values.
+
+8
+00:00:22.150 --> 00:00:26.005
+Pass the count, and a $context
+note that says where the message
+
+9
+00:00:26.005 --> 00:00:26.654
+appears.
+
+10
+00:00:27.150 --> 00:00:31.817
+Then npx gt translate generates
+a translation for each target
+
+11
+00:00:31.817 --> 00:00:32.466
+locale.
+
+12
+00:00:33.150 --> 00:00:35.785
+It uses $context, your Glossary,
+
+13
+00:00:35.785 --> 00:00:37.874
+and Custom Prompts as context.
+
+14
+00:00:38.650 --> 00:00:42.736
+Your team now ships every plural
+form in Polish with each release.

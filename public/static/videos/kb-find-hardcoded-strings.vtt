@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:05.885
+A hardcoded string is user-facing
+text in code that skips i18n,
+
+2
+00:00:05.885 --> 00:00:08.102
+so every locale shows
+the source language.
+
+3
+00:00:08.502 --> 00:00:11.729
+Add a linter in CI that
+fails on each new one.
+
+4
+00:00:12.150 --> 00:00:15.587
+General Translation lints the
+text inside &lt;T&gt; and can wrap
+
+5
+00:00:15.587 --> 00:00:16.816
+the text outside it.
+
+6
+00:00:18.150 --> 00:00:23.630
+Pair no-literal-string with
+@generaltranslation/react-core-linter,
+
+7
+00:00:23.630 --> 00:00:25.846
+and exclude &lt;T&gt; from that rule.
+
+8
+00:00:26.650 --> 00:00:30.679
+Locadex's Generate code
+automation wraps untranslated text
+
+9
+00:00:30.679 --> 00:00:32.268
+and opens a pull request.
+
+10
+00:00:32.650 --> 00:00:36.690
+In a pseudo-locale, wrapped
+text turns accented and missed
+
+11
+00:00:36.690 --> 00:00:38.094
+text stays plain.
+
+12
+00:00:38.650 --> 00:00:42.190
+Your team now ships every screen
+translated with each release.

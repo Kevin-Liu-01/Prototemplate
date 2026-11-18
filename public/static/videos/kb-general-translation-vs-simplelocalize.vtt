@@ -1,0 +1,62 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.504
+SimpleLocalize manages keyed
+catalogs in a hosted editor,
+
+2
+00:00:04.504 --> 00:00:07.568
+and a GitHub App or
+CLI syncs the files.
+
+3
+00:00:08.150 --> 00:00:11.726
+General Translation translates
+copy in your components,
+
+4
+00:00:11.726 --> 00:00:13.710
+in your build, without keys.
+
+5
+00:00:15.150 --> 00:00:19.724
+Its AI auto-translation uses key
+descriptions and screenshots,
+
+6
+00:00:19.724 --> 00:00:23.671
+and it hosts translations on
+a CDN with mobile updates.
+
+7
+00:00:24.071 --> 00:00:27.007
+Plans count translation
+keys and team members.
+
+8
+00:00:27.650 --> 00:00:29.322
+With General Translation,
+
+9
+00:00:29.322 --> 00:00:31.725
+copy stays in &lt;T&gt; or your files,
+
+10
+00:00:31.725 --> 00:00:33.593
+and translation runs in your build.
+
+11
+00:00:33.993 --> 00:00:38.126
+Context comes from JSX
+structure and Context Groups,
+
+12
+00:00:38.126 --> 00:00:40.656
+and reviewers join
+without seat fees.
+
+13
+00:00:41.150 --> 00:00:43.831
+Your team now ships
+French with each release.

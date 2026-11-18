@@ -337,7 +337,7 @@ function pages() {
     },
     // motion/ is the Videos session's untracked working folder: the site
     // publishes from public/media and public/motion, so those are listed
-    { id: '/motion', paths: ['src/app/motion', 'src/lib/motion.ts', 'public/motion', 'public/media'] },
+    { id: '/motion', paths: ['src/app/motion', 'src/lib/motion.ts', 'src/lib/motion-roster.ts', 'src/lib/kb-films.ts', 'public/motion', 'public/media', 'public/static/videos'] },
     { id: '/raise', paths: ['src/app/raise', 'src/lib/raise.ts'] },
     ...packageSlugs().map((s) => ({
       id: `/motion/${s}`,

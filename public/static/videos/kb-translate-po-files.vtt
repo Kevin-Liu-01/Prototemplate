@@ -1,0 +1,63 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:03.900
+A POT file holds the source strings,
+
+2
+00:00:03.900 --> 00:00:07.928
+and each PO file pairs them with
+one language's translations.
+
+3
+00:00:08.650 --> 00:00:12.795
+General Translation writes a
+translated PO file for each language
+
+4
+00:00:12.795 --> 00:00:14.756
+from your POT template.
+
+5
+00:00:16.150 --> 00:00:19.772
+Fill every msgstr,
+including each plural form,
+
+6
+00:00:19.772 --> 00:00:23.313
+and keep msgid, msgctxt,
+
+7
+00:00:23.313 --> 00:00:25.286
+and placeholders unchanged.
+
+8
+00:00:25.650 --> 00:00:29.772
+Add a pot entry to gt.config.json
+with the PO transformation
+
+9
+00:00:29.772 --> 00:00:30.421
+format.
+
+10
+00:00:30.821 --> 00:00:35.999
+Then npx gt translate fills
+every plural form Polish needs,
+
+11
+00:00:35.999 --> 00:00:36.776
+three in all.
+
+12
+00:00:37.150 --> 00:00:39.309
+Run msgfmt with the check flag,
+
+13
+00:00:39.309 --> 00:00:41.340
+and check that no msgstr is empty.
+
+14
+00:00:42.150 --> 00:00:45.005
+Your team now ships
+Polish with each release.
