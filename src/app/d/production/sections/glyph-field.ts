@@ -193,8 +193,8 @@ export function createGlyphField(
 
   const disp =
     options.displayFamily ||
-    // next/font registers Inter under a generated family name, so a literal
-    // 'Inter' would miss it; the page's own computed face is the real default.
+    // next/font registers the text face under a generated family name, so a
+    // literal family name would miss it; the page's computed face is the real default.
     getComputedStyle(document.body).fontFamily;
   const mono =
     options.monoFamily || "ui-monospace, 'SF Mono', Menlo, Consolas, monospace";

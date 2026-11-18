@@ -1,7 +1,7 @@
 ---
 document_type: "reference"
 description: "Terms governing use of General Translation services."
-last_updated: "2026-10-07"
+last_updated: "2026-10-27"
 ---
 
 # Terms of Service
@@ -46,13 +46,15 @@ The GT Technology may support integration with third-party platforms or services
 
 You hereby grant us a non-exclusive, worldwide, sublicensable right to use, copy, store, transmit, transfer, modify, create derivative works from and otherwise Process data, materials, and information that you (including your Users) input into or otherwise provide or make available to us through the GT Technology or otherwise in connection with the Services (including data transmitted to us by the GT Platform or accessed through a Third-Party Platform) (collectively, “**Your Data**”) to: (a) provide Services to you; and (b) Process and generate artificial intelligence outputs through the GT Platform (“**Outputs**”).
 
+We will not use Your Data or Outputs, including aggregated, anonymized, or de-identified forms of either, to train or fine-tune artificial intelligence or machine-learning models, or permit our subcontractors to do so.
+
 ### 3.2. Ownership of Outputs
 
 To the extent that the generation of Outputs by the GT Platform results in the generation of new intellectual property rights, we hereby assign to you title to such intellectual property rights. For clarity, and without limitation, the foregoing assignment does not include any intellectual property rights in or to GT Technology, GT Open Source, or GT Source Available, improvements or derivatives thereof, or intellectual property rights which GT came to own other than as a result of such generation of Outputs.
 
 ### 3.3. Feedback and Usage Data
 
-To the extent you provide us with feedback (including suggestions and comments for enhancements or functionality) regarding the GT Technology, or our products, services, or other technology (collectively, “**Feedback**”), we have the full and unrestricted right to use and exploit the Feedback or to incorporate Feedback into any products, services, technology, or other materials. We may collect and use data and information regarding you and your Users' access to and use of the Services, including data about feature usage, session activity, performance metrics, error logs, configurations, and interactions with the GT Technology (collectively, "**Usage Data**"). Usage Data may be collected through cookies and similar technologies; by registering for an account or using the Services, you agree to such collection and recording. We have the right to use Usage Data for any lawful business purpose, including to operate, maintain, improve, and enhance the GT Technology and Services, to develop new products and services, to generate aggregated or de-identified analytics and benchmarking data, monitor usage and perform billing, and to fulfill our obligations under these Terms. Usage Data does not include Your Data. We retain all right, title, and interest in and to Usage Data.
+To the extent you provide us with feedback (including suggestions and comments for enhancements or functionality) regarding the GT Technology, or our products, services, or other technology (collectively, “**Feedback**”), we have the full and unrestricted right to use and exploit the Feedback or to incorporate Feedback into any products, services, technology, or other materials. We may collect and use data and information regarding you and your Users' access to and use of the Services, including data about feature usage, session activity, performance metrics, error logs, configurations, and interactions with the GT Technology (collectively, "**Usage Data**"). Usage Data may be collected through cookies and similar technologies; by registering for an account or using the Services, you agree to such collection and recording. We have the right to use Usage Data for any lawful business purpose, including to operate, maintain, improve, and enhance the GT Technology and Services, to develop new products and services, to generate aggregated or de-identified analytics and benchmarking data, monitor usage and perform billing, and to fulfill our obligations under these Terms. Usage Data does not include Your Data. We retain all right, title, and interest in and to Usage Data. The rights granted in this Section do not override the prohibition on model training and fine-tuning in Section 3.1.
 
 ### 3.4. Reservation of Rights
 
@@ -206,7 +208,7 @@ Nothing in these Terms prohibits Recipient from making disclosures of Confidenti
 
 ## 15. Publicity
 
-Nothing in these Terms grants either Party the right to use the name, brand, or logo of the other Party, and neither Party may publicly announce that the Parties have entered into these Terms, except with the other Party’s prior consent or as required by Laws. However, we may use your (or your parent company’s) name, brand, or logo for the purpose of identifying you as a licensee or customer on our website or in other promotional materials, or as part of a list of our customers in a press release or other public relations materials announcing your use of the GT Technology. We will cease further use at your written request.
+Nothing in these Terms grants either Party the right to use the name, brand, or logo of the other Party, and neither Party may publicly announce that the Parties have entered into these Terms, except with the other Party’s prior consent or as required by Laws. However, we may use your (or your parent company’s) name, brand, or logo for the purpose of identifying you as a licensee or customer on our website or in other promotional materials, or as part of a list of our customers in a press release or other public relations materials announcing your use of the GT Technology.
 
 ## 16. General Terms
 
