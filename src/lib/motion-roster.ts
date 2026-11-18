@@ -46,12 +46,21 @@ function fromKb(film: KbFilm): MotionFilm {
   };
 }
 
+/**
+ * Roster films gt-cloud publishes under a later slug: the same answer, cut
+ * again and renamed. The roster film plays gt-cloud's cut, which ends on the
+ * refined logo, and gt-cloud's row is not listed twice.
+ */
+const RENAMED: Readonly<Record<string, string>> = {
+  'kb-translate-tanstack-start-app': 'kb-add-i18n-to-tanstack-start',
+};
+
 const KB_BY_SLUG = new Map(KB_FILMS.map((film) => [film.slug, film]));
-const ROSTER_SLUGS = new Set(MOTION_FILMS.map((film) => film.slug));
+const ROSTER_SLUGS = new Set(MOTION_FILMS.map((film) => RENAMED[film.slug] ?? film.slug));
 
 /** The roster with gt-cloud's film and poster on each knowledge base film it publishes. */
 const ROSTER: readonly MotionFilm[] = MOTION_FILMS.map((film) => {
-  const kb = KB_BY_SLUG.get(film.slug);
+  const kb = KB_BY_SLUG.get(RENAMED[film.slug] ?? film.slug);
   return kb ? { ...film, media: { video: kb.video, poster: kb.poster } } : film;
 });
 
