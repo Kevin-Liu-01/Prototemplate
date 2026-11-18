@@ -7,11 +7,15 @@
  * this repo does not carry), so the frontmatter is transcribed here.
  * Nothing is paraphrased. Source: generaltranslation/content at 361ec4a8
  * and the live generaltranslation.com/en-US/blog, read on 2026-10-13; the
- * posts at content main 333efa3b, read on 2026-10-30.
+ * posts at content main 333efa3b, read on 2026-10-30, and Paraglide JS at
+ * content main 1e4522e7, read on 2026-11-18.
  *
- *   POSTS:    content/blog/en-US/*.mdx, all six, in the order of
+ *   POSTS:    content/blog/en-US/*.mdx in the order of
  *              content/blog/order.json, which the shipped index applies
- *              before rendering (gt-cloud #5211, orderPosts).
+ *              before rendering (gt-cloud #5211, orderPosts): seven of the
+ *              eight live posts. One post stays out
+ *              of this public repository, so the mirror's index is
+ *              live's less that one card.
  *   AUTHORS:  content/authors/<slug>.mdx (name and avatar) for the
  *              authors the posts name, co-authors included (gt-cloud #4855).
  *   RELEASES: content/devlog/en-US/*.mdx, all 55, in the order the live
@@ -57,11 +61,21 @@ const AUTHORS = {
   archie: { name: 'Archie McKenzie', avatar: '/static/avatars/archie.png' },
   kevin: { name: 'Kevin Liu', avatar: '/static/avatars/kevin.png' },
   'kevin-wu': { name: 'Kevin Wu', avatar: '/static/avatars/kevin-wu.jpg' },
+  samuel: { name: 'Samuel Stroschein', avatar: '/static/avatars/samuel.jpg' },
   taylor: { name: 'Taylor Fang', avatar: '/static/avatars/taylor.png' },
 } as const satisfies Record<string, IndexAuthor>;
 
 /** content/blog/en-US: the whole tree, in content/blog/order.json order. */
 export const POSTS: readonly IndexPost[] = [
+  {
+    slug: 'paraglide-js',
+    title: 'Paraglide JS is joining General Translation',
+    date: '2026-11-16',
+    summary: 'Paraglide JS, the compiler-based i18n library, is now maintained by the GT team',
+    tags: ['company', 'announcement', 'paraglide', 'i18n', 'developers'],
+    images: ['/static/blogs/paraglide-js/cover.webp?v=20261116-1900'],
+    authors: [AUTHORS.taylor, AUTHORS.samuel],
+  },
   {
     slug: 'daniel-white',
     title: 'Daniel White: Interfaces that follow the physics of sound',

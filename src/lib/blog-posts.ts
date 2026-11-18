@@ -41,6 +41,30 @@ export type BlogRelease = {
 /** Every post, newest first. */
 export const BLOG_POSTS: readonly BlogPostMeta[] = [
   {
+    slug: 'paraglide-js',
+    title: 'Paraglide JS is joining General Translation',
+    summary: 'Paraglide JS, the compiler-based i18n library, is now maintained by the GT team',
+    date: '2026-11-16',
+    authors: [
+      {
+        slug: 'taylor',
+        name: 'Taylor Fang',
+        occupation: 'Writer',
+        company: 'General Translation',
+        avatar: '/static/avatars/taylor.png',
+      },
+      {
+        slug: 'samuel',
+        name: 'Samuel Stroschein',
+        occupation: 'Founder',
+        company: 'inlang',
+        avatar: '/static/avatars/samuel.jpg',
+      },
+    ],
+    tags: ['company', 'announcement', 'paraglide', 'i18n', 'developers'],
+    image: '/static/blogs/paraglide-js/cover.webp?v=20261116-1900',
+  },
+  {
     slug: 'daniel-white',
     title: 'Daniel White: Interfaces that follow the physics of sound',
     summary: 'Why Daniel cares about the touches that make a page seem alive, and how he’s bringing a new sense to interface design',

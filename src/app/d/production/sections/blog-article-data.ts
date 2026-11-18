@@ -8,7 +8,10 @@
  * neighbour links read; nothing is paraphrased and nothing is added:
  *
  *   AUTHORS      content/authors/<slug>.mdx: `name` and `avatar`.
- *   BLOG_POSTS   content/blog/en-US: all six posts.
+ *   BLOG_POSTS   content/blog/en-US: seven of live's eight posts, all but
+ *                one, which stays out of this
+ *                public repository (Paraglide JS at content main 1e4522e7,
+ *                read on 2026-11-18).
  *   DEVLOG_POSTS content/devlog/en-US: all 55 releases.
  *
  * Source: the public generaltranslation/content repository at befd13c1
@@ -46,6 +49,7 @@ export const AUTHORS: Readonly<Record<string, ArticleAuthor>> = {
   jackie: { name: 'Jackie Chen', avatar: '/static/avatars/jackie.png' },
   kevin: { name: 'Kevin Liu', avatar: '/static/avatars/kevin.png' },
   'kevin-wu': { name: 'Kevin Wu', avatar: '/static/avatars/kevin-wu.jpg' },
+  samuel: { name: 'Samuel Stroschein', avatar: '/static/avatars/samuel.jpg' },
   cyan: { name: 'Chenxin (Cyan) Yan', avatar: '/static/avatars/cyan.jpg' },
   taylor: { name: 'Taylor Fang', avatar: '/static/avatars/taylor.png' },
   default: { name: 'Team', avatar: '/static/avatars/logo.png' },
@@ -73,6 +77,15 @@ export type ArticlePost = {
 
 /** content/blog/en-US, newest first. */
 export const BLOG_POSTS: readonly ArticlePost[] = [
+  {
+    slug: 'paraglide-js',
+    title: 'Paraglide JS is joining General Translation',
+    date: '2026-11-16',
+    authors: ['taylor', 'samuel'],
+    summary: 'Paraglide JS, the compiler-based i18n library, is now maintained by the GT team',
+    tags: ['company', 'announcement', 'paraglide', 'i18n', 'developers'],
+    images: ['/static/blogs/paraglide-js/cover.webp?v=20261116-1900'],
+  },
   {
     slug: 'daniel-white',
     title: 'Daniel White: Interfaces that follow the physics of sound',

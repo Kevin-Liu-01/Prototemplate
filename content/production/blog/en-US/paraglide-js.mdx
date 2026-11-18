@@ -1,0 +1,33 @@
+---
+title: Paraglide JS is joining General Translation
+summary: Paraglide JS, the compiler-based i18n library, is now maintained by the GT team
+date: 2026-11-16
+authors: [taylor, samuel]
+tags: ['company', 'announcement', 'paraglide', 'i18n', 'developers']
+images: ['/static/blogs/paraglide-js/cover.webp?v=20261116-1900']
+ogImages: ['/static/blogs/paraglide-js/og.png?v=20261116-1900']
+---
+
+We’re excited to announce that [Paraglide JS](https://paraglidejs.com) is now part of General Translation.
+
+Paraglide JS is an **open-source i18n library** for React, TanStack Start, SvelteKit, and any Vite app, with nearly **3.9M monthly npm downloads**. The library’s users include devs at companies like Disney, Starbucks, Klaviyo, Lovable, and Brave.
+
+We’re doubling down on our commitment to dev tools by maintaining and investing in Paraglide alongside our GT internationalization (i18n) libraries.
+
+## The story behind Paraglide and GT
+
+Paraglide has worked on nailing its **compiler-based approach for nearly two years.** We believe this approach is the right direction for i18n.
+
+While most i18n libraries look up translations at runtime (in the user’s browser, after the app loads), Paraglide does that work at buildtime (when compiling your app). With Paraglide, each message compiles to a small typed ESM function. The bundler treats these functions like any other module, bundled or preloaded with the app code and tree-shaken when unused.
+
+We believe **more of the work an i18n library does should happen at buildtime**, before the app reaches a user. Paraglide’s pioneering compiler-first design was built on the same philosophy, which made it easy to find a natural home for Paraglide alongside the GT open-source i18n libraries.
+
+We respect deeply what Paraglide and its creator, Samuel Stroschein, have built. We look forward to continuing to maintain and invest in a popular internationalization library used by developers the world over.
+
+## What does this mean for Paraglide users?
+
+We recognize how important Paraglide JS is for thousands of applications as fundamental web dev infrastructure. Paraglide will remain free and open source under the MIT license. Existing users will not experience disruptions: we will **keep addressing security issues and fixing bugs and urgent issues as they come up, as well as continue investing in new features.**
+
+Paraglide will also get new, optional paths to GT inference and context-aware translation. We will adapt our full ecosystem to work with Paraglide, including our translation CLI and dashboard. Check out the quickstart [here](/docs/integrations/paraglide/quickstart).
+
+We’re very glad to welcome Paraglide JS to General Translation, in support of our mission to bring world-class products into every language.

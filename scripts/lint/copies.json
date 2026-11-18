@@ -137,6 +137,20 @@
       "reason": "the text of generaltranslation.com/legal/terms, vendored 2026-10-14 for /d/production/legal/terms and re-synced 2026-11-18 at legal 3375cf0d (no publicity opt-out; no model training on self-serve inputs and outputs); a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
     },
     {
+      "path": "content/blog/paraglide-js.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@1e4522e7:blog/en-US/paraglide-js.mdx (content main, which the live deploy checks out)",
+      "sha256": "ad3dd0bffc974fb7aeded765b6db2eedaa68d81a39aba244eb26a977103b7e59",
+      "reason": "the text of generaltranslation.com/blog/paraglide-js, which /blog/paraglide-js renders, copied 2026-11-18 at content main 1e4522e7; its cover, social card and its co-author's avatar are gt-cloud's (#5982, #5989); a re-sync copies the file and records the new sha256"
+    },
+    {
+      "path": "content/production/blog/en-US/paraglide-js.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@1e4522e7:blog/en-US/paraglide-js.mdx (content main, which the live deploy checks out)",
+      "sha256": "ad3dd0bffc974fb7aeded765b6db2eedaa68d81a39aba244eb26a977103b7e59",
+      "reason": "the body of /d/production/blog/paraglide-js, copied 2026-11-18 at content main 1e4522e7; a re-sync copies the file and records the new sha256"
+    },
+    {
       "path": "content/blog/daniel-white.mdx",
       "mode": "fork",
       "from": "github.com/generaltranslation/content@bc2f97167c5b30aa5e2a85b208eab782ab39d62e:blog/en-US/daniel-white.mdx (content main, which the live deploy checks out)",
