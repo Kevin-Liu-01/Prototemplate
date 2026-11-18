@@ -76,7 +76,7 @@ Label sizes and floors differ by surface.
 | surface | label sizes | floor |
 | --- | --- | --- |
 | deck sheet, 1600 by 900 | 20px in `--ink-2` (`svg.dia text`), 26px in ink at weight 500 (`.lab`) | 18px (`.sm`); any text under 15px on the sheet is a defect |
-| blog graphic, 1600 by 900 stage shown at 0.44x in the article column | label chips 28px Inter 600; measurement labels 28px Geist Mono on a backing pill | 26px after zoom-to-fit (`MIN_TEXT` in `graphics/build/gen-lib.js`, held by `pnpm graphics:audit`) |
+| blog graphic, 1600 by 900 stage shown at 0.44x in the article column | labels 30px Katagami Text; code 26 to 28px Katagami Mono (gt-graphics, Sizing) | 26px after zoom-to-fit (`MIN_TEXT` in `graphics/build/gen-lib.js`, held by `pnpm graphics:audit`) |
 | film, 1920 by 1080 | the deck ladder at 1920 in `motion/kit/tokens.css` (`.t-cap` 18 to `.t-display` 106) | 18px |
 | page | the page's own type tokens | the page's smallest label token, at the narrowest width the figure renders (check 390) |
 

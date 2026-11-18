@@ -52,15 +52,17 @@ The article column is about 700 CSS px wide on desktop: 720px on Prototemplate's
 | Element | Size on the stage |
 | --- | --- |
 | Any text | 26px or more after zoom-to-fit. `MIN_TEXT` in `gen-lib.js` holds the floor and `audit.js` fails the run below it. |
-| Label chip | 28px Inter 600 in a 46px chip (`chipStyle(28)` in `gen-visuals.js`) |
+| Label chip | 30px Katagami Text 500 in a 46px chip; a chip that holds a path or code is 28px Katagami Mono |
 | Tag and badge | 30px, 54px tall (`.tag`) and 50px tall (`.badge`) |
-| Numbered dot | 56px disc with a 28px numeral (`dot(x, y, n, color, 56)`) |
-| Panel header | 32px with a 34px icon (`.plabel`) |
-| Measurement label | 28px Geist Mono on a dark backing pill (`.measure`) |
+| Numbered dot | 56px disc with a 30px numeral (`dot(x, y, n, color, 56)`) |
+| Panel header | 32px with a 34px icon (`.plabel`); a code panel's file-name header is 26px Katagami Mono, a text header beside it 28px Katagami Text |
+| Code and measurement label | 26px Katagami Mono in code panels; 28px on a dark backing pill (`.measure`) |
 | Lines and rulers | 3px; ruler caps 18 by 3px |
 | Crops | 1.2x or larger when they carry text the reader must read |
 | Crop corners | 8px radius with a 1px `#3f3f46` border; highlight boxes 6px |
 | Ground | twice the stage height, aspect kept, `image-rendering: pixelated`; dimmed to 36 percent under article visuals (`BG_WASH = 0.64`), covers at their own light wash of 0.1 to 0.3 |
+
+Blog graphics set labels in Katagami Text and code, file paths, tokens and locale codes in Katagami Mono (Kevin, 2026-11-18). Katagami Mono's x-height is 0.546 em against Katagami Text's 0.498, so a Text label sitting beside mono is set about 1.1 times the mono size, 2px larger at 26 to 28px, to match it by eye: a 30px label chip next to a 28px mono chip, a 28px card header over 26px code. Katagami Mono advances 0.625 em a character (16.25px at 26px), wider than Geist Mono's 0.6, so measure a code panel's width from that advance before checking the floor. `graphics/` still sets Inter and Geist Mono until it switches; new work follows these sizes.
 
 The stage script (`CENTER_SCRIPT` in `gen-lib.js`) centres the composition. When the composition is larger than 90 percent of the frame it scales it down to fit, never below 0.8 and never above 1, and the labels shrink with it. Covers (area `H`) skip the fit. When the audit reports text under the floor, make the composition narrower with smaller crops, shorter labels or one label column. Enlarging the type makes the composition wider, and the fit then scales it back down.
 
