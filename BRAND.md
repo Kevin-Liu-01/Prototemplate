@@ -253,8 +253,8 @@ third section, Black, white, dither and blue.
   text: headlines, interface chrome, captions, long-form reading and
   documentation prose. It replaced Inter. The build is Katagami Text 1.200,
   roman and italic, variable on one axis (wght 100 to 900), self-hosted as
-  WOFF2 and never loaded from a font CDN. generaltranslation.com is
-  switching all its text to it (gt-cloud #5765).
+  WOFF2 and never loaded from a font CDN. generaltranslation.com sets
+  all its text in it since gt-cloud #5765 merged on 2026-11-09.
 - **Known gap: some builds still render Inter** until their own switch:
   prototemplate.com (the shell, the deck and `/brand`), its films kit,
   and gt-cloud's dashboard. The blog graphics toolchain sets its labels in
@@ -328,6 +328,36 @@ The identity is applied on four kinds of surface today.
   doubled-line monogram, the previous mark. The title badge in the
   `/brand` head holds the logo alone, with its hover; the explorations
   stay on `/marks`.
+
+**Where the logo is, 2026-11-18.** Every General Translation surface
+draws the refined globe from the one path, `LOGO`, or a byte-for-byte
+copy of it:
+
+- **The site.** generaltranslation.com's header, footer, blog and tool
+  pages, and the docs logo (gt-cloud #5933, merged 2026-11-14;
+  `gt-mark-pin.test.ts` there fails on any other path). The docs lockup
+  still keeps the 11-09 spacing until gt-cloud #5935 merges.
+- **The dashboard and admin.** The dashboard header and the sign-in plate
+  run `GtLogoMotion` on hover; the admin's favicon is the logo and its
+  route loader is `GtLogoMotion`'s loader (#5823, #5934).
+- **Atlas.** The press mark and seal cut the logo (`AtlasMark`, pinned
+  by the same test).
+- **Emails.** The 11 email headers open on the logo (#5936).
+- **Knowledge base films.** All 99 films end on the logo, served from
+  `films/v2` on the films store, with the 60 posters that show it
+  (gt-cloud #6044, 2026-11-18). `/motion` plays those files and
+  `scripts/lint/logo.json` lists each poster as checked.
+- **This site and its kit.** The hub's chrome, `/brand`, the deck, the
+  brand kit and every generated file (`pnpm build:logo`).
+- **Glyphfield and Turboslide.** Glyphfield's GT brand marks and
+  Turboslide's theme sprite carry `LOGO.d` byte for byte
+  (`pnpm lint:logo --external` notes each copy).
+
+Films and pictures made before 2026-11-12 keep the 11-06 globe and are
+history in the lock: the translation series, the blog trailers, the
+Slash announcement, and the hub's own earlier knowledge base cuts in
+`public/media`, which `/motion` no longer plays where gt-cloud publishes
+the film.
 
 When in doubt about how the brand behaves, read the shipped surface the
 work belongs to.

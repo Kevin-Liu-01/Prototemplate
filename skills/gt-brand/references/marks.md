@@ -21,6 +21,7 @@ The logo, the refined globe, is General Translation's mark: Kevin's drawing of 2
 - The logo is round, so a box set by height is square. Beside the stacked name it follows the lockup rule below. It never sits inline in a sentence ("The name in running text" below).
 - At 32 px the globe, the G and the T's stem all read. At 16 px the ring and the axis read and the inner ovals close up, so the favicon reads as a ringed globe (checked by eye on 2026-11-08).
 - Prototemplate's own tab icons (`public/favicon.ico`, `apple-touch-icon.png`, `pt-mark.svg`) are the hub's mark, not General Translation's, and stay.
+- Where the logo is (2026-11-18): generaltranslation.com and its docs, the dashboard and the admin (`GtLogoMotion` hover and loader), Atlas, the 11 email headers, all 99 knowledge base films and their 60 logo posters (gt-cloud #6044, `films/v2`), this site, its deck and the brand kit, Glyphfield's GT marks and Turboslide's theme sprite. BRAND.md section 8 lists each with its pull request; `pnpm lint:logo --external` checks the copies in other repositories.
 
 ### The previous mark
 

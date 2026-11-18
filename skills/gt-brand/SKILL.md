@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Brand and Katagami Text
   areas: aesthetic
-  updated: 2026-11-09
+  updated: 2026-11-18
   origin: prototemplate
   owner: P
 ---
@@ -97,12 +97,12 @@ The color rules have four documented exceptions, each named in `references/color
 
 **Katagami Text is the one typeface** (Kevin, 2026-11-09: "YES. katagami text"). It sets everything: the name in the logo, display, interface and body. It replaced Inter. Geist Mono sets code. Detail: `references/type.md`.
 
-**Known gap.** Some builds still render Inter until their own switch: prototemplate.com (the shell, the deck, `/brand`; `pnpm lint:type` holds that build), its films kit (`motion/kit`) and blog graphics (`graphics/`), and gt-cloud's dashboard (`--font-sans`; #5765 switches only the landing). The Inter block below describes them until then. New work anywhere else takes Katagami Text.
+**Known gap.** Some builds still render Inter until their own switch: prototemplate.com (the shell, the deck, `/brand`; `pnpm lint:type` holds that build), its films kit (`motion/kit`) and blog graphics (`graphics/`), and gt-cloud's dashboard (`--font-sans`; #5765 switched only the landing). The Inter block below describes them until then. New work anywhere else takes Katagami Text.
 
 **The face.** Katagami Text 1.200 from the Katagami family (katagami.kevinliu.studio, SIL Open Font License 1.1): roman and italic, variable on one axis, wght 100 to 900, no optical size axis. 15,212 glyphs: Latin, Greek, Cyrillic and 28 more scripts. Cap height 1430 of 2048 units (0.698em).
 
 - The sources are `fonts/text/KatagamiText[wght].ttf` and `KatagamiText-Italic[wght].ttf` in the Katagami repository. The brand kit ships them with full WOFF2 files made from them.
-- generaltranslation.com is switching to it in gt-cloud #5765: WOFF2 subsets cut to InterVariable's 2,852 code points (`$GT_CLOUD/apps/landing/public/fonts/KatagamiText.woff2` and `-Italic.woff2`), bound as `katagamiText` on `--font-sans`, with gt-ui's `inter-only` renamed `katagami-text-only`.
+- generaltranslation.com sets it since gt-cloud #5765 (2026-11-09): WOFF2 subsets cut to InterVariable's 2,852 code points (`$GT_CLOUD/apps/landing/public/fonts/KatagamiText.woff2` and `-Italic.woff2`), bound as `katagamiText` on `--font-sans`, with gt-ui's `inter-only` renamed `katagami-text-only`.
 - Self-host it; never load it from a font CDN. Declare it under its own name, `'Katagami Text'`, never a `GT` family name.
 
 **Weights.** 400 for running text and long-form reading. 500 for labels, headings, display text, `b` and `strong`. Nothing above 500 and nothing below 400. The browser's `bolder` turns `b` and `strong` into 700, so a base rule sets them to 500.
@@ -121,7 +121,7 @@ The color rules have four documented exceptions, each named in `references/color
 
 **Exceptions.** The nameplate's Fraunces and Space Grotesk, the gallery's grotesk labels on `/`, the `/d/` directions, the presenter's faces, the weight specimens (deck slide 27, `.ptb-display`) and the speed marks' outline faces. Each is named in `references/type.md` so no sweep removes it.
 
-**Enforcement.** gt-cloud's gt-ui rules `katagami-text-only` (`inter-only` until #5765 lands), `mono-is-not-voice`, `no-thin-font` and `typed-text-var`. Prototemplate's `scripts/lint/type.mjs` (static in `pnpm build`, `pnpm lint:type:live`, `pnpm test:type`) and its copy of gt-ui still hold the Inter build until the switch. What each fails: `references/type.md`; the wiring: `gt-lints`.
+**Enforcement.** gt-cloud's gt-ui rules `katagami-text-only` (`inter-only` before #5765), `mono-is-not-voice`, `no-thin-font` and `typed-text-var`. Prototemplate's `scripts/lint/type.mjs` (static in `pnpm build`, `pnpm lint:type:live`, `pnpm test:type`) and its copy of gt-ui still hold the Inter build until the switch. What each fails: `references/type.md`; the wiring: `gt-lints`.
 
 ## 5. Marks
 
@@ -158,7 +158,7 @@ The brand questionnaire was finalised on 2026-08-11. Its avoid list, BRAND.md se
 | em dashes in rendered text (Kevin, 2026-08-11: zero on the site) | gt-ui `no-em-dash` |
 | exclamation marks | review |
 | a trailing period on a heading | gt-ui `no-heading-period` |
-| a second typeface, a weight above 500 or under 400 | gt-ui `katagami-text-only` (`inter-only` until #5765), `no-thin-font`; `lint-type` |
+| a second typeface, a weight above 500 or under 400 | gt-ui `katagami-text-only` (`inter-only` before #5765), `no-thin-font`; `lint-type` |
 | a gif as a mark or a demo frame | gt-ui `no-gif-mark` |
 | shadows on any surface | review; the dashboard's plate pages remove them in `brand-tokens.css`, which keeps one for the credits card (section 3) |
 
