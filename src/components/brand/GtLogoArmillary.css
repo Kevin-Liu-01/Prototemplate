@@ -1,14 +1,15 @@
 /* GtLogoArmillary. The box, the hidden label and the loader layers are
    GtLogoMotion.css's (the root carries .gt-logo-motion with no mode, so
-   none of its animations run); the script writes the channels and the
-   layers' visibility. Under reduced motion no clock starts, and these rules
-   hold the still logo whatever the last frame was. */
-@media (prefers-reduced-motion: reduce) {
-  .gt-logo-armillary .gt-logo-armillary-rest {
-    visibility: visible !important;
+   none of its animations run); the script writes the channels and marks
+   the root data-moving while a frame is not the still logo. Only motion
+   allowed swaps the layers, so under reduced motion the still logo shows
+   whatever the last frame was. */
+@media (prefers-reduced-motion: no-preference) {
+  .gt-logo-armillary[data-moving] .gt-logo-armillary-rest {
+    visibility: hidden;
   }
 
-  .gt-logo-armillary .gt-logo-armillary-move {
-    visibility: hidden !important;
+  .gt-logo-armillary[data-moving] .gt-logo-armillary-move {
+    visibility: visible;
   }
 }

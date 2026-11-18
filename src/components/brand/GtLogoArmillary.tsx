@@ -89,8 +89,6 @@ export default function GtLogoArmillary({ size = 56, label = 'Loading', loading 
 
   const rootRef = useRef<HTMLSpanElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const restRef = useRef<SVGPathElement>(null);
-  const moveRef = useRef<SVGGElement>(null);
   const standRef = useRef<SVGGElement>(null);
   const frontRef = useRef<SVGPathElement>(null);
   const backRef = useRef<SVGPathElement>(null);
@@ -130,8 +128,8 @@ export default function GtLogoArmillary({ size = 56, label = 'Loading', loading 
       cutRef.current?.setAttribute('d', rings?.standCut || EMPTY);
       if (frame.phase !== state.phase) {
         state.phase = frame.phase;
-        restRef.current?.style.setProperty('visibility', moving ? 'hidden' : 'visible');
-        moveRef.current?.style.setProperty('visibility', moving ? 'visible' : 'hidden');
+        if (moving) rootRef.current?.setAttribute('data-moving', '');
+        else rootRef.current?.removeAttribute('data-moving');
         if (frame.phase === 'swing') standRef.current?.setAttribute('mask', url('stand'));
         else standRef.current?.removeAttribute('mask');
       }
@@ -197,7 +195,7 @@ export default function GtLogoArmillary({ size = 56, label = 'Loading', loading 
   const rings = first.rings;
   const root = className ? `gt-logo-motion gt-logo-armillary ${className}` : 'gt-logo-motion gt-logo-armillary';
   return (
-    <span ref={rootRef} className={root} role='status' aria-live='polite'>
+    <span ref={rootRef} className={root} role='status' aria-live='polite' data-moving={moving ? '' : undefined}>
       <svg ref={svgRef} viewBox={G.viewBox} width={size} height={size} fill='currentColor' aria-hidden='true' focusable='false' style={svgStyle}>
         <defs>
           <path id={id('logo')} fillRule={G.rest.fillRule} d={G.rest.d} />
@@ -258,8 +256,8 @@ export default function GtLogoArmillary({ size = 56, label = 'Loading', loading 
             <use href={href('front')} fill='none' stroke='#000' strokeWidth={CUT} />
           </mask>
         </defs>
-        <path ref={restRef} className='gt-logo-armillary-rest' fillRule={G.rest.fillRule} d={G.rest.d} style={{ visibility: moving ? 'hidden' : 'visible' }} />
-        <g ref={moveRef} className='gt-logo-motion-move gt-logo-armillary-move' style={{ visibility: moving ? 'visible' : 'hidden' }}>
+        <path className='gt-logo-armillary-rest' fillRule={G.rest.fillRule} d={G.rest.d} />
+        <g className='gt-logo-motion-move gt-logo-armillary-move'>
           <g ref={standRef} mask={first.phase === 'swing' ? url('stand') : undefined}>
             <g className='gt-logo-motion-stack'>
               <use href={href('logo')} mask={url('free')} />
