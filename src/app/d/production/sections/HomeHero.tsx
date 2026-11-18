@@ -25,7 +25,7 @@ const CUSTOMERS: readonly { name: string; mark: string }[] = [
   { name: 'Cursor', mark: 'is-cursor' },
   { name: 'Ramp', mark: 'is-ramp' },
   { name: 'Mintlify', mark: 'is-mintlify' },
-  { name: 'Profound', mark: 'is-profound' },
+  { name: 'Sierra', mark: 'is-sierra' },
   { name: 'Partiful', mark: 'is-partiful' },
   { name: 'ClickHouse', mark: 'is-clickhouse' },
 ];

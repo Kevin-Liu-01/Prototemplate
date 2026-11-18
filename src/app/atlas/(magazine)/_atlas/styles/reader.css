@@ -485,6 +485,13 @@
   /* the story spans the whole column and its words keep the measure, centred in it and clear of the rail on the left;
      the title page and the epigraph share the centre line */
   .gtp-print-text .gtp-print-page { box-sizing: border-box; width: 100%; padding-inline: max(88px, (100% - var(--gtp-print-measure)) / 2); }
+  /* once the cover lifts the stage is the page's own paper, so the story sits between the rail and the stage's
+     pictures rather than in the middle of its column; the title page and the epigraph keep the column's centre,
+     beside the cover (gt-cloud #5701) */
+  .gtp-reader[data-edition='magazine'] .gtp-print-text .gtp-print-page {
+    padding-left: max(88px, (100% - var(--gtp-print-measure)) * 0.8);
+    padding-right: max(24px, (100% - var(--gtp-print-measure)) * 0.2);
+  }
   .gtp-print-text .gtp-print-fig { display: none; }
   /* the line that leads into a live figure reads only where the figure follows it in the text */
   .gtp-print-text .gtp-print-page p:has(+ .gtp-print-at[data-live]) { display: none; }
@@ -511,7 +518,9 @@
 
 @media (max-width: 899px) {
   /* narrower and smaller on a phone, so the text keeps a margin each side and stays clear of the rail */
-  .gtp-print-page { width: calc(100% - 72px); padding-top: 40px; }
+  /* right of centre, so the ragged text reads as centred under the epigraph, which keeps the window's centre (gt-cloud #5701) */
+  .gtp-print-page { width: calc(100% - 72px); margin-left: 52px; margin-right: 20px; padding-top: 40px; }
+  .gtp-print-page .gtp-print-epigraph { margin-inline: -16px 16px; }
   .gtp-print-page p, .gtp-print-page li { font-size: 15px; line-height: 1.55; }
   .gtp-print-page h2 { font-size: 25px; }
   .gtp-print-fig { width: calc(100vw - 72px); }

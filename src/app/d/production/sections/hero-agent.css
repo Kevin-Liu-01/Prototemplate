@@ -67,3 +67,20 @@
     padding-right: 7.8px;
   }
 }
+
+/* ---------- trust row: Sierra (gt-cloud #5784) ----------
+   Sierra replaced Profound in the live trust row. The shared sheet
+   (d/toolchain/sections/logos-icons.css) belongs to the directions and
+   keeps Profound, so the mirror carries the live rule here: Sierra's art
+   sits inset in its viewBox (x 160-427, y 123-207), so the box takes the
+   art's aspect and the image scales up to fill it. */
+.toolchain-root .tc-trust-row .tc-wm.is-sierra {
+  height: 23px;
+  aspect-ratio: 266.67 / 83.45;
+  background-image: url('/logos/sierra.light.svg');
+  background-size: 131.25% auto;
+}
+
+[data-theme='dark'] .toolchain-root .tc-trust-row .tc-wm.is-sierra {
+  background-image: url('/logos/sierra.dark.svg');
+}

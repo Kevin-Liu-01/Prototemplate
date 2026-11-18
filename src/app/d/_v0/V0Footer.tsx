@@ -10,6 +10,7 @@ import {
   SiNextdotjs,
   SiReact,
   SiX,
+  SiYoutube,
 } from "@icons-pack/react-simple-icons";
 
 import { ThemeButton } from "@/components/viewer/ThemeButton";
@@ -165,6 +166,17 @@ const columns = (
         external: true,
         mark: LinkedInMark,
       },
+      /* live since gt-cloud #5999 (2026-11-16); the production mirror only */
+      ...(isProduction
+        ? [
+            {
+              label: "YouTube",
+              href: "https://www.youtube.com/@generaltranslationhq",
+              external: true,
+              mark: SiYoutube,
+            },
+          ]
+        : []),
       {
         label: "Discord",
         href: isProduction

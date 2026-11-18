@@ -55,10 +55,13 @@
   background-image: url('/logos/partiful.light.svg');
 }
 
-.toolchain-root .v0-cust-mark.is-profound {
-  height: 21px;
-  aspect-ratio: 166 / 28;
-  background-image: url('/logos/profound.light.svg');
+.toolchain-root .v0-cust-mark.is-sierra {
+  height: 34px;
+  aspect-ratio: 266.67 / 83.45;
+  background-image: url('/logos/sierra.light.svg');
+  /* Sierra's art sits inset in its viewBox, so the image scales up to
+     fill the art-shaped box (gt-cloud #5784) */
+  background-size: 131.25% auto;
 }
 
 /* the official full lockup (clickhouse.design/brand) in true ink, not
@@ -71,8 +74,7 @@
   background-image: url('/logos/clickhouse.light.svg');
 }
 
-/* The live wall shows Okta (gt-cloud #5215); the enterprise page shows
-   Sierra from enterprise-data.ts. */
+/* The live wall shows Okta (gt-cloud #5215). */
 .toolchain-root .v0-cust-mark.is-okta {
   height: 34px;
   aspect-ratio: 109.21 / 36;
@@ -92,8 +94,8 @@
   background-image: url('/logos/partiful.dark.svg');
 }
 
-[data-theme='dark'] .toolchain-root .v0-cust-mark.is-profound {
-  background-image: url('/logos/profound.dark.svg');
+[data-theme='dark'] .toolchain-root .v0-cust-mark.is-sierra {
+  background-image: url('/logos/sierra.dark.svg');
 }
 
 [data-theme='dark'] .toolchain-root .v0-cust-mark.is-clickhouse {

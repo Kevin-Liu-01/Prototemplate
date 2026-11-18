@@ -11,11 +11,11 @@ type Customer = {
   href: string;
 };
 
-/** The live order: Cursor, Ramp, Profound, Partiful, ClickHouse, Okta. */
+/** The live order: Cursor, Ramp, Sierra, Partiful, ClickHouse, Okta (Sierra replaced Profound in gt-cloud #5784). */
 const CUSTOMERS: readonly Customer[] = [
   { id: 'cursor', name: 'Cursor', href: 'https://cursor.com' },
   { id: 'ramp', name: 'Ramp', href: 'https://ramp.com' },
-  { id: 'profound', name: 'Profound', href: 'https://tryprofound.com' },
+  { id: 'sierra', name: 'Sierra', href: 'https://sierra.ai' },
   { id: 'partiful', name: 'Partiful', href: 'https://partiful.com' },
   { id: 'clickhouse', name: 'ClickHouse', href: 'https://clickhouse.com' },
   { id: 'okta', name: 'Okta', href: 'https://www.okta.com' },
