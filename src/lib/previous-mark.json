@@ -55,8 +55,6 @@
     "public/shots/archive/",
     "public/shots/thumb/archive-*",
     "public/shots/thumb/brand-made-with-the-system.webp",
-    "public/shots/thumb/brand-made-with-the-system-dark.webp",
-    "public/deck-assets/proto-grid-tiles-light.*",
-    "public/deck-assets/proto-grid-tiles-dark.*"
+    "public/shots/thumb/brand-made-with-the-system-dark.webp"
   ]
 }

@@ -2434,22 +2434,6 @@
     {
       "path": "public/shots/thumb/brand-made-with-the-system-dark.webp",
       "reason": "the first fold of /brand's Made with the system section, which opens on the Open Source reel's poster, made before the globe"
-    },
-    {
-      "path": "deck/shots/proto-grid-tiles-light.jpg",
-      "reason": "a capture of the gallery whose tiles were taken before the refined logo: the shipped site tiles show the previous logo; shown in a labelled figure"
-    },
-    {
-      "path": "deck/shots/proto-grid-tiles-dark.jpg",
-      "reason": "a capture of the gallery whose tiles were taken before the refined logo: the shipped site tiles show the previous logo; shown in a labelled figure"
-    },
-    {
-      "path": "public/deck-assets/proto-grid-tiles-light.*",
-      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
-    },
-    {
-      "path": "public/deck-assets/proto-grid-tiles-dark.*",
-      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
     }
   ],
   "notLogo": [
@@ -4046,6 +4030,16 @@
       "path": "deck/shots/thumb/gt-report-card.jpg",
       "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "0c4317ef85b6f4e621b5bbbc238a2690dcf8489d5d9330e96757414395366afe"
+    },
+    {
+      "path": "deck/shots/proto-grid-tiles-light.jpg",
+      "reason": "a crop of the gallery's grid view under Shipped, retaken on 2026-11-18 at 2x from the built site after the production captures were taken again: every tile draws the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "sha256": "5fd5c9f6fc30a6287f603fc21375e6d60fed2f9838b001e53df7f40a9812e7d5"
+    },
+    {
+      "path": "deck/shots/proto-grid-tiles-dark.jpg",
+      "reason": "a crop of the gallery's grid view under Shipped, retaken on 2026-11-18 at 2x from the built site after the production captures were taken again: every tile draws the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "sha256": "2eddd0849130ebc72574f827348966074302c455e63560414e2a35d5ef457517"
     }
   ],
   "external": [
