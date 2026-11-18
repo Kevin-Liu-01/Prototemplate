@@ -1,0 +1,74 @@
+/* GtLogoAscii: the box, the hidden label and the two palettes. The rows are
+   SVG text stretched to the grid (textLength), so the face only has to be
+   monospace. Palette ink sets the glyphs in the text color, lit at the upper
+   left and a little lighter towards the lower right, and the dots faint;
+   palette image uses the reference rendering's blues on its own ground. */
+.gt-logo-ascii {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  line-height: 0;
+  vertical-align: middle;
+  --gt-ascii-lit: currentColor;
+  --gt-ascii-mid: currentColor;
+  --gt-ascii-dark: currentColor;
+  --gt-ascii-mid-opacity: 0.78;
+  --gt-ascii-dark-opacity: 0.56;
+  --gt-ascii-dot: currentColor;
+  --gt-ascii-dot-opacity: 0.32;
+}
+
+.gt-logo-ascii[data-palette='image'] {
+  --gt-ascii-lit: #bce7f1;
+  --gt-ascii-mid: #8eb7c9;
+  --gt-ascii-dark: #6187a0;
+  --gt-ascii-mid-opacity: 1;
+  --gt-ascii-dark-opacity: 1;
+  --gt-ascii-dot: #2e4474;
+  --gt-ascii-dot-opacity: 1;
+}
+
+.gt-logo-ascii > svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.gt-logo-ascii text {
+  font-family: var(--pt-mono);
+  white-space: pre;
+}
+
+.gt-logo-ascii-ground {
+  fill: #17161c;
+}
+
+.gt-logo-ascii-dots {
+  fill: var(--gt-ascii-dot);
+  fill-opacity: var(--gt-ascii-dot-opacity);
+}
+
+.gt-logo-ascii-lit {
+  stop-color: var(--gt-ascii-lit);
+}
+
+.gt-logo-ascii-mid {
+  stop-color: var(--gt-ascii-mid);
+  stop-opacity: var(--gt-ascii-mid-opacity);
+}
+
+.gt-logo-ascii-dark {
+  stop-color: var(--gt-ascii-dark);
+  stop-opacity: var(--gt-ascii-dark-opacity);
+}
+
+.gt-logo-ascii-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

@@ -12,7 +12,7 @@ const route = seoRoute({
   path: '/marks/loading',
   title: PAGE_NAMES.loading.name,
   kind: 'page',
-  description: 'The General Translation logo while a page loads, live: the loader, the hovers, how the motion is built in SVG and CSS, its checks, reduced motion and the fix.',
+  description: 'The General Translation logo while a page loads, live: the loader, the armillary, the ASCII loader, the hovers, how they are built and the checks.',
   crumbs: [{ name: PAGE_NAMES.marks.name, path: '/marks' }],
   updated: requireUpdated('/marks/loading'),
 });

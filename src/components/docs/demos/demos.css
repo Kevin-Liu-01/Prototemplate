@@ -913,6 +913,41 @@
   outline-color: var(--pt-ink);
 }
 
+/* ---------- the turning loaders ---------- */
+
+.dmo-logo-turn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  color: var(--pt-ink);
+}
+
+.dmo-logo-turn-toggle {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+  background: transparent;
+  color: var(--pt-ink);
+  font: inherit;
+  font-size: var(--pt-t-meta);
+  cursor: pointer;
+}
+
+.dmo-logo-turn-toggle:hover {
+  border-color: var(--pt-ink-3);
+}
+
+.dmo-logo-turn-toggle:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.dmo-logo-turn-ascii {
+  max-width: 100%;
+}
+
 /* ---------- the dithered shine ---------- */
 
 .dmo-shine {

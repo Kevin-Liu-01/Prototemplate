@@ -1,6 +1,6 @@
 ---
 title: Marks and the logo
-description: "The logo and the shortlist, the speed marks and the globe concepts at every size on paper and ink, the chrome mark, the logo in motion, and a dithered shine."
+description: "The logo and the shortlist, the speed marks and globe concepts on paper and ink, the chrome mark, the logo in motion, its turning loaders and a dithered shine."
 icon: Bolt
 sources:
   - src/components/docs/demos
@@ -9,12 +9,15 @@ sources:
   - src/components/viewer/GtMark.tsx
   - src/components/brand/GtLogoMotion.tsx
   - scripts/build/logo-motion.mjs
+  - src/components/brand/GtLogoArmillary.tsx
+  - src/components/brand/GtLogoAscii.tsx
+  - scripts/build/logo-ascii.mjs
   - src/app/d/toolchain/diagrams/DitheredMark.tsx
   - skills/gt-diagrams/references/isometric.md
   - skills/gt-deck/references/type.md
 ---
 
-import { DitheredMarkDemo, GtLogoMotionDemo } from '@/components/docs/demos/lazy';
+import { DitheredMarkDemo, GtLogoMotionDemo, GtLogoTurnDemo } from '@/components/docs/demos/lazy';
 import MarksDemo from '@/components/docs/demos/MarksDemo';
 
 Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. Every mark is an SVG file under `public/marks`, listed with its notes in the catalog of `src/lib/marks.ts` and shown in full at [/marks](/marks). The logo, Refined globe (Kevin's drawing of Axis and meridian behind on its own construction, 2026-11-12), leads the shortlist, with its state on hover, on sign-in and while loading, Oval globe, axis behind, after it, and [/marks/graticule](/marks/graticule#progression) shows the marks that led to both. The 11-06 globe is the previous logo: pictures and films already made with it stay as they are, and everything new draws `LOGO`. The viewer's `GtMark` and the plate's `GtMark` (`src/components/plate/icons/GtMark.tsx`) both draw the logo from `LOGO`; the plate's centres it in the wide box the doubled-line monogram had.
@@ -121,6 +124,42 @@ The loader animates registered custom properties and the hover the dashes' own p
 ### Reduced motion and themes
 
 Under reduced motion the hover does nothing and the loader shows the still logo with its label. The logo fills `currentColor`, so it takes the ink of its parent in both themes.
+
+## The turning loaders
+
+Two more loaders read the logo as an armillary sphere: the ring is the outer ring seen face on, the meridian oval is a ring of radius 96.26 turned 57.81 degrees about the polar axis, the latitude oval a ring of radius 96.25 turned 57.93 degrees about the node axis, and the stem and the bar lie on those rings seen edge on. `GtLogoArmillary` rests on the logo for a second, then turns both rings once, the meridian one way and the latitude the other, passing over and under as the logo's own crossings do, and lands on the logo again. `GtLogoAscii` sets the logo, turned on its sphere, in a 45 by 21 monospace grid and turns the rings once a lap, so they pass behind the globe. [/marks/loading](/marks/loading#armillary) runs both live.
+
+<GtLogoTurnDemo />
+
+### Import and props
+
+```tsx
+import GtLogoArmillary from '@/components/brand/GtLogoArmillary';
+import GtLogoAscii from '@/components/brand/GtLogoAscii';
+
+<GtLogoArmillary size={56} label='Loading the prototype' loading={!ready} onRest={() => setShown(true)} />;
+<GtLogoAscii width={450} palette='ink' label='Loading' />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `size` (armillary) | number | `56` | The drawn box in CSS pixels, the box `GtMark` and `GtLogoMotion` draw. Made for 32 to 256; below 32 use `GtLogoMotion`'s loader. |
+| `width` (ASCII) | number | `450` | The grid's width in CSS pixels, at least 225. The height is 420 / 450 of it. |
+| `palette` (ASCII) | `'ink'` or `'image'` | `'ink'` | `ink` sets the glyphs in `currentColor`, lit at the upper left; `image` uses blues on their own dark ground. |
+| `label` | string | `'Loading'` | Hidden text in a polite live region. |
+| `loading` | boolean | `true` | When it turns false the lap finishes on the still, in at most 0.6 s (armillary) or 0.75 s (ASCII), then `onRest` runs. |
+| `onRest` | function | none | Called once the frame is the still after `loading` turns false. |
+| `at` | number | none | Draws the frame this many seconds into the lap and does not animate, for tests and figures. |
+
+`GtLogoArmillary.frame.ts` is the sphere and the frames as pure functions of time; the component draws its rest beat as `LOGO.d` itself and, through the turn, the still logo away from the rings with the bar and the stem whole under them, the rings stroked at the logo's weight and the gaps as masks 5.75 units wide each side of the line on top. `pnpm build:logo-ascii` writes `GtLogoAscii.frames.ts` from `scripts/build/logo-ascii.json` and the same sphere, and `--check` fails when the file is out of date. `pnpm test:marks` checks that the armillary's rest frames are the logo, that its turn starts and ends at rest with no speed, and that the ASCII frames use only the ramp, start and end on the still and keep the dots out of the glyphs.
+
+### When to use it
+
+`GtLogoMotion`'s loader stays the default for frames and panes: it needs no script and works from 16 pixels. Use the armillary on a stage of 32 pixels or more where script is already running, and the ASCII loader on large stages and surfaces that read like a terminal, 225 pixels wide or more. Both run on the main thread, so neither covers heavy script work.
+
+### Reduced motion and themes
+
+Under reduced motion both show their still, the logo and the turned logo in ASCII, with their labels, and start no clock. Both draw in `currentColor` by default, so they take the ink of their parent in both themes; the ASCII loader's `image` palette brings its own ground.
 
 ## The dithered shine
 

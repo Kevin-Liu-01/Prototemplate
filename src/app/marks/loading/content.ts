@@ -35,6 +35,34 @@ export const LOADER_SIZES: readonly { size: number; where: string }[] = [
   { size: 16, where: 'The smallest size the plate checks' },
 ];
 
+export const ARMILLARY_ID = 'armillary';
+export const ARMILLARY_TITLE = 'The armillary';
+export const ARMILLARY_LEAD =
+  'The logo read as an armillary sphere. The ring is the outer ring seen face on, the meridian and the latitude are rings turned about their own axes, and the stem and the bar are those rings seen edge on. Once a lap the logo rests, then both rings turn once, passing over and under as the logo’s own crossings do, and land on the logo again.';
+
+/** The beats of the armillary as rows of its timing table, from GtLogoArmillary.frame.ts. */
+export const armillaryRows = (beats: { rest: number; swing: number }): readonly { name: string; ms: number; note: string }[] => [
+  { name: 'Rest', ms: Math.round(beats.rest * 1000), note: 'The still logo, its own path.' },
+  { name: 'Swing', ms: Math.round(beats.swing * 1000), note: 'The meridian turns once about the polar axis and the latitude once the other way about the node axis, easing in and out; the ring, the bar and the stem hold still.' },
+];
+
+/** The armillary at the sizes it is made for; below 32 px the vector loader above runs instead. */
+export const ARMILLARY_SIZES: readonly { size: number; where: string }[] = [
+  { size: 56, where: 'A prototype’s frame' },
+  { size: 32, where: 'The smallest size it is made for' },
+];
+
+export const ASCII_ID = 'ascii';
+export const ASCII_TITLE = 'In ASCII';
+export const ASCII_LEAD =
+  'The logo turned on its sphere and set in a monospace grid, 45 characters by 21 lines, from - to @ by how much of each cell the lines cover and how much light reaches them. The rings turn once a lap and pass behind the globe.';
+
+export const ASCII_NOTES: readonly string[] = [
+  'The still holds for a second, then the meridian and the latitude each turn once in 2.5 seconds at 24 frames a second, and the lap lands on the still again.',
+  'The frames are written ahead of time by pnpm build:logo-ascii from the same sphere as the armillary, so a frame is 21 rows of text and the still is the same rows in every place it shows.',
+  'Each row is an SVG text line stretched to the grid’s width, so any monospace face keeps the grid. The dots are the brand’s 4 by 4 dither screen in the ring’s hole.',
+];
+
 export const HOVER_ID = 'hovers';
 export const HOVER_TITLE = 'The hovers';
 export const HOVER_LEAD =
@@ -118,14 +146,30 @@ export const BUILD_PARTS: readonly { term: string; body: string }[] = [
     term: 'Browsers',
     body: 'The motion needs @property, linear() easing and plus-lighter: Chrome 113, Safari 17.2 and Firefox 128 or later.',
   },
+  {
+    term: 'The armillary reading',
+    body: 'The meridian oval is a ring of radius 96.26 turned 57.81 degrees about the polar axis, and the latitude oval a ring of radius 96.25 turned 57.93 degrees about the node axis. Seen edge on, the two rings lie within 0.3 units of the stem and the bar.',
+  },
+  {
+    term: 'Over and under',
+    body: 'The meridian passes over everything wherever it faces the viewer and under everything wherever it faces away, and the latitude passes over the bar and the stem and under the meridian’s near half. The line underneath is cut by the line on top widened by 5.75 units each side, the mean of the logo’s gaps. The ring is never cut.',
+  },
+  {
+    term: 'Script',
+    body: 'The armillary and the ASCII loader draw with script on one shared animation clock. Before it runs they show their still, they write only what changes, and they stop out of view and under reduced motion.',
+  },
 ];
 
 export const BUILD_CODE = `import GtLogoMotion from '@/components/brand/GtLogoMotion';
+import GtLogoArmillary from '@/components/brand/GtLogoArmillary';
+import GtLogoAscii from '@/components/brand/GtLogoAscii';
 
 <Link href='/'>
   <GtLogoMotion mode='hover' size={18} />
 </Link>;
-<GtLogoMotion mode='loader' size={56} label='Loading the prototype' />;`;
+<GtLogoMotion mode='loader' size={56} label='Loading the prototype' />;
+<GtLogoArmillary size={56} label='Loading the prototype' loading={!ready} onRest={show} />;
+<GtLogoAscii width={450} palette='ink' label='Loading' />;`;
 
 export const CHECKS_ID = 'checks';
 export const CHECKS_TITLE = 'The checks';
@@ -151,6 +195,7 @@ export const REDUCED_TITLE = 'Reduced motion';
 export const REDUCED_LEAD = 'Under reduced motion the hover does nothing and the loader is the still logo with its label.';
 
 export const REDUCED_NOTES: readonly string[] = [
+  'The armillary and the ASCII loader show their still, the logo and the turned logo in ASCII, with their labels, and start no clock.',
   'Every rule that moves or swaps a layer sits inside prefers-reduced-motion: no-preference, so a reader who asks for less motion sees the logo and nothing else.',
   'The loader keeps its live region and its label, so assistive technology still hears that the page is loading.',
   'The videos on this page play only while their figure is in view and motion is allowed. Their poster is the still logo.',

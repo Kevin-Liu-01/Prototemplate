@@ -87,8 +87,27 @@
 }
 
 .ld-stage > .gt-logo-motion,
+.ld-stage > .gt-logo-armillary,
+.ld-stage > .gt-logo-ascii,
 .ld-stage > .ld-host {
   align-self: flex-start;
+}
+
+/* the ASCII loader: on its own ground, then in the page's ink, side by side on a wide column */
+.ld-ascii {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px 32px;
+}
+
+.ld-ascii .gt-logo-ascii {
+  max-width: 100%;
+}
+
+@container ld-sec (min-width: 960px) {
+  .ld-ascii {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .ld-host {

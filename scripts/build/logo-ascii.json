@@ -1,0 +1,70 @@
+{
+  "$comment": "Inputs of pnpm build:logo-ascii (scripts/build/logo-ascii.mjs), which writes src/components/brand/GtLogoAscii.frames.ts. The grid is 45 columns by 21 rows of 10 by 20 px cells at 450 px (16 px type at a 0.625 em advance); cell centres sit at px (9 + 10c, 25 + 20r) and the ring's centre at px (224, 223.5), 2.015 px a logo unit across and 1.972 down. pose is the camera's yaw, pitch and roll in degrees (fitted: the logo's lines read as rings on a sphere, the latitude's top half and the bar and stem towards the viewer, the far hemisphere hidden). ramp is the ink glyphs from least to most; a cell takes one when the share of its 4 by 8 sample points within half a line of a drawn line is at least floor, and its level is coverage times (ambient + (1 - ambient) times the Lambert shade), with full ink at scale. light is the direction the light comes from (x right, y down, z towards the viewer). Glyph-free cells inside the ring's hole take a dot from the 4 by 4 Bayer screen below threshold dots. reference is the glyph map measured on the reference rendering ('#' or '+' a glyph, '.' a dot, ' ' empty), a measurement and not the picture; the generator reports the still's agreement with it.",
+  "grid": {
+    "cols": 45,
+    "rows": 21,
+    "pxPerUnit": [
+      2.015,
+      1.972
+    ],
+    "centrePx": [
+      224,
+      223.5
+    ],
+    "cellPx": [
+      10,
+      20
+    ],
+    "firstCellCentrePx": [
+      9,
+      25
+    ]
+  },
+  "ramp": "-=+*#%@",
+  "pose": {
+    "yaw": 16,
+    "pitch": -22,
+    "roll": -2
+  },
+  "light": [
+    -0.55,
+    -0.6,
+    0.58
+  ],
+  "ambient": 0.35,
+  "scale": 0.62,
+  "floor": 0.12,
+  "line": 6.6,
+  "hole": 88,
+  "dots": 11,
+  "fps": 24,
+  "hold": 1.0,
+  "turn": 2.5,
+  "turns": {
+    "meridian": 360,
+    "latitude": -360
+  },
+  "reference": [
+    "                 ##########                  ",
+    "            ####################             ",
+    "         ######...  ### .....######          ",
+    "       #####.. ... ### ... .....#####        ",
+    "     ####+ ... ...###.  ..  ... ...####      ",
+    "    #### . .     ###.    .      .   ####     ",
+    "   ###+ ..   ..  ###.     .    ...  ..###    ",
+    "  ###+  ........###......#############.#+#   ",
+    "  ###+..........###.##################++++   ",
+    "  ### .   ####  ###+##      .     .....+++   ",
+    " ####.########+### .       ........... ++++  ",
+    "  #######+     ###   .............  ###+++   ",
+    "  ####+........###...........#########++++   ",
+    "  ###+.........###.################ .  +++   ",
+    "   ###+    .   ### .    ...###+    .  +++    ",
+    "    ####       ###      ...###+    .++++     ",
+    "     ####  ..   ###..  ... ##    ..++++      ",
+    "       #####..  ###+. ...   .  .+++++        ",
+    "         ######. ###.... ++. #++++#          ",
+    "            ####+#+++++++++++++#             ",
+    "                 ##+++++##+                  "
+  ]
+}

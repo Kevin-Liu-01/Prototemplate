@@ -4,6 +4,9 @@ import Link from 'next/link';
 import type { MouseEvent, ReactNode, RefObject } from 'react';
 import { useRef } from 'react';
 
+import GtLogoArmillary from '@/components/brand/GtLogoArmillary';
+import { ARMILLARY_BEATS } from '@/components/brand/GtLogoArmillary.frame';
+import GtLogoAscii from '@/components/brand/GtLogoAscii';
 import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { BookHead } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
@@ -18,6 +21,15 @@ import { pad2 } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import {
+  ARMILLARY_ID,
+  ARMILLARY_LEAD,
+  ARMILLARY_SIZES,
+  ARMILLARY_TITLE,
+  armillaryRows,
+  ASCII_ID,
+  ASCII_LEAD,
+  ASCII_NOTES,
+  ASCII_TITLE,
   BUILD_CODE,
   BUILD_ID,
   BUILD_LEAD,
@@ -72,6 +84,8 @@ type Part = { id: string; title: string; lead: string; count: number };
 /** The page's sections in order; the finished loader leads. */
 const PARTS: readonly Part[] = [
   { id: LOADER_ID, title: LOADER_TITLE, lead: LOADER_LEAD, count: LOADER_SIZES.length + 1 },
+  { id: ARMILLARY_ID, title: ARMILLARY_TITLE, lead: ARMILLARY_LEAD, count: ARMILLARY_SIZES.length + 1 },
+  { id: ASCII_ID, title: ASCII_TITLE, lead: ASCII_LEAD, count: 2 },
   { id: HOVER_ID, title: HOVER_TITLE, lead: HOVER_LEAD, count: MOTION_LOOPS.length + 1 },
   { id: BUILD_ID, title: BUILD_TITLE, lead: BUILD_LEAD, count: BUILD_PARTS.length },
   { id: CHECKS_ID, title: CHECKS_TITLE, lead: CHECKS_LEAD, count: CHECKS.length },
@@ -83,6 +97,8 @@ const PARTS: readonly Part[] = [
 /** The gutter note of each section. */
 const FACTS: Readonly<Record<string, (part: Part) => string>> = {
   [LOADER_ID]: () => 'Live',
+  [ARMILLARY_ID]: () => 'Live',
+  [ASCII_ID]: () => 'Live',
   [HOVER_ID]: (part) => `${part.count - 1} videos`,
   [BUILD_ID]: (part) => `${part.count} parts`,
   [CHECKS_ID]: (part) => `${part.count} checks`,
@@ -295,6 +311,74 @@ function LoadingBook({ sheetRef, jumpRef, activeOut, updated, timing }: BookProp
               </figure>
             ))}
           </div>
+        </div>
+      );
+    if (id === ARMILLARY_ID)
+      return (
+        <div className='ld-body'>
+          <div className='ld-hero'>
+            <figure className='ld-fig ld-stage'>
+              <GtLogoArmillary size={200} label='The armillary, running' />
+              <figcaption>
+                <h3>The armillary</h3>
+                <p>At 200 pixels, live. Its rest frame is the logo’s own path, so the lap starts and ends on the still logo.</p>
+              </figcaption>
+            </figure>
+            <table className='ld-timing'>
+              <caption>One lap takes {Math.round((ARMILLARY_BEATS.rest + ARMILLARY_BEATS.swing) * 1000)} ms and repeats while the page loads.</caption>
+              <thead>
+                <tr>
+                  <th scope='col'>Beat</th>
+                  <th scope='col'>Time</th>
+                  <th scope='col'>What moves</th>
+                </tr>
+              </thead>
+              <tbody>
+                {armillaryRows(ARMILLARY_BEATS).map((row) => (
+                  <tr key={row.name}>
+                    <th scope='row'>{row.name}</th>
+                    <td>{row.ms} ms</td>
+                    <td>{row.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className='ld-sizes'>
+            {ARMILLARY_SIZES.map(({ size, where }) => (
+              <figure key={size} className='ld-fig ld-size'>
+                <div className='ld-size-box'>
+                  <GtLogoArmillary size={size} label={`The armillary at ${size} pixels`} />
+                </div>
+                <figcaption>
+                  <h3>{size} px</h3>
+                  <p>{where}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      );
+    if (id === ASCII_ID)
+      return (
+        <div className='ld-body'>
+          <div className='ld-ascii'>
+            <figure className='ld-fig ld-stage'>
+              <GtLogoAscii width={450} palette='image' label='The ASCII loader, running' />
+              <figcaption>
+                <h3>On its own ground</h3>
+                <p>45 by 21 characters at 450 pixels, the ramp - = + * # % @, 24 frames a second.</p>
+              </figcaption>
+            </figure>
+            <figure className='ld-fig ld-stage'>
+              <GtLogoAscii width={450} palette='ink' label='The ASCII loader in the text color' />
+              <figcaption>
+                <h3>In the text color</h3>
+                <p>The same frames in the page’s ink, lit at the upper left, on paper and on ink.</p>
+              </figcaption>
+            </figure>
+          </div>
+          <Notes items={ASCII_NOTES} />
         </div>
       );
     if (id === HOVER_ID)

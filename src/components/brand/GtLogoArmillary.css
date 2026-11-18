@@ -1,0 +1,38 @@
+/* GtLogoArmillary: the box and the hidden label, as GtLogoMotion's. The
+   frame is drawn by script (GtLogoArmillary.tsx); under reduced motion no
+   clock starts, and the rule at the end holds the still logo even if one had. */
+.gt-logo-armillary {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  line-height: 0;
+  vertical-align: middle;
+}
+
+.gt-logo-armillary > svg {
+  display: block;
+  overflow: visible;
+}
+
+.gt-logo-armillary-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* a rule beats the visibility attribute the script writes, so under reduced
+   motion the still logo shows whatever the last frame was */
+@media (prefers-reduced-motion: reduce) {
+  .gt-logo-armillary-rest {
+    visibility: visible;
+  }
+
+  .gt-logo-armillary-swing {
+    visibility: hidden;
+  }
+}

@@ -175,7 +175,7 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
     href: '/docs/components/marks',
     title: 'Marks and the logo',
     description:
-      'The logo and the shortlist, the speed marks and the globe concepts at every size on paper and ink, the chrome mark, the logo in motion, and a dithered shine.',
+      'The logo and the shortlist, the speed marks and globe concepts on paper and ink, the chrome mark, the logo in motion, its turning loaders and a dithered shine.',
   },
   {
     slug: 'components/heads',

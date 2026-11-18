@@ -309,7 +309,7 @@ function pages() {
     },
     {
       id: '/marks/loading',
-      paths: ['src/app/marks/loading', 'src/components/brand/GtLogoMotion.tsx', 'src/components/brand/GtLogoMotion.css', 'scripts/build/logo-motion.json', 'public/marks/loading', 'public/marks/graticule/motion'],
+      paths: ['src/app/marks/loading', 'src/components/brand/GtLogoMotion.tsx', 'src/components/brand/GtLogoMotion.css', 'src/components/brand/GtLogoArmillary.tsx', 'src/components/brand/GtLogoArmillary.frame.ts', 'src/components/brand/GtLogoAscii.tsx', 'src/components/brand/GtLogoAscii.frames.ts', 'scripts/build/logo-motion.json', 'scripts/build/logo-ascii.json', 'public/marks/loading', 'public/marks/graticule/motion'],
     },
     {
       id: '/blog',
