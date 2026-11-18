@@ -55,10 +55,13 @@ for (const k of Object.keys(SHOTS)) {
 const BG = {
   blue16: 'bg/blue/u16-A.webp', blue25: 'bg/blue/u25-A.webp',
   blue25light: 'bg/blue/u25-light.webp',
+  // u25-A re-screened at 2 stage px a cell (redither.py) over the window each stage shows; drawn at the stage size.
+  blue25cover2: 'bg/blue/u25-A-2px-cover.webp', blue25og2: 'bg/blue/u25-A-2px-og.webp',
   u10: 'bg/user/u10.webp', u11: 'bg/user/u11.webp', u16: 'bg/user/u16.webp', u17: 'bg/user/u17.webp', u18: 'bg/user/u18.webp', u19: 'bg/user/u19.webp', u20: 'bg/user/u20.webp', u25: 'bg/user/u25.webp', u26: 'bg/user/u26.webp', u27: 'bg/user/u27.webp', u28: 'bg/user/u28.webp', u29: 'bg/user/u29.webp', u30: 'bg/user/u30.webp', u31: 'bg/user/u31.webp', u32: 'bg/user/u32.webp', u33: 'bg/user/u33.webp', u34: 'bg/user/u34.webp', u35: 'bg/user/u35.webp', u36: 'bg/user/u36.webp', u37: 'bg/user/u37.webp', u38: 'bg/user/u38.webp', u39: 'bg/user/u39.webp', u40: 'bg/user/u40.webp', u41: 'bg/user/u41.webp', u42: 'bg/user/u42.webp', u43: 'bg/user/u43.webp', u44: 'bg/user/u44.webp', u45: 'bg/user/u45.webp', u46: 'bg/user/u46.webp', u47: 'bg/user/u47.webp', u48: 'bg/user/u48.webp', u49: 'bg/user/u49.webp', u50: 'bg/user/u50.webp', u51: 'bg/user/u51.webp', u52: 'bg/user/u52.webp', u53: 'bg/user/u53.webp', u54: 'bg/user/u54.webp', u55: 'bg/user/u55.webp', u56: 'bg/user/u56.webp', u57: 'bg/user/u57.webp', u58: 'bg/user/u58.webp', u59: 'bg/user/u59.webp',
   // The remaining keys in the add() calls (silk*, ab1*, navy*) are retired backgrounds; ASSIGN
   // below the visuals maps every visual onto one of the exports above.
 };
+const BG_STAGE = new Set(['blue25cover2', 'blue25og2']);
 
 // ---- icons ----
 // heroicons is a devDependency of the Prototemplate root (pnpm install at the repo root)
@@ -235,7 +238,8 @@ const CENTER_SCRIPT = `<script>(function(){const st=document.querySelector('.sta
 function stage(bgKey, inner, o = {}) {
   const W = o.w || 1600, H = o.h || 900;
   const bgUrl = bgKey ? `/${BG[bgKey]}` : '';
-  return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(o.title || 'visual')}</title><style>${CSS}\n:root{--W:${W}px;--H:${H}px}</style></head><body><div class="stage" data-fit="${o.fit != null ? o.fit : ''}" style="background-image:url(${bgUrl})">${o.wash ? `<div class="wash" style="background:rgba(9,9,11,${o.wash})"></div>` : ''}${o.vignette !== false ? '<div class="vignette"></div>' : ''}${inner}</div>${CENTER_SCRIPT}</body></html>`;
+  const bgSize = BG_STAGE.has(bgKey) ? `;background-size:${W}px ${H}px` : '';
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(o.title || 'visual')}</title><style>${CSS}\n:root{--W:${W}px;--H:${H}px}</style></head><body><div class="stage" data-fit="${o.fit != null ? o.fit : ''}" style="background-image:url(${bgUrl})${bgSize}">${o.wash ? `<div class="wash" style="background:rgba(9,9,11,${o.wash})"></div>` : ''}${o.vignette !== false ? '<div class="vignette"></div>' : ''}${inner}</div>${CENTER_SCRIPT}</body></html>`;
 }
 
 module.exports = { fs, path, ROOT, SP, SHOTS, BG, PAD, MIN_TEXT, padOf, padded, imageSize, ico, svgFile, crop, hl, tag, dot, text, panel, line, elbow, title, caption, badge, stage, px, esc, readJSON, missingIcons };

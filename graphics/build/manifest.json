@@ -94,7 +94,7 @@
     "area": "B",
     "name": "Header strip",
     "bg": "u36",
-    "why": "Where the old top band’s controls went: the search field became the ⌘K icon, the GitHub banner became the star pill, and the sidebar toggle went away because the sidebar now stays.",
+    "why": "Where the old top band\u2019s controls went: the search field became the \u2318K icon, the GitHub banner became the star pill, and the sidebar toggle went away because the sidebar now stays.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -104,7 +104,7 @@
     "area": "C",
     "name": "Navigation census",
     "bg": "u37",
-    "why": "Every navigation or control surface numbered on both pages: the old page’s six in red, the new page’s three in blue.",
+    "why": "Every navigation or control surface numbered on both pages: the old page\u2019s six in red, the new page\u2019s three in blue.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -164,7 +164,7 @@
     "area": "D",
     "name": "Type specimen",
     "bg": "u45",
-    "why": "Real type from the page at 110–220%, hung on one centre axis: the old docs’ single weight and grey first, then each new role, its label (set in the weight and style it names, with the spec in mono) on the left of the axis and its sample on the right.",
+    "why": "Real type from the page at 110\u2013220%, hung on one centre axis: the old docs\u2019 single weight and grey first, then each new role, its label (set in the weight and style it names, with the spec in mono) on the left of the axis and its sample on the right.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -184,7 +184,7 @@
     "area": "D",
     "name": "Icons, not lists",
     "bg": "u48",
-    "why": "The old paragraph-and-links against the About section’s three cards, each led by a solid icon.",
+    "why": "The old paragraph-and-links against the About section\u2019s three cards, each led by a solid icon.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -204,7 +204,7 @@
     "area": "D",
     "name": "Intro Quickstarts, before and after",
     "bg": "u50",
-    "why": "The Introduction page’s Quickstarts section, old and new, at the same scale: eight centred logo tiles under a command line, versus eight cards with a solid icon, a name and one line each.",
+    "why": "The Introduction page\u2019s Quickstarts section, old and new, at the same scale: eight centred logo tiles under a command line, versus eight cards with a solid icon, a name and one line each.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -224,7 +224,7 @@
     "area": "E",
     "name": "Two tiers of icons",
     "bg": "u53",
-    "why": "The new docs’ icon rule, from real captures, as two groups: controls (search, language, copy page, the theme toggle’s half-filled circle) keep thin glyphs; icons that carry meaning (the Core, CLI and Integrations cards, the Libraries feature, the Changelog and Contact links) are solid.",
+    "why": "The new docs\u2019 icon rule, from real captures, as two groups: controls (search, language, copy page, the theme toggle\u2019s half-filled circle) keep thin glyphs; icons that carry meaning (the Core, CLI and Integrations cards, the Libraries feature, the Changelog and Contact links) are solid.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -302,7 +302,7 @@
   {
     "id": "F3-dont-do",
     "area": "F",
-    "name": "Don’t / Do",
+    "name": "Don\u2019t / Do",
     "bg": "u32",
     "why": "Three real pairs cropped from old and new.",
     "w": 1600,
@@ -314,7 +314,7 @@
     "area": "F",
     "name": "The fix for each",
     "bg": "u46",
-    "why": "The hit list as a 3×3 card where every anti-pattern is struck out and its replacement written under it.",
+    "why": "The hit list as a 3\u00d73 card where every anti-pattern is struck out and its replacement written under it.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -324,7 +324,7 @@
     "area": "F",
     "name": "Poster",
     "bg": "u30",
-    "why": "The hit list regrouped into clutter, navigation and language, every item marked with the set’s red x; the group names are the set’s ordinary labels.",
+    "why": "The hit list regrouped into clutter, navigation and language, every item marked with the set\u2019s red x; the group names are the set\u2019s ordinary labels.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -332,8 +332,8 @@
   {
     "id": "H1-cover-exploded",
     "area": "H",
-    "name": "Cover · exploded components",
-    "bg": "blue25",
+    "name": "Cover \u00b7 exploded components",
+    "bg": "blue25cover2",
     "why": "The page taken apart in a three-quarter perspective: the real content column, navigation, actions and contents rail, and the links and preferences rows each hover on their own glass pane above a ghost wireframe of the page, held at their true positions by dashed posts. Straight-on perspective, no text, blue background.",
     "w": 1600,
     "h": 900,
@@ -342,8 +342,8 @@
   {
     "id": "H1-cover-exploded-og",
     "area": "H",
-    "name": "Cover · exploded components (OpenGraph 1200×630)",
-    "bg": "blue25",
+    "name": "Cover \u00b7 exploded components (OpenGraph 1200\u00d7630)",
+    "bg": "blue25og2",
     "why": "The exploded-components stack at OpenGraph size, straight on, on the blue-toned export.",
     "w": 1200,
     "h": 630,
@@ -352,8 +352,8 @@
   {
     "id": "H1-cover-exploded-og-light",
     "area": "H",
-    "name": "OpenGraph · exploded components, light theme (1200×630)",
-    "bg": "blue25",
+    "name": "OpenGraph \u00b7 exploded components, light theme (1200\u00d7630)",
+    "bg": "blue25og2",
     "why": "The OpenGraph image with the docs in their light theme, on the same ground as the dark one.",
     "w": 1200,
     "h": 630,
@@ -362,8 +362,8 @@
   {
     "id": "H1-cover-exploded-light",
     "area": "H",
-    "name": "Cover · exploded components, light theme",
-    "bg": "blue25",
+    "name": "Cover \u00b7 exploded components, light theme",
+    "bg": "blue25cover2",
     "why": "The cover with the docs in their light theme: the same dark blue ground and scale as the header cover, the page panes and the wireframe they hover over in paper and ink.",
     "w": 1600,
     "h": 900,
@@ -372,7 +372,7 @@
   {
     "id": "H0-cover-final",
     "area": "H",
-    "name": "Cover · wireframe map",
+    "name": "Cover \u00b7 wireframe map",
     "bg": "blue16",
     "why": "The wireframe-map direction with no text: the fleshed-out wireframe of the real page with the four zones in blue, and real crops of the live docs tied to their zones, on the blue-toned export.",
     "w": 1600,
@@ -382,7 +382,7 @@
   {
     "id": "H0-cover-final-light",
     "area": "H",
-    "name": "Cover · wireframe map, light theme",
+    "name": "Cover \u00b7 wireframe map, light theme",
     "bg": "blue16",
     "why": "The wireframe-map direction with the docs in their light theme: paper plate, ink bars, light crops, the same blue-toned export.",
     "w": 1600,
@@ -392,7 +392,7 @@
   {
     "id": "H0-cover-final-og",
     "area": "H",
-    "name": "OpenGraph · wireframe map, cleaned (1200×630)",
+    "name": "OpenGraph \u00b7 wireframe map, cleaned (1200\u00d7630)",
     "bg": "blue16",
     "why": "The OpenGraph image: the wireframe of the real page alone, no crops, no labels, no numbers, the four zones in blue, on the blue-toned export. Nothing but the diagram.",
     "w": 1200,
@@ -402,7 +402,7 @@
   {
     "id": "H0-cover-final-og-light",
     "area": "H",
-    "name": "OpenGraph · wireframe map, light theme (1200×630)",
+    "name": "OpenGraph \u00b7 wireframe map, light theme (1200\u00d7630)",
     "bg": "blue16",
     "why": "The wireframe of the real page alone in its light theme, the four zones in blue, on the blue-toned export.",
     "w": 1200,
