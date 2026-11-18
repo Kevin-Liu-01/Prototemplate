@@ -82,6 +82,8 @@ export default function BlogArticleSidebar({ headings, postTitle }: Props) {
   const [open, setOpen] = useState(false);
   const popRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLButtonElement>(null);
+  const railScrollRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   /* while the popover is open, a press anywhere outside it closes it */
   useLayoutWork(
@@ -140,6 +142,16 @@ export default function BlogArticleSidebar({ headings, postTitle }: Props) {
         }
         setActive(ids);
         setCurrent(latest?.id);
+        /* a long list scrolls inside the rail and the popover panel (gt-cloud
+           #6034, fumadocs' ScrollProvider): keep the current entry in view
+           there without moving the page */
+        for (const box of [railScrollRef.current, panelRef.current]) {
+          const entry = latest && box?.querySelector<HTMLElement>(`a[href="#${CSS.escape(latest.id)}"]`);
+          if (!box || !entry) continue;
+          const top = entry.offsetTop - box.offsetTop;
+          if (top < box.scrollTop) box.scrollTop = top;
+          else if (top + entry.offsetHeight > box.scrollTop + box.clientHeight) box.scrollTop = top + entry.offsetHeight - box.clientHeight;
+        }
       },
       { threshold: 0.9 }
     );
@@ -204,7 +216,7 @@ export default function BlogArticleSidebar({ headings, postTitle }: Props) {
             />
           </button>
           {open ? (
-            <div className='pba-toc-panel' id='pba-toc-panel'>
+            <div className='pba-toc-panel' id='pba-toc-panel' ref={panelRef}>
               {list(() => setOpen(false))}
               <div className='pba-share-actions'>
                 <BlogArticleShare postTitle={postTitle} />
@@ -227,7 +239,10 @@ export default function BlogArticleSidebar({ headings, postTitle }: Props) {
               <AlignLeft aria-hidden='true' size={14} />
               Table of contents
             </h2>
-            {list()}
+            {/* the list scrolls here, not on the bordered list, which would clip the active entry's tick on the border */}
+            <div className='pba-toc-scroll' ref={railScrollRef}>
+              {list()}
+            </div>
           </nav>
         ) : null}
         <div className='pba-share'>

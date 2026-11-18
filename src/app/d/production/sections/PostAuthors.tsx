@@ -20,7 +20,8 @@ const variantStyles = {
     size: 22,
   },
   card: {
-    avatar: 'size-[18px]',
+    /* the card's stretched title link lies under the avatar (gt-cloud #5863) */
+    avatar: 'pointer-events-none size-[18px]',
     authors:
       'inline-flex min-w-0 items-center gap-2 text-[12.5px] text-(--tc-ink-3)',
     // the shipped mt-auto and pt-4: auto pins the byline to the card foot

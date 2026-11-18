@@ -26,10 +26,11 @@ type BlogPostBoardProps = {
   posts: readonly BlogIndexPost[];
 };
 
-/* One card grammar for every slot; CMS-length titles and summaries are
-   clamped so no string can break a row's rhythm. */
+/* One card grammar for every slot, positioned so the title's link can
+   stretch over the whole card (gt-cloud card.ts after #5863); CMS-length
+   titles and summaries are clamped so no string can break a row's rhythm. */
 const CARD =
-  'group flex min-w-0 flex-col overflow-hidden rounded-md no-underline transition-colors bg-[color-mix(in_srgb,var(--tc-ink)_3.5%,transparent)] hover:bg-[color-mix(in_srgb,var(--tc-ink)_6%,transparent)]';
+  'group relative flex min-w-0 flex-col overflow-hidden rounded-md no-underline transition-colors bg-[color-mix(in_srgb,var(--tc-ink)_3.5%,transparent)] hover:bg-[color-mix(in_srgb,var(--tc-ink)_6%,transparent)]';
 
 const PILL =
   'blog-pill h-[30px] cursor-pointer rounded-full border border-(--tc-hair) bg-transparent px-[15px] text-[12.5px] font-medium text-(--tc-ink-2) transition-colors hover:text-(--tc-ink) aria-pressed:border-(--tc-ink) aria-pressed:bg-(--tc-ink) aria-pressed:text-(--tc-paper)';
@@ -40,9 +41,11 @@ const RSS_HREF = 'https://generaltranslation.com/rss.xml';
 
 function PostBody({
   post,
+  base,
   lead = false,
 }: {
   post: BlogIndexPost;
+  base: string;
   lead?: boolean;
 }) {
   return (
@@ -54,15 +57,19 @@ function PostBody({
         </span>
       </span>
       {/* the lead's larger title belongs to its two-column desktop card;
-          below 1000px every card stacks alike, so every title sizes alike */}
+          below 1000px every card stacks alike, so every title sizes alike.
+          The title's link stretches over the card (after:inset-0), so the
+          whole card is one target and the author links sit above it */}
       <strong
-        className={`line-clamp-2 text-[21px] leading-[1.25] font-medium tracking-[-0.025em] [text-wrap:balance] ${
-          lead ? 'min-[1000px]:text-[clamp(23px,2vw,28px)]' : ''
+        className={`text-[21px] leading-[1.25] font-medium tracking-[-0.025em] [text-wrap:balance] ${
+          lead ? 'line-clamp-3 min-[1000px]:text-[clamp(23px,2vw,28px)]' : 'line-clamp-2'
         }`}
       >
-        {post.title}
+        <a href={postHref(base, post.slug)} className='after:absolute after:inset-0'>
+          {post.title}
+        </a>
       </strong>
-      <span className='line-clamp-2 text-[13.5px] leading-[1.6] text-(--tc-ink-2)'>
+      <span className={`text-[13.5px] leading-[1.6] text-(--tc-ink-2) ${lead ? 'line-clamp-3' : 'line-clamp-2'}`}>
         {post.summary}
       </span>
       <PostAuthors authors={post.authors} variant='card' />
@@ -72,8 +79,8 @@ function PostBody({
 }
 
 /**
- * The essays deck: filter pills and a search box over a feature grid and
- * a three-column ledger.
+ * The essays deck: filter pills and a search box over a lead card and a
+ * three-column ledger (gt-cloud BlogPostBoard.tsx at #5863 and #5847).
  *
  * Ported from apps/landing/src/components/blog/BlogPostBoard.tsx. Post
  * links resolve against this concept's own base rather than the shipped
@@ -100,12 +107,12 @@ export default function BlogPostBoard({ posts }: BlogPostBoardProps) {
     return `${post.title} ${post.summary}`.toLowerCase().includes(needle);
   });
 
-  /* the front page leads with the first three posts in
-     content/blog/order.json order, full-size; a filtered or searched
-     deck keeps the plain three columns */
+  /* the front page leads with the first post in content/blog/order.json
+     order on a two-column card; a filtered or searched deck keeps the plain
+     three columns */
   const featuring = activeCategory === 'all' && needle === '';
-  const featured = featuring ? visiblePosts.slice(0, 3) : [];
-  const rest = featuring ? visiblePosts.slice(3) : visiblePosts;
+  const lead = featuring ? visiblePosts[0] : undefined;
+  const rest = lead ? visiblePosts.slice(1) : visiblePosts;
 
   return (
     <>
@@ -157,52 +164,24 @@ export default function BlogPostBoard({ posts }: BlogPostBoardProps) {
         </div>
       </div>
 
-      {featured.length > 0 && (
-        // the same three columns as the ledger below — the lead spans
-        // two of them, so every vertical seam is shared
-        <div
-          className='blog-feature-grid mb-2.5 grid grid-cols-1 gap-2.5 px-(--tc-gut) min-[1000px]:grid-cols-3 min-[1000px]:grid-rows-[1fr_1fr]'
-          data-testid='blog-feature'
-        >
-          {featured.map((post, index) => {
-            const lead = index === 0;
-            return (
-              <a
-                key={post.slug}
-                href={postHref(base, post.slug)}
-                data-testid={lead ? 'blog-feature-lead' : 'blog-feature-side'}
-                data-previous-mark={post.markNote ? '' : undefined}
-                /* the lead adopts the grid's row tracks (subgrid): its
-                   cover fills row one exactly, its seams are the grid's */
-                className={`${CARD} ${
-                  lead
-                    ? 'min-[1000px]:col-span-2 min-[1000px]:row-span-2 min-[1000px]:grid min-[1000px]:grid-rows-subgrid'
-                    : ''
-                }`}
-              >
-                <span
-                  className={
-                    lead
-                      ? 'relative block aspect-[16/7] overflow-hidden min-[1000px]:aspect-auto'
-                      : 'relative block aspect-[16/7] overflow-hidden min-[1000px]:aspect-auto min-[1000px]:min-h-[120px] min-[1000px]:flex-1'
-                  }
-                >
-                  <BlogPostCover
-                    post={post}
-                    id={post.slug}
-                    className='h-full w-full'
-                    sizes={
-                      lead
-                        ? '(min-width: 1000px) 60vw, calc(100vw - 40px)'
-                        : '(min-width: 1000px) 30vw, calc(100vw - 40px)'
-                    }
-                    priority={lead}
-                  />
-                </span>
-                <PostBody post={post} lead={lead} />
-              </a>
-            );
-          })}
+      {lead && (
+        <div className='mb-2.5 px-(--tc-gut)' data-testid='blog-feature'>
+          <article
+            data-testid='blog-feature-lead'
+            data-previous-mark={lead.markNote ? '' : undefined}
+            className={`${CARD} min-[1000px]:grid min-[1000px]:grid-cols-[3fr_2fr]`}
+          >
+            <div className='overflow-hidden'>
+              <BlogPostCover
+                post={lead}
+                id={lead.slug}
+                className='blog-post-cover-card aspect-video'
+                sizes='(min-width: 1000px) 60vw, calc(100vw - 40px)'
+                priority
+              />
+            </div>
+            <PostBody post={lead} base={base} lead />
+          </article>
         </div>
       )}
 
@@ -217,28 +196,23 @@ export default function BlogPostBoard({ posts }: BlogPostBoardProps) {
             : `${visiblePosts.length} posts shown`}
       </p>
 
-      {rest.length === 0 && featured.length === 0 ? (
+      {rest.length === 0 && !lead ? (
         <div className='px-(--tc-gut) pt-2.5 pb-10 text-[13px] text-(--tc-ink-3)'>
           No matching posts
         </div>
       ) : (
         <div className='grid grid-cols-1 gap-2.5 px-(--tc-gut) min-[720px]:grid-cols-2 min-[1000px]:grid-cols-3'>
           {rest.map((post) => (
-            <a
-              key={post.slug}
-              href={postHref(base, post.slug)}
-              className={CARD}
-              data-previous-mark={post.markNote ? '' : undefined}
-            >
-              {/* every card carries its cover at the image's own 16:9, lazily below the fold */}
+            <article key={post.slug} className={CARD} data-previous-mark={post.markNote ? '' : undefined}>
+              {/* every card frames its cover at 16:9 (gt-cloud #5847), lazily below the fold */}
               <BlogPostCover
                 post={post}
                 id={`grid-${post.slug}`}
-                className='aspect-video'
+                className='blog-post-cover-card aspect-video'
                 sizes='(min-width: 1000px) 33vw, (min-width: 720px) 50vw, 100vw'
               />
-              <PostBody post={post} />
-            </a>
+              <PostBody post={post} base={base} />
+            </article>
           ))}
         </div>
       )}

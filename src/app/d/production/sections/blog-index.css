@@ -396,6 +396,14 @@
   object-fit: cover;
 }
 
+/* post cards frame every cover at 16:9, so a cover of another ratio fills
+   the frame without distortion and every card's text starts on one line
+   (gt-cloud blog.css, #5847) */
+.blog-root .blog-post-cover.blog-post-cover-card {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 /* A post with two covers shows the one for the theme; the other stays in
    the document, so a theme switch needs no request (the shipped blog.css,
    gt-cloud origin/main). The mirror reads the theme from data-theme only. */

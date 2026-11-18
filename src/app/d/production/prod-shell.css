@@ -17,7 +17,22 @@
    page under /d/production reads it, the pages added later too.
    ============================================================ */
 
+/* Katagami Text, the live site's one face since gt-cloud #5765 (8bc9120415,
+   2026-11-09: apps/landing/src/lib/fonts.ts and shell/engine.css set
+   --tc-sans to it, and display resolves to the text face). The files are
+   the hub's subsets in public/fonts/katagami (the same faces Atlas sets),
+   so the mirror reads the face the live site serves while the hub's own
+   shell stays on its face until its switch (BRAND.md, the known gap). */
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-latin.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-arabic.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+600-8FF, U+FB50-FEFF; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-devanagari.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+900-97F, U+1CD0-1CF9, U+A8E0-A8FF; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-Italic-latin.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-Italic.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+
 .toolchain-root.prod-root {
+  --tc-sans: 'Katagami Text', system-ui, sans-serif;
+  --tc-disp: var(--tc-sans);
   --color-background: hsl(0 0% 100%);
   --color-card: hsl(0 0% 100%);
   --color-border: hsl(240 5.9% 90%);

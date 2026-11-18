@@ -17,8 +17,8 @@
      · the fd colour tokens are the fumadocs theme's (zinc), read
        from the live page in both themes;
      · code is set in --tc-mono: live sets it in Geist Mono, a
-       face this repository does not ship (Inter is its only
-       family). Each mono glyph is tracked to Geist Mono's 0.6em
+       face this repository does not ship (the mirror sets
+       Katagami Text, prod-shell.css). Each mono glyph is tracked to Geist Mono's 0.6em
        advance (0.6em less the face's own 1ch), so a line of code
        breaks where live's does on any platform's mono.
    Every rule stays under .prod-root, so no other /d page reads
@@ -37,8 +37,9 @@
   --pba-h3-fs: clamp(1.15rem, 1.5vw, 1.35rem);
   /* mirrors the .toolchain-root heading line-height in the engine sheet */
   --pba-heading-lh: 1.06;
-  /* Inter's cap height as a share of font size (1490/2048) */
-  --pba-cap-ratio: 0.72;
+  /* Katagami Text's cap height as a share of font size (1430/2048), as
+     gt-cloud's blog.css since #5765 */
+  --pba-cap-ratio: 0.698;
   --pba-heading-cap-ratio: var(--pba-cap-ratio);
   /* optical lift on top of the metric alignment, per first-block type */
   --pba-first-line-trim-body: 0.4px;
@@ -300,6 +301,13 @@
   aspect-ratio: 16 / 9;
 }
 
+/* the Explore cards frame every cover at 16:9, a cover of another ratio
+   filling the frame undistorted (gt-cloud PostFooter and blog.css, #5847) */
+.prod-root .pba-photo.is-card {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 /* ---- the header intro: a lead Callout lifted out of the body ---- */
 
 .prod-root .pba-header-intro .pba-prose {
@@ -347,6 +355,37 @@
 .prod-root .pba-rail-sticky {
   position: sticky;
   top: 76px;
+}
+
+/* The rail is pinned, so it can be no taller than the viewport: a long
+   contents list scrolls inside it and the share block stays below, its
+   entries fading at the edge they scroll under (gt-cloud blog.css, #6034).
+   Only where the rail shows, so `display` never undoes its small-screen
+   hiding. */
+@media (min-width: 981px) {
+  .prod-root .pba-rail-sticky {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - 76px);
+  }
+
+  .prod-root .pba-toc {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .prod-root .pba-toc-scroll {
+    --toc-fade-top: 12px;
+    --toc-fade-bottom: 20px;
+    min-height: 0;
+    margin-block: calc(-1 * var(--toc-fade-top)) calc(-1 * var(--toc-fade-bottom));
+    padding-block: var(--toc-fade-top) var(--toc-fade-bottom);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    mask-image: linear-gradient(to bottom, transparent, #000 var(--toc-fade-top), #000 calc(100% - var(--toc-fade-bottom)), transparent);
+  }
 }
 
 .prod-root .pba-toc,
@@ -462,6 +501,11 @@
 }
 
 .prod-root .pba-toc-panel {
+  /* the bar is pinned under the 56px navbar and is 48px tall plus its two
+     hairlines, so a long list scrolls in what is left (gt-cloud #6034) */
+  max-height: calc(100dvh - 6.5rem - 2px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 14px var(--tc-gut);
   border-top: 1px solid var(--tc-hair);
 }
