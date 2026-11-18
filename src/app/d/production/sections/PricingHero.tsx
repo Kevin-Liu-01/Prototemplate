@@ -113,8 +113,8 @@ export default function PricingHero() {
         <div className='pricing-hero-copy'>
           <h1>Pricing</h1>
           <p>
-            Start for free with usage-based billing. Unlimited projects and
-            users on every plan.
+            Start for free with usage-based billing. Unlimited projects,
+            seats, and languages on every plan.
           </p>
           <a className='pricing-hero-link' href={USAGE_RATES_URL}>
             Usage Rates

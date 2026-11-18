@@ -3,34 +3,38 @@
 import {
   CircleStackIcon as CircleStackMicroIcon,
   DocumentMagnifyingGlassIcon as DocumentMagnifyingGlassMicroIcon,
-  PresentationChartBarIcon as PresentationChartBarMicroIcon,
+  PhotoIcon as PhotoMicroIcon,
 } from '@heroicons/react/16/solid';
 import {
   CircleStackIcon,
   DocumentMagnifyingGlassIcon,
   DocumentTextIcon,
-  PresentationChartBarIcon,
+  PhotoIcon,
   TagIcon,
 } from '@heroicons/react/24/solid';
-import { Plus, X } from 'lucide-react';
-import { useState, type ComponentType, type ReactNode, type SVGProps } from 'react';
+import { ChevronDown, Plus, X } from 'lucide-react';
+import { useId, useState, type ComponentType, type ReactNode, type SVGProps } from 'react';
 
 import PricingHelp from './PricingHelp';
 import {
   BASE_RATES,
   EXAMPLE,
   LIVE_RATES,
+  PREVIEW,
   RATE_TEXT,
   TOKENS_HELP_HREF,
+  type Rate,
 } from './usage-rates-data';
 
 /**
  * The shipped usage rates body: gt-cloud packages/ui/src/components/
- * pricing/UsagePricing.tsx, which /pricing/usage mounts. The DOM keeps its
- * order and grouping (Base, Live and Additional rates first through
- * `order-first`, then the Formula card, then the Agent workflows and Data
- * rates sections between two rail-wide separators), and usage-pricing.css
- * restates its Tailwind and shadcn classes under .usage-pricing-root.
+ * pricing/UsagePricing.tsx, which /pricing/usage mounts, as of #5977. The
+ * DOM keeps its order and grouping (Base and Additional rates, then the
+ * Formula card, then the Live translation rates, Agent workflows and Data
+ * rates sections between rail-wide separators; the long tables show their
+ * first rows and a "Show more" row, with every rate in the server HTML),
+ * and usage-pricing.css restates its Tailwind and shadcn classes under
+ * .usage-pricing-root.
  *
  * Two departures. The rates are the values the live page renders, held in
  * usage-rates-data.ts instead of computed from @generaltranslation/settings.
@@ -102,8 +106,22 @@ function ExampleChip({
   );
 }
 
-/** The two-column rate table every section uses: a label column at 34% and a centred cost column. */
-function RateTable({ head, rows }: { head: string; rows: readonly { key: string; label: ReactNode; cost: ReactNode }[] }) {
+/** The two-column rate table every section uses: a label column at 34% and a centred cost column; past `preview` rows the rest stay in the HTML, hidden until the "Show more" row opens them. */
+function RateTable({
+  head,
+  rows,
+  preview,
+  kind,
+}: {
+  head: string;
+  rows: readonly { key: string; label: ReactNode; cost: ReactNode }[];
+  preview?: number;
+  kind?: 'formats' | 'rates';
+}) {
+  const rowsId = useId();
+  const [open, setOpen] = useState(false);
+  const more = preview === undefined ? 0 : rows.length - preview;
+  const noun = kind === 'formats' ? 'format' : 'rate';
   return (
     <div className='up-table-wrap'>
       <table className='up-table'>
@@ -113,18 +131,32 @@ function RateTable({ head, rows }: { head: string; rows: readonly { key: string;
             <th>Cost</th>
           </tr>
         </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.key}>
+        <tbody id={rowsId}>
+          {rows.map((row, index) => (
+            <tr key={row.key} hidden={!open && preview !== undefined && index >= preview}>
               <td>{row.label}</td>
               <td>{row.cost}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      {more > 0 ? (
+        <button aria-controls={rowsId} aria-expanded={open} className='up-more' type='button' onClick={() => setOpen(!open)}>
+          {open ? `Show fewer ${noun}s` : `Show ${more} more ${more === 1 ? noun : `${noun}s`}`}
+          <ChevronDown aria-hidden className={open ? 'is-open' : undefined} />
+        </button>
+      ) : null}
     </div>
   );
 }
+
+/** A rate's label cell, with its help bubble when it has one. */
+const rateLabel = (rate: Rate) => (
+  <span className='up-cell-row'>
+    <span>{rate.label}</span>
+    {rate.help ? <PricingHelp>{rate.help}</PricingHelp> : null}
+  </span>
+);
 
 function PerTokens() {
   return (
@@ -143,13 +175,71 @@ export default function UsagePricing() {
   return (
     <div className='up-body'>
       <section className='up-section'>
-        <div className='up-formula-head'>
-          <h2>Formula</h2>
+        <div className='up-rates'>
+          <div className='up-head-row'>
+            <h2 id='base-translation-rates'>Base translation rates</h2>
+            <PerTokens />
+          </div>
+          <p className='up-lead'>
+            Translations produced for uploaded files of any filetype. Charges only apply for new content. Previously
+            translated content is free.
+          </p>
+          <RateTable
+            head='Format'
+            kind='formats'
+            preview={PREVIEW.formats}
+            rows={BASE_RATES.map((rate) => ({ key: rate.label, label: rateLabel(rate), cost: rate.cost }))}
+          />
+
+          <div className='up-subsection'>
+            <h2 id='additional-rates'>Additional rates</h2>
+            <RateTable
+              head='Feature'
+              kind='rates'
+              preview={PREVIEW.rates}
+              rows={[
+                {
+                  key: 'context',
+                  label: (
+                    <span className='up-cell-row'>
+                      <span>GT Context</span>
+                      <PricingHelp>
+                        Context includes the glossary terms and directives applied to your project to guide
+                        terminology, tone, and style, plus any metadata uploaded alongside individual translation
+                        requests, such as the{' '}
+                        <a href='https://generaltranslation.com/docs/react/reference/components/t#context' rel='noopener noreferrer' target='_blank'>
+                          context prop
+                        </a>{' '}
+                        component.
+                      </PricingHelp>
+                    </span>
+                  ),
+                  cost: `+ ${RATE_TEXT.context} per 1,000 input tokens per 1,000 context tokens`,
+                },
+                { key: 'slides', label: 'Google Slides', cost: `+ ${RATE_TEXT.slide} / slide` },
+                { key: 'svg', label: 'SVG', cost: `+ ${RATE_TEXT.svg} / graphic` },
+                {
+                  key: 'lottie',
+                  label: rateLabel({
+                    label: 'Lottie',
+                    cost: '',
+                    help: 'Layout processing is charged per animated property (transition), in addition to token and context charges.',
+                  }),
+                  cost: `+ ${RATE_TEXT.lottie} / transition`,
+                },
+              ]}
+            />
+          </div>
         </div>
 
-        <div className='up-formula'>
+        <div className='up-formula-wrap'>
+        <div className='up-formula-head'>
+          <h2>Formula</h2>
+          </div>
+
+          <div className='up-formula'>
           <div className='up-formula-bar'>
-            <span className='up-strong'>Translation workflows for...</span>
+            <span className='up-strong'>Translation workflows for:</span>
             <div aria-label='Translation type' className='up-toggle' role='group'>
               <button
                 aria-pressed={!slides}
@@ -166,8 +256,8 @@ export default function UsagePricing() {
                 type='button'
                 onClick={() => setSlides(true)}
               >
-                <PresentationChartBarIcon aria-hidden />
-                Google Slides
+                <PhotoIcon aria-hidden />
+                Visual Content
               </button>
             </div>
           </div>
@@ -191,9 +281,9 @@ export default function UsagePricing() {
                   <div className='up-group'>
                     <Paren side='open' />
                     <div className='up-row up-inner'>
-                      <FormulaTerm icon={PresentationChartBarIcon}>Number of slides</FormulaTerm>
+                      <FormulaTerm icon={PhotoIcon}>Layout units</FormulaTerm>
                       <Times />
-                      <FormulaTerm icon={TagIcon}>Per-slide rate</FormulaTerm>
+                      <FormulaTerm icon={TagIcon}>Per-unit rate</FormulaTerm>
                     </div>
                     <Paren side='close' />
                   </div>
@@ -220,7 +310,7 @@ export default function UsagePricing() {
                 <span>
                   <CircleStackMicroIcon aria-hidden className='up-emph' />
                   <span className='up-fact'>{EXAMPLE.inputTokens}</span>
-                  {slides ? 'slide input tokens' : 'Markdown input tokens'}
+                  input tokens
                 </span>
                 <span>
                   <DocumentMagnifyingGlassMicroIcon aria-hidden className='up-emph' />
@@ -229,7 +319,7 @@ export default function UsagePricing() {
                 </span>
                 {slides ? (
                   <span>
-                    <PresentationChartBarMicroIcon aria-hidden className='up-emph' />
+                    <PhotoMicroIcon aria-hidden className='up-emph' />
                     <span className='up-fact'>{EXAMPLE.slides}</span>
                     slides
                   </span>
@@ -273,7 +363,7 @@ export default function UsagePricing() {
                       <Paren side='open' />
                       <div className='up-row up-inner'>
                         <ExampleChip
-                          icon={PresentationChartBarIcon}
+                          icon={PhotoIcon}
                           label='Number of slides'
                           tip='Number of slides in this example.'
                           value={EXAMPLE.slides}
@@ -297,7 +387,7 @@ export default function UsagePricing() {
               <div className='up-legend'>
                 <span>
                   <span className='up-badge'>1</span>
-                  $1 per 1,000 input tokens
+                  {RATE_TEXT.base} per 1,000 input tokens
                 </span>
                 <span className='is-top'>
                   <span className='up-badge'>2</span>
@@ -314,70 +404,28 @@ export default function UsagePricing() {
               </div>
             </div>
           </details>
+          </div>
+
         </div>
+      </section>
 
-        <div className='up-rates'>
-          <div className='up-head-row'>
-            <h2 id='base-translation-rates'>Base translation rates</h2>
-            <PerTokens />
-          </div>
-          <RateTable
-            head='Format'
-            rows={BASE_RATES.map((rate) => ({
-              key: rate.label,
-              label: (
-                <span className='up-cell-row'>
-                  <span>{rate.label}</span>
-                  {rate.help ? <PricingHelp>{rate.help}</PricingHelp> : null}
-                </span>
-              ),
-              cost: rate.cost,
-            }))}
-          />
+      <div className='up-separator' role='separator' />
 
-          <div className='up-subsection'>
-            <div className='up-head-row'>
-              <h2 id='live-translation-rates'>Live translation rates</h2>
-              <PerTokens />
-            </div>
-            <RateTable
-              head='Format'
-              rows={LIVE_RATES.map((rate) => ({
-                key: rate.label,
-                label: (
-                  <span className='up-cell-row is-inline'>
-                    {rate.label}
-                    <PricingHelp>{rate.help}</PricingHelp>
-                  </span>
-                ),
-                cost: rate.cost,
-              }))}
-            />
-          </div>
-
-          <div className='up-subsection'>
-            <h2 id='additional-rates'>Additional rates</h2>
-            <RateTable
-              head='Feature'
-              rows={[
-                {
-                  key: 'context',
-                  label: (
-                    <span className='up-cell-row'>
-                      <span>GT Platform Context</span>
-                      <PricingHelp>
-                        Platform Context includes the glossary terms and directives applied to your project to guide
-                        terminology, tone, and style.
-                      </PricingHelp>
-                    </span>
-                  ),
-                  cost: `+ ${RATE_TEXT.context} per 1,000 input tokens per 1,000 context tokens`,
-                },
-                { key: 'slides', label: 'Google Slides', cost: `+ ${RATE_TEXT.slide} / slide` },
-              ]}
-            />
-          </div>
+      <section className='up-section'>
+        <div className='up-head-row'>
+          <h2 id='live-translation-rates'>Live translation rates</h2>
+          <PerTokens />
         </div>
+        <p className='up-lead'>
+          Translations generated by on-demand APIs when dynamic content is requested. Charges only apply for new
+          requests. Cached requests are free.
+        </p>
+        <RateTable
+          head='Format'
+          kind='formats'
+          preview={PREVIEW.formats}
+          rows={LIVE_RATES.map((rate) => ({ key: rate.label, label: rateLabel(rate), cost: rate.cost }))}
+        />
       </section>
 
       <div className='up-separator' role='separator' />
@@ -416,7 +464,19 @@ export default function UsagePricing() {
           head='Feature'
           rows={[
             { key: 'cdn', label: 'Translation CDN', cost: `${RATE_TEXT.cdn} / request` },
-            { key: 'storage', label: 'Data Storage', cost: `${RATE_TEXT.storage} / GB-month` },
+            {
+              key: 'storage',
+              label: (
+                <span className='up-cell-row'>
+                  <span>Data Storage</span>
+                  <PricingHelp>
+                    The first {RATE_TEXT.storageIncludedGb} GB is free. Covers your source and translated files, plus
+                    the storage behind translation caching so unchanged content is never translated twice.
+                  </PricingHelp>
+                </span>
+              ),
+              cost: `${RATE_TEXT.storageIncludedGb} GB free, then ${RATE_TEXT.storage} / GB-month`,
+            },
           ]}
         />
       </section>

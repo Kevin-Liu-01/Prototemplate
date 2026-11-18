@@ -1,15 +1,19 @@
 /**
  * The public rates generaltranslation.com/pricing/usage renders, as text.
  *
- * Live computes them from @generaltranslation/settings (credits.ts and
- * translation.ts) in packages/ui/src/components/pricing/UsagePricing.tsx
- * and formats them with gt-next's Currency: whole dollars of $1 or more
- * drop the cents (dollar-format.ts), the rest keep two decimals, and the
- * worked example's per-token rates keep three and eight. The values below
- * are the rendered strings of the live page, read on 2026-10-14. The
- * format rows follow live's order: SUPPORTED_FILE_FORMATS without Twilio
- * Content JSON, Lottie and SVG, with MDX and Markdown, TypeScript and
- * JavaScript, and PO and POT merged into one row each.
+ * Live computes them from @generaltranslation/settings (credits.ts,
+ * services.ts and translation.ts) in packages/ui/src/components/pricing/
+ * UsagePricing.tsx and formats them with gt-next's Currency: whole dollars
+ * of $1 or more drop the cents (dollar-format.ts), the rest keep two
+ * decimals, and the worked example's per-token rates keep four and eight.
+ * The values below are what gt-cloud origin/main renders after #5726 (rates
+ * by service type and file format: $0.50 per 1,000 input tokens for files,
+ * $0.20 for live requests), #5774 (data storage at $10 per GB-month after
+ * the first GB) and #5977 (the page reordered, the Visual Content workflow,
+ * SVG and Lottie rates), read from those files on 2026-11-18. The format
+ * rows follow live's order: the FileFormat enum without the media formats,
+ * with MDX and Markdown, TypeScript and JavaScript, and PO and POT merged
+ * into one row each, then the three Google formats.
  */
 
 export const TOKENS_HELP_HREF =
@@ -17,12 +21,16 @@ export const TOKENS_HELP_HREF =
 
 /** The rates the copy quotes, as rendered. */
 export const RATE_TEXT = {
-  base: '$1.00',
-  context: '$0.02',
+  base: '$0.50',
+  live: '$0.20',
+  context: '$0.20',
   slide: '$0.50',
+  svg: '$3.00',
+  lottie: '$0.20',
   lcu: '$5',
   cdn: '$0.00',
-  storage: '$0.00',
+  storage: '$10',
+  storageIncludedGb: '1',
 } as const;
 
 /** The worked example: 1,000 input tokens, 3,000 context tokens and four slides. */
@@ -30,47 +38,49 @@ export const EXAMPLE = {
   inputTokens: '1,000',
   contextTokens: '3,000',
   slides: '4',
-  baseRatePerToken: '$0.001',
-  contextRatePerToken: '$0.00000002',
-  totalFiles: '$1.06',
-  totalSlides: '$3.06',
+  baseRatePerToken: '$0.0005',
+  contextRatePerToken: '$0.00000020',
+  totalFiles: '$1.10',
+  totalSlides: '$3.10',
 } as const;
 
-type Rate = { label: string; cost: string; help?: string };
+export type Rate = { label: string; cost: string; help?: string };
+
+/** How many rows a rates table shows before its "Show more" row. */
+export const PREVIEW = { formats: 4, rates: 1 } as const;
+
+const base = (label: string, help?: string): Rate => ({ label, cost: RATE_TEXT.base, ...(help ? { help } : {}) });
+const live = (label: string, help?: string): Rate => ({ label, cost: RATE_TEXT.live, ...(help ? { help } : {}) });
 
 /** Base translation rates, per 1,000 input tokens. */
 export const BASE_RATES: readonly Rate[] = [
-  {
-    label: 'GT Content Files',
-    cost: '$2',
-    help: 'Structured GT files which represent complete UI components and include additional metadata.',
-  },
-  { label: 'MDX / Markdown', cost: '$1' },
-  { label: 'JSON', cost: '$1' },
-  { label: 'YAML', cost: '$1' },
-  { label: 'TypeScript / JavaScript', cost: '$1' },
-  { label: 'HTML', cost: '$1' },
-  { label: 'Plain Text', cost: '$1' },
-  { label: 'PO / POT', cost: '$1' },
-  { label: 'iOS String Catalogs (.xcstrings)', cost: '$1' },
-  { label: 'iOS Strings (.strings)', cost: '$1' },
-  { label: 'iOS Plurals (.stringsdict)', cost: '$1' },
-  { label: 'Android Strings (XML)', cost: '$1' },
-  { label: 'Subtitles (.srt)', cost: '$1' },
-  { label: '.NET Resources (.resx)', cost: '$1' },
-  { label: 'Google Slides', cost: '$1' },
+  base('GT Content', 'Structured GT files which represent complete UI components and include additional metadata.'),
+  base('JSON'),
+  base('YAML'),
+  base('MDX / Markdown'),
+  base('TypeScript / JavaScript'),
+  base('HTML'),
+  base('Plain Text'),
+  base('PO / POT'),
+  base('Twilio Content JSON'),
+  base('Lottie (.lottie)'),
+  base('SVG'),
+  base('iOS String Catalogs (.xcstrings)'),
+  base('iOS Strings (.strings)'),
+  base('iOS Plurals (.stringsdict)'),
+  base('Android Strings (XML)'),
+  base('Subtitles (.srt)'),
+  base('.NET Resources (.resx / .resw)'),
+  base('Google Slides'),
+  base('Google Docs'),
+  base('Google Sheets'),
 ];
 
 /** Live translation rates, per 1,000 input tokens. */
-export const LIVE_RATES: readonly Required<Rate>[] = [
-  {
-    label: 'GT Runtime',
-    cost: '$0.40',
-    help: 'Translations generated on demand when dynamic content is requested.',
-  },
-  {
-    label: 'GT Devtime',
-    cost: '$0.40',
-    help: 'Translations generated during local development for immediate feedback.',
-  },
+export const LIVE_RATES: readonly Rate[] = [
+  live('GT Content', 'JSX and React content in GT\u2019s structured format, preserving UI elements and variables.'),
+  live('MDX / Markdown'),
+  live('Plain Text'),
+  live('ICU MessageFormat'),
+  live('i18next'),
 ];

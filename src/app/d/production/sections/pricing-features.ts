@@ -70,7 +70,7 @@ export const PRICING_FEATURES: readonly FeatureGroup[] = [
     features: [
       {
         id: 'locadex',
-        name: 'Locadex AI Agent',
+        name: 'Locadex Agent Automations',
         isNew: true,
         starter: YES,
         enterprise: text('Custom Workflows'),
@@ -116,7 +116,7 @@ export const PRICING_FEATURES: readonly FeatureGroup[] = [
         id: 'projects',
         name: 'Projects',
         tooltip:
-          'Apps and websites. Each project is equivalent to a React app.',
+          'An app, site, set of docs, or any other project that needs localization',
         starter: UNLIMITED,
         enterprise: UNLIMITED,
       },
@@ -158,7 +158,7 @@ export const PRICING_FEATURES: readonly FeatureGroup[] = [
         starter: YES,
         enterprise: YES,
       },
-      { id: 'roles', name: 'Custom Roles', starter: NO, enterprise: YES },
+      { id: 'roles', name: 'Custom Permissions', starter: NO, enterprise: YES },
       { id: 'webhooks', name: 'Webhooks', starter: NO, enterprise: YES },
       {
         id: 'soc_compliance',

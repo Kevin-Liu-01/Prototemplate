@@ -62,7 +62,7 @@ export default function ProductionPricingPage() {
           <PricingHero />
           <PricingPlanCards />
           <PricingCompare />
-          <Deploy />
+          <Deploy showGraphic={false} />
           <ProdFooter />
         </main>
       </div>

@@ -1,14 +1,10 @@
 'use client';
 
-import {
-  ArrowPathRoundedSquareIcon,
-  BuildingOffice2Icon,
-  RocketLaunchIcon,
-  ShieldCheckIcon,
-} from '@heroicons/react/24/solid';
+import { BuildingOffice2Icon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 
 import type { ComponentType, FormEvent, SVGProps } from 'react';
+import { ENTERPRISE_BENEFITS } from './enterprise-benefits';
 import { PROD_PRIVACY_URL, PROD_TERMS_URL } from './site-links';
 
 /**
@@ -46,7 +42,7 @@ type Feature = {
   description: string;
 };
 
-/** The four enterprise pillars, in the shipped order. */
+/** The enterprise platform, then the three benefits the pricing card shares (gt-cloud #5977), in the shipped order. */
 const FEATURES: readonly Feature[] = [
   {
     icon: BuildingOffice2Icon,
@@ -54,23 +50,7 @@ const FEATURES: readonly Feature[] = [
     description:
       'Share translation context, glossaries, and custom prompts across every project and content source in your company.',
   },
-  {
-    icon: ArrowPathRoundedSquareIcon,
-    title: 'Custom Workflows.',
-    description:
-      'Reliable, scalable translation workflows across any file format or framework. Custom integrations, webhooks, and tailored automation.',
-  },
-  {
-    icon: ShieldCheckIcon,
-    title: 'Security and Governance.',
-    description: 'SSO, SOC 2, ISO 27001, audit logs, and custom roles.',
-  },
-  {
-    icon: RocketLaunchIcon,
-    title: 'Forward-Deployed Support.',
-    description:
-      'Dedicated FDE hours with localization engineers to set up your system and bring localization to production.',
-  },
+  ...ENTERPRISE_BENEFITS.map((benefit) => ({ icon: benefit.icon, title: `${benefit.title}.`, description: benefit.description })),
 ];
 
 const TESTIMONIAL = {

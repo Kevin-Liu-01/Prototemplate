@@ -1,17 +1,15 @@
 'use client';
 
 import {
-  ArrowPathRoundedSquareIcon,
   BoltIcon,
   BuildingLibraryIcon,
   CreditCardIcon,
   PencilSquareIcon,
-  ShieldCheckIcon,
-  UsersIcon,
 } from '@heroicons/react/24/solid';
 import { SiGithub } from '@icons-pack/react-simple-icons';
 import type { ReactNode } from 'react';
 
+import { ENTERPRISE_BENEFITS } from './enterprise-benefits';
 import LocadexMark from './LocadexMark';
 import PricingHelp from './PricingHelp';
 import { bayerTile, type ShineTier } from './pricing-bayer';
@@ -201,7 +199,7 @@ export default function PricingPlanCards() {
               </li>
               <li>
                 <LocadexMark aria-hidden='true' />
-                Locadex AI Agent
+                Locadex Agent Automations
               </li>
               <li>
                 <CreditCardIcon aria-hidden='true' />
@@ -245,32 +243,15 @@ export default function PricingPlanCards() {
             <ul className='pricing-plan-features pricing-plan-unlimited'>
               <UnlimitedPlanFeatureItems idPrefix='enterprise' />
             </ul>
-            <div className='pricing-plan-group'>
-              <UsersIcon aria-hidden='true' />
-              <div>
-                <h4>Dedicated engineers</h4>
-                <p>
-                  Dedicated FDE hours to build any workflow for your use case.
-                </p>
+            {ENTERPRISE_BENEFITS.map((benefit) => (
+              <div className='pricing-plan-group' key={benefit.id}>
+                <benefit.icon aria-hidden='true' />
+                <div>
+                  <h4>{benefit.title}</h4>
+                  <p>{benefit.description}</p>
+                </div>
               </div>
-            </div>
-            <div className='pricing-plan-group'>
-              <ArrowPathRoundedSquareIcon aria-hidden='true' />
-              <div>
-                <h4>Custom workflows</h4>
-                <p>Custom integrations, webhooks, and tailored automation.</p>
-              </div>
-            </div>
-            <div className='pricing-plan-group'>
-              <ShieldCheckIcon aria-hidden='true' />
-              <div>
-                <h4>Security and governance</h4>
-                <p>
-                  SSO, RBAC with custom permissions, SOC 2 and ISO 27001
-                  certificates
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
           <a
             className='pricing-plan-cta is-solid'

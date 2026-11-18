@@ -546,12 +546,75 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* the rate tables come first in the section (order-first upstream) */
+/* the rate tables lead the section, the formula card follows them
+   (gt-cloud #5977 dropped order-first and set them in source order) */
 .usage-pricing-root .up-rates {
   display: flex;
   flex-direction: column;
-  order: -9999;
   gap: 16px;
+}
+
+.usage-pricing-root .up-formula-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* each rate section's lead line, as the Agent workflows lead */
+.usage-pricing-root .up-lead {
+  color: var(--up-muted-fg);
+  font-size: 14px;
+  line-height: 24px;
+}
+
+/* the "Show more" row under a long table: a full-width bar on the table's
+   last hairline (live's bare Button, h-12, text-sm, font-medium) */
+.usage-pricing-root .up-more {
+  display: flex;
+  width: 100%;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-top: 1px solid var(--tc-hair);
+  border-radius: 0 0 6px 6px;
+  background: transparent;
+  color: var(--up-fg);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.usage-pricing-root .up-more:hover {
+  background: var(--up-muted, color-mix(in srgb, currentColor 6%, transparent));
+}
+
+.usage-pricing-root .up-more:focus-visible {
+  text-decoration: underline;
+}
+
+.usage-pricing-root .up-more svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 150ms ease;
+}
+
+.usage-pricing-root .up-more svg.is-open {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .usage-pricing-root .up-more svg {
+    transition: none;
+  }
+}
+
+@media (min-width: 640px) {
+  .usage-pricing-root .up-lead {
+    font-size: 16px;
+  }
 }
 
 .usage-pricing-root .up-subsection {

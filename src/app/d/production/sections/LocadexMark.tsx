@@ -5,7 +5,7 @@ import type { SVGProps } from 'react';
  * beside the Heroicons solid marks. Copied from gt-cloud
  * packages/ui/src/components/icons/LocadexMark.tsx (origin/main,
  * 2026-10-13), which traced it from public/brand/locadex-mark.svg; the
- * shipped pricing card draws it on its Locadex AI Agent row.
+ * shipped pricing card draws it on its Locadex Agent Automations row.
  */
 export default function LocadexMark(props: SVGProps<SVGSVGElement>) {
   return (

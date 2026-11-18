@@ -91,6 +91,29 @@
   flex-wrap: wrap;
 }
 
+/* without its glyph field (the pricing page, gt-cloud #5977) the copy
+   centres in the band and the narrow fold keeps no stage for the word */
+.toolchain-root .v0-dep[data-graphic='false'] .v0-dep-copy {
+  max-width: none;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.toolchain-root .v0-dep[data-graphic='false'] .v0-dep-copy h2,
+.toolchain-root .v0-dep[data-graphic='false'] .v0-dep-sub {
+  margin-inline: auto;
+}
+
+.toolchain-root .v0-dep[data-graphic='false'] .v0-dep-acts {
+  justify-content: center;
+}
+
+@media (max-width: 881px) {
+  .toolchain-root .v0-dep[data-graphic='false'] .v0-dep-in {
+    padding-bottom: clamp(48px, 7vw, 56px);
+  }
+}
+
 /* Under 881px the canvas box drops below the engine's 880px wide/narrow
    cut: the field re-lays itself with the word bottom-centered and the
    clearing across the TOP — so the copy re-centers up there and the

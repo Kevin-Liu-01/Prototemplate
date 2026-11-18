@@ -33,7 +33,8 @@ const DEPLOY_CTAS = {
  * Two-part copy only (display + sub) — no eyebrow, no mono, no uppercase
  * tracking.
  */
-export default function Deploy() {
+/** `showGraphic` false drops the glyph field and centres the copy, as the pricing page sets it (gt-cloud #5977). */
+export default function Deploy({ showGraphic = true }: { showGraphic?: boolean }) {
   const root = useRef<HTMLElement>(null);
   const stage = useRef<HTMLCanvasElement>(null);
 
@@ -41,7 +42,7 @@ export default function Deploy() {
     () => {
       const rootEl = root.current;
       const canvas = stage.current;
-      if (!rootEl || !canvas) return;
+      if (!rootEl || !canvas || !showGraphic) return;
 
       /* The field draws with the band's own faces, resolved off the DOM —
          the same wiring the glyph-rain hero uses. rAF, resize, theme
@@ -65,14 +66,14 @@ export default function Deploy() {
 
       return () => field?.destroy();
     },
-    { scope: root }
+    { scope: root, dependencies: [showGraphic], revertOnUpdate: true }
   );
 
   return (
-    <section className='v0-dep' id='deploy' ref={root}>
+    <section className='v0-dep' id='deploy' data-graphic={showGraphic} ref={root}>
       <div className='v0-dep-in'>
         {/* inside the rails, so the formed word is never struck by them */}
-        <canvas className='v0-dep-field' ref={stage} aria-hidden='true' />
+        {showGraphic ? <canvas className='v0-dep-field' ref={stage} aria-hidden='true' /> : null}
         <div className='v0-dep-copy'>
           <h2>Deploy today</h2>
           <p className='v0-dep-sub'>
