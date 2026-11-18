@@ -3908,13 +3908,13 @@
     },
     {
       "path": "deck/shots/site-docs-dark.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
-      "sha256": "98e4d201f41e8f811d6f94fa4dccf3f5de24938ecda0acca647e75ca303c838e"
+      "reason": "a page capture of the live docs retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, after gt-cloud #5935 set the docs header's one-line lockup to LOCKUP (Katagami Text 400, -0.0496 em, the globe 1.9 cap heights, 0.5826 cap height to the G): the header draws the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "sha256": "d427576267fb00ad08d5b146fd349add48e9c9241d7862c9628ae007edfe6b06"
     },
     {
       "path": "deck/shots/site-docs-light.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
-      "sha256": "80abef90fe792c93e480319c6b7ede075097044fbe260b51995dcca59454466d"
+      "reason": "a page capture of the live docs retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, after gt-cloud #5935 set the docs header's one-line lockup to LOCKUP (Katagami Text 400, -0.0496 em, the globe 1.9 cap heights, 0.5826 cap height to the G): the header draws the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "sha256": "27839b39b6d4b2c9efea3ef926e9f1bd258bfcdfa5eb24cc1b85a3b9e54f52f4"
     },
     {
       "path": "deck/shots/site-enterprise-dark.jpg",
@@ -3983,13 +3983,13 @@
     },
     {
       "path": "deck/shots/thumb/gt-docs-dark.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
-      "sha256": "6e8ee3d3734442be07626c3e4166e4da8a205ef2a5d0ebca649ebdc20b5dae2d"
+      "reason": "a thumbnail of the live docs retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, after gt-cloud #5935 set the docs header's one-line lockup to LOCKUP: the header draws the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "sha256": "4d80edd89edbb322a9f53ebe9eaafbc43948fe1bec8f4f2934a1bb1e3712d9ef"
     },
     {
       "path": "deck/shots/thumb/gt-docs.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
-      "sha256": "a6527999af170c755df6e7d3b328991ed6bc6bd96d8fadcacde9f7ea32aa358a"
+      "reason": "a thumbnail of the live docs retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, after gt-cloud #5935 set the docs header's one-line lockup to LOCKUP: the header draws the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "sha256": "5aaf719c5b96942249c30f24d1d45b7a80aefb4df46bbd15e085ec0ca1dd291d"
     },
     {
       "path": "deck/shots/thumb/gt-enterprise-dark.jpg",
@@ -4074,6 +4074,18 @@
     {
       "path": "gt-cloud:apps/landing/src/components/blog/BlogHeroFigure.tsx",
       "note": "carries LOGO.d byte for byte; gt-cloud pins it in packages/ui/src/components/icons/__tests__/gt-mark-pin.test.ts (#5933, merged 2026-11-14), which fails on any other hash and on the 11-06 globe and the monogram (pnpm lint:logo --external compares it)"
+    },
+    {
+      "path": "gt-cloud:packages/ui/src/lib/lockup.ts",
+      "note": "a copy of LOCKUP's numbers from src/lib/logo.ts (this repository is the source), which the docs DocsLogo and the tool DocsDemo one-line lockups read since #5935 (merged 2026-11-18, 1ec29f05ce); pnpm lint:logo --external compares each number",
+      "lockup": {
+        "weight": "weight",
+        "trackingEm": "tracking",
+        "rhythm": "rhythm",
+        "mark": "mark",
+        "gap": "gap",
+        "oneLine": "oneLine"
+      }
     },
     {
       "path": "glyphfield:public/brands/gt/logos/mark-black.svg",

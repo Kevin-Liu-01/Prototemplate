@@ -133,7 +133,9 @@
  *        pages in Chrome on a running server (the built site: pnpm start)
  *        and reads rule 11 there, with the hub's grid and preview card
  *   node scripts/lint/logo.mjs --external              also notes drift in the
- *        copies of GT_CLOUD, GLYPHFIELD and TURBOSLIDE checkouts; never fails
+ *        copies of GT_CLOUD, GLYPHFIELD and TURBOSLIDE checkouts (LOGO.d, or
+ *        LOCKUP's numbers for an entry with "lockup": {their key: LOCKUP's
+ *        key}); never fails
  *   node scripts/lint/logo.mjs --record <path>...      records generated
  *        pictures after their generator ran (pnpm build:logo does its own),
  *        and checked pictures after someone looked at them
@@ -709,6 +711,14 @@ if (EXTERNAL) {
       continue;
     }
     const text = readFileSync(abs, 'utf8');
+    if (entry.lockup) {
+      /* a copy of LOCKUP's numbers, not of LOGO.d: compare each number it names */
+      const theirs = (key) => Number(text.match(new RegExp(`\\b${key}:\\s*(-?[\\d.]+)`))?.[1]);
+      const pairs = Object.entries(entry.lockup).map(([key, ours]) => [key, theirs(key), LOCKUP[ours]]);
+      const off = pairs.filter(([, a, b]) => a !== b).map(([key, a, b]) => `${key} ${a} (LOCKUP ${b})`);
+      console.log(`  note ${entry.path}: ${off.length === 0 ? `holds LOCKUP's ${pairs.length} numbers` : `differs from LOCKUP: ${off.join(', ')}`}`);
+      continue;
+    }
     const previous = [...text.matchAll(PATH_RUN)].map((m) => previousLogo(m[0].trim(), sha256(m[0].trim()))).find(Boolean);
     console.log(`  note ${entry.path}: ${text.includes(LOGO.d) ? 'holds LOGO.d' : 'does not hold LOGO.d byte for byte'}${previous ? `; carries the ${previous.logo.name}${previous.how}; use LOGO` : ''}`);
   }
