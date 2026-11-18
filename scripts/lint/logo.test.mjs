@@ -113,6 +113,18 @@ describe('lint:logo', () => {
     fails(root, /rule 3 vote loser src\/components\/Loser\.tsx:1: the losing candidate meridian-axis-behind/);
   });
 
+  it("rule 15: fails on the hub's Locadex logo in the production mirror and passes on gt-cloud's mark", () => {
+    let root = checkout();
+    put(root, 'src/app/d/production/sections/Nav.tsx', "export const Nav = () => <img src='/brand/no-bg-locadex-logo-light.png' />;\n");
+    put(root, 'src/app/d/production/sections/tower.css', ".ldx { mask: url('/brand/locadex-mark.svg'); }\n");
+    passes(root);
+    put(root, 'src/app/d/production/sections/Footer.tsx', "export const Footer = () => <img src='/brand/locadex-logo-light.svg' />;\n");
+    fails(root, /rule 15 mirror Locadex mark src\/app\/d\/production\/sections\/Footer\.tsx:1/);
+    root = checkout();
+    put(root, 'src/app/d/production/sections/tower.css', "\n.ldx { mask: url('/marks/locadex/doubled-lambda.svg'); }\n");
+    fails(root, /rule 15 mirror Locadex mark src\/app\/d\/production\/sections\/tower\.css:2/);
+  });
+
   it('rule 12: fails on the 11-06 globe in new code and an SVG, passes on it under history', () => {
     let root = checkout();
     put(root, 'src/components/Globe.tsx', `export const Globe = () => <path d='${GLOBE_1106}' />;\n`);

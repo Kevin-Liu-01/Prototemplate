@@ -599,7 +599,7 @@ const BEAM_REST = beamAt(0);
 const BEAM_ROW = TOWER_LAYERS.length - 1 - TOWER_LAYERS.findIndex((layer) => layer.id === 'agents');
 const BEAM_FRAME_TY = BEAM_ROW * STEP - VIEW_Y;
 
-function TopGlyph({ id }: { id: string }) {
+function TopGlyph({ id, locadexMark }: { id: string; locadexMark: string }) {
   switch (id) {
     case 'code':
       /* source: the raised bracket pair, '<' and '/>' each on its own
@@ -823,7 +823,7 @@ function TopGlyph({ id }: { id: string }) {
               fullstack.css and FullStack's sweep driver stay untouched */}
           <DitheredMark
             id='v0s-ldx'
-            href='/brand/locadex-logo-mark.svg'
+            href={locadexMark}
             plane={MARK_PLANE}
             markHalf={MARK_HALF}
             cover={LDX_COVER}
@@ -896,9 +896,17 @@ type StackTowerProps = {
   title?: string;
   /** Slab indices born hot, so the resting frame matches the first beat. */
   hot?: readonly number[];
+  /** The capstone's Locadex mask: the hub's logo by default; the production
+      mirror passes the mark gt-cloud's StackTower ships. */
+  locadexMark?: string;
 };
 
-export default function StackTower({ className, title, hot }: StackTowerProps) {
+export default function StackTower({
+  className,
+  title,
+  hot,
+  locadexMark = '/brand/locadex-logo-mark.svg',
+}: StackTowerProps) {
   const frame: CSSProperties = { aspectRatio: `${VIEW_W} / ${TOWER_H}` };
   const born = new Set(hot ?? []);
   return (
@@ -995,7 +1003,7 @@ export default function StackTower({ className, title, hot }: StackTowerProps) {
               <path className='v0s-rim' d={geo.hull} vectorEffect='non-scaling-stroke' />
               <path className='v0s-front' d={geo.front} vectorEffect='non-scaling-stroke' />
               <path className='v0s-edge' d={geo.top} vectorEffect='non-scaling-stroke' />
-              <TopGlyph id={layer.id} />
+              <TopGlyph id={layer.id} locadexMark={locadexMark} />
             </svg>
           </div>
         );

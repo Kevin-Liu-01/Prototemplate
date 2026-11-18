@@ -92,6 +92,13 @@
  *      is: the deck's slides and parts (the sources the built deck is cut
  *      from), the prerendered current pages with --built and the pages in
  *      a browser with --dom
+ *  15. mirror's Locadex mark: the production mirror (/d/production) draws
+ *      the Locadex files gt-cloud ships (public/brand/locadex-mark.svg and
+ *      no-bg-locadex-logo-light.png), never the hub's Locadex logo
+ *      (public/brand/locadex-logo*) or the /marks/locadex catalog, so it
+ *      matches the live site until gt-cloud switches. It reads the
+ *      mirror's own sources on every run and its prerendered pages, which
+ *      hold the shared /d/_v0 parts it mounts, with --built
  * and, in every HTML file, the #gt-mark symbol must draw LOGO.d and nothing
  * else (rule 2); no manifest entry waives that.
  * A listed path that is not on disk fails too. Exemptions: a history entry
@@ -643,6 +650,20 @@ const report14 = (where, shown) => {
 /* the deck's sources: the built deck names content-hashed copies of the same pictures */
 for (const rel of DECK_PAGES) if (rel !== 'public/brand-deck.html') report14(rel, shownPictures(readFileSync(join(ROOT, rel), 'utf8'), deckPath));
 
+/* ---- rule 15: the production mirror draws gt-cloud's Locadex files ---- */
+const HUB_LOCADEX = /\/brand\/locadex-logo|\/marks\/locadex\//g;
+const MIRROR = 'src/app/d/production';
+const report15 = (where, text) => {
+  for (const m of text.matchAll(HUB_LOCADEX)) fail('rule 15 mirror Locadex mark', `${where}:${lineOf(text, m.index)}`, `draws the hub's Locadex logo (${m[0]}…); the mirror shows what gt-cloud ships, /brand/locadex-mark.svg or /brand/no-bg-locadex-logo-light.png`);
+};
+const mirrorFiles = (dir) =>
+  readdirSync(join(ROOT, dir), { withFileTypes: true }).flatMap((entry) => {
+    const rel = `${dir}/${entry.name}`;
+    if (entry.isDirectory()) return mirrorFiles(rel);
+    return /\.(tsx?|css)$/.test(entry.name) ? [rel] : [];
+  });
+if (existsSync(join(ROOT, MIRROR))) for (const rel of mirrorFiles(MIRROR)) report15(rel, readFileSync(join(ROOT, rel), 'utf8'));
+
 /* --built: the pages next build prerendered, outside the dated studies under /d (history; /d/production mirrors the product and is read) */
 if (argv.includes('--built')) {
   const { builtPages } = await import('./seo.mjs');
@@ -659,6 +680,7 @@ if (argv.includes('--built')) {
     const html = readFileSync(file, 'utf8');
     const site = (address) => (address.startsWith('/') ? `public${address}` : null);
     report11(`built ${route}`, unlabelled(html, site, showsPrevious));
+    if (route.startsWith('/d/production')) report15(`built ${route}`, html);
     const current = currentPage(route);
     if (current) {
       currents += 1;

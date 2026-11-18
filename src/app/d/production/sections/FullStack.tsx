@@ -1325,6 +1325,7 @@ export default function V0FullStack() {
               <div className='v0-stack-fig' data-reveal>
                 <StackTower
                   hot={HOT_SLABS[0] ?? []}
+                  locadexMark='/brand/locadex-mark.svg'
                   title='The GT stack, built bottom-up: code, context, translations, and the Locadex agents layer'
                 />
               </div>

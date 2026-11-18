@@ -37,8 +37,8 @@ type FooterLink = {
 
 const DOCS = "https://generaltranslation.com/docs";
 
-/** The real lambda mark, drawn dark for light ground; dark mode inverts it
-    in CSS the way the story chip does. */
+/** The Locadex logo, drawn dark for light ground; dark mode inverts it in
+    CSS the way the story chip does. */
 function LocadexMark({ className }: MarkProps) {
   return (
     <Image
@@ -47,6 +47,21 @@ function LocadexMark({ className }: MarkProps) {
       className={`${className ?? ""} is-locadex`}
       height={14}
       src="/brand/locadex-logo-light.svg"
+      width={14}
+    />
+  );
+}
+
+/** The production mirror draws the mark gt-cloud's footer ships
+    (footer-links.tsx), so it matches the live site and the mirror's nav. */
+function ShippedLocadexMark({ className }: MarkProps) {
+  return (
+    <Image
+      alt=""
+      aria-hidden
+      className={`${className ?? ""} is-locadex`}
+      height={14}
+      src="/brand/no-bg-locadex-logo-light.png"
       width={14}
     />
   );
@@ -99,7 +114,7 @@ const columns = (
         label: "Locadex Agent",
         href: isProduction ? `${DOCS}/platform/locadex/quickstart` : DOCS,
         external: true,
-        mark: LocadexMark,
+        mark: isProduction ? ShippedLocadexMark : LocadexMark,
       },
       {
         label: "Next.js",
