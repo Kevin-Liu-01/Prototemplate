@@ -25,10 +25,10 @@ butt ends:
 Each stroke is written as its outline (offset curves as cubic Beziers, circles as arcs) in one path with the
 nonzero rule, like LOGO, so the files need no stroke and mask cleanly.
 
-The name and the logo are laid out by lockup.py's own layout (the refined lockup of 2026-11-12: the logo 2.3643 cap
+The name and the logo are laid out by lockup.py's own layout (the lockup of 2026-11-12: the logo 2.3643 cap
 heights tall, centred on the name's ink, 0.5826 cap height of white from the logo's ink to the name's, the name in
 Katagami Text 400 at LOCKUP.tracking, -0.0496 em, from one pen origin), so the strip's last globe and name are the stacked lockup
-exactly. The three stage globes are the construction of the globe of 2026-11-06 and wait for the refined
+exactly. The three graticule globes are the construction of the globe of 2026-11-06 and wait to be redrawn on the
 progression. The three graticule globes stand to its left at the logo's size, BETWEEN globe diameters apart.
 
 Writes:

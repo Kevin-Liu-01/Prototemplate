@@ -10,7 +10,7 @@ import { ARC_ENDS, AXIS_BEHIND, GLOBES, LOCKUPS, REDRAWS, TRACED } from './varia
 export const GRATICULE_MARKS = graticuleMarks();
 
 /** The head's lead. */
-export const LEAD = 'Every graticule mark is cut from one wireframe globe, whose ring, latitudes, meridians and equator draw its letters. The logo, Refined globe, is one of them.';
+export const LEAD = 'Every graticule mark is cut from one wireframe globe, whose ring, latitudes, meridians and equator draw its letters. The logo is one of them.';
 
 /** The section of the marks; its divider is the h2 alone. */
 export const MARKS_ID = 'marks';
@@ -34,7 +34,7 @@ export type Animation = { id: LineAnimationId; caption: string };
 export type MotionLoop = { id: string; name: string; caption: string; poster?: true };
 
 /** The static mark and the state its hovers settle into, by variation id. */
-export const STATIC_MARK = 'refined-1112';
+export const STATIC_MARK = 'logo';
 export const STATE_MARK = 'oval-axis-behind';
 
 /** The hovers and the loader on the static mark, in the order they were chosen. Each video starts and ends on the static mark. */
@@ -71,7 +71,7 @@ export const motionPoster = (loop: MotionLoop, theme: 'light' | 'dark') => `/mar
 export const MOTION_GROUP = {
   id: 'animations-hover',
   title: 'Hover and loading',
-  lead: `The first hover and the loader are the live logo's own, recorded on Refined globe on 2026-11-12, where only the line being drawn moves. The other two hovers were recorded on Axis and meridian behind, the logo before Refined globe, and settle it into Oval globe, axis behind.`,
+  lead: `The first hover and the loader are the live logo's own, recorded on the logo on 2026-11-12, where only the line being drawn moves. The other two hovers were recorded on Axis and meridian behind, the previous logo, and settle it into Oval globe, axis behind.`,
 };
 
 /** The animations in the order they were chosen. Each starts and ends on the exact mark. */
@@ -98,7 +98,7 @@ export const BEST_TITLE = 'Best';
 
 /** The best marks in order, each by its catalog id or its variation id: the static mark first, then its hover state. */
 const BEST_IDS: readonly string[] = [
-  'refined-1112',
+  'logo',
   'oval-axis-behind',
   'axis-and-meridian-behind',
   'meridian-axis-behind',
@@ -233,7 +233,7 @@ const LOGO_STEPS: readonly StepEntry[] = [
     caption: 'The back meridian breaks behind the equator as well, while the front meridian still meets it.',
   },
   {
-    id: 'refined-1112',
+    id: 'logo',
     caption: 'Each oval takes its own centre and radii, the lines lighten to 13.2 units and the gaps narrow. This is the logo.',
   },
 ];
@@ -254,7 +254,7 @@ export const PROGRESSION: readonly ProgressionLine[] = [
   {
     id: 'progression-logo',
     title: 'The logo',
-    lead: `These ${LOGO_STEPS.length} marks run from the first wireframe globe GT to Refined globe.`,
+    lead: `These ${LOGO_STEPS.length} marks run from the first wireframe globe GT to the logo.`,
     steps: LOGO_STEPS.map(step),
   },
   {
@@ -269,7 +269,7 @@ export const PROGRESSION: readonly ProgressionLine[] = [
 export const STEPS: readonly Step[] = PROGRESSION.flatMap((line) => line.steps);
 
 /** The best section's lead, which counts its marks. */
-export const BEST_LEAD = `These ${BEST.length} marks are the best of every drawing on this page. The first is the logo, Refined globe, and the second is its state on hover, on sign-in and while loading, Oval globe, axis behind.`;
+export const BEST_LEAD = `These ${BEST.length} marks are the best of every drawing on this page. The first is the logo, and the second is its state on hover, on sign-in and while loading, Oval globe, axis behind.`;
 
 /** The section of the globe rows; its divider is the h2 and the lead. */
 export const ROWS_ID = 'rows';
@@ -287,13 +287,13 @@ export const GLOBE_ROWS: readonly GlobeRow[] = [
   {
     id: 'rows-bar',
     name: 'The bar shortens',
-    caption: 'The whole oval and the whole equator with the stem joined to it, then the bar shortened into the T, then Oval globe, axis behind and Refined globe.',
+    caption: 'The whole oval and the whole equator with the stem joined to it, then the bar shortened into the T, then Oval globe, axis behind and the logo.',
     globes: ['/marks/graticule/rows/stem-joined.svg', '/marks/graticule/rows/short-bar.svg', ...LOGOS],
   },
   {
     id: 'rows-axis',
     name: 'The axis joins',
-    caption: 'The whole oval, the whole equator and the whole axis, then the T, then Oval globe, axis behind and Refined globe.',
+    caption: 'The whole oval, the whole equator and the whole axis, then the T, then Oval globe, axis behind and the logo.',
     globes: ['/marks/graticule/rows/whole-axis.svg', '/marks/graticule/rows/short-bar.svg', ...LOGOS],
   },
 ];

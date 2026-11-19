@@ -137,17 +137,17 @@ The static seat, as on the Locadex slab:
 
 The shimmer seat moves `plane()` inside the mask and keeps the rects in screen space (section 6).
 
-Assets in `public/brand/` (the Locadex files are the hub's; the gt-cloud landing still carries the earlier mark):
+Assets in `public/brand/` (the Locadex files are the hub's; the gt-cloud landing still carries the shipped Locadex mark):
 
-- `locadex-logo-mark.svg` (the Locadex logo, written by `pnpm build:locadex-logo`) for large seats. Its viewBox is 500 square and the drawn glyph spans 199 units of its width, so size the image box from the glyph: `markHalf = glyphWidth * (500 / 199) / 2`. The tower seats a 28-unit glyph in a 70-unit image box. The Locadex slab's image box is 32 units, so its glyph is about 13 units wide.
+- `locadex-logo-framed.svg` (the Locadex logo, written by `pnpm build:locadex-logo`) for large seats. Its viewBox is 500 square and the drawn glyph spans 199 units of its width, so size the image box from the glyph: `markHalf = glyphWidth * (500 / 199) / 2`. The tower seats a 28-unit glyph in a 70-unit image box. The Locadex slab's image box is 32 units, so its glyph is about 13 units wide.
 - `locadex-logo-light.svg` for small seats (a 16-unit image box on the pricing platform), the logo on its own 256 unit square.
-- The production mirror (`/d/production`) keeps gt-cloud's `locadex-mark.svg` and `no-bg-locadex-logo-light.png` until gt-cloud ships the new logo.
+- The production mirror (`/d/production`) keeps gt-cloud's `locadex-mark.svg` and `no-bg-locadex-logo-light.png` until gt-cloud ships the Locadex logo.
 - `no-bg-gt-globe-logo-light.png` or `gt-globe-logo.svg` for the General Translation logo. The mask reads alpha only, so the light or dark variant makes no difference.
 - Third-party marks: render the icon component white inside the mask (the GitHub mark on the repository's front-left module is `SiGithub` at a half size of 4.6).
 
 Placement:
 
-- The Locadex mark goes on the Locadex slab (Kevin, 2026-08-04: the animation "should have the locadex logo on it"). On the tower's top plate it sits on a raised 36-unit square chip at the face's top left, with a 28-unit glyph and 12 plan units of face between the chip and the left edge.
+- The Locadex logo goes on the Locadex slab (Kevin, 2026-08-04: the animation "should have the locadex logo on it"). On the tower's top plate it sits on a raised 36-unit square chip at the face's top left, with a 28-unit glyph and 12 plan units of face between the chip and the left edge.
 - One glyph per chip. The GitHub module carries the mark and skips its content bar.
 - One exception ships today: the tower's dashboard chip places `no-bg-gt-logo-light-96.png` and `no-bg-gt-logo-dark-96.png` in `plane()` as two images that CSS toggles by theme (`.v0s-dash-mark.is-light` and `.is-dark`). New work uses the mask.
 
@@ -180,7 +180,7 @@ The motion rules of DESIGN.md section 9 apply. Every loop is created paused. A S
 
 **The tower's top plate** (the agents plate, called the capstone in the code; full size again after Kevin's "make the top layer the same size as the other"):
 
-- the Locadex mark with the shimmer on its raised chip;
+- the Locadex logo with the shimmer on its raised chip;
 - four accent glints on the top contour itself: dashes of the edge path with `pathLength` 1000 and `strokeDasharray='110 140'`, a 7 s lap from offset 180 to -820;
 - the scan beam: a translucent trapezoid (accent at 10% fill, 34% edges, 78% landing line) hung from the plate's underside to the translations plate, in its own overlay SVG between those two slabs. `beamAt(t)` re-projects the four corners for t from -1 to 1, because a leaning quad cannot be a translated constant. The aperture (half width 26) sways 16 units in y under the plate while the landing (half width 40) sways 30 across the plate below, 2.5 s, sine.inOut, yoyo. The top edge rises 9 units above the plate's underside, hidden by the hull, so the 12 px lift never opens a gap;
 - the diff hunk, scrubbed by scroll: each write wire draws out of the mark's chip before its slat lands, 0.8 timeline seconds apart.
@@ -228,7 +228,7 @@ The toolchain stack (`src/app/d/toolchain/diagrams/tc-stack-iso.tsx`, route `/d/
 - [ ] Plates near 4% of the footprint thick with near 40% air between them.
 - [ ] Depth comes from per-plate stroke alpha. No group opacity is used for depth.
 - [ ] One accent object, with `--iso-accent` set from the page accent.
-- [ ] Every mark is an alpha mask filled from a token inside `plane()`, from the right asset for its size, and the Locadex mark sits on the Locadex slab.
+- [ ] Every mark is an alpha mask filled from a token inside `plane()`, from the right asset for its size, and the Locadex logo sits on the Locadex slab.
 - [ ] Artwork lies in its face, no words are seated at chip scale, and each artifact sits in the front band the plate above leaves visible.
 - [ ] Labels are sans with mono only on numbers, and their effective size is checked at 390px.
 - [ ] Plates are opaque with no frost sheen.

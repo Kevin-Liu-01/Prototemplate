@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draw the General Translation logo lockup, the logo beside "General" over "Translation", from Katagami Text 400 as outlines.
+"""Draw the General Translation lockup, the logo beside "General" over "Translation", from Katagami Text 400 as outlines.
 
 Kevin, 2026-11-08: "remember the word mark of general translation text uses katagami text!" The name in the
 lockup is Katagami Text at wght 400, tracked LOCKUP.tracking em (-0.049645 em, 101.67 units after each advance),
@@ -35,7 +35,7 @@ committed, so the site builds without the checkout. GSUB is not applied: no defa
 locl, rlig, liga, clig, calt, rclt) substitutes in these two words, which the build checks and refuses otherwise.
 
 Requires: python3 with fontTools (pip install fonttools).
-Last real run: 2026-11-12, Prototemplate session (the refined lockup: 400, -0.049645 em, pen origin).
+Last real run: 2026-11-12, Prototemplate session (the lockup on Kevin's wordmark: 400, -0.049645 em, pen origin).
 """
 import json
 import os

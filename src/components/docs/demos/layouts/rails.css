@@ -299,7 +299,7 @@
   height: 343px;
   transform: translate(25%, -50%);
   background-color: currentColor;
-  mask: url('/brand/locadex-logo-mark.svg') center / contain no-repeat;
+  mask: url('/brand/locadex-logo-framed.svg') center / contain no-repeat;
 }
 
 /* the hero's row: equal columns as wide as the wider face, centered */

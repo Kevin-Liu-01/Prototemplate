@@ -620,7 +620,7 @@
   pointer-events: none;
 }
 
-/* the Locadex mark ships as a dark glyph — invert it for the dark panel */
+/* the Locadex logo ships as a dark glyph — invert it for the dark panel */
 .toolchain-root .tc-cinema-v3 .tc-cinema-agent-chip img {
   display: block;
   width: 13px;

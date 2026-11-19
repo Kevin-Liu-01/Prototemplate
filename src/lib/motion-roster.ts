@@ -8,7 +8,7 @@ import type { MotionFilm } from '@/lib/motion';
  * from the Videos session's motion/) with its knowledge base section brought
  * level with generaltranslation.com (the generated src/lib/kb-films.ts, from
  * gt-cloud). gt-cloud publishes every knowledge base film on its gt-films
- * Blob store, and since #6044 (2026-11-18) the films there end on the refined
+ * Blob store, and since #6044 (2026-11-18) the films there end on the
  * logo. So:
  *
  * - a roster film gt-cloud also publishes plays gt-cloud's film and poster,
@@ -49,7 +49,7 @@ function fromKb(film: KbFilm): MotionFilm {
 /**
  * Roster films gt-cloud publishes under a later slug: the same answer, cut
  * again and renamed. The roster film plays gt-cloud's cut, which ends on the
- * refined logo, and gt-cloud's row is not listed twice.
+ * logo, and gt-cloud's row is not listed twice.
  */
 const RENAMED: Readonly<Record<string, string>> = {
   'kb-translate-tanstack-start-app': 'kb-add-i18n-to-tanstack-start',
@@ -80,7 +80,7 @@ export const ROSTER_SECTIONS: typeof MOTION_SECTIONS = MOTION_SECTIONS.map((sect
   section.id === 'motion-kb'
     ? {
         ...section,
-        lead: `${KB_COUNT} short films that each answer one question about General Translation. The films generaltranslation.com publishes play from its own store and end on the refined logo: the roster's films first, then the rest of the site's knowledge base in its order.`,
+        lead: `${KB_COUNT} short films that each answer one question about General Translation. The films generaltranslation.com publishes play from its own store and end on the logo: the roster's films first, then the rest of the site's knowledge base in its order.`,
       }
     : section
 );

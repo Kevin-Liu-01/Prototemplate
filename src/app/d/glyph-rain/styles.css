@@ -2021,7 +2021,7 @@
   display: none;
 }
 
-/* The footer's Locadex mark is a drawn dark glyph, not currentColor ink —
+/* The footer's Locadex logo is a drawn dark glyph, not currentColor ink —
    dark mode flips it the way the story chip does. */
 [data-theme='dark'] .glyphrain-root .tc-foot-mark.is-locadex {
   filter: invert(1);

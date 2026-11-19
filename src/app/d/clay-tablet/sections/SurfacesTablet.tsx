@@ -8,7 +8,7 @@ import Shelf, { Tablet } from './Shelf';
  * Tablet III: the product surfaces as concrete objects. A stats register,
  * then four columns divided by doubled threads: the libraries as a package
  * ledger, the CLI as its terminal and config, the dashboard as its tools,
- * and Locadex as its mark and its trace. The Locadex mark is the real lambda
+ * and Locadex as its mark and its trace. The Locadex logo is the lambda
  * drawing (A9); nothing here is a robot or a sparkle.
  */
 export default function SurfacesTablet() {

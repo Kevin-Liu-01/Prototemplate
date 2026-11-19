@@ -134,7 +134,7 @@ docked. Hover and pointer events inside it keep working.
   label that says what loads (2026-11-09).
 - The logo inside a link or a button takes `GtLogoMotion`'s `hover` mode,
   so its meridian draws back while the link is hovered or focused. Both
-  modes draw the refined logo of 2026-11-12; a copy of the component in
+  modes draw the logo of 2026-11-12; a copy of the component in
   another repository takes the regenerated `GtLogoMotion.css` and
   `GtLogoMotion.geometry.ts`, never an older copy.
 - A placeholder that only holds a height for a moment stays blank, and the

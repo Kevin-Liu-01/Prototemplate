@@ -11,7 +11,7 @@
 //
 // It reads the logo's construction, src/lib/logo-construction.json (its
 // motion block: each oval's own centre and radii, the weight, the bar, the
-// stem, the cut faces and the gaps, fitted to the refined logo of
+// stem, the cut faces and the gaps, fitted to the logo of
 // 2026-11-12), and scripts/build/logo-motion.json: the timing and, per beat,
 // a table of where each moving end stands at 240 samples a second.
 //
@@ -117,7 +117,7 @@ const lerp = (a, b, k) => a + (b - a) * k;
 const clamp01 = (x) => Math.min(1, Math.max(0, x));
 
 /* ------------------------------------------------------------ the two ellipses */
-/* each oval has its own centre and radii (the refined logo); d1 is the line's direction by theta, per radian */
+/* each oval has its own centre and radii (the logo); d1 is the line's direction by theta, per radian */
 const LINES = {
   meridian: {
     at: (t) => [MERIDIAN.cx + MERIDIAN.rx * Math.sin(t * DEG), MERIDIAN.cy - MERIDIAN.ry * Math.cos(t * DEG)],
@@ -604,7 +604,7 @@ function logoSegments() {
       segs.push({ sub, text: 'Z' });
       cur = first;
     } else if (cmd === 'H' || cmd === 'V') {
-      /* a level or plumb line (the refined logo draws its bar and stem edges so), kept as an L */
+      /* a level or plumb line (the logo draws its bar and stem edges so), kept as an L */
       const v = num();
       const b = cmd === 'H' ? [v, cur[1]] : [cur[0], v];
       segs.push({ sub, a: cur, b, p: b, cmd: 'L', text: `L${b.map(f3).join(' ')}` });

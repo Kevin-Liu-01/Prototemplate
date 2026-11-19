@@ -210,7 +210,7 @@
   color: var(--tc-ink);
 }
 
-/* The Locadex mark is a drawn dark glyph, not currentColor ink — dark mode
+/* The Locadex logo is a drawn dark glyph, not currentColor ink — dark mode
    flips it the way the story chip does. */
 [data-theme='dark'] .toolchain-root .v0-foot-mark.is-locadex {
   filter: invert(1);

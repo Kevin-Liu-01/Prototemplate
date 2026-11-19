@@ -309,7 +309,7 @@ export const PRODUCTION_MARKS: readonly ProductionMark[] = [
     name: 'General Translation',
     file: '/marks/production/gt-mark.svg',
     aspect: 1,
-    text: 'The logo, Refined globe: Axis and meridian behind on its own construction (12 November 2026), a globe whose ring and ovals draw the G and whose polar axis is the stem of the T. generaltranslation.com and the dashboard draw it from GtMark in gt-cloud\'s packages/ui. It replaced the doubled-line monogram on 8 November 2026.',
+    text: 'The logo: Axis and meridian behind on its own construction (12 November 2026), a globe whose ring and ovals draw the G and whose polar axis is the stem of the T. generaltranslation.com and the dashboard draw it from GtMark in gt-cloud\'s packages/ui. It replaced the doubled-line monogram on 8 November 2026.',
     files: [
       '/marks/production/gt-mark.svg',
       '/brand/gt-globe-logo.svg',
@@ -324,7 +324,7 @@ export const PRODUCTION_MARKS: readonly ProductionMark[] = [
     name: 'Locadex',
     file: '/marks/production/locadex-mark.svg',
     aspect: 1,
-    text: 'The mark of Locadex, the General Translation agent, as generaltranslation.com draws it in the footer, on the pricing plans, in the docs and in the Locadex section. The Locadex logo, a lambda drawn in doubled lines, replaced it on this site on 18 November 2026 and leads the Locadex section below; generaltranslation.com keeps this mark until it takes the new file.',
+    text: 'The shipped Locadex mark: the mark of Locadex, the General Translation agent, as generaltranslation.com draws it in the footer, on the pricing plans, in the docs and in the Locadex section. The Locadex logo, a lambda drawn in doubled lines, replaced it on this site on 18 November 2026 and leads the Locadex section below; generaltranslation.com keeps this mark until it takes the new file.',
     files: [
       '/marks/production/locadex-mark.svg',
       '/brand/locadex-mark.svg',
@@ -548,6 +548,12 @@ export const MARK_USE_LABELS: Readonly<Record<MarkUse, string>> = {
   state: 'Logo state',
 };
 
+/** A mark's use label, or null when it has no use or its name already says it (the logo's card is named The logo). */
+export function markUseLabel(mark: Pick<CatalogMark, 'name' | 'use'>): string | null {
+  const label = mark.use ? MARK_USE_LABELS[mark.use] : null;
+  return label && label !== mark.name ? label : null;
+}
+
 type DynamicInput = Omit<CatalogMark, 'file' | 'file16' | 'box'> & {
   box: readonly [number, number, number, number];
   /** the mark has a 16px drawing beside its file, <id>-16.svg */
@@ -641,7 +647,7 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
 
   dyn({ id: 'doubled-gt', name: 'Doubled GT', family: 'doubled-line', opens: true, pick: true, box: [0, 66.5, 256, 123], note: 'Every stroke of the G and the T is drawn as two parallel lines.' }),
 
-  dyn({ id: 'refined-1112', name: 'Refined globe', family: 'globe', pick: true, use: 'logo', variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'Axis and meridian behind on its own construction (Kevin, 2026-11-12): the meridian and the latitude ovals each have their own centre and radii, the lines are 13.2 units of the 256 square, and the gaps where a line passes behind another are narrower.' }),
+  dyn({ id: 'logo', name: 'The logo', family: 'globe', pick: true, use: 'logo', variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'Axis and meridian behind on its own construction (Kevin, 2026-11-12): the meridian and the latitude ovals each have their own centre and radii, the lines are 13.2 units of the 256 square, and the gaps where a line passes behind another are narrower.' }),
   dyn({ id: 'axis-and-meridian-behind', name: 'Axis and meridian behind', family: 'globe', pick: true, previous: true, variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A ring, a meridian oval and a latitude oval draw the globe and the G, and the T\'s stem, the polar axis, breaks where it passes behind the front of the equator, as does the back meridian, while the front meridian still meets it.' }),
   dyn({ id: 'oval-axis-behind', name: 'Oval globe, axis behind', family: 'globe', pick: true, use: 'state', variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The logo without its meridian: a ring and a latitude oval draw the globe and the G, and the T\'s stem breaks where it passes behind the front of the equator.' }),
   dyn({ id: 'turning-globe', name: 'Turning globe', family: 'globe', opens: true, box: [22, 22, 212, 212], note: 'One meridian is the G, two parallels are its arm and its needle bar, and the limb and the meridian thin toward the upper right as on a lit sphere.' }),
@@ -659,15 +665,15 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'meridian-gt', name: 'Meridian GT', family: 'globe', pick: true, box: [12, 12, 232, 232], note: 'A thin ring and a meridian that merges into it at the top and the bottom open together at the upper right as the G, both cut level, and a bar from inside the meridian out to the ring is both the G\'s bar and the crossbar of a T whose stem drops to the ring.' }),
   dyn({ id: 'meridian-gt-curved', name: 'Meridian GT, curved T', family: 'globe', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A heavy closed ring holds one meridian whose right arc ends in a short hook at the upper right as the G, and a level bar from the meridian\'s left side out to the ring is both the G\'s bar and the crossbar of a T that curves down into a stem standing on the ring.' }),
 
-  dyn({ id: 'doubled-lambda', name: 'Doubled lambda', family: 'locadex', pick: true, box: [24.3, 43.6, 207.4, 168.8], note: 'The Locadex logo: a lambda whose every stroke is two parallel lines, one gap apart through both bends, its arm and foot cut parallel to the long leg; the short leg\'s inner line runs into the long leg and its outer line stops one gap short.' }),
-  dyn({ id: 'doubled-lambda-behind', name: 'Doubled lambda, behind', family: 'locadex', pick: true, box: [24.3, 43.6, 207.4, 168.8], note: 'The Locadex logo with both of the short leg\'s lines stopping one gap short of the long leg, so the short leg reads as passing behind it.' }),
+  dyn({ id: 'locadex-logo', name: 'The Locadex logo', family: 'locadex', pick: true, box: [24.3, 43.6, 207.4, 168.8], note: 'A lambda whose every stroke is two parallel lines, one gap apart through both bends, its arm and foot cut parallel to the long leg; the short leg\'s inner line runs into the long leg and its outer line stops one gap short.' }),
+  dyn({ id: 'locadex-logo-behind', name: 'The Locadex logo, behind', family: 'locadex', pick: true, box: [24.3, 43.6, 207.4, 168.8], note: 'The Locadex logo with both of the short leg\'s lines stopping one gap short of the long leg, so the short leg reads as passing behind it.' }),
   dyn({ id: 'outlined-lambda', name: 'Outlined lambda', family: 'locadex', pick: true, box: [24.3, 30.2, 207.4, 195.6], note: 'The lambda drawn as outlines: the arm and the short leg are one outlined stroke that bends down the long leg and turns at a sharp corner into the short leg, closed at the arm and at the short leg\'s end, which stops level with the foot\'s upper line, and the long leg is a second outline that starts behind it and ends in a closed foot.' }),
   dyn({ id: 'outlined-lambda-open', name: 'Outlined lambda, open foot', family: 'locadex', pick: true, box: [24.3, 26.1, 207.4, 203.8], note: 'The outlined lambda with its long leg left open at the foot, two lines cut plumb.' }),
   dyn({ id: 'ringed-lambda', name: 'Ringed lambda', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The outline of a heavy lambda inside a ring: its top line runs out of the ring at the arm and both lines of the foot run back into it, the arm\'s lower line ends square and the short leg is closed at its foot.' }),
   dyn({ id: 'ringed-lambda-round', name: 'Ringed lambda, round end', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The ringed lambda with the arm\'s lower line ending round.' }),
   dyn({ id: 'ringed-chevron-lambda', name: 'Ringed chevron lambda', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The outlined lambda inside a ring: the arm and the short leg are one outlined stroke whose two arm lines run out of the ring, bend down the long leg and turn at a sharp corner into the wide short leg, closed flat level with the foot\'s upper line; the long leg\'s two lines start behind the short leg and run back into the ring at the foot.' }),
-  dyn({ id: 'ringed-chevron-lambda-b', name: 'Ringed chevron lambda, wide gap', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The ringed chevron lambda with the long leg starting a wider gap behind the short leg and bending tighter into its foot.' }),
-  dyn({ id: 'ringed-chevron-lambda-c', name: 'Ringed chevron lambda, close gap', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The ringed chevron lambda with the long leg starting a narrower gap behind the short leg.' }),
+  dyn({ id: 'ringed-chevron-lambda-wide-gap', name: 'Ringed chevron lambda, wide gap', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The ringed chevron lambda with the long leg starting a wider gap behind the short leg and bending tighter into its foot.' }),
+  dyn({ id: 'ringed-chevron-lambda-close-gap', name: 'Ringed chevron lambda, close gap', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The ringed chevron lambda with the long leg starting a narrower gap behind the short leg.' }),
   dyn({ id: 'lambda-oval', name: 'Lambda oval', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A lambda whose legs both run to the ring stands in front of a level oval, and the oval\'s near arc stops short of each leg, so the space between the legs stays open.' }),
   dyn({ id: 'dense-globe-l', name: 'Dense globe L', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'An L on the globe at the logo\'s density: the far latitude arc and the western half of the equator break behind the nearer lines, and the L\'s counter stays open.' }),
   dyn({ id: 'lambda-meridian', name: 'Lambda meridian', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A lambda stands in front of the equator oval and one meridian, the meridian breaks behind the short leg, and the right half stays open so the long leg runs clear.' }),
@@ -681,16 +687,16 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
 
 /**
  * The shortlist in page order, by id: only marks Kevin chose, in the order
- * of his verdicts, newest first: the logo he refined on 2026-11-12 and its
- * state on hover, on sign-in and while loading, the globe he chose on
- * 2026-11-06 that it refines, then the mark he loves,
+ * of his verdicts, newest first: the logo, his drawing of 2026-11-12, and
+ * its state on hover, on sign-in and while loading, the globe he chose on
+ * 2026-11-06 that the logo was drawn from, then the mark he loves,
  * the mark he featured on 2026-11-02, the marks he liked on 2026-10-30,
  * the marks he kept on 2026-10-28, then those he liked on 2026-10-27. At
  * most 16. Only Kevin adds a mark or removes one, and the other picks stay
  * in their families.
  */
 export const SHORTLIST: readonly string[] = [
-  'refined-1112',
+  'logo',
   'oval-axis-behind',
   'axis-and-meridian-behind',
   'graticule-gt',

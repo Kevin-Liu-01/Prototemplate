@@ -202,7 +202,7 @@ const AGENT_LEADER = `M${(AGENT_VERT_X + 2.2).toFixed(2)} ${AGENT_TOP_Y}H70`;
 /** The output plate's screen center x — the chip's reading hangs beneath it. */
 const PR_CX = (PR_BOX.x * 2 + PR_BOX.w) * ISO_COS30;
 
-/** The Locadex mark's half-size, and its seat in the slab's top face. */
+/** The Locadex logo's half-size, and its seat in the slab's top face. */
 const MARK_HALF = 16;
 const MARK_PLANE = plane(A_Z + A_H);
 
@@ -299,7 +299,7 @@ function LocadexIso() {
           style={{ maskType: 'alpha' }}
         >
           <image
-            href='/brand/locadex-logo-mark.svg'
+            href='/brand/locadex-logo-framed.svg'
             x={-MARK_HALF}
             y={-MARK_HALF}
             width={MARK_HALF * 2}
@@ -411,7 +411,7 @@ function LocadexIso() {
           />
         </g>
 
-        {/* the agent slab, hovering, carrying the Locadex mark on its top
+        {/* the agent slab, hovering, carrying the Locadex logo on its top
             face — the brightest voice in the frame, and the mark warms to
             the accent as the beam passes beneath it */}
         <Solid box={AGENT_BOX} rim={0.2} edge={0.48} lift />
@@ -602,7 +602,7 @@ function IntegrateDiagram() {
           style={{ maskType: 'alpha' }}
         >
           <image
-            href='/brand/locadex-logo-mark.svg'
+            href='/brand/locadex-logo-framed.svg'
             x={INT_MARK_X}
             y={117 - INT_MARK / 2}
             width={INT_MARK}

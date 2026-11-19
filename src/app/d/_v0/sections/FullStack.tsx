@@ -35,14 +35,14 @@ type BeatIconProps = {
 };
 
 /**
- * The agents tag's icon: the Locadex mark itself, never a stock bot glyph
+ * The agents tag's icon: the Locadex logo itself, never a stock bot glyph
  * (founder) — the brand asset as an alpha mask over currentColor, the head
  * watermark's treatment (locadex.css) at tag scale, so it takes the tag's
  * accent exactly like the lucide icons do. Same lucide contract — size in,
  * square box out — and fullstack.css scales the mask so the GLYPH spans
  * the box, not the asset's padded canvas.
  */
-function LocadexMark({
+function LocadexLogo({
   size = 16,
   className,
   'aria-hidden': ariaHidden,
@@ -128,7 +128,7 @@ const BEATS: readonly StackBeat[] = [
       <>Locadex Agent connects your GitHub, CMS, Google Slides, Figma, and other content sources</>,
       <>Infrastructure built for agents across API, CLI, and MCP</>,
     ],
-    icon: LocadexMark,
+    icon: LocadexLogo,
     slabIds: ['agents'],
   },
 ];
@@ -242,7 +242,7 @@ const STAGE_DROP = 32;
  * scanning ... and then be able to see next section"). The figure never
  * translates down. Reduced motion and the no-JS resting markup get the
  * FULL stack with the first beat lit, statically — four legible slabs
- * over a truer-but-emptier one — with the Locadex mark's shimmer band
+ * over a truer-but-emptier one — with the Locadex logo's shimmer band
  * parked mid-glyph as a still and the beam hidden.
  */
 export default function V0FullStack() {
@@ -381,7 +381,7 @@ export default function V0FullStack() {
 
         /* the ambient loops (founder round): context's accent waves ride
            their wires into the <T>, the agents plate's orbit trace
-           circles its ring, and the Locadex mark's dithered specular
+           circles its ring, and the Locadex logo's dithered specular
            bands sweep the glyph (StackTower builds the clip windows
            with the 60° set baked into their geometry; these loops only
            slide them horizontally) — each runs ONLY while its plate is

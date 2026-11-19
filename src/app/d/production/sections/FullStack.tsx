@@ -34,7 +34,7 @@ type BeatIconProps = {
 };
 
 /**
- * The agents tag's icon: the Locadex mark itself, never a stock bot glyph
+ * The agents tag's icon: the shipped Locadex mark itself, never a stock bot glyph
  * (founder) — the brand asset as an alpha mask over currentColor, the head
  * watermark's treatment (locadex.css) at tag scale, so it takes the tag's
  * accent exactly like the Heroicons glyphs do. Same contract as the
@@ -235,7 +235,7 @@ const STAGE_DROP = 32;
  * scanning ... and then be able to see next section"). The figure never
  * translates down. Reduced motion and the no-JS resting markup get the
  * FULL stack with the first beat lit, statically — four legible slabs
- * over a truer-but-emptier one — with the Locadex mark's shimmer band
+ * over a truer-but-emptier one — with the shipped Locadex mark's shimmer band
  * parked mid-glyph as a still and the beam hidden.
  */
 export default function V0FullStack() {
@@ -374,7 +374,7 @@ export default function V0FullStack() {
 
         /* the ambient loops (founder round): context's accent waves ride
            their wires into the <T>, the agents plate's orbit trace
-           circles its ring, and the Locadex mark's dithered specular
+           circles its ring, and the shipped Locadex mark's dithered specular
            bands sweep the glyph (StackTower builds the clip windows
            with the 60° set baked into their geometry; these loops only
            slide them horizontally) — each runs ONLY while its plate is

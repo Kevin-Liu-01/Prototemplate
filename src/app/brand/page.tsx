@@ -62,7 +62,7 @@ const SHIPS = [
   ['Motion', 'the films on /motion: the blog trailers, the product films and the translation-history series'],
   [
     'The marks',
-    'the refined globe of 2026-11-12, which refines the globe chosen on 2026-11-06 that replaced the doubled-line monogram on 2026-11-08, its state, and the marks it was reached from; the title badges in the /brand and /marks heads cycle through a selection of the marks on /marks',
+    'the logo, drawn on 2026-11-12 on the construction of the globe chosen on 2026-11-06, which replaced the doubled-line monogram on 2026-11-08, its state, and the marks it was reached from; the title badges in the /brand and /marks heads cycle through a selection of the marks on /marks',
   ],
 ] as const;
 
@@ -348,7 +348,7 @@ const PAGES: readonly BrandPage[] = [
           </figure>
           <figure className='ptb-mark is-paper'>
             <img alt='The Locadex logo, a lambda drawn in doubled lines' decoding='async' loading='lazy' src='/brand/locadex-logo-light.svg' />
-            <figcaption>Locadex, the agent&rsquo;s own logo</figcaption>
+            <figcaption>The Locadex logo</figcaption>
           </figure>
         </div>
         <p>

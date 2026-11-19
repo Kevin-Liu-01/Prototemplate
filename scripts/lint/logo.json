@@ -112,7 +112,7 @@
       "generator": "pnpm build:logo"
     },
     {
-      "path": "public/marks/graticule/variations/refined-1112.svg",
+      "path": "public/marks/graticule/variations/logo.svg",
       "generator": "pnpm build:logo"
     },
     {
@@ -1305,7 +1305,7 @@
       "rules": [
         12
       ],
-      "reason": "the 11-06 globe without its meridian, its state on hover, kept on /marks as the vote record; the refined logo draws its own state (GtLogoMotion), so no current page shows this file"
+      "reason": "the 11-06 globe without its meridian, its state on hover, kept on /marks as the vote record; the logo draws its own state (GtLogoMotion), so no current page shows this file"
     },
     {
       "path": "public/media/slash-announcement-film.mp4",
@@ -2603,42 +2603,42 @@
     },
     {
       "path": "public/media/designing-docs-film.mp4",
-      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "reason": "rendered again on the logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
       "sha256": "06a09a580e0ffe32ef8d69ea3f48fbffb90b18b300aa7991ca5e35150cdb2ab5"
     },
     {
       "path": "public/media/designing-docs-poster.jpg",
-      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "reason": "rendered again on the logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
       "sha256": "d12e909577aad015500ce9fed53d2b173acde60e6db24e996645b58e19d7323f"
     },
     {
       "path": "public/motion/sheets/blog-designing-docs.png",
-      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "reason": "rendered again on the logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
       "sha256": "6328377de58be65f0d47ae838c8b284f8cbf8b03b031d311d3bf7291a9a8f28d"
     },
     {
       "path": "public/motion/sheets/blog-designing-docs.webp",
-      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "reason": "rendered again on the logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
       "sha256": "9c3a4a3b3b62b69770a8d6453ae3ce465a0501b4430e7a0f5a33655a74dbbdf8"
     },
     {
       "path": "public/media/fuma-nama-film.mp4",
-      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "reason": "rendered again on the logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
       "sha256": "94752a76d5516e57faef46ae6b35fdefba1643e77609a685a346853e078742c4"
     },
     {
       "path": "public/media/fuma-nama-poster.jpg",
-      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "reason": "rendered again on the logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
       "sha256": "8ab62fd9c0e7fc996e99b5bf8a7c6e789021097842e44d38ac87d79f91b527e6"
     },
     {
       "path": "public/motion/sheets/blog-fuma-nama.png",
-      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "reason": "rendered again on the logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
       "sha256": "7789160ad4a8da3054288789dd79d800ada5b226ed458139129b28d001eed951"
     },
     {
       "path": "public/motion/sheets/blog-fuma-nama.webp",
-      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "reason": "rendered again on the logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
       "sha256": "922e9b679dcdb463a39179eb2bd2c8a52b05d54f5181eea5b7d3364e65b49314"
     },
     {
@@ -3268,32 +3268,32 @@
     },
     {
       "path": "deck/shots/proto-marks-speed-light.jpg",
-      "reason": "a capture of the speed set on /marks (bar monogram, lockup, plate, double cut, livery, dithered, ASCII, two-way, globe G); no globe logo; the speed marks are the previous speed-mark system, in a labelled figure on deck slide 73; checked by eye on 2026-11-12",
+      "reason": "a capture of the speed set on /marks (bar monogram, lockup, plate, double cut, livery, dithered, ASCII, two-way, globe G); no logo; the speed marks are the previous speed-mark system, in a labelled figure on deck slide 73; checked by eye on 2026-11-12",
       "sha256": "290558b7798536dd09b6e0455414b61f60ff350108b83b99672a20361845148d"
     },
     {
       "path": "deck/shots/proto-marks-speed-dark.jpg",
-      "reason": "a capture of the speed set on /marks (bar monogram, lockup, plate, double cut, livery, dithered, ASCII, two-way, globe G); no globe logo; the speed marks are the previous speed-mark system, in a labelled figure on deck slide 73; checked by eye on 2026-11-12",
+      "reason": "a capture of the speed set on /marks (bar monogram, lockup, plate, double cut, livery, dithered, ASCII, two-way, globe G); no logo; the speed marks are the previous speed-mark system, in a labelled figure on deck slide 73; checked by eye on 2026-11-12",
       "sha256": "70dbe6761b1ad26ef004b538e5c6f1383b931c45c8b6587c1278961e6a56fbc9"
     },
     {
       "path": "public/static/videos/kb-add-i18n-to-nextjs-pages-router.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "21a2e5efdfa7f8aca489536936f006d43c417e4e953ca1ebab529ccfd918cf30"
     },
     {
       "path": "public/static/videos/kb-add-i18n-to-nextjs.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "51b574fa2ec51f54b657b4b0badb701c0f347a291f884def4831da94256356d7"
     },
     {
       "path": "public/static/videos/kb-add-i18n-to-tanstack-start.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "2e52fd3a176817d0fe4e625a0d8ae173d609e46845a2d38707bdb3cb78162036"
     },
     {
       "path": "public/static/videos/kb-ai-agent-i18n-setup.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "80515d59958a31656718c097d1f3cafcdf248f269dac40d1cbcf2b50176d250d"
     },
     {
@@ -3303,12 +3303,12 @@
     },
     {
       "path": "public/static/videos/kb-ai-translation-context.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "9cce2b599521fb0b66ef9b8c2f00f808dad9061b2c5488ec7728197f76a1402c"
     },
     {
       "path": "public/static/videos/kb-ai-translation-glossary.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "9863d243ffd1ccad362f6d3c3d3a5982a0c4b439bee5a7195cb3cfbd3e71d2ac"
     },
     {
@@ -3323,7 +3323,7 @@
     },
     {
       "path": "public/static/videos/kb-best-localization-software.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "7646d38aeecc2b3c24f50ee8f9c85ab9393e79b4513f9012b7f5adf8d84379ae"
     },
     {
@@ -3338,17 +3338,17 @@
     },
     {
       "path": "public/static/videos/kb-detect-user-language.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "662e8344d6b889888426676ce1c1edc745b339c5e9c4762f18240db10ac6846e"
     },
     {
       "path": "public/static/videos/kb-find-hardcoded-strings.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "c5d444aebadc01371a501ccc260d5be10306e34be5fb8f03c66b97e4159891d1"
     },
     {
       "path": "public/static/videos/kb-format-numbers-dates-currencies.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "1f1be88a3ffd9b3f633bf7b2289002af6f1148647078a892ab7e168e79fd60e8"
     },
     {
@@ -3508,97 +3508,97 @@
     },
     {
       "path": "public/static/videos/kb-how-to-handle-plurals-in-react.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "8431d17e6efa5558bf058b22247effdfef6018f0a3c49b318b8022a19cb28570"
     },
     {
       "path": "public/static/videos/kb-i18n-key-naming.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "102491511174d83a511f0bc4a9c1a9f4a147523716d24002d957baf9a1740479"
     },
     {
       "path": "public/static/videos/kb-i18n-without-translation-files.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "6c378eec238971c7a8bb1b647f4481aac487d242f190ecbc883accdf7a870b11"
     },
     {
       "path": "public/static/videos/kb-icu-message-format.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "1dda19b05c92d7766e63d61d6166736ec650af0a580442b34e335ad07d8898b1"
     },
     {
       "path": "public/static/videos/kb-internationalization-vs-localization.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "5f7bc6b3656e3a3ce48b9735c5dc4abbdba0467e8d9bcd5d60688a12eb512266"
     },
     {
       "path": "public/static/videos/kb-is-ai-translation-accurate.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "045a2913ea98ab557b921ac3641e08b1a3c36f25df01fcbb519c60ed65942fe3"
     },
     {
       "path": "public/static/videos/kb-language-switcher.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "7bca26614912eb08b1d3a5d151c2e3826faabff550a00085ac8471a75421f831"
     },
     {
       "path": "public/static/videos/kb-locale-codes.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "77aed84d80241a243fb811b35df7b9cefc1098a6591bf92b0455a1ff146428ad"
     },
     {
       "path": "public/static/videos/kb-locale-routing-seo.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "e68679a8dc8ad2484ae1f9b29b20a92c58d13da996491be7018106b4d46ac62d"
     },
     {
       "path": "public/static/videos/kb-localize-android-app.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "a1e73b045f18894198fd817042b53f7abf4edd5eaa5a73efe2468d892e7fb6e6"
     },
     {
       "path": "public/static/videos/kb-localize-ios-app.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "08acdd4d3e5ec2376bd6c19213b7f998b00b7f698cf20b5f92793656c1759e85"
     },
     {
       "path": "public/static/videos/kb-localize-without-translators.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "4629059db0c95e683305db0b712dba1d3f7747cb0d67fde43fa969931d632c25"
     },
     {
       "path": "public/static/videos/kb-make-website-multilingual.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "c471607a93fc73a76e6c9d6d6ba256da2b53ad3d9fef193cf70c803fdf1a7dec"
     },
     {
       "path": "public/static/videos/kb-migrate-from-crowdin.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "5c64ee17c55c4eafc39e2b3fb146422559c1f7efa59fa19f8d051bf9926da48a"
     },
     {
       "path": "public/static/videos/kb-migrate-from-lokalise.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "98775f0185c5f2a8db62b7021128e4971b658718b6eaba6dad733fdc0534c129"
     },
     {
       "path": "public/static/videos/kb-migrate-from-next-intl.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "bbf109e054ee94a377387ec9a76a55a3d548aab8506bc208809b44e9628bbbaf"
     },
     {
       "path": "public/static/videos/kb-migrate-from-phrase.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "04de02eb6ecd739edf53948a33be8613ca5f1f7e382eb63cdec07628e0ae5779"
     },
     {
       "path": "public/static/videos/kb-migrate-from-react-i18next.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "938397d6a81be38ff98aef072a3b11bd00ecbff961412345f1885ee6b093891f"
     },
     {
       "path": "public/static/videos/kb-migrate-from-vue-i18n.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "7572ae12c0825ec2944b30643cdb17705a13fa4f6f0fa6224fb26d0d6af91f06"
     },
     {
@@ -3608,17 +3608,17 @@
     },
     {
       "path": "public/static/videos/kb-multilingual-nextjs-seo.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "c71a965c5161064ce83deb91a80d72de4608f135c35cc31c039596fc1c7d279e"
     },
     {
       "path": "public/static/videos/kb-multilingual-sitemap.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "023f698b5fb83dd4e09bb6caa5841c9174cedcc2c8b6ba4f298779cffb488a72"
     },
     {
       "path": "public/static/videos/kb-multilingual-url-structure.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "09ac26a7fa4fc559b650738ddcc74c6bc482ff13080ed23cf539bbeaff395747"
     },
     {
@@ -3628,117 +3628,117 @@
     },
     {
       "path": "public/static/videos/kb-pseudo-localization.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "b083ad912472c8a3c529df89c623e128083cacb32f30c271915c7f9f9314ba12"
     },
     {
       "path": "public/static/videos/kb-review-translations.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "f730ee78a56cae16dc8a13ef1d9b463ab90a333ab393f59ae7188540d16bb3b0"
     },
     {
       "path": "public/static/videos/kb-right-to-left-css.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "0f07c397b9abbb118769c4541df260df649da5a5cf43abf3fc488bc71c93b551"
     },
     {
       "path": "public/static/videos/kb-translate-conditional-jsx.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "e580ad3a08525fb331af0965949c53bdbe5487053954fe1b5619bbd90aa6c197"
     },
     {
       "path": "public/static/videos/kb-translate-google-slides.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "eeccd7666e14377fa929e1d1dfdb83a5d1f3e3ce8781c284b088eb1ca5a710c0"
     },
     {
       "path": "public/static/videos/kb-translate-json-files.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "646a5fa8815baa86a0de918f48d3ca3fc1c092539f1a9645945dbac8e7b5f909"
     },
     {
       "path": "public/static/videos/kb-translate-lottie-animations.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "b11472e098820c4c1ce58b4d405215ba48f544a29333e1b08075afe1561be067"
     },
     {
       "path": "public/static/videos/kb-translate-markdown-files.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "d11e69aa1b973db4ed0a92723ac3d53ff6a441183336396135e3eff451dc5e49"
     },
     {
       "path": "public/static/videos/kb-translate-mintlify-docs.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "d2434ee61744f00c7445179c7f868243047456716640ac7c3cb470d91a968af0"
     },
     {
       "path": "public/static/videos/kb-translate-node-app.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "8f071b836cecc770e9c2db2a3d0c01e8a39adb737866305c0a68538af2517dc0"
     },
     {
       "path": "public/static/videos/kb-translate-payload-content.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "47f5625ede453a825c297cf18fab36b87ee96ce14b74f784b6f33811169d5799"
     },
     {
       "path": "public/static/videos/kb-translate-po-files.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "39a68d7958b75fa7c6de046ad95d10baca864ac91a8e04eb2ed14434d87b16af"
     },
     {
       "path": "public/static/videos/kb-translate-python-app.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "8245371e5ae9f203c4acf496c85811e1b0aad5ee6e35a14437f83a4d180bfbc6"
     },
     {
       "path": "public/static/videos/kb-translate-react-app.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "ea14212b0a1aeb3d800ce01d10ad546887c9ed88cbb2839a1afd6851b0a2a21b"
     },
     {
       "path": "public/static/videos/kb-translate-react-native-app.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "c6f70f5e37353cb660a2d8256c77b07d3b0a321479490b5015a17034d9507dc4"
     },
     {
       "path": "public/static/videos/kb-translate-resx-files.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "9d9857d6bb7099ea1a924713d3e309dfa4bbb3c81952ae1c205f5803661df003"
     },
     {
       "path": "public/static/videos/kb-translate-sanity-content.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "20b436117b8697bfb38fcce205d7e0303809232c3406e5e5a55c1cecd2dc5895"
     },
     {
       "path": "public/static/videos/kb-translate-seo-metadata.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "cc81bdac97e4719ac598d32a2945156fc89da172e82809b1b42b33368f50937a"
     },
     {
       "path": "public/static/videos/kb-translate-srt-subtitles.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "ca376905d6813d227296b12881a74b40b1320160b028f2e63b26e2f4274b3df0"
     },
     {
       "path": "public/static/videos/kb-translate-storyblok-content.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "6ced0e42cb86dfa132eba04c5206e713796d4fc3d5741acb2388502fe2ded266"
     },
     {
       "path": "public/static/videos/kb-translate-strings-outside-jsx.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "304f62c1d01f5fc14217a86b311695308dc7966bf99690d28b1df98ea15921f3"
     },
     {
       "path": "public/static/videos/kb-translate-vue-app.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "17286fe2b05a320643b1df3b60cb9c9fc418a1797bbd5dca558a18aaf8a28174"
     },
     {
       "path": "public/static/videos/kb-translate-yaml-files.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "030a15c4a27c2d9ea4fe93aa13fda26da44f13a8ffcd52ae2c2cccbeb6e26c68"
     },
     {
@@ -3748,297 +3748,297 @@
     },
     {
       "path": "public/static/videos/kb-translations-in-ci.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "deaddfaad30318ad3bc0336e3a7ff02ac28041bff05f86849ee01cb723bc055f"
     },
     {
       "path": "public/static/videos/kb-what-is-a-translation-management-system.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "856f1e4900cef31ffd0c81e84ca1ac735be5a4e079eda4c891f9efa445a273c7"
     },
     {
       "path": "public/static/videos/kb-what-is-hreflang.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "174beab33036ee9dc2548b4c3e40e477eb92a1b6eadc8107919871445820bd8a"
     },
     {
       "path": "public/static/videos/kb-what-is-locadex.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.93 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "c637b1b7b46751cac128dba1946885e66b478133e1c69bbf66187950295b428d"
     },
     {
       "path": "public/static/videos/kb-what-is-translation-memory.jpg",
-      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the refined logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
+      "reason": "a knowledge base poster from gt-cloud (#6044, pnpm build:kb-films): the answer card with the logo in its corner; lint:logo --pixels matches LOGO there at 0.92 and finds no monogram (the 11-06 globe scores 0.84 on the same test); checked by eye on 2026-11-18",
       "sha256": "d7ecabd62e48598efa8b441201691511bd081c45c842119d48ff10ff5e364101"
     },
     {
       "path": "public/media/email-header-auth.gif",
-      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-auth.gif, copied byte for byte): the refined logo, then the word Sign in in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-auth.gif, copied byte for byte): the logo, then the word Sign in in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and each frame shows the logo, with no monogram and no 11-06 globe",
       "sha256": "16c96bcc4b5f766d013a1338ec293dbe061b0c74a1fd5698d2859f5640054f29"
     },
     {
       "path": "public/media/email-header-billing.gif",
-      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-billing.gif, copied byte for byte): the refined logo, then the word Billing in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-billing.gif, copied byte for byte): the logo, then the word Billing in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and each frame shows the logo, with no monogram and no 11-06 globe",
       "sha256": "64ffd144c8265e5f46199863459899414991ade3152bb4d6a2fc9cb7528e040b"
     },
     {
       "path": "public/media/email-header-billing-alert.gif",
-      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-billing-alert.gif, copied byte for byte): the refined logo, then the word Alert in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-billing-alert.gif, copied byte for byte): the logo, then the word Alert in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and each frame shows the logo, with no monogram and no 11-06 globe",
       "sha256": "0ab9a71c598f4cf4d3b0ae760b2f27f79be03d0cf9c0b15d886756c0edabc4d5"
     },
     {
       "path": "public/media/email-header-credits.gif",
-      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-credits.gif, copied byte for byte): the refined logo, then the word Credits in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-credits.gif, copied byte for byte): the logo, then the word Credits in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and each frame shows the logo, with no monogram and no 11-06 globe",
       "sha256": "2c4a4d8b21dfe0cfda7ba6f3aa26ca99664db496b99dc809009168503bc8facf"
     },
     {
       "path": "public/media/email-header-enterprise.gif",
-      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-enterprise.gif, copied byte for byte): the refined logo, then the word Enterprise in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-enterprise.gif, copied byte for byte): the logo, then the word Enterprise in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and each frame shows the logo, with no monogram and no 11-06 globe",
       "sha256": "b1e34cade29ef3b7ebae0b18e71a623ae5f1f12ce79f3cde3aa5e21456a8c351"
     },
     {
       "path": "public/media/email-header-live.gif",
-      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-live.gif, copied byte for byte): the refined logo, then the word Live in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-live.gif, copied byte for byte): the logo, then the word Live in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and each frame shows the logo, with no monogram and no 11-06 globe",
       "sha256": "bb76e30990d60782cac718ed0f93a0fc8b74077a55c37e4bf7f0a6ccaa9f5053"
     },
     {
       "path": "public/media/email-header-locadex.gif",
-      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-locadex.gif, copied byte for byte): the refined logo, then the word Automate in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-locadex.gif, copied byte for byte): the logo, then the word Automate in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and each frame shows the logo, with no monogram and no 11-06 globe",
       "sha256": "012e82ef6c898a44808e4b82dcdc6d121e01d52ce0e44a4314a75fc88739c910"
     },
     {
       "path": "public/media/email-header-start.gif",
-      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-start.gif, copied byte for byte): the refined logo, then the word Start in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-start.gif, copied byte for byte): the logo, then the word Start in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and each frame shows the logo, with no monogram and no 11-06 globe",
       "sha256": "098d27189ca261089cf5414305ccabe13af82ed30b008b76748ec156a552fe5c"
     },
     {
       "path": "public/media/email-header-translate.gif",
-      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-translate.gif, copied byte for byte): the refined logo, then the word Translate in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-translate.gif, copied byte for byte): the logo, then the word Translate in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and each frame shows the logo, with no monogram and no 11-06 globe",
       "sha256": "3674073ef763844c5af0bad0e227bbc239fcf32370461fca40e753fd9bfd5735"
     },
     {
       "path": "public/media/email-header-usage.gif",
-      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-usage.gif, copied byte for byte): the refined logo, then the word Usage in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-usage.gif, copied byte for byte): the logo, then the word Usage in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and each frame shows the logo, with no monogram and no 11-06 globe",
       "sha256": "5dec2f0d69552aff6e17cc6737d7c35a2a01fb2a73022072275febea08989086"
     },
     {
       "path": "public/media/email-header-welcome.gif",
-      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-welcome.gif, copied byte for byte): the refined logo, then the word Welcome in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and the logo in each is the refined logo, with no monogram and no 11-06 globe",
+      "reason": "an email header from gt-cloud (#5936 e9bb576da9, apps/landing/public/images/email/email-header-welcome.gif, copied byte for byte): the logo, then the word Welcome in English, Spanish, Chinese, Japanese and Arabic; every ninth of its 54 frames looked at on 2026-11-18, and each frame shows the logo, with no monogram and no 11-06 globe",
       "sha256": "37cd66c5f47bb04db13e0ee3104b5b8eeba099bb8fb23499d5036fa64993033c"
     },
     {
       "path": "deck/shots/detail-footer-corner-dark.jpg",
-      "reason": "a detail crop of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a detail crop of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "90b2470db66599f7aa886c62893c48ee74cd51d7d1a3b8b5100371e64cd3a794"
     },
     {
       "path": "deck/shots/detail-footer-corner-light.jpg",
-      "reason": "a detail crop of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a detail crop of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "d4e10000fc4a89c71fc8ca02d5f6702e9bd5f4edde3fe0072f65c41ccff1e941"
     },
     {
       "path": "deck/shots/detail-nav-mark-dark.jpg",
-      "reason": "a detail crop of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a detail crop of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "5914a20b213c98f029a3631c6eaed3a1c1aa5484b68a4eaef40228d6567c857d"
     },
     {
       "path": "deck/shots/detail-nav-mark-light.jpg",
-      "reason": "a detail crop of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a detail crop of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "973228a4e4a5f92fb99c54a23f9d095bc81953708979896b8b5cb4d8916679d6"
     },
     {
       "path": "deck/shots/gt-careers-dark.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "7c78782636e4086e7d46bfd23c8d0c135af6f984ccf916dee988254fe893877c"
     },
     {
       "path": "deck/shots/gt-careers.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "4ebd3aa7c5c1de78dd38f3a1d10e9d6562bb62f1fb6e6839c2f11e7a3a55299b"
     },
     {
       "path": "deck/shots/site-blog-dark.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "9ce88518c9a8171c0f9e7da190f85c716d5bad3b21cd0a81e6738d1f036ceb2d"
     },
     {
       "path": "deck/shots/site-blog-light.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "f7fbdb2b520660674d06d6b74f324f031a14ede05d4a883d7a917ce936b7d710"
     },
     {
       "path": "deck/shots/site-blog-oss-dark.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "68788a3f0c2491d4339b50d263053fffd9e6bda6d6986b6053c90c9060ad8b34"
     },
     {
       "path": "deck/shots/site-blog-oss-light.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "ede03ea43cb3c24f5c4883f3f76894bb09aa1f6ccbc22d4342bf2b610950ff59"
     },
     {
       "path": "deck/shots/site-blog-post-dark.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "6accc558a8f73772cbff56c1218d62b47a3ac5ae45f460b2356069fb26ad5d7b"
     },
     {
       "path": "deck/shots/site-blog-post-light.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "470ad28c729bd89bb62c9349229919c853093e5423e3c704d30a089b8e555dd5"
     },
     {
       "path": "deck/shots/site-contact-dark.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "5eb9beb31d63dcf5e3a6800acba27c02d5436b3e06fb0d00c32162ca3d84b9e7"
     },
     {
       "path": "deck/shots/site-contact-light.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "a6fba871cb039699c78c5dcefebc74617c14e09cbae6fe3e62d48c6e50fc03b0"
     },
     {
       "path": "deck/shots/site-dash-dark.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "c9bcbb83a03657a4f3124e1f5f9d3c1df14b85bdcde387208a15dc5ce59243b8"
     },
     {
       "path": "deck/shots/site-dash-light.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "938ea58be4525f72cf2a7aa806a76ca96163697e7fd00f4621a4d93c81deee23"
     },
     {
       "path": "deck/shots/site-docs-dark.jpg",
-      "reason": "a page capture of the live docs retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, after gt-cloud #5935 set the docs header's one-line lockup to LOCKUP (Katagami Text 400, -0.0496 em, the globe 1.9 cap heights, 0.5826 cap height to the G): the header draws the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of the live docs retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, after gt-cloud #5935 set the docs header's one-line lockup to LOCKUP (Katagami Text 400, -0.0496 em, the globe 1.9 cap heights, 0.5826 cap height to the G): the header draws the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "d427576267fb00ad08d5b146fd349add48e9c9241d7862c9628ae007edfe6b06"
     },
     {
       "path": "deck/shots/site-docs-light.jpg",
-      "reason": "a page capture of the live docs retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, after gt-cloud #5935 set the docs header's one-line lockup to LOCKUP (Katagami Text 400, -0.0496 em, the globe 1.9 cap heights, 0.5826 cap height to the G): the header draws the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of the live docs retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, after gt-cloud #5935 set the docs header's one-line lockup to LOCKUP (Katagami Text 400, -0.0496 em, the globe 1.9 cap heights, 0.5826 cap height to the G): the header draws the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "27839b39b6d4b2c9efea3ef926e9f1bd258bfcdfa5eb24cc1b85a3b9e54f52f4"
     },
     {
       "path": "deck/shots/site-enterprise-dark.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "65ada159e1a38b9f1bbf1836cda12745574710ea014f7e40d608b3b5ed5bc832"
     },
     {
       "path": "deck/shots/site-enterprise-light.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "46739de8e49aea0a50a9f1870c626f8ce26dff94eb908a7f638567ac30c8d945"
     },
     {
       "path": "deck/shots/site-home-dark.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "8600273987ce303ee60138cb748df5d98bb64efdb2f91baf7d7d01569198352b"
     },
     {
       "path": "deck/shots/site-home-light.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "aad8b8d579deb86422e2b002da927c140e779a5f6a8ebaafe8c72dfbfe2c8a7b"
     },
     {
       "path": "deck/shots/site-pricing-dark.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "221beb473750c5faf9646167edb51e910ee686bf19eed0111c2765e2a45fd468"
     },
     {
       "path": "deck/shots/site-pricing-light.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "1b0a0b25fa2149ca81ff4b46711baa3e836c95b36b32f9724620c42abdd16705"
     },
     {
       "path": "deck/shots/site-report-card-dark.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "67fd281629c88fdddcc90862a4422cb2469203cf488ebbb5242e8cbeec6f1e7c"
     },
     {
       "path": "deck/shots/site-report-card-light.jpg",
-      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a page capture of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "84773e4319d2af3ffd02aafe58d82fc9f4c910c1e7a9bde76e25017d90561777"
     },
     {
       "path": "deck/shots/thumb/gt-blog.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "7bef1eca1e7bf939b1ea22c3b417cc9b2ba334dc95286d9fa15db0a24e7597fe"
     },
     {
       "path": "deck/shots/thumb/gt-careers-dark.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "805432938de3fb41d090c05349b10d16a8d51f2ded3f09b38f361c2145d5cbf9"
     },
     {
       "path": "deck/shots/thumb/gt-careers.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "c0eb2ec2f9b7d52dc319a2c1448a51df115fa83d1170126e80be099b75beced0"
     },
     {
       "path": "deck/shots/thumb/gt-contact.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "613ba6d003289031760a16797edef7f23eab58d4ca1cd78b9ca44b51ad2e2a73"
     },
     {
       "path": "deck/shots/thumb/gt-dash.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "9b3ba339e3eae3456c7b00576cd6c80a3e259d84f27a765bdd0e51f5617653e8"
     },
     {
       "path": "deck/shots/thumb/gt-docs-dark.jpg",
-      "reason": "a thumbnail of the live docs retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, after gt-cloud #5935 set the docs header's one-line lockup to LOCKUP: the header draws the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of the live docs retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, after gt-cloud #5935 set the docs header's one-line lockup to LOCKUP: the header draws the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "4d80edd89edbb322a9f53ebe9eaafbc43948fe1bec8f4f2934a1bb1e3712d9ef"
     },
     {
       "path": "deck/shots/thumb/gt-docs.jpg",
-      "reason": "a thumbnail of the live docs retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, after gt-cloud #5935 set the docs header's one-line lockup to LOCKUP: the header draws the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of the live docs retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, after gt-cloud #5935 set the docs header's one-line lockup to LOCKUP: the header draws the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "5aaf719c5b96942249c30f24d1d45b7a80aefb4df46bbd15e085ec0ca1dd291d"
     },
     {
       "path": "deck/shots/thumb/gt-enterprise-dark.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "12c65eadc555a6a241ec053372d2af0e4ecdd3809ffa837248f5693bfc7f9fec"
     },
     {
       "path": "deck/shots/thumb/gt-enterprise.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "645540ab008a3f4b61884b2b494a200ed359094303dbf5e02189946678b35615"
     },
     {
       "path": "deck/shots/thumb/gt-home-dark.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "d0055044909cceed873967657d97fa52348788f6f85548befb12f11c9b6ef505"
     },
     {
       "path": "deck/shots/thumb/gt-home-light.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "a76e57287255bcb8291e7abb0805aaaccee1cf657b9af6b3957aab228a5953fb"
     },
     {
       "path": "deck/shots/thumb/gt-pricing-dark.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "722f989e16c9f6284d4e9255e36f97792b980da81f9f9da91047d039b60273b7"
     },
     {
       "path": "deck/shots/thumb/gt-pricing.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "10eac9676660e943333925c418240e05a203cf5d3e452c842163ce08649403fb"
     },
     {
       "path": "deck/shots/thumb/gt-report-card-dark.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "7c6e69416b800b4f5ea971c0bc074fa8782bbdbc3a0caf4e44e1e7be85565982"
     },
     {
       "path": "deck/shots/thumb/gt-report-card.jpg",
-      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a thumbnail of generaltranslation.com retaken on 2026-11-18 at 2x through the same door as pnpm capture:pages --live, with the home hero's pill and one post's card left out: the header and footer draw the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "0c4317ef85b6f4e621b5bbbc238a2690dcf8489d5d9330e96757414395366afe"
     },
     {
       "path": "deck/shots/proto-grid-tiles-light.jpg",
-      "reason": "a crop of the gallery's grid view under Shipped, retaken on 2026-11-18 at 2x from the built site after the production captures were taken again: every tile draws the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a crop of the gallery's grid view under Shipped, retaken on 2026-11-18 at 2x from the built site after the production captures were taken again: every tile draws the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "5fd5c9f6fc30a6287f603fc21375e6d60fed2f9838b001e53df7f40a9812e7d5"
     },
     {
       "path": "deck/shots/proto-grid-tiles-dark.jpg",
-      "reason": "a crop of the gallery's grid view under Shipped, retaken on 2026-11-18 at 2x from the built site after the production captures were taken again: every tile draws the refined logo; checked by eye, no monogram and no 11-06 globe",
+      "reason": "a crop of the gallery's grid view under Shipped, retaken on 2026-11-18 at 2x from the built site after the production captures were taken again: every tile draws the logo; checked by eye, no monogram and no 11-06 globe",
       "sha256": "2eddd0849130ebc72574f827348966074302c455e63560414e2a35d5ef457517"
     }
   ],

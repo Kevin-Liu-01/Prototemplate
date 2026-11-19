@@ -1,6 +1,6 @@
 // Captures the deck's pictures of this site's own pages that show the logo,
 // against a running server, so they are shot again whenever the logo
-// changes (2026-11-12: the refined globe) instead of being cut by hand:
+// changes (2026-11-12: the logo's construction) instead of being cut by hand:
 //   shots/proto-brand-head-light.jpg, -dark.jpg   slide 71: the /brand head,
 //       its title, badge, lede and facts, a 1146 by 342 clip at 2x
 //   shots/proto-present.jpg                       slide 77: the presenter's

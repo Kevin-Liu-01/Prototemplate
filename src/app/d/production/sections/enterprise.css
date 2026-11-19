@@ -883,7 +883,7 @@
   gap: 7px;
 }
 
-/* the Locadex mark as a masked plate — currentColor, so it follows
+/* the shipped Locadex mark as a masked plate — currentColor, so it follows
    the row's ink in both themes */
 .toolchain-root .tce-pr-agent {
   display: inline-block;

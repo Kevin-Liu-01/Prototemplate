@@ -19,7 +19,7 @@ import { Block, Course, Relief } from './Wall';
 
 type MarkProps = { className?: string; color?: string; 'aria-hidden'?: boolean };
 
-function LocadexMark({ className }: MarkProps) {
+function LocadexLogo({ className }: MarkProps) {
   return (
     <Image
       alt=''
@@ -33,7 +33,7 @@ function LocadexMark({ className }: MarkProps) {
 }
 
 const MARKS: Record<FooterMark, ComponentType<MarkProps>> = {
-  locadex: LocadexMark,
+  locadex: LocadexLogo,
   next: SiNextdotjs,
   react: SiReact,
   github: SiGithub,

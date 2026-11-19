@@ -4,7 +4,7 @@
 // paths generaltranslation.com serves them at. The list is gt-cloud's
 // FILM_LIST in apps/landing/src/lib/seo/films.ts, in its order; each film's
 // video is gt-cloud's FILM_STORE URL (the films/v2 folder of the gt-films
-// Vercel Blob store, which carries the refined globe logo since #6044), so
+// Vercel Blob store, which carries the logo since #6044), so
 // the hub plays the same file the site does and keeps no copy of it.
 //
 // gt-cloud is read with git, never through a working tree: the script runs

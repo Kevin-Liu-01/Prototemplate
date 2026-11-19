@@ -3,7 +3,7 @@
 
 The covers were flat exports with no source files. Each one keeps its art; the
 group of the old mark and its words (graphics/shots/covers) is lifted off so
-gen-covers.js can set the globe logo with the same words, centred where the
+gen-covers.js can set the logo with the same words, centred where the
 group was. A light group's pixels are filled block by block from the hole's
 edge inward, each block copied from the same picture at a shift where the
 dither repeats (a peak of the picture's autocorrelation, or a step along a

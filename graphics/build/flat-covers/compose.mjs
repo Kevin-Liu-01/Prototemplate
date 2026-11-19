@@ -1,7 +1,7 @@
 // The blog covers that were flat exports (open source, Fumadocs, Fuma Nama, Cuelume, Slash, Paraglide JS), rebuilt at
 // 3840x2160 with 5 px dither cells or 2400x1260 with 4 px cells: each published ground re-screened by ../redither.py with
 // its type and marks masked out, the titles set again in Inter fitted to the published ones, the partner marks, and the
-// refined globe (public/brand). The published covers are kept in graphics/shots/covers-1117.
+// logo (public/brand). The published covers are kept in graphics/shots/covers-1117.
 //   node graphics/build/flat-covers/compose.mjs [--dest DIR ...] [id ...]
 // Writes graphics/build/out/flat-covers/ and each file under public/static/blogs and every --dest (a landing checkout's).
 import { createRequire } from "node:module";

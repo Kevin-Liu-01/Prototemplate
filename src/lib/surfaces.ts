@@ -194,7 +194,7 @@ const KNOWLEDGE: readonly Surface[] = [
     'marks',
     pageLabel('marks'),
     '/marks',
-    'The two General Translation marks in production, the shortlist led by the logo, Refined globe, then every family of marks by the idea it draws.',
+    'The two General Translation marks in production, the shortlist led by the logo, then every family of marks by the idea it draws.',
     'Knowledge',
     thumb('marks')
   ),
@@ -449,7 +449,7 @@ const BRAND_SECTIONS: readonly Surface[] = [
   [
     'logo-system',
     'The logo system',
-    'How the globe logo is drawn, its three states, the lockups and their numbers, and the mark it replaced.',
+    'How the logo is drawn, its three states, the lockups and their numbers, and the mark it replaced.',
   ],
   [
     'black-white-dither-blue',

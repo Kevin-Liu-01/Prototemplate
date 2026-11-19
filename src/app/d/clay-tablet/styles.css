@@ -1580,7 +1580,7 @@
   gap: 8px 24px;
 }
 
-/* the Locadex mark on the dark tablets: the drawing is ink, the slab is wet clay */
+/* the Locadex logo on the dark tablets: the drawing is ink, the slab is wet clay */
 [data-theme='dark'] .clay-tablet-root .ct-lx-mark {
   filter: invert(1);
 }

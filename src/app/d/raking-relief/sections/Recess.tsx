@@ -11,7 +11,7 @@ import { CASCADE, CLI_RUN, LINKS, LOCADEX_TRACE } from './content';
  * column, with a stepped niche head above it. The floor is black stone in
  * shadow; the inner wall on the right and the sill face the light and are
  * dithered alabaster fading into the dark. Inside stands the stele, four
- * registers as on the Rosetta Stone: the head with the Locadex mark, the
+ * registers as on the Rosetta Stone: the head with the Locadex logo, the
  * inscribed run beside the trace, the context cascade as three setbacks,
  * the acts. The recess never remaps with the theme.
  */

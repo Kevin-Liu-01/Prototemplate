@@ -18,14 +18,14 @@ test('the Locadex brand files are what pnpm build:locadex-logo writes', () => {
 test('the Locadex family opens on the Locadex logo, its variant, then the outlined and ringed variants', () => {
   const ids = dynamicFamily('locadex').map((mark) => mark.id);
   assert.deepEqual(ids.slice(0, 9), [
-    'doubled-lambda',
-    'doubled-lambda-behind',
+    'locadex-logo',
+    'locadex-logo-behind',
     'outlined-lambda',
     'outlined-lambda-open',
     'ringed-lambda',
     'ringed-lambda-round',
     'ringed-chevron-lambda',
-    'ringed-chevron-lambda-b',
-    'ringed-chevron-lambda-c',
+    'ringed-chevron-lambda-wide-gap',
+    'ringed-chevron-lambda-close-gap',
   ]);
 });

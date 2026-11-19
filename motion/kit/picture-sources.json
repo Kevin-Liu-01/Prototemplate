@@ -4244,7 +4244,7 @@
     "stills/partnership-globe"
    ],
    "derived_from": null,
-   "source": "General Translation's logo, the refined globe of 2026-11-12: byte-identical to Prototemplate's public/brand/gt-globe-logo.svg (the 11-06 globe \"Axis and meridian behind\" until 2026-11-12, the doubled-line GT monogram until 2026-11-09)",
+   "source": "General Translation's logo of 2026-11-12: byte-identical to Prototemplate's public/brand/gt-globe-logo.svg (the 11-06 globe \"Axis and meridian behind\" until 2026-11-12, the doubled-line GT monogram until 2026-11-09)",
    "licence": "General Translation's own material",
    "credit": "General Translation logo: kit/brand/gt-mark.svg (currentColor)",
    "redistribute": "own",
@@ -4265,7 +4265,7 @@
    "licence": "General Translation's own material",
    "credit": null,
    "redistribute": "own",
-   "why": "the Locadex mark (Locadex is General Translation's product), as the GT site serves it; no rights file in scope names it"
+   "why": "the shipped Locadex mark (Locadex is General Translation's product), as the GT site serves it; no rights file in scope names it"
   },
   {
    "path": "kit/endcard/stills/blue.png",
@@ -4394,7 +4394,7 @@
     "films/_gem (kit demo)"
    ],
    "derived_from": "kit/brand/gt-mark.svg (the globe since 2026-11-09), padded 0.16 in a 1024 px square and run through Paper Shaders toProcessedGemSmoke by kit/gem-shapes/make.mjs",
-   "source": "made by the kit from General Translation's globe logo; not published elsewhere",
+   "source": "made by the kit from General Translation's logo; not published elsewhere",
    "licence": "General Translation's own material",
    "credit": null,
    "redistribute": "own",

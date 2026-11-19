@@ -122,7 +122,7 @@ From the #5029 sweep. Use it for any dashboard mark, merged or not.
 | Blocks (Connections) | LinkIcon |
 | Workflow (Automations) | BoltIcon |
 | RadioTower | SignalIcon |
-| Brain | the Locadex mark (`LocadexIcon` in the dashboard) |
+| Brain | the shipped Locadex mark (`LocadexIcon` in the dashboard) |
 | Plug | the house PlugIcon |
 
 The dashboard's nav rows take the marks the redesigned shell (#4977) picked: Settings `Cog6ToothIcon` with its General row `AdjustmentsHorizontalIcon`, Plans `ArrowUpCircleIcon`, Chat `ChatBubbleLeftRightIcon`, Webhook Events `ListBulletIcon`, Overview `HomeIcon` and Translations `LanguageIcon`.

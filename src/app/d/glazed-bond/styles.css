@@ -1390,7 +1390,7 @@
   align-items: center;
 }
 
-/* the Locadex mark is the light drawing, inverted for the glazed panel */
+/* the Locadex logo is the light drawing, inverted for the glazed panel */
 .glazed-bond-root .gb-lx-mark img {
   display: block;
   filter: invert(1);

@@ -104,8 +104,8 @@ export default function LogoSystem() {
       </ol>
       <p>
         The two breaks give the drawing its depth. The axis and the back of the meridian stop where the front of the
-        globe passes over them, so the globe reads as a sphere seen from just above the equator. The drawing&rsquo;s
-        name is Refined globe: Axis and meridian behind on its own construction. The marks that led to it are on{' '}
+        globe passes over them, so the globe reads as a sphere seen from just above the equator. The drawing is Axis
+        and meridian behind on its own construction. The marks that led to it are on{' '}
         <Link href='/marks/graticule'>the graticule page</Link>.
       </p>
 
@@ -144,7 +144,7 @@ export default function LogoSystem() {
 
       <h3 id={headingId('logo-system', 'lockups')}>Lockups</h3>
       <p>
-        The stacked lockup, &ldquo;General&rdquo; over &ldquo;Translation&rdquo; beside the mark, is the main logo.
+        The stacked lockup, &ldquo;General&rdquo; over &ldquo;Translation&rdquo; beside the mark, is the main lockup.
         The one-line lockup is for places where height is short. Both are built from the mark and the name&rsquo;s
         outlines, and every number below is measured in the name&rsquo;s cap height.
       </p>
@@ -180,8 +180,8 @@ export default function LogoSystem() {
           <figcaption>The doubled-line monogram, the previous mark, used until 8 November 2026.</figcaption>
         </figure>
         <figure className='ptb-mark is-paper'>
-          <img alt='The globe logo, the current mark' decoding='async' loading='lazy' src='/brand/kit/svg/gt-mark-ink.svg' />
-          <figcaption>The globe, the mark since 8 November 2026, in the refined drawing of 12 November.</figcaption>
+          <img alt='The logo, the mark since 8 November 2026' decoding='async' loading='lazy' src='/brand/kit/svg/gt-mark-ink.svg' />
+          <figcaption>The logo, the mark since 8 November 2026; its construction changed on 12 November.</figcaption>
         </figure>
       </div>
     </>

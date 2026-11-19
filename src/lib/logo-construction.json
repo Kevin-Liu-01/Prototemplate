@@ -1,5 +1,5 @@
 {
- "about": "The refined GT globe (Kevin, 2026-11-12) fitted primitive by primitive. new: in the logo's old 256 unit frame; newUnits: in symbol.svg units; old: the current LOGO construction (logo-motion.json, strip.py, LOGO d).",
+ "about": "The General Translation logo (Kevin, 2026-11-12) fitted primitive by primitive. new: in the logo's old 256 unit frame; newUnits: in symbol.svg units; old: the current LOGO construction (logo-motion.json, strip.py, LOGO d).",
  "new": {
   "frame": "old 256 unit square, ring centre 128,128, ring outer 103.7; new units x 207.4/487 = 0.4258727",
   "weight": 13.2021,

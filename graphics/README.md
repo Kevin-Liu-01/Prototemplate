@@ -14,7 +14,7 @@ python3 build/sheet.py [id ...]    # out/_sheet*.png contact sheets
 build/composite-videos.sh          # the two clips onto their stills
 pnpm graphics:export -- --covers   # public/static/blogs (or --dest DIR)
 python3 build/cover-grounds.py     # bg/covers/: each published cover (shots/covers) with the old GT mark and its words lifted off
-node build/gen-covers.js           # after graphics:gen: the globe logo and those words set back, centred (area P)
+node build/gen-covers.js           # after graphics:gen: the logo and those words set back, centred (area P)
 python3 build/export-covers.py     # the published covers with only that group replaced (or --dest DIR)
 ```
 

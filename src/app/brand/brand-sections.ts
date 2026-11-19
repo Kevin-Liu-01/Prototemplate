@@ -53,7 +53,7 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
   {
     id: 'logo-system',
     title: 'The logo system',
-    desc: 'How the globe logo is drawn, its three states, the lockups and their numbers, and the mark it replaced.',
+    desc: 'How the logo is drawn, its three states, the lockups and their numbers, and the mark it replaced.',
     source: 'BRAND.md part 4',
     headings: [
       heading('logo-system', 'construction', 'Construction'),

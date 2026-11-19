@@ -2,7 +2,7 @@
 /* oxlint-disable no-console -- a build step reporting to stdout. */
 /**
  * Writes the Locadex logo's brand files from its catalog file,
- * public/marks/locadex/doubled-lambda.svg (the doubled-line lambda that
+ * public/marks/locadex/locadex-logo.svg (the doubled-line lambda that
  * leads the Locadex section of /marks): public/brand/locadex-logo.svg in
  * currentColor on its drawn box, for masks and inline use, and
  * locadex-logo-light.svg and locadex-logo-dark.svg in ink (#070707) and
@@ -10,15 +10,15 @@
  * logo as a file. The path is copied byte for byte, so the three files and
  * the catalog draw one shape.
  *
- * It also writes public/brand/locadex-logo-mark.svg, the logo framed as
+ * It also writes public/brand/locadex-logo-framed.svg, the logo framed as
  * gt-cloud's public/brand/locadex-mark.svg is (a 500 unit square, the glyph
  * 199 units wide on its centre, ink #0A0A0A), so every hub page, mask and
- * isometric diagram that sized itself on that file draws the new logo at the
+ * isometric diagram that sized itself on that file draws the Locadex logo at the
  * same place and size.
  *
- * public/brand/locadex-mark.svg stays the mark generaltranslation.com ships
+ * public/brand/locadex-mark.svg stays the shipped Locadex mark
  * (a copy of gt-cloud's file, which only the production mirror under
- * /d/production draws), until gt-cloud takes the new logo.
+ * /d/production draws), until gt-cloud takes the Locadex logo.
  *
  * Usage:
  *   node scripts/build/locadex-logo.mjs           (pnpm build:locadex-logo)
@@ -33,7 +33,7 @@ import { ROOT } from '../lib/root.mjs';
 helpIfAsked(import.meta.url);
 
 const CHECK = process.argv.includes('--check');
-const SOURCE = 'public/marks/locadex/doubled-lambda.svg';
+const SOURCE = 'public/marks/locadex/locadex-logo.svg';
 /** the drawn box pnpm import:marks measured, the catalog row's `box` */
 const BOX = [24.3, 43.6, 207.4, 168.8];
 
@@ -53,7 +53,7 @@ const k = BOX[2] / GLYPH_W;
 const side = FRAME * k;
 const framed = [BOX[0] + BOX[2] / 2 - side / 2, BOX[1] + BOX[3] / 2 - side / 2, side, side].map((n) => Math.round(n * 1000) / 1000).join(' ');
 const files = {
-  'public/brand/locadex-logo-mark.svg': svg(framed, '#0A0A0A', ` width="${FRAME}" height="${FRAME}"`),
+  'public/brand/locadex-logo-framed.svg': svg(framed, '#0A0A0A', ` width="${FRAME}" height="${FRAME}"`),
   'public/brand/locadex-logo.svg': svg(BOX.join(' '), 'currentColor'),
   'public/brand/locadex-logo-light.svg': svg('0 0 256 256', '#070707', ' width="256" height="256"'),
   'public/brand/locadex-logo-dark.svg': svg('0 0 256 256', '#ffffff', ' width="256" height="256"'),

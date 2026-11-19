@@ -39,7 +39,7 @@ const DOCS = "https://generaltranslation.com/docs";
 
 /** The Locadex logo, drawn dark for light ground; dark mode inverts it in
     CSS the way the story chip does. */
-function LocadexMark({ className }: MarkProps) {
+function LocadexLogo({ className }: MarkProps) {
   return (
     <Image
       alt=""
@@ -114,7 +114,7 @@ const columns = (
         label: "Locadex Agent",
         href: isProduction ? `${DOCS}/platform/locadex/quickstart` : DOCS,
         external: true,
-        mark: isProduction ? ShippedLocadexMark : LocadexMark,
+        mark: isProduction ? ShippedLocadexMark : LocadexLogo,
       },
       {
         label: "Next.js",

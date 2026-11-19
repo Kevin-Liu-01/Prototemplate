@@ -26,9 +26,9 @@ import {
   MARK_FACES,
   MARK_RULES,
   MARK_SIZES,
-  MARK_USE_LABELS,
   MARKS,
   markFamily,
+  markUseLabel,
   pageFamilies,
   PRODUCTION_MARKS,
   shortlist,
@@ -76,10 +76,10 @@ const hemiMarks = (family: HemisphereFamily) => HEMISPHERE_MARKS.filter((mark) =
 const hemiShown = (mark: HemisphereMark) => Boolean(mark.lead || mark.constructionFile);
 
 const BOOK_LEAD =
-  'General Translation ships the two marks below. The shortlist opens on the logo, Refined globe, and each family after it collects the marks that draw one idea.';
+  'General Translation ships the two marks below. The shortlist opens on the logo, and each family after it collects the marks that draw one idea.';
 
 const BOOK_NOTE =
-  'Only the logo and the Locadex mark are in production. Every mark is one color and takes the ink of whatever it sits on.';
+  'Only the logo and the shipped Locadex mark are in production. Every mark is one color and takes the ink of whatever it sits on.';
 
 const SHORTLIST_LEAD =
   'The chosen marks, newest first, each drawn in one color on a 256 unit square: the logo, then its state on hover, on sign-in and while loading, then the marks chosen before them.';
@@ -150,7 +150,7 @@ const DYN_LEAD: readonly [number, number] = [440, 400];
 const DYN_SIZES: readonly number[] = [64, 32];
 const DYN_FEATURE_SIZES: readonly number[] = [128, 64, 32];
 
-/** A production mark in the head's strip: the GT logo at 64px, and every live mark at the same area, so a mark of another aspect reads as large as the logo. */
+/** A production mark in the head's strip: the logo at 64px, and every live mark at the same area, so a mark of another aspect reads as large as the logo. */
 const LIVE_PX = 64;
 const LIVE_AREA = LIVE_PX * LIVE_PX * (PRODUCTION_MARKS[0]?.aspect ?? 1);
 const liveHeight = (aspect: number) => Math.round(Math.sqrt(LIVE_AREA / aspect));
@@ -187,7 +187,7 @@ const SECTIONS: readonly ShellSection[] = [
         id: mark.id,
         n: pad2(i + 1),
         title: mark.name,
-        desc: `${mark.use ? MARK_USE_LABELS[mark.use] : familyName(mark)}.${mark.note ? ` ${mark.note}` : ''}`,
+        desc: `${markUseLabel(mark) ?? familyName(mark)}.${mark.note ? ` ${mark.note}` : ''}`,
       })),
     ],
   },
@@ -233,7 +233,7 @@ const SECTIONS: readonly ShellSection[] = [
         id: PRODUCTION_ID,
         label: family.name,
         under: 'marks',
-        items: [{ id: PRODUCTION_ID, n: '', title: 'In production', desc: 'The logo and the Locadex mark, the two marks generaltranslation.com ships.' }],
+        items: [{ id: PRODUCTION_ID, n: '', title: 'In production', desc: 'The logo and the shipped Locadex mark, the two marks generaltranslation.com ships.' }],
       };
     }
     return familySection(family);
@@ -534,7 +534,8 @@ function DynamicCard({ mark, feature, active }: { mark: CatalogMark; feature?: b
 
 /** The tags of a dynamic mark: its use where Kevin chose one (the logo, or its state), then Pick for his picks. */
 function dynamicTags(mark: CatalogMark): readonly string[] | undefined {
-  const tags = [...(mark.use ? [MARK_USE_LABELS[mark.use]] : []), ...(mark.pick ? ['Pick'] : [])];
+  const label = markUseLabel(mark);
+  const tags = [...(label ? [label] : []), ...(mark.pick ? ['Pick'] : [])];
   return tags.length ? tags : undefined;
 }
 
@@ -739,7 +740,7 @@ function ShortlistBody({ onJump }: { onJump: (e: MouseEvent<HTMLAnchorElement>, 
             </span>
             <span className='mk-short-name'>
               <b>{mark.name}</b>
-              {mark.use ? <small>{MARK_USE_LABELS[mark.use]}</small> : !mark.name.startsWith(familyName(mark)) && <small>{familyName(mark)}</small>}
+              {markUseLabel(mark) ? <small>{markUseLabel(mark)}</small> : !mark.name.startsWith(familyName(mark)) && <small>{familyName(mark)}</small>}
             </span>
           </a>
         ))}

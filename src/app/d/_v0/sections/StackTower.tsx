@@ -251,7 +251,7 @@ const CHIP_TOP = THICK + CHIP_H;
    reads as an arrow button, a stroked one as a bracket) and lie FLUSH in
    their chip's top face (founder: the tags sit ON the layers, never
    billboarded at the viewer): each group is seated with the same face-plane
-   matrix that carries the Locadex mark, so the baseline runs the plate's
+   matrix that carries the Locadex logo, so the baseline runs the plate's
    +x edge and the stems foreshorten with the surface. Proportions are
    plane-true (the frame is isotropic), and the forms run large so the
    flattened glyphs stay legible (the mark proves the plane can carry a
@@ -452,7 +452,7 @@ function GlyphChip({ x, y, w, d, h, accent }: GlyphChipProps) {
   );
 }
 
-/** The Locadex mark's seat: a RAISED SQUARE CHIP at the top-left of the
+/** The Locadex logo's seat: a RAISED SQUARE CHIP at the top-left of the
     capstone's face (founder: "make locadex on teh top left side in a
     raised square"), the iso repository's GitHub-chip grammar at capstone
     scale: the tower's own GlyphChip extrusion, with the mask-mark lying
@@ -786,7 +786,7 @@ function TopGlyph({ id, locadexMark }: { id: string; locadexMark: string }) {
         </>
       );
     case 'agents':
-      /* the Locadex mark riding its raised chip at the face's top-left,
+      /* the Locadex logo riding its raised chip at the face's top-left,
          in the surface's ink under the dithered specular sweep (the
          shimmer block above); the capstone's own diff hunk across the
          rest of the face, scrubbed in by scroll (CAP_DIFF block); and
@@ -905,7 +905,7 @@ export default function StackTower({
   className,
   title,
   hot,
-  locadexMark = '/brand/locadex-logo-mark.svg',
+  locadexMark = '/brand/locadex-logo-framed.svg',
 }: StackTowerProps) {
   const frame: CSSProperties = { aspectRatio: `${VIEW_W} / ${TOWER_H}` };
   const born = new Set(hot ?? []);

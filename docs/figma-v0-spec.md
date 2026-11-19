@@ -364,7 +364,7 @@ and quality. ("your ?ll system" partially clipped in capture)
 - "Run the Locadex agent. Connect your repository to our custom-built
   AI agent. Just merge a PR." — the iso stays (mock card: PR #218 ·
   +38 −6 · checks passed); ADD the Locadex logo to the agent slab
-  (public/brand/locadex-logo-mark.svg, mask-rendered).
+  (public/brand/locadex-logo-framed.svg, mask-rendered).
 - "Integrate with any tool. Just a few clicks to integrate with your
   Google Drive, CMS platform, or docs framework." [need visuals for
   this section] → build a real connector visual, not a marks row.
@@ -496,7 +496,7 @@ is the arrangement (home.css header names it "landing non-terminal v0").
   retracts with the build (RAIL_SCALE).
 - Top-face artifacts, one per beat: the <T>-block rhythm (code),
   glossary + directives chips (context), source string + the one accent
-  payload chip (translations), the Locadex mark mask-rendered in the
+  payload chip (translations), the Locadex logo mask-rendered in the
   plate's own ink (agents).
 - Reduced motion / no-JS: the FULL stack, static, first beat lit.
 

@@ -116,7 +116,7 @@ product.
 
 ## 4. The mark
 
-The mark is the logo, the refined globe of 2026-11-12
+The mark is the logo, drawn on 2026-11-12
 (`/brand/gt-globe-logo-light.svg`, `gt-globe-logo-dark.svg` + transparent
 PNG variants, all written from `LOGO` in `src/lib/logo.ts` by
 `pnpm build:logo`): a globe whose ring, meridian oval and latitude oval
@@ -132,15 +132,15 @@ shortlist on `/marks`, and `/marks/graticule` shows the marks that led to
 them. Locadex carries its own logo, a lambda drawn in doubled lines
 (2026-11-18; `/brand/locadex-logo.svg`, `-light.svg` and `-dark.svg`,
 written by `pnpm build:locadex-logo` from its catalog file
-`/marks/locadex/doubled-lambda.svg`): every stroke is two parallel
+`/marks/locadex/locadex-logo.svg`): every stroke is two parallel
 lines, one gap apart through both bends, the arm and foot cut parallel
 to the long leg, and the short leg's inner line runs into the long leg.
 Every hub surface draws it, the `/d` directions and the isometric
-diagrams included (`/brand/locadex-logo-mark.svg` keeps the old file's
-500 unit frame). The Locadex section of `/marks` also holds its outlined
-and ringed variants. generaltranslation.com still draws the earlier
-traced lambda (`/brand/locadex-mark.svg`, which only the production
-mirror keeps) until it takes the new file.
+diagrams included (`/brand/locadex-logo-framed.svg`, the framed Locadex
+logo, keeps the shipped mark's 500 unit frame). The Locadex section of `/marks` also holds its outlined
+and ringed variants. generaltranslation.com still draws the shipped
+Locadex mark (`/brand/locadex-mark.svg`, which only the production
+mirror keeps) until it takes the Locadex logo.
 
 The brand kit opens `/brand`: every logo file (the mark, both lockups and
 both wordmarks as SVG, PDF and PNG, with the transparent PNGs in one
@@ -205,9 +205,9 @@ Rules:
 - **The four-globe lockup** sets three graticule globes before the logo
   and the stacked name: a whole graticule with its polar arcs, the
   graticule with its meridian opened on the right where the G opens, the
-  graticule without its polar arcs, then the logo. The three stage globes
+  graticule without its polar arcs, then the logo. The three graticule globes
   are still drawn on the 11-06 globe's construction (13.6 unit lines,
-  shared ovals) and wait for the refined progression; the globes stand
+  shared ovals) and wait to be redrawn on the logo's construction; the globes stand
   0.22 globe diameters apart (0.5201 cap height), and the logo and the
   name keep the stacked lockup's size and 0.5826 cap height gap.
   `pnpm build:strip` writes `public/brand/gt-globe-strip*.svg` (currentColor,
@@ -331,7 +331,7 @@ The identity is applied on four kinds of surface today.
   2026-09-25.
 - **Motion.** The films on `/motion` apply the identity to film: the blog
   trailers, the product films and the translation-history series.
-- **The marks.** The logo, the refined globe, is the mark in this site's
+- **The marks.** The logo is the mark in this site's
   chrome, on `/brand` and in the deck since 2026-11-12, after Axis and
   meridian behind from 2026-11-08 (section 4). The shortlist on `/marks` opens on it and its state, Oval globe,
   axis behind. The speed marks chosen on 2026-09-29 are the previous
@@ -341,7 +341,7 @@ The identity is applied on four kinds of surface today.
   stay on `/marks`.
 
 **Where the logo is, 2026-11-18.** Every General Translation surface
-draws the refined globe from the one path, `LOGO`, or a byte-for-byte
+draws the logo from the one path, `LOGO`, or a byte-for-byte
 copy of it:
 
 - **The site.** generaltranslation.com's header, footer, blog and tool

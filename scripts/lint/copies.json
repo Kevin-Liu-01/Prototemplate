@@ -154,37 +154,37 @@
       "path": "content/blog/daniel-white.mdx",
       "mode": "fork",
       "from": "github.com/generaltranslation/content@bc2f97167c5b30aa5e2a85b208eab782ab39d62e:blog/en-US/daniel-white.mdx (content main, which the live deploy checks out)",
-      "reason": "the text of generaltranslation.com/blog/daniel-white, which /blog/daniel-white renders, matches content main at bc2f9716 (2026-11-10); the image stamps are newer than content main's, for the globe logo covers, so the file is a fork until content main carries the same stamps; content/production/blog/en-US/daniel-white.mdx is the byte-for-byte pin"
+      "reason": "the text of generaltranslation.com/blog/daniel-white, which /blog/daniel-white renders, matches content main at bc2f9716 (2026-11-10); the image stamps are newer than content main's, for the redrawn covers, so the file is a fork until content main carries the same stamps; content/production/blog/en-US/daniel-white.mdx is the byte-for-byte pin"
     },
     {
       "path": "content/blog/designing-docs-for-humans.mdx",
       "mode": "fork",
       "from": "github.com/generaltranslation/content@bc2f97167c5b30aa5e2a85b208eab782ab39d62e:blog/en-US/designing-docs-for-humans.mdx (content main, which the live deploy checks out)",
-      "reason": "the text of generaltranslation.com/blog/designing-docs-for-humans, which /blog/designing-docs-for-humans renders, matches content main at bc2f9716 (2026-11-10); the image stamps are newer than content main's, for the globe logo covers, so the file is a fork until content main carries the same stamps; content/production/blog/en-US/designing-docs-for-humans.mdx is the byte-for-byte pin"
+      "reason": "the text of generaltranslation.com/blog/designing-docs-for-humans, which /blog/designing-docs-for-humans renders, matches content main at bc2f9716 (2026-11-10); the image stamps are newer than content main's, for the redrawn covers, so the file is a fork until content main carries the same stamps; content/production/blog/en-US/designing-docs-for-humans.mdx is the byte-for-byte pin"
     },
     {
       "path": "content/blog/fuma-nama.mdx",
       "mode": "fork",
       "from": "github.com/generaltranslation/content@bc2f97167c5b30aa5e2a85b208eab782ab39d62e:blog/en-US/fuma-nama.mdx (content main, which the live deploy checks out)",
-      "reason": "the text of generaltranslation.com/blog/fuma-nama, which /blog/fuma-nama renders, matches content main at bc2f9716 (2026-11-10); the image stamps are newer than content main's, for the globe logo covers, so the file is a fork until content main carries the same stamps; content/production/blog/en-US/fuma-nama.mdx is the byte-for-byte pin"
+      "reason": "the text of generaltranslation.com/blog/fuma-nama, which /blog/fuma-nama renders, matches content main at bc2f9716 (2026-11-10); the image stamps are newer than content main's, for the redrawn covers, so the file is a fork until content main carries the same stamps; content/production/blog/en-US/fuma-nama.mdx is the byte-for-byte pin"
     },
     {
       "path": "content/blog/rewriting-our-docs.mdx",
       "mode": "fork",
       "from": "github.com/generaltranslation/content@bc2f97167c5b30aa5e2a85b208eab782ab39d62e:blog/en-US/rewriting-our-docs.mdx (content main, which the live deploy checks out)",
-      "reason": "the text of generaltranslation.com/blog/rewriting-our-docs, which /blog/rewriting-our-docs renders, matches content main at bc2f9716 (2026-11-10); the image stamps are newer than content main's, for the globe logo covers, so the file is a fork until content main carries the same stamps; content/production/blog/en-US/rewriting-our-docs.mdx is the byte-for-byte pin"
+      "reason": "the text of generaltranslation.com/blog/rewriting-our-docs, which /blog/rewriting-our-docs renders, matches content main at bc2f9716 (2026-11-10); the image stamps are newer than content main's, for the redrawn covers, so the file is a fork until content main carries the same stamps; content/production/blog/en-US/rewriting-our-docs.mdx is the byte-for-byte pin"
     },
     {
       "path": "content/blog/supporting-open-source-software.mdx",
       "mode": "fork",
       "from": "github.com/generaltranslation/content@bc2f97167c5b30aa5e2a85b208eab782ab39d62e:blog/en-US/supporting-open-source-software.mdx (content main, which the live deploy checks out)",
-      "reason": "the text of generaltranslation.com/blog/supporting-open-source-software, which /blog/supporting-open-source-software renders, matches content main at bc2f9716 (2026-11-10); the image stamps are newer than content main's, for the globe logo covers, so the file is a fork until content main carries the same stamps; content/production/blog/en-US/supporting-open-source-software.mdx is the byte-for-byte pin"
+      "reason": "the text of generaltranslation.com/blog/supporting-open-source-software, which /blog/supporting-open-source-software renders, matches content main at bc2f9716 (2026-11-10); the image stamps are newer than content main's, for the redrawn covers, so the file is a fork until content main carries the same stamps; content/production/blog/en-US/supporting-open-source-software.mdx is the byte-for-byte pin"
     },
     {
       "path": "content/blog/supporting-slash-companies.mdx",
       "mode": "fork",
       "from": "github.com/generaltranslation/content@bc2f97167c5b30aa5e2a85b208eab782ab39d62e:blog/en-US/supporting-slash-companies.mdx (content main, which the live deploy checks out)",
-      "reason": "the text of generaltranslation.com/blog/supporting-slash-companies, which /blog/supporting-slash-companies renders, matches content main at bc2f9716 (2026-11-10); the image stamps are newer than content main's, for the globe logo covers, so the file is a fork until content main carries the same stamps; content/production/blog/en-US/supporting-slash-companies.mdx is the byte-for-byte pin"
+      "reason": "the text of generaltranslation.com/blog/supporting-slash-companies, which /blog/supporting-slash-companies renders, matches content main at bc2f9716 (2026-11-10); the image stamps are newer than content main's, for the redrawn covers, so the file is a fork until content main carries the same stamps; content/production/blog/en-US/supporting-slash-companies.mdx is the byte-for-byte pin"
     },
     {
       "path": "content/production/blog/en-US/daniel-white.mdx",

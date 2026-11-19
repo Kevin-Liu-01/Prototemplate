@@ -36,7 +36,7 @@ export const LOADER_SIZES: readonly { size: number; where: string }[] = [
 ];
 
 export const ARMILLARY_ID = 'armillary';
-export const ARMILLARY_TITLE = 'The armillary';
+export const ARMILLARY_TITLE = 'The armillary loader';
 export const ARMILLARY_LEAD =
   'The logo read as an armillary sphere. The ring is the outer ring seen face on, the meridian and the latitude are rings turned about their own axes, and the stem and the bar are those rings seen edge on. Once a lap the meridian and the G draw back, both rings swing out of their hinges, a full turn and a half turn, passing over and under as the logo’s own crossings do, and the logo draws back on.';
 
@@ -48,14 +48,14 @@ export const armillaryRows = (beats: { rest: number; open: number; swing: number
   { name: 'Close', ms: Math.round(beats.close * 1000), note: 'Open run backward, landing on the logo.' },
 ];
 
-/** The armillary at the sizes it is made for; below 32 px the vector loader above runs instead. */
+/** The armillary at the sizes it is made for; below 32 px the loader above runs instead. */
 export const ARMILLARY_SIZES: readonly { size: number; where: string }[] = [
   { size: 56, where: 'A prototype’s frame' },
   { size: 32, where: 'The smallest size it is made for' },
 ];
 
 export const ASCII_ID = 'ascii';
-export const ASCII_TITLE = 'In ASCII';
+export const ASCII_TITLE = 'The ASCII loader';
 export const ASCII_LEAD =
   'The logo turned on its sphere and set in a monospace grid, 45 characters by 21 lines, from - to @ by how much of each cell the lines cover and how much light reaches them. The rings turn once a lap and pass behind the globe.';
 

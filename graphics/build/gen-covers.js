@@ -1,7 +1,7 @@
 'use strict';
 // The blog covers, social cards and the one diagram that carried the retired GT monogram outside the docs set.
 // usage: node graphics/build/gen-covers.js   (after gen-visuals.js; it adds its pages to build/manifest.json)
-// Each page is the published cover with the old mark and its words lifted off (cover-grounds.py), then the globe logo
+// Each page is the published cover with the old mark and its words lifted off (cover-grounds.py), then the logo
 // and the same words set back as one group on the page's centre line (the spine's in its chip), the globe on the words' cap-height middle.
 const L = require('./gen-lib.js');
 const { fs, path, ROOT, SP, px } = L;

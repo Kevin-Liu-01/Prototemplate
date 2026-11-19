@@ -5,7 +5,7 @@ description: >-
   the four absolute colors and the one accent, the type system on Katagami
   Text, the one typeface (weights, features, tracking, per-script
   fallbacks, Geist Mono for code, and the Inter build prototemplate.com
-  still renders), the globe logo and the generated speed
+  still renders), the logo and the generated speed
   marks, language as material, the final avoid list, and what
   never appears on a public surface. Use before making anything that carries
   the brand (a page, a slide, a graphic, a film, an email or a social
@@ -127,7 +127,7 @@ The color rules have four documented exceptions, each named in `references/color
 
 Detail, files and procedures are in `references/marks.md`.
 
-- **The current mark** is the logo, the refined globe (Kevin, 2026-11-12): a globe whose ring and ovals draw the G and whose polar axis is the T's stem. Its one drawing is `LOGO` in `src/lib/logo.ts`; `pnpm build:logo` writes every logo file from it. The 11-06 globe is the previous logo (`lint:logo` rule 12); the doubled-line monogram the previous mark.
+- **The current mark** is the logo (Kevin, 2026-11-12): a globe whose ring and ovals draw the G and whose polar axis is the T's stem. Its one drawing is `LOGO` in `src/lib/logo.ts`; `pnpm build:logo` writes every logo file from it. The 11-06 globe is the previous logo (`lint:logo` rule 12); the doubled-line monogram the previous mark.
 - **One ink.** Ink on paper or paper on ink. No third color, no gradient, no shadow, no glow. On a dark surface the drawn mark inverts, as an alpha mask that takes the surface's ink or as a clean invert. A mark ships only as vector geometry.
 - **Compression.** The mark must hold at 16px (favicon), 32px (CLI banner), 64px (README header), 128px (npm page) and 256px (website), because developers meet the brand in a terminal as often as on the site (deck slide 25).
 - **The logo's state** on hover, sign-in and loading is Oval globe, axis behind; both lead `SHORTLIST`.

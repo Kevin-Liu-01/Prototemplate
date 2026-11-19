@@ -20,7 +20,7 @@ export const FILM_CAPTURES_REASON = 'ends on the logo, but its captures were tak
 export const GLOBE_1106_REASON = 'ends on the 11-06 globe; kept as made';
 /**
  * The previous logos, by their path's sha256: the globe chosen on
- * 2026-11-06, the logo until the refined globe of 2026-11-12. Dated films
+ * 2026-11-06, the logo until 2026-11-12. Dated films
  * and pictures that end on it stay as history (GLOBE_1106_REASON); any code,
  * markup or SVG outside history whose path hashes to one, or has its
  * outline (the same drawing renumbered, respaced, shifted or scaled), fails

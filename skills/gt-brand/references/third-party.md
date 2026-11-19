@@ -9,7 +9,7 @@ the rules that apply to every kind of asset.
 
 ## 1. Source order
 
-1. The house components first: the General Translation mark, the Locadex mark and the
+1. The house components first: the General Translation logo (`GtMark`), the shipped Locadex mark (`LocadexMark`) and the
    `LocaleFlag` SVGs (`LocaleTag` in Prototemplate).
 2. A customer's or partner's logo comes from the company's own brand page,
    in true ink and in the variant for the theme. A customer logo once

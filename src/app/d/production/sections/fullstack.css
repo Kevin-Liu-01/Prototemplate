@@ -365,7 +365,7 @@
   stroke-width: 1.2;
 }
 
-/* the Locadex mark on the agents slab, in the plate's own ink until
+/* the shipped Locadex mark on the agents slab, in the plate's own ink until
    its beat lets the accent pick it out */
 .toolchain-root .tcb .v0s-g-ldx {
   fill: rgba(255, 255, 255, 0.3);

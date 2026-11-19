@@ -205,7 +205,7 @@ const AGENT_LEADER = `M${(AGENT_VERT_X + 2.2).toFixed(2)} ${AGENT_TOP_Y}H70`;
 /** The output plate's screen center x — the chip's reading hangs beneath it. */
 const PR_CX = (PR_BOX.x * 2 + PR_BOX.w) * ISO_COS30;
 
-/** The Locadex mark's half-size, and its seat in the slab's top face. */
+/** The shipped Locadex mark's half-size, and its seat in the slab's top face. */
 const MARK_HALF = 16;
 const MARK_PLANE = plane(A_Z + A_H);
 
@@ -414,7 +414,7 @@ function LocadexIso() {
           />
         </g>
 
-        {/* the agent slab, hovering, carrying the Locadex mark on its top
+        {/* the agent slab, hovering, carrying the shipped Locadex mark on its top
             face — the brightest voice in the frame */}
         <Solid box={AGENT_BOX} rim={0.2} edge={0.48} lift />
         <g transform={MARK_PLANE}>

@@ -1,7 +1,7 @@
 import type { SVGProps } from 'react';
 
 /**
- * The Locadex mark as a currentColor vector, so it sits in an icon slot
+ * The shipped Locadex mark as a currentColor vector, so it sits in an icon slot
  * beside the Heroicons solid marks. Copied from gt-cloud
  * packages/ui/src/components/icons/LocadexMark.tsx (origin/main,
  * 2026-10-13), which traced it from public/brand/locadex-mark.svg; the

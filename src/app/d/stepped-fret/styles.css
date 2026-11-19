@@ -1600,7 +1600,7 @@
 /* ------------------------------------------------------------------
    Dark theme: the marks. The six tokens above remap; brand marks are
    inverted or swapped, and nothing else changes. The dark band's cream
-   plates never remap, so the Locadex mark on them keeps its ink.
+   plates never remap, so the Locadex logo on them keeps its ink.
    ------------------------------------------------------------------ */
 [data-theme='dark'] .stepped-fret-root .sf-foot-logo.is-light {
   display: none;

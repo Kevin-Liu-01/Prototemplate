@@ -160,7 +160,7 @@
 }
 
 /* Drawn-dark glyph files (React Native, the Locadex lambda) flip in the
-   dark the way the footer's Locadex mark does. */
+   dark the way the footer's Locadex logo does. */
 [data-theme='dark'] .singularity-root .tc-menu-glyph.is-inverting {
   filter: invert(1);
 }

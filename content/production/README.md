@@ -30,6 +30,6 @@ licensed CC BY 4.0 by General Translation, Inc.
 
 A re-sync copies the folders at content main and records the new hashes.
 `content/blog`, which `/blog` renders, holds the same six posts with the
-same text; its image stamps are newer, for the globe logo covers, so
+same text; its image stamps are newer, for the redrawn covers, so
 copies.json lists those files as forks until content main carries the same
 stamps.

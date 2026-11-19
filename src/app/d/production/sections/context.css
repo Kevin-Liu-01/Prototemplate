@@ -825,7 +825,7 @@
   color: rgba(7, 7, 7, 0.42);
 }
 
-/* the Locadex mark inks to the sheet's black on paper */
+/* the shipped Locadex mark inks to the sheet's black on paper */
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-gmark {
   filter: brightness(0);
 }

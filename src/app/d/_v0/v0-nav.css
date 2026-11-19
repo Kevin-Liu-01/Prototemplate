@@ -244,7 +244,7 @@
 }
 
 /* Drawn-dark glyph files (React Native, TanStack, the Locadex lambda) flip
-   in the dark the way the footer's Locadex mark does. */
+   in the dark the way the footer's Locadex logo does. */
 [data-theme='dark'] .toolchain-root .v0-menu-glyph.is-inverting {
   filter: invert(1);
 }

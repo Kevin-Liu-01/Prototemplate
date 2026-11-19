@@ -14,7 +14,7 @@ type FooterLink = {
 
 /** The real lambda mark, drawn dark for light ground; dark mode inverts it
     in CSS the way the story chip does. */
-function LocadexMark({ className }: MarkProps) {
+function LocadexLogo({ className }: MarkProps) {
   return (
     <Image
       alt=''
@@ -31,7 +31,7 @@ const COLUMNS: readonly { title: string; links: readonly FooterLink[] }[] = [
   {
     title: 'Guides',
     links: [
-      { label: 'Locadex Agent', mark: LocadexMark },
+      { label: 'Locadex Agent', mark: LocadexLogo },
       { label: 'Next.js', mark: SiNextdotjs },
       { label: 'React', mark: SiReact },
       { label: 'React Native', mark: SiReact },

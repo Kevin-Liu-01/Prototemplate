@@ -1,8 +1,8 @@
 /**
- * The General Translation logo, the refined globe (Kevin, 2026-11-12), the
+ * The General Translation logo (Kevin, 2026-11-12), the
  * one drawing every in-site use reads: the chrome mark (GtMark), the
  * /brand figure and badge, the docs demos, and the masters, the tab icon
- * and the deck symbol that pnpm build:logo writes from it. It refines the
+ * and the deck symbol that pnpm build:logo writes from it. It redraws the
  * construction of the globe chosen on 2026-11-06 (Axis and meridian
  * behind, now a past pick on /marks and the previous logo in the logo
  * lock): each oval has its own centre and radii, the line weight is
@@ -16,12 +16,12 @@
  * One path in currentColor with the nonzero fill rule, on the catalog's
  * 256 unit square: Kevin's drawing scaled by 207.4/487 about the ring's
  * centre, to four decimals. The same path as
- * public/marks/graticule/variations/refined-1112.svg (pnpm test:marks
+ * public/marks/graticule/variations/logo.svg (pnpm test:marks
  * holds the two together). Pure data and no imports, so the client chrome,
  * the server pages and the Node scripts read the same constant.
  */
 export const LOGO = {
-  id: 'refined-1112',
+  id: 'logo',
   name: 'General Translation',
   /** the catalog's square, with the drawing centred in it */
   square: '0 0 256 256',
@@ -32,7 +32,7 @@ export const LOGO = {
 } as const;
 
 /**
- * The logo lockup: the logo beside the stacked name, "General" over
+ * The lockup: the logo beside the stacked name, "General" over
  * "Translation" (Kevin, 2026-11-12, from his wordmark file). The name is
  * Katagami Text at weight 400, tracked -0.0496 em, with the font's kerning
  * (at 400 only T-r applies), drawn as outlines (Kevin, 2026-11-08:

@@ -1,6 +1,6 @@
 {
   "$schema": "../../kit/film.schema.json",
-  "$comment": "The Slash film in English (v8, re-cut 2026-11-09 for the globe logo in the lockup and Katagami Text). Hardware GPU path, as the language versions. Its earlier finals were rendered by hand (NOTES.md); this file lets kit/film.mjs deliver it. Poster: a snapshot of the settled card at 36.250 s.",
+  "$comment": "The Slash film in English (v8, re-cut 2026-11-09 for the 11-06 globe in the lockup and Katagami Text). Hardware GPU path, as the language versions. Its earlier finals were rendered by hand (NOTES.md); this file lets kit/film.mjs deliver it. Poster: a snapshot of the settled card at 36.250 s.",
   "slug": "slash-announcement",
   "kind": "brand",
   "path": "gpu",

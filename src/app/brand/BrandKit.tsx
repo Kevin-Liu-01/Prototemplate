@@ -24,7 +24,7 @@ type LogoKey = (typeof KIT.logos)[number]['key'];
 /** each logo type's name and where it is used, from the kit README */
 const LOGO_TEXT: Record<LogoKey, { name: string; use: string; wide: boolean }> = {
   mark: { name: 'Mark', use: 'The globe alone, for icons, avatars and places where the name is already near.', wide: false },
-  'lockup-stacked': { name: 'Stacked lockup', use: 'The main logo: the mark beside “General” over “Translation”.', wide: true },
+  'lockup-stacked': { name: 'Stacked lockup', use: 'The main lockup: the mark beside “General” over “Translation”.', wide: true },
   'lockup-horizontal': { name: 'One-line lockup', use: 'The logo where height is short: a header bar, a footer or a banner.', wide: true },
   wordmark: { name: 'Wordmark', use: 'The name alone on one line, where the mark is already near.', wide: true },
   'wordmark-stacked': { name: 'Stacked wordmark', use: 'The name alone on two lines, in the spacing of the stacked lockup.', wide: true },

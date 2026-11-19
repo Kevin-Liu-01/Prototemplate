@@ -468,7 +468,7 @@
    Inside the band the frame is the dashboard itself, not a terminal: the
    type is the house sans (these strings are UI copy, not code), the
    affordances wear their lucide glyphs, and the agent credit carries the
-   Locadex mark. Mono tracking reads airy in sans, so every letterspaced
+   Locadex logo. Mono tracking reads airy in sans, so every letterspaced
    cap steps one notch tighter. */
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-bar,
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-lab,
@@ -796,7 +796,7 @@
   color: rgba(7, 7, 7, 0.42);
 }
 
-/* the Locadex mark inks to the sheet's black on paper */
+/* the Locadex logo inks to the sheet's black on paper */
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-gmark {
   filter: brightness(0);
 }

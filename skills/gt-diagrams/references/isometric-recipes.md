@@ -210,7 +210,7 @@ export function SlabMark() {
           height={MARK_HALF * 2}
           style={{ maskType: 'alpha' }}
         >
-          <image href='/brand/locadex-logo-mark.svg' x={-MARK_HALF} y={-MARK_HALF} width={MARK_HALF * 2} height={MARK_HALF * 2} />
+          <image href='/brand/locadex-logo-framed.svg' x={-MARK_HALF} y={-MARK_HALF} width={MARK_HALF * 2} height={MARK_HALF * 2} />
         </mask>
       </defs>
       {/* the slab's top face, anchored at plan (0, 0) */}
@@ -236,7 +236,7 @@ export function SlabMark() {
 
 On a chip, anchor the plane at the chip's center: `plane(chipTop, chipX + chipW / 2, chipY + chipD / 2)`. At small sizes use `/brand/locadex-logo-light.svg` (the pricing platform seats it in a 16-unit image box), for the General Translation mark use the logo, `/brand/no-bg-gt-globe-logo-light.png`. For a third-party icon component, render it inside the mask with `color='#fff'`.
 
-Size the image box for `locadex-logo-mark.svg` from its glyph, which spans 199 of the 500 viewBox units in width:
+Size the image box for `locadex-logo-framed.svg` from its glyph, which spans 199 of the 500 viewBox units in width:
 
 ```ts
 const MARK_GLYPH_W = 28; // the visible glyph width in plan units
@@ -270,7 +270,7 @@ export function TowerMark() {
   return (
     <DitheredMark
       id='xp-ldx'
-      href='/brand/locadex-logo-mark.svg'
+      href='/brand/locadex-logo-framed.svg'
       plane={MARK_PLANE}
       markHalf={MARK_HALF}
       cover={COVER}

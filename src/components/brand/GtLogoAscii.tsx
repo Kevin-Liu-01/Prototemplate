@@ -29,7 +29,7 @@ import './GtLogoAscii.css';
  * reduced motion show, and the lap's first and last frame. It steps at 24
  * frames a second on the shared clock (logo-clock.ts), writes only the rows
  * that change and stops out of view. For a stage 225 px wide or more; below
- * that use the vector loaders.
+ * that use the loader or the armillary loader.
  */
 export type GtLogoAsciiProps = {
   /** the grid's width in CSS pixels, at least 225; the height is 420 / 450 of it */

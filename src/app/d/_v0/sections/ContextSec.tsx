@@ -422,7 +422,7 @@ export default function V0Context() {
                     {/* the mark, not the letter: the house never writes the
                        wordmark plain; low fetch priority keeps React from
                        preloading it in the head */}
-                    <img alt='' className='v0-ctx-gmark' fetchPriority='low' src='/brand/locadex-logo-mark.svg' />
+                    <img alt='' className='v0-ctx-gmark' fetchPriority='low' src='/brand/locadex-logo-framed.svg' />
                     Locadex
                   </b>
                   <span className='v0-ctx-rule'>

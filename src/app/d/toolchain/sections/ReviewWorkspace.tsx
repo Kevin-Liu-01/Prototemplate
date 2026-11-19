@@ -111,7 +111,7 @@ type ReviewWorkspaceProps = {
   /** Pass null to drop the notes list entirely. */
   notes?: readonly string[] | null;
   /** 'product' dresses the frame as the dashboard itself: lucide glyphs in
-      the bar and footer, the Locadex mark on the agent credit, and the two
+      the bar and footer, the Locadex logo on the agent credit, and the two
       aura hooks the host styles into a dither field around the mat. The
       default renders byte-identical to the original terminal chrome. */
   chrome?: 'terminal' | 'product';

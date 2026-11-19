@@ -306,7 +306,7 @@
    pair wrapping its lines, context's threads flowing into a raised
    <T> under accent waves, translations' source fanning to its locale
    runs (the payload chip the one accent), and the agents plate's
-   Locadex mark under its dithered shimmer and an orbiting accent
+   Locadex logo under its dithered shimmer and an orbiting accent
    trace. Flat marks and wires stay in the plate's own ink. */
 .toolchain-root .tcb .v0s-g-mark {
   fill: rgba(255, 255, 255, 0.13);
@@ -316,7 +316,7 @@
 /* the chip-top type — the bracket forms and the <T> — STROKED glyphs
    (a filled chevron reads as an arrow under the foreshortening; a
    stroked one reads as a bracket), lying FLUSH in the chip tops on the
-   Locadex mark's face-plane matrix, stepping toward white when the beat
+   Locadex logo's face-plane matrix, stepping toward white when the beat
    spotlights them (the accent budget stays with the payload, waves,
    and orbit) */
 /* the bracket voices read as TYPE (founder: "thicker and better and
@@ -365,7 +365,7 @@
   stroke-width: 1.2;
 }
 
-/* the Locadex mark on the agents slab, in the plate's own ink until
+/* the Locadex logo on the agents slab, in the plate's own ink until
    its beat lets the accent pick it out */
 .toolchain-root .tcb .v0s-g-ldx {
   fill: rgba(255, 255, 255, 0.3);
@@ -795,8 +795,8 @@
    GLYPH spans the 16px box the lucide icons set, never the padding. */
 .toolchain-root .tcb .v0-stack-ldx {
   display: inline-block;
-  -webkit-mask: url('/brand/locadex-logo-mark.svg') center / 225.23% no-repeat;
-  mask: url('/brand/locadex-logo-mark.svg') center / 225.23% no-repeat;
+  -webkit-mask: url('/brand/locadex-logo-framed.svg') center / 225.23% no-repeat;
+  mask: url('/brand/locadex-logo-framed.svg') center / 225.23% no-repeat;
   background-color: currentColor;
 }
 
