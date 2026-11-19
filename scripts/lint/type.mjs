@@ -128,7 +128,7 @@ export const SPECIMENS = {
 export const MONO = {
   selectors: [
     '.pt-row-label', // the gallery's row numbers, 01 to 20
-    '.gt-logo-ascii text', // the ASCII loader's character grid, which needs a monospace face to hold its cells
+    '.gt-logo-ascii-grid', // the ASCII loader's character grid, which needs a monospace face to hold its cells
     '.sl-law-n', // the ledger's law numbers
     '.pt-funnel-n', // the funnel's counts, 20+
     '.ptb-swatch span', // hex values

@@ -1,65 +1,74 @@
 /* GtLogoAscii: the box, the hidden label and the two palettes. The rows are
-   SVG text stretched to the grid (textLength), so the face only has to be
-   monospace. Palette ink sets the glyphs in the text color, lit at the upper
-   left and a little lighter towards the lower right, and the dots faint;
-   palette image uses the reference rendering's blues on its own ground. */
+   HTML text in a monospace face, sized and spaced in container units of the
+   box (a cell is 1/45 of its width, a line 20/450 of it), so any monospace
+   face keeps the grid at any width. Palette ink sets the glyphs in the text
+   color, lit at the upper left and a little lighter towards the lower
+   right, and the dots faint; palette image uses the reference rendering's
+   blues on its own ground. The glyphs' light is a gradient clipped to the
+   text, on the line from (72, 57) to (378, 363) of the 450 by 420 grid. */
 .gt-logo-ascii {
   position: relative;
   display: inline-block;
   flex: none;
-  line-height: 0;
+  max-width: 100%;
+  aspect-ratio: 450 / 420;
   vertical-align: middle;
+  container-type: inline-size;
   --gt-ascii-lit: currentColor;
-  --gt-ascii-mid: currentColor;
-  --gt-ascii-dark: currentColor;
-  --gt-ascii-mid-opacity: 0.78;
-  --gt-ascii-dark-opacity: 0.56;
-  --gt-ascii-dot: currentColor;
-  --gt-ascii-dot-opacity: 0.32;
+  --gt-ascii-mid: color-mix(in srgb, currentColor 78%, transparent);
+  --gt-ascii-dark: color-mix(in srgb, currentColor 56%, transparent);
+  --gt-ascii-dot: color-mix(in srgb, currentColor 32%, transparent);
+  --gt-ascii-ground: transparent;
 }
 
 .gt-logo-ascii[data-palette='image'] {
   --gt-ascii-lit: #bce7f1;
   --gt-ascii-mid: #8eb7c9;
   --gt-ascii-dark: #6187a0;
-  --gt-ascii-mid-opacity: 1;
-  --gt-ascii-dark-opacity: 1;
   --gt-ascii-dot: #2e4474;
-  --gt-ascii-dot-opacity: 1;
+  --gt-ascii-ground: #17161c;
 }
 
-.gt-logo-ascii > svg {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
-.gt-logo-ascii text {
+.gt-logo-ascii-grid {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  contain: strict;
+  background: var(--gt-ascii-ground);
   font-family: var(--pt-mono);
+  font-size: calc(100cqw * 16 / 450);
+  font-kerning: none;
+  font-variant-ligatures: none;
+  line-height: calc(100cqw * 20 / 450);
   white-space: pre;
+  pointer-events: none;
+  user-select: none;
 }
 
-.gt-logo-ascii-ground {
-  fill: #17161c;
+/* each layer is the whole grid, the rows from 15 units down, so the glyphs' gradient spans the grid as it did */
+.gt-logo-ascii-dots,
+.gt-logo-ascii-glyphs {
+  position: absolute;
+  inset: 0;
+  padding-top: calc(100cqw * 15 / 450);
+}
+
+.gt-logo-ascii-dots > span,
+.gt-logo-ascii-glyphs > span {
+  display: block;
+  letter-spacing: calc(100cqw / 45 - 1ch);
 }
 
 .gt-logo-ascii-dots {
-  fill: var(--gt-ascii-dot);
-  fill-opacity: var(--gt-ascii-dot-opacity);
+  color: var(--gt-ascii-dot);
 }
 
-.gt-logo-ascii-lit {
-  stop-color: var(--gt-ascii-lit);
-}
-
-.gt-logo-ascii-mid {
-  stop-color: var(--gt-ascii-mid);
-  stop-opacity: var(--gt-ascii-mid-opacity);
-}
-
-.gt-logo-ascii-dark {
-  stop-color: var(--gt-ascii-dark);
-  stop-opacity: var(--gt-ascii-dark-opacity);
+/* 135deg runs the 45 degree line through the grid's centre; its stops at 14.82% and 85.18% put 0 and 1 at (72, 57) and (378, 363) */
+.gt-logo-ascii-glyphs {
+  background: linear-gradient(135deg, var(--gt-ascii-lit) 14.82%, var(--gt-ascii-mid) 50%, var(--gt-ascii-dark) 85.18%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .gt-logo-ascii-label {

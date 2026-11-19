@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useRef } from 'react';
+import { useRef } from 'react';
 
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
@@ -19,12 +19,17 @@ import './GtLogoAscii.css';
  * are written ahead of time by pnpm build:logo-ascii
  * (GtLogoAscii.frames.ts), so a frame is 21 rows of text.
  *
- * Every row is an SVG text line stretched to the grid's width
- * (textLength), so any monospace face keeps the grid. The still is what a
- * server render, a page without script and reduced motion show, and the
- * lap's first and last frame. It steps at 24 frames a second on the shared
- * clock (logo-clock.ts), writes only the rows that change and stops out of
- * view. For a stage 225 px wide or more; below that use the vector loaders.
+ * Every row is a line of HTML text in a monospace face, its letters spaced
+ * to one cell of the grid (a cell's width less one character), so any
+ * monospace face keeps the grid. The glyphs take the light as a gradient
+ * clipped to the text, the dots a flat tone. HTML text and not SVG text:
+ * WebKit lays out a changed SVG text row, gradient filled and stretched to
+ * a length, in tens of milliseconds to seconds, and an HTML row in well
+ * under one. The still is what a server render, a page without script and
+ * reduced motion show, and the lap's first and last frame. It steps at 24
+ * frames a second on the shared clock (logo-clock.ts), writes only the rows
+ * that change and stops out of view. For a stage 225 px wide or more; below
+ * that use the vector loaders.
  */
 export type GtLogoAsciiProps = {
   /** the grid's width in CSS pixels, at least 225; the height is 420 / 450 of it */
@@ -42,13 +47,10 @@ export type GtLogoAsciiProps = {
   className?: string;
 };
 
-const VIEW_W = 450;
-const VIEW_H = 420;
 const TURN = A.turn.length + 1;
 const LAP = A.hold + TURN / A.fps;
 /** the longest a settle takes once `loading` turns false mid-turn, in seconds */
 const SETTLE = 0.75;
-const NBSP = ' ';
 
 /** The glyph rows of frame `i` (0 is the still, 1 to TURN - 1 the turn). */
 function glyphRows(i: number): readonly string[] {
@@ -66,8 +68,6 @@ function dotRows(glyphs: readonly string[]): string[] {
   });
 }
 
-const show = (row: string) => row.replaceAll(' ', NBSP);
-
 /** The frame `t` seconds into a lap. */
 function frameAt(t: number): number {
   const s = ((t % LAP) + LAP) % LAP;
@@ -75,14 +75,12 @@ function frameAt(t: number): number {
 }
 
 export default function GtLogoAscii({ width = 450, palette = 'ink', label = 'Loading', loading = true, onRest, at, className }: GtLogoAsciiProps) {
-  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, '');
-  const gradient = `${uid}-glyphs`;
   const first = glyphRows(at === undefined ? 0 : frameAt(at));
   const firstDots = dotRows(first);
 
   const rootRef = useRef<HTMLSpanElement>(null);
-  const glyphRefs = useRef<(SVGTSpanElement | null)[]>([]);
-  const dotRefs = useRef<(SVGTSpanElement | null)[]>([]);
+  const glyphRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const dotRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const live = useRef({ loading, onRest, rested: !loading, at: 0, last: -1, settle: 0, shown: first.slice() });
 
   useLayoutWork(
@@ -108,8 +106,8 @@ export default function GtLogoAscii({ width = 450, palette = 'ink', label = 'Loa
         state.shown[r] = rows[r];
         const g = glyphRefs.current[r];
         const d = dotRefs.current[r];
-        if (g) g.textContent = show(rows[r]);
-        if (d) d.textContent = show(dots[r]);
+        if (g) g.textContent = rows[r];
+        if (d) d.textContent = dots[r];
       }
     };
     const tick = (now: number) => {
@@ -146,53 +144,23 @@ export default function GtLogoAscii({ width = 450, palette = 'ink', label = 'Loa
   });
 
   const root = className ? `gt-logo-ascii ${className}` : 'gt-logo-ascii';
-  const height = Math.round((width * VIEW_H) / VIEW_W);
-  const line = (r: number) => 15 + 20 * r + 15;
+  const layer = (rows: readonly string[], refs: typeof glyphRefs) =>
+    rows.map((row, r) => (
+      <span
+        key={r}
+        ref={(el) => {
+          refs.current[r] = el;
+        }}
+      >
+        {row}
+      </span>
+    ));
   return (
-    <span ref={rootRef} className={root} data-palette={palette} role='status' aria-live='polite'>
-      <svg viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} width={width} height={height} aria-hidden='true' focusable='false'>
-        <defs>
-          {/* the light comes from the upper left: the glyphs run from their lit color there to their dark color at the lower right */}
-          <linearGradient id={gradient} gradientUnits='userSpaceOnUse' x1='72' y1='57' x2='378' y2='363'>
-            <stop className='gt-logo-ascii-lit' offset='0' />
-            <stop className='gt-logo-ascii-mid' offset='0.5' />
-            <stop className='gt-logo-ascii-dark' offset='1' />
-          </linearGradient>
-        </defs>
-        {palette === 'image' ? <rect className='gt-logo-ascii-ground' width={VIEW_W} height={VIEW_H} /> : null}
-        <text className='gt-logo-ascii-dots' fontSize={16}>
-          {firstDots.map((row, r) => (
-            <tspan
-              key={r}
-              ref={(el) => {
-                dotRefs.current[r] = el;
-              }}
-              x='0'
-              y={line(r)}
-              textLength={VIEW_W}
-              lengthAdjust='spacing'
-            >
-              {show(row)}
-            </tspan>
-          ))}
-        </text>
-        <text className='gt-logo-ascii-glyphs' fontSize={16} fill={`url(#${gradient})`}>
-          {first.map((row, r) => (
-            <tspan
-              key={r}
-              ref={(el) => {
-                glyphRefs.current[r] = el;
-              }}
-              x='0'
-              y={line(r)}
-              textLength={VIEW_W}
-              lengthAdjust='spacing'
-            >
-              {show(row)}
-            </tspan>
-          ))}
-        </text>
-      </svg>
+    <span ref={rootRef} className={root} data-palette={palette} role='status' aria-live='polite' style={{ width }}>
+      <span className='gt-logo-ascii-grid' aria-hidden='true'>
+        <span className='gt-logo-ascii-dots'>{layer(firstDots, dotRefs)}</span>
+        <span className='gt-logo-ascii-glyphs'>{layer(first, glyphRefs)}</span>
+      </span>
       <span className='gt-logo-ascii-label'>{label}</span>
     </span>
   );

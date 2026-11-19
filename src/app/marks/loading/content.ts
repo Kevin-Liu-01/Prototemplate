@@ -62,7 +62,7 @@ export const ASCII_LEAD =
 export const ASCII_NOTES: readonly string[] = [
   'The still holds for a second, then the meridian and the latitude each turn once in 2.5 seconds at 24 frames a second, and the lap lands on the still again.',
   'The frames are written ahead of time by pnpm build:logo-ascii from the same sphere as the armillary, so a frame is 21 rows of text and the still is the same rows in every place it shows.',
-  'Each row is an SVG text line stretched to the grid’s width, so any monospace face keeps the grid. The dots are the brand’s 4 by 4 dither screen in the ring’s hole.',
+  'Each row is a line of monospace text with its letters spaced to the grid’s cells, so any monospace face keeps the grid. The dots are the brand’s 4 by 4 dither screen in the ring’s hole.',
 ];
 
 export const HOVER_ID = 'hovers';
