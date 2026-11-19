@@ -56,10 +56,12 @@ const COVERS = {
     // The Slash wordmark and the lockup share its 80 px height; 60 px of white either side of the x, centred at 512.
     items: [{ t: "svg", name: "slash", svg: SLASH, box: [200.4, 228, 440, 308] }, text("×", [560, 240, 600, 300], 190, 350, -72), { t: "svg", name: "lockup", svg: LOCKUP, box: [584, 228, 887.6, 308] }] },
   "paraglide-cover": { pub: "paraglide-js/cover.webp", W: 3840, H: 2160, mirror: false, parachute: [368, 452, 540, 628], dx: -40,
-    ground: ["pub", "0,0,1920,1080", "3840x2160", 5, "--hole-all", "368,452,540,628", "--hole-all", "560,508,934,584", "--hole-all", "979,519,1021,561", "--hole-all", "1065,471,1557,609"],
+    ground: ["pub", "0,0,1920,1080", "3840x2160", 5, "--hole-all", "368,452,540,628", "--hole-all", "560,508,934,584", "--hole-all", "979,519,1021,561", "--hole-all", "1065,471,1557,609",
+      // Kevin, 11-18: the orange swelled into the dark oval by the parachute; it now steps back around it.
+      "--clear", "400,540,200,180,150"],
     items: [text("Paraglide JS", [560, 505, 935, 590], 200, undefined, -40), text("×", [978, 518, 1022, 562], 200, undefined, -40), { t: "svg", name: "lockup", svg: LOCKUP, box: shift([1072, 478, 1550, 602], -40) }] },
   "paraglide-og": { pub: "paraglide-js/og.png", W: 2400, H: 1260, mirror: false, parachute: [368, 416, 540, 592], dx: -40,
-    ground: ["pub", "0,0,1920,1008", "2400x1260", 4, "--hole-all", "368,416,540,592", "--hole-all", "560,472,934,548", "--hole-all", "979,483,1021,525", "--hole-all", "1065,435,1557,573"],
+    ground: ["pub", "0,0,1920,1008", "2400x1260", 4, "--hole-all", "368,416,540,592", "--hole-all", "560,472,934,548", "--hole-all", "979,483,1021,525", "--hole-all", "1065,435,1557,573", "--clear", "400,504,200,180,150"],
     items: [text("Paraglide JS", dy([560, 505, 935, 590], -36), 200, undefined, -40), text("×", dy([978, 518, 1022, 562], -36), 200, undefined, -40), { t: "svg", name: "lockup", svg: LOCKUP, box: shift(dy([1072, 478, 1550, 602], -36), -40) }] },
 };
 
@@ -80,7 +82,7 @@ try {
   await page.addScriptTag({ path: join(HERE, "compose-page.js") });
   for (const id of ids.length ? ids : Object.keys(COVERS)) {
     const c = COVERS[id], items = [...c.items];
-    const ground = screen(c, c.ground, join(OUT, `${id}-ground.png`));
+    const ground = process.env.GROUND_FILE || screen(c, c.ground, join(OUT, `${id}-ground.png`));
     if (c.outer) items[0] = { ...items[0], outer: img(screen(c, c.outer, join(OUT, `${id}-outer.png`))) };
     if (c.parachute) {
       execFileSync("python3", [join(HERE, "matte.py"), pub(c.pub), join(OUT, `${id}-parachute.png`), c.parachute.join(",")]);

@@ -15,6 +15,9 @@ usage: redither.py <src> <out> <x0,y0,x1,y1 window in src px> <W>x<H> <cell px> 
               are read from the ground around them instead
   --hole-all  a box read entirely from the ground around it (a mark that is not light)
   --hole-ring cx,cy,r0,r1: an annulus read from the ground around it (a drawn rim)
+  --inks      #dot,#back: draw the screen in these two inks instead of the source's (a recoloured ground)
+  --mirror    flip the ground left to right
+  --clear     cx,cy,rx,ry,feather: fade the tone to nothing inside this ellipse (source px), over feather px at its rim
 """
 import argparse
 import numpy as np
@@ -147,6 +150,8 @@ def main():
     ap.add_argument('--hole', type=box_arg, action='append', default=[]); ap.add_argument('--hole-all', type=box_arg, action='append', default=[])
     ap.add_argument('--hole-ring', type=lambda v: tuple(map(float, v.split(','))), action='append', default=[])
     ap.add_argument('--reach', type=int, default=3)
+    ap.add_argument('--inks'); ap.add_argument('--mirror', action='store_true')
+    ap.add_argument('--clear', type=lambda v: tuple(map(float, v.split(','))), action='append', default=[])
     o = ap.parse_args()
     x0, y0, x1, y1 = map(float, o.window.split(','))
     W, H = map(int, o.size.split('x'))
@@ -168,6 +173,16 @@ def main():
     dot = np.stack([harmonic(dot[..., k], clean) for k in range(3)], axis=2)
     back = np.stack([harmonic(back[..., k], clean) for k in range(3)], axis=2)
 
+    yy, xx = np.mgrid[0:tone.shape[0], 0:tone.shape[1]] + 0.5
+    for cx, cy, rx, ry, feather in o.clear:
+        # distance outside the ellipse in source px (negative inside), so the fade has the same width all round
+        d = (np.hypot((xx - cx) / rx, (yy - cy) / ry) - 1) * min(rx, ry)
+        f = np.clip(d / feather, 0, 1)
+        f = f * f * (3 - 2 * f)
+        # the glow under the dots fades to the darkest backdrop in the frame, so the cleared ground is the oval's own ink
+        ink = np.array([np.percentile(back[..., k], 2) for k in range(3)])
+        tone = tone * f
+        back = ink + (back - ink) * f[..., None]
     cw, ch = W // o.cell, H // o.cell
     assert cw * o.cell == W and ch * o.cell == H, f'{W}x{H} is not a whole number of {o.cell} px cells'
     gx = x0 + (np.arange(cw) + 0.5) * (x1 - x0) / cw
@@ -180,7 +195,13 @@ def main():
     PX, PY = np.meshgrid(px, py)
     bd = np.stack([sample(back[..., k], PX, PY) for k in range(3)], axis=2)
     k = np.ones((o.cell, o.cell, 1))
+    if o.inks:
+        hexrgb = lambda h: np.array([int(h.lstrip('#')[i:i + 2], 16) for i in (0, 2, 4)], float)
+        dot_ink, back_ink = map(hexrgb, o.inks.split(','))
+        dot_cells, bd = np.broadcast_to(dot_ink, dot_cells.shape), np.broadcast_to(back_ink, bd.shape)
     rgb = np.where(np.kron(lit, np.ones((o.cell, o.cell)))[..., None] > 0, np.kron(dot_cells, k), bd)
+    if o.mirror:
+        rgb = rgb[:, ::-1]
     Image.fromarray(np.clip(np.rint(rgb), 0, 255).astype(np.uint8)).save(o.out, optimize=True)
     print(o.out, f'src cell {c}px', f'{cw}x{ch} cells of {o.cell}px', f'{lit.mean():.3f} lit')
 
