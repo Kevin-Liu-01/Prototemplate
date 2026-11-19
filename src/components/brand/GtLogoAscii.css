@@ -39,6 +39,7 @@
   font-size: calc(100cqw * 16 / 450);
   font-kerning: none;
   font-variant-ligatures: none;
+  /* lint-type: allow the grid's row pitch, 20 of the grid's 450 units, not a type size */
   line-height: calc(100cqw * 20 / 450);
   white-space: pre;
   pointer-events: none;
@@ -56,6 +57,7 @@
 .gt-logo-ascii-dots > span,
 .gt-logo-ascii-glyphs > span {
   display: block;
+  /* lint-type: allow the grid's column pitch, one cell less one character, not tracking */
   letter-spacing: calc(100cqw / 45 - 1ch);
 }
 
