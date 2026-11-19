@@ -151,6 +151,8 @@ export type ArmillaryFrame = {
 
 /** Degrees between the points of a drawn ring. */
 const STEP = 2;
+/** Degrees past whole a growing ring aims for, so its halves close at the nodes with speed (armillaryReach). */
+const CLOSE = 6;
 /** How far out of the sphere's outline, as a share of the radius, a ring must stand to cut the bar or the stem. */
 const DEEP = 0.3;
 
@@ -176,11 +178,24 @@ export function armillaryChannels(A: ArmillaryGeometry, x: number): ArmillaryCha
   return { meridian: at(A.open.meridian, x), under: at(A.open.under, x), fill: at(A.open.fill, x), head: at(A.open.head, x) };
 }
 
-/** Polylines through the points, split into runs where `keep` holds. */
-function runs(points: readonly (SpherePoint | null)[], keep: (p: SpherePoint) => boolean): string {
+/**
+ * Polylines through the points, split into runs where `keep` holds. A
+ * closed ring (`closed`, the whole ring with no point repeated) is read
+ * round from a point `keep` drops, so a run over the loop's start stays one
+ * run, and a ring `keep` holds whole is one closed path: two butt ends
+ * meeting on one point, or overlapping, leave an antialiased seam, a
+ * hairline across a cut in the bar.
+ */
+function runs(points: readonly (SpherePoint | null)[], keep: (p: SpherePoint) => boolean, closed = false): string {
+  let list = points;
+  if (closed) {
+    const k = points.findIndex((p) => !p || !keep(p));
+    if (k < 0) return points.map((p, i) => `${i ? 'L' : 'M'}${f((p as SpherePoint).x)} ${f((p as SpherePoint).y)}`).join('') + 'Z';
+    list = [...points.slice(k), ...points.slice(0, k)];
+  }
   let d = '';
   let open = false;
-  for (const p of points) {
+  for (const p of list) {
     if (p && keep(p)) {
       d += `${open ? 'L' : 'M'}${f(p.x)} ${f(p.y)}`;
       open = true;
@@ -197,25 +212,41 @@ export function armillaryAngles(A: ArmillaryGeometry, u: number): { meridian: nu
   return { meridian: SPHERE.meridian.rest + A.turns.meridian * e, latitude: SPHERE.latitude.rest + A.turns.latitude * e };
 }
 
-/** How far each ring has grown out of its hinges at swing progress u, in degrees either side of each hinge (90 is whole). */
+/**
+ * How far each ring has grown out of its hinges at swing progress u, in
+ * degrees either side of each hinge (90 is whole). The ease aims CLOSE
+ * degrees past whole and stops at whole, so the two halves meet at the
+ * nodes with speed: eased all the way to 90, they crept together for
+ * several frames, and the cut they make through the bar stood open by a
+ * pixel or less, a hairline of the bar across the cut.
+ */
 export function armillaryReach(A: ArmillaryGeometry, u: number): number {
   const g = A.grow / A.beats.swing;
   if (u <= 0 || u >= 1) return 0;
-  if (u < g) return 90 * easeInOut(u / g);
-  if (u > 1 - g) return 90 * easeInOut((1 - u) / g);
+  if (u < g) return Math.min(90, (90 + CLOSE) * easeInOut(u / g));
+  if (u > 1 - g) return Math.min(90, (90 + CLOSE) * easeInOut((1 - u) / g));
   return 90;
 }
 
-/** The ring's points every STEP degrees, null where it has not grown: within `reach` of either hinge (0 and 180). */
-function grown(reach: number, point: (t: number) => SpherePoint): (SpherePoint | null)[] {
+/**
+ * The ring's points every STEP degrees, null where it has not grown: within
+ * `reach` of either hinge (0 and 180). A whole ring is the loop from -90
+ * round to just short of 270 with no point repeated, read as closed.
+ */
+function grown(reach: number, point: (t: number) => SpherePoint): { points: (SpherePoint | null)[]; closed: boolean } {
   const out: (SpherePoint | null)[] = [];
-  if (reach <= 0) return out;
+  if (reach <= 0) return { points: out, closed: false };
+  if (reach >= 90) {
+    const n = Math.ceil(360 / STEP);
+    for (let i = 0; i < n; i++) out.push(point(-90 + (360 * i) / n));
+    return { points: out, closed: true };
+  }
   for (const hinge of [0, 180]) {
     const n = Math.max(1, Math.ceil((2 * reach) / STEP));
     for (let i = 0; i <= n; i++) out.push(point(hinge - reach + (2 * reach * i) / n));
     out.push(null);
   }
-  return out;
+  return { points: out, closed: false };
 }
 
 /** The rings at swing progress u. */
@@ -226,11 +257,13 @@ export function armillaryRings(A: ArmillaryGeometry, u: number): ArmillaryRings 
   const l = SPHERE.latitude;
   const meridian = grown(reach, (t) => meridianPoint(t, a.meridian));
   const latitude = grown(reach, (t) => latitudePoint(t, a.latitude));
+  const mer = (keep: (p: SpherePoint) => boolean) => runs(meridian.points, keep, meridian.closed);
+  const lat = (keep: (p: SpherePoint) => boolean) => runs(latitude.points, keep, latitude.closed);
   return {
-    meridianFront: runs(meridian, (p) => p.z >= 0),
-    meridianBack: runs(meridian, (p) => p.z <= 0),
-    latitude: runs(latitude, () => true),
-    standCut: runs(meridian, (p) => p.z >= DEEP * m.r) + runs(latitude, (p) => Math.abs(p.z) >= DEEP * l.r),
+    meridianFront: mer((p) => p.z >= 0),
+    meridianBack: mer((p) => p.z <= 0),
+    latitude: lat(() => true),
+    standCut: mer((p) => p.z >= DEEP * m.r) + lat((p) => Math.abs(p.z) >= DEEP * l.r),
   };
 }
 

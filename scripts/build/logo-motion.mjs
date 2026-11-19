@@ -1017,9 +1017,13 @@ export const COURSE = {
 };
 
 /* the armillary's Open beat (scripts/build/logo-armillary.mjs), x from 0
-   to 1: the meridian's draw-back on the hover's course, and the G drawn
-   back from its tip round the equator into the right node, both landing on
-   the stand (the ring, the bar from its free end and the stem whole). The
+   to 1: the meridian's draw-back on the hover's course in the first
+   MERIDIAN_OPEN of the beat, and the G drawn back from its tip round the
+   equator into the right node, both landing on the stand (the ring, the bar
+   from its free end and the stem whole). The meridian's course ends at its
+   join below the G, so it finishes there before the G's undrawn stretch
+   passes over the join: run together to the end, the G left the meridian's
+   last few units standing alone below the bar, a wedge. The
    G's undrawn stretch is [from, to]: `from` runs from the tip to the right
    node, and `to` from the tip to PAST_TIP past it, so the stretch starts
    empty and no edge of it lies on the tip's face once it has passed. The
@@ -1033,8 +1037,9 @@ function openG(x) {
   const to = Math.min(S_TIP + PAST_TIP, 2 * S_TIP - from);
   return { under: to > from ? span(from, to) : none(from), fill: stemFill(from, S_TIP), head: none(S_TIP - HEAD_IN) };
 }
+const MERIDIAN_OPEN = 0.75;
 export const OPEN = {
-  meridian: (x) => meridianBack(x),
+  meridian: (x) => meridianBack(Math.min(1, x / MERIDIAN_OPEN)),
   under: (x) => openG(x).under,
   fill: (x) => openG(x).fill,
   head: (x) => openG(x).head,
