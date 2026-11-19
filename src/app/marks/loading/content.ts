@@ -48,7 +48,7 @@ export const armillaryRows = (beats: { rest: number; open: number; swing: number
   { name: 'Close', ms: Math.round(beats.close * 1000), note: 'Open run backward, landing on the logo.' },
 ];
 
-/** The armillary at the sizes it is made for; below 32 px the loader above runs instead. */
+/** The armillary loader at the sizes it is made for; below 32 px the loader above runs instead. */
 export const ARMILLARY_SIZES: readonly { size: number; where: string }[] = [
   { size: 56, where: 'A prototype’s frame' },
   { size: 32, where: 'The smallest size it is made for' },

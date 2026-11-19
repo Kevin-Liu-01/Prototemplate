@@ -318,9 +318,9 @@ function LoadingBook({ sheetRef, jumpRef, activeOut, updated, timing }: BookProp
         <div className='ld-body'>
           <div className='ld-hero'>
             <figure className='ld-fig ld-stage'>
-              <GtLogoArmillary size={200} label='The armillary, running' />
+              <GtLogoArmillary size={200} label='The armillary loader, running' />
               <figcaption>
-                <h3>The armillary</h3>
+                <h3>The armillary loader</h3>
                 <p>At 200 pixels, live. Its rest frame is the logo’s own path, so the lap starts and ends on the still logo.</p>
               </figcaption>
             </figure>
@@ -348,7 +348,7 @@ function LoadingBook({ sheetRef, jumpRef, activeOut, updated, timing }: BookProp
             {ARMILLARY_SIZES.map(({ size, where }) => (
               <figure key={size} className='ld-fig ld-size'>
                 <div className='ld-size-box'>
-                  <GtLogoArmillary size={size} label={`The armillary at ${size} pixels`} />
+                  <GtLogoArmillary size={size} label={`The armillary loader at ${size} pixels`} />
                 </div>
                 <figcaption>
                   <h3>{size} px</h3>
