@@ -1,15 +1,20 @@
-import { MOTION_FILMS, MOTION_SECTIONS, type MotionCutFields } from '@/lib/motion';
-import { filmNote } from '@/lib/previous-mark';
+import { MOTION_SECTIONS, type MotionCutFields } from '@/lib/motion';
+import { KB_ONLY_FILMS, ROSTER_FILMS } from '@/lib/motion-roster';
+import { filmNote, previousLogoNote } from '@/lib/previous-mark';
 
 import { SHEET_TILE } from './film-list';
 
 /**
  * The published films as the film plates take them: the fields a player
- * and a contact sheet need and nothing else. MOTION_FILMS is the registry
- * scripts/build/motion.mjs writes from public/motion/published.json, and
- * a film counts as published when its cut is pinned there and its web
- * copy exists. A language version (the Slash announcement's German,
- * Spanish and Japanese cuts) is its own entry.
+ * and a contact sheet need and nothing else. ROSTER_FILMS is the list
+ * /motion plays (src/lib/motion-roster.ts): the roster scripts/build/motion.mjs
+ * writes from public/motion/published.json, with each knowledge base film
+ * generaltranslation.com publishes playing gt-cloud's cut, which ends on the
+ * logo, and the site's other knowledge base films after them. A roster film
+ * counts as published when its cut is pinned and its web copy exists; a
+ * film from gt-cloud counts when it has a web copy. A language version (the
+ * Slash announcement's German, Spanish and Japanese cuts) is its own entry.
+ * A film kept as made that ends on the 11-06 globe says so in its note.
  *
  * The MDX page imports this module and passes PUBLISHED_FILMS to the
  * plates as a prop, so the registry stays on the server and the page
@@ -32,7 +37,7 @@ export type PublishedFilm = {
   captions?: string;
   captionsLang?: { locale: string; label: string };
   sheet?: FilmSheet;
-  /** the previous-mark note when the cut shows the previous mark (filmNote in src/lib/previous-mark.ts) */
+  /** the note when the cut shows the previous mark or ends on the previous logo (filmNote and previousLogoNote in src/lib/previous-mark.ts) */
   note?: string;
 };
 
@@ -45,28 +50,32 @@ function sheetOf(fields: MotionCutFields): FilmSheet | undefined {
   return { src: sheet.src, width: sheet.width, height: sheet.height, frames: sheet.frames, columns, rows };
 }
 
+/* the films from gt-cloud that the roster lacks: no pinned cut, published by their web copy, with gt-cloud's running time */
+const KB_ONLY = new Set(KB_ONLY_FILMS.map((film) => film.slug));
+
 const SECTION_LABEL = new Map(MOTION_SECTIONS.map((section) => [section.id, section.label]));
 
-export const PUBLISHED_FILMS: readonly PublishedFilm[] = MOTION_FILMS.flatMap((film) => {
+export const PUBLISHED_FILMS: readonly PublishedFilm[] = ROSTER_FILMS.flatMap((film) => {
   const cuts = [
     { slug: film.slug, fields: film as MotionCutFields, lang: film.language },
     ...(film.versions ?? []).map((version) => ({ slug: version.slug, fields: version as MotionCutFields, lang: version.language })),
   ];
   return cuts.flatMap(({ slug, fields, lang }): PublishedFilm[] => {
-    if (!fields.cut || !fields.media) return [];
+    const length = fields.cut?.length ?? (KB_ONLY.has(slug) ? film.length : undefined);
+    if (!length || !fields.media) return [];
     return [
       {
         slug,
         title: film.title,
         section: SECTION_LABEL.get(film.section) ?? 'Films',
         language: lang && slug !== film.slug ? lang.language : undefined,
-        length: fields.cut.length,
+        length,
         video: fields.media.video,
         poster: fields.media.poster,
         captions: fields.captions,
         captionsLang: lang ? { locale: lang.locale, label: lang.name } : undefined,
         sheet: sheetOf(fields),
-        note: filmNote(fields.media.video) ?? undefined,
+        note: filmNote(fields.media.video) ?? previousLogoNote(fields.media.video) ?? undefined,
       },
     ];
   });

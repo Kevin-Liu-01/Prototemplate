@@ -11,7 +11,9 @@ import LISTS from './previous-mark.json';
  * component (the hub's grid and its preview card) can read this module.
  *
  * Films: every history entry whose reason is one of the two film reasons
- * (it ends on the previous mark, or its captures show it). Pictures:
+ * (it ends on the previous mark, or its captures show it). Previous-logo
+ * films: the films kept as made that end on the 11-06 globe, which the
+ * films plate labels beside the films that end on the logo. Pictures:
  * every history entry under public/ that waives every rule (no `rules`, no
  * `symbol`), the pictures pnpm lint:logo --pixels lets through.
  */
@@ -21,6 +23,9 @@ export const PREVIOUS_MARK_NOTE = 'made before the logo, ends on the previous ma
 
 /** What a page says beside a film cut again to end on the logo whose captures still show the previous mark. */
 export const PREVIOUS_MARK_CAPTURES_NOTE = 'ends on the logo; its captures, taken before it, show the previous mark';
+
+/** What a page says beside a film kept as made that ends on the previous logo, the 11-06 globe, where it is listed beside films that end on the logo. */
+export const PREVIOUS_LOGO_NOTE = 'made before the logo, ends on the previous logo';
 
 /** What a page says beside a picture that shows the previous mark. */
 export const PREVIOUS_MARK_PICTURE_NOTE = 'Captured before the logo; it shows the previous mark.';
@@ -43,6 +48,8 @@ const FILM_CAPTURES: readonly RegExp[] = LISTS.filmCaptures.map(pattern);
 
 const PICTURES: readonly RegExp[] = LISTS.pictures.map(pattern);
 
+const PREVIOUS_LOGO_FILMS: readonly RegExp[] = LISTS.previousLogoFilms.map(pattern);
+
 /** The repository path of a site path (`/media/a.mp4?v=2` -> `public/media/a.mp4`). */
 function repoPath(src: string): string {
   return `public${src.split(/[?#]/)[0]}`;
@@ -54,6 +61,12 @@ export function filmNote(src: string): string | null {
   if (FILMS.some((film) => film.test(rel))) return PREVIOUS_MARK_NOTE;
   if (FILM_CAPTURES.some((film) => film.test(rel))) return PREVIOUS_MARK_CAPTURES_NOTE;
   return null;
+}
+
+/** PREVIOUS_LOGO_NOTE when the film at a site path ends on the 11-06 globe, else null. */
+export function previousLogoNote(src: string): string | null {
+  const rel = repoPath(src);
+  return PREVIOUS_LOGO_FILMS.some((film) => film.test(rel)) ? PREVIOUS_LOGO_NOTE : null;
 }
 
 /** True when the picture at a site path (`/static/blogs/rewriting-docs-sidebar.png`) shows the previous mark. */

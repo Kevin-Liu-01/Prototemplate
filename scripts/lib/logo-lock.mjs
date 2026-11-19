@@ -135,7 +135,8 @@ export function recordGenerated(root, rels, logoSha) {
  * What the site labels, from the manifest's history: films, the entries
  * whose reason is FILM_REASON (they end on the previous mark), filmCaptures,
  * those whose reason is FILM_CAPTURES_REASON (they end on the logo but show
- * captures from before it), and pictures, every raster, film or folder
+ * captures from before it), previousLogoFilms, the films kept as made that
+ * end on the 11-06 globe (GLOBE_1106_REASON), and pictures, every raster, film or folder
  * entry under public/ that waives every rule (no rules, no symbol), as
  * their manifest paths. The site
  * reads this (src/lib/previous-mark.ts) and not the manifest, so a client
@@ -147,6 +148,8 @@ export function previousMarkLists(manifest) {
   return {
     films: history.filter((entry) => entry.reason === FILM_REASON).map((entry) => entry.path),
     filmCaptures: history.filter((entry) => entry.reason === FILM_CAPTURES_REASON).map((entry) => entry.path),
+    /* films kept as made that end on the 11-06 globe: a page that lists them beside films on the logo (the films plate) says so */
+    previousLogoFilms: history.filter((entry) => entry.reason === GLOBE_1106_REASON && /\.(mp4|webm|mov)$/i.test(entry.path)).map((entry) => entry.path),
     /* rasters and films only: a vector history file (the monogram's own SVG) is shown by its one labelled figure */
     pictures: history
       .filter((entry) => entry.path.startsWith('public/') && !entry.rules && !entry.symbol && (entry.path.endsWith('/') || RASTER.test(entry.path) || /\*$/.test(entry.path)))
