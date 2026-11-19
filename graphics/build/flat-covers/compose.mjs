@@ -24,7 +24,9 @@ const SLASH = readFileSync(join(SRC, "slash-logo.svg"), "utf8");
 const TREFOIL = `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" fill-rule="evenodd" d="M17.10 19.27A15 15 0 0 1 46.90 19.27A9 9 0 0 0 50.48 25.46A15 15 0 0 1 35.57 51.26A9 9 0 0 0 28.42 51.27A15 15 0 0 1 13.53 25.46A9 9 0 0 0 17.10 19.27ZM32 24.5A7.5 7.5 0 1 0 32 39.5A7.5 7.5 0 1 0 32 24.5Z"/></svg>`;
 // "Open Source" beside the globe is one element on every cover, so it takes one weight, set by the one-line lockup rule.
 const lock = (text, region, T, center) => ({ t: "lockup1", text, region, T, center, globe: GLOBE, weight: 600 });
-const text = (t, region, T = 200, weight) => ({ t: "text", text: t, region, T, weight });
+const text = (t, region, T = 200, weight, dx = 0) => ({ t: "text", text: t, region, T, weight, dx });
+// A partner cover is the partner's logo and wordmark x the General Translation lockup, the x on the cover's centre line.
+const shift = (box, dx) => [box[0] + dx, box[1], box[2] + dx, box[3]];
 const dy = (box, d) => [box[0], box[1] + d, box[2], box[3] + d];
 const pub = (name) => join(SRC, name.replace(/\//g, "_"));
 
@@ -51,13 +53,14 @@ const COVERS = {
     items: [{ t: "svg", name: "trefoil", svg: TREFOIL, box: [413, 387, 612, 576] }, text("Cuelume", [670, 380, 1515, 585], 200, 475), lock("Open Source", [790, 765, 1235, 860], 200, 960)] },
   slash: { pub: "supporting-slash-companies.jpg", W: 2400, H: 1260,
     ground: [join(BG, "slash.png"), "0,0,1024,537.6", "2400x1260", 4],
-    items: [{ t: "svg", name: "slash", svg: SLASH, box: [292, 228, 510, 308] }, text("×", [560, 240, 600, 300], 190), { t: "svg", name: "globe", svg: GLOBE, box: [656, 228, 736, 308] }] },
-  "paraglide-cover": { pub: "paraglide-js/cover.webp", W: 3840, H: 2160, mirror: false, parachute: [368, 452, 540, 628],
+    // The Slash wordmark and the lockup share its 80 px height; 60 px of white either side of the x, centred at 512.
+    items: [{ t: "svg", name: "slash", svg: SLASH, box: [200.4, 228, 440, 308] }, text("×", [560, 240, 600, 300], 190, 350, -72), { t: "svg", name: "lockup", svg: LOCKUP, box: [584, 228, 887.6, 308] }] },
+  "paraglide-cover": { pub: "paraglide-js/cover.webp", W: 3840, H: 2160, mirror: false, parachute: [368, 452, 540, 628], dx: -40,
     ground: ["pub", "0,0,1920,1080", "3840x2160", 5, "--hole-all", "368,452,540,628", "--hole-all", "560,508,934,584", "--hole-all", "979,519,1021,561", "--hole-all", "1065,471,1557,609"],
-    items: [text("Paraglide JS", [560, 505, 935, 590]), text("×", [978, 518, 1022, 562]), { t: "svg", name: "lockup", svg: LOCKUP, box: [1072, 478, 1550, 602] }] },
-  "paraglide-og": { pub: "paraglide-js/og.png", W: 2400, H: 1260, mirror: false, parachute: [368, 416, 540, 592],
+    items: [text("Paraglide JS", [560, 505, 935, 590], 200, undefined, -40), text("×", [978, 518, 1022, 562], 200, undefined, -40), { t: "svg", name: "lockup", svg: LOCKUP, box: shift([1072, 478, 1550, 602], -40) }] },
+  "paraglide-og": { pub: "paraglide-js/og.png", W: 2400, H: 1260, mirror: false, parachute: [368, 416, 540, 592], dx: -40,
     ground: ["pub", "0,0,1920,1008", "2400x1260", 4, "--hole-all", "368,416,540,592", "--hole-all", "560,472,934,548", "--hole-all", "979,483,1021,525", "--hole-all", "1065,435,1557,573"],
-    items: [text("Paraglide JS", dy([560, 505, 935, 590], -36)), text("×", dy([978, 518, 1022, 562], -36)), { t: "svg", name: "lockup", svg: LOCKUP, box: dy([1072, 478, 1550, 602], -36) }] },
+    items: [text("Paraglide JS", dy([560, 505, 935, 590], -36), 200, undefined, -40), text("×", dy([978, 518, 1022, 562], -36), 200, undefined, -40), { t: "svg", name: "lockup", svg: LOCKUP, box: shift(dy([1072, 478, 1550, 602], -36), -40) }] },
 };
 
 const args = process.argv.slice(2), dests = [join(ROOT, "public/static/blogs")], ids = [];
@@ -81,7 +84,7 @@ try {
     if (c.outer) items[0] = { ...items[0], outer: img(screen(c, c.outer, join(OUT, `${id}-outer.png`))) };
     if (c.parachute) {
       execFileSync("python3", [join(HERE, "matte.py"), pub(c.pub), join(OUT, `${id}-parachute.png`), c.parachute.join(",")]);
-      items.unshift({ t: "img", name: "parachute", src: img(join(OUT, `${id}-parachute.png`)), box: c.parachute.slice(0, 2) });
+      items.unshift({ t: "img", name: "parachute", src: img(join(OUT, `${id}-parachute.png`)), box: [c.parachute[0] + (c.dx || 0), c.parachute[1]] });
     }
     const r = await page.evaluate((s) => window.compose(s), { pub: img(pub(c.pub)), ground: img(ground), W: c.W, H: c.H, items });
     const png = join(OUT, `${id}.png`), file = join(OUT, c.pub);

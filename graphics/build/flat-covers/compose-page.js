@@ -100,7 +100,7 @@ window.compose = async function (spec) {
   for (const it of spec.items) {
     if (it.t === 'text') {
       const f = fitText(pub, it.text, it.region, it.T, it.weight);
-      drawText(x, it.text, f, k, f.ink);
+      drawText(x, it.text, f, k, [f.ink[0] + (it.dx || 0), f.ink[1]]);
       log.push({ text: it.text, weight: f.weight, size: +f.size.toFixed(2), spacingEm: +(f.spacing / f.size).toFixed(4), iou: +f.iou.toFixed(3), ink: f.ink });
     } else if (it.t === 'lockup1') {
       // The one-line lockup's rule: the globe 1.9 caps, centred on the cap band, 0.5826 cap of white to the words' ink.
