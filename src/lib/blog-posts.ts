@@ -79,7 +79,7 @@ export const BLOG_POSTS: readonly BlogPostMeta[] = [
       },
     ],
     tags: ['slash', 'partners', 'credits', 'startups', 'community'],
-    image: '/static/blogs/supporting-slash-companies.jpg?v=20261117-1800',
+    image: '/static/blogs/supporting-slash-companies.jpg?v=20261118-1000',
   },
   {
     slug: 'designing-docs-for-humans',
