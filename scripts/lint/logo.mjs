@@ -99,6 +99,12 @@
  *      matches the live site until gt-cloud switches. It reads the
  *      mirror's own sources on every run and its prerendered pages, which
  *      hold the shared /d/_v0 parts it mounts, with --built
+ *  16. deviant name: a name that calls the logo, a lockup or a Locadex
+ *      drawing by anything but its name (NAMES in logo-names.mjs: the
+ *      refined logo or globe, refined-1112, a new logo, the globe logo,
+ *      Doubled lambda, the traced lambda), in any text file or the
+ *      manifest's reasons, outside Kevin's words quoted verbatim (QUOTES).
+ *      A history entry waives it, as it waives the other rules
  * and, in every HTML file, the #gt-mark symbol must draw LOGO.d and nothing
  * else (rule 2); no manifest entry waives that.
  * A listed path that is not on disk fails too. Exemptions: a history entry
@@ -118,7 +124,7 @@
  * (scripts/lint/logo-pixels.mjs), which searches every picture and every
  * film's first and last frame for the monogram at any size, so a screenshot
  * that shows it under any name fails unless history lists it. It knows the
- * monogram only: the 11-06 globe and the refined logo differ by too little
+ * monogram only: the 11-06 globe and the logo differ by too little
  * to tell apart at a header's size, so rule 14 has someone look at every
  * picture on a current page instead.
  *
@@ -151,6 +157,7 @@ import { ROOT as REPO_ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
 import { FINGERPRINT, MANIFEST, PREVIOUS_LOGOS, PREVIOUS_MARK, RASTER, currentPage, fingerprint, fingerprintText, loadLogo, matches, previousMarkText, previousPictures, readManifest, recordGenerated, sha256, unlistedOnCurrent } from '../lib/logo-lock.mjs';
 import { shownPictures, unlabelled, unmarked } from './logo-labels.mjs';
+import { deviantNames } from './logo-names.mjs';
 
 helpIfAsked(import.meta.url);
 
@@ -167,6 +174,8 @@ const SELF = new Set([
   'scripts/lint/logo.mjs',
   'scripts/lint/logo.test.mjs',
   'scripts/lint/logo.json',
+  /* the names rule's own list of deviant names and Kevin's quotes */
+  'scripts/lint/logo-names.mjs',
   'scripts/lib/logo-lock.mjs',
   /* the pixel check draws the monogram's two drawings as its templates */
   'scripts/lint/logo-pixels.mjs',
@@ -288,6 +297,12 @@ const fail = (rule, where, line) => {
   console.log(`  FAIL ${rule} ${where}: ${line}`);
 };
 const lineOf = (text, index) => text.slice(0, index).split('\n').length;
+
+/* ---- rule 16 in the manifest: its reasons are prose a reader sees ---- */
+{
+  const text = readFileSync(join(ROOT, MANIFEST), 'utf8');
+  for (const hit of deviantNames(text)) fail('rule 16 name', `${MANIFEST}:${lineOf(text, hit.index)}`, `"${hit.words}"; write ${hit.say} (scripts/lint/logo-names.mjs)`);
+}
 
 /* ---- the listed paths exist ---- */
 
@@ -472,6 +487,9 @@ for (const rel of SCANNED) {
       if (paths.length !== 1 || paths[0] !== LOGO.d) fail('rule 2 edited copy', `${rel}:${lineOf(raw, m.index)}`, 'the #gt-mark symbol does not draw LOGO.d alone; regenerate it (pnpm build:logo)');
     }
   }
+
+  /* 16: a deviant name for the logo, a lockup or a Locadex drawing, outside Kevin's quotes */
+  if (!exempt(rel, 16)) for (const hit of deviantNames(raw)) fail('rule 16 name', `${rel}:${lineOf(raw, hit.index)}`, `"${hit.words}"; write ${hit.say} (scripts/lint/logo-names.mjs)`);
 
   /* 9: the monogram's file or symbol, named in code or markup; a counted history entry allows that many and no more */
   if (!PROSE.test(rel) && !exempt(rel, 9)) {

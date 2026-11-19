@@ -113,6 +113,23 @@ describe('lint:logo', () => {
     fails(root, /rule 3 vote loser src\/components\/Loser\.tsx:1: the losing candidate meridian-axis-behind/);
   });
 
+  it("rule 16: fails on a deviant name for the logo or the Locadex logo, and passes on Kevin's quotes", () => {
+    let root = checkout();
+    put(root, 'docs/notes.md', 'The header draws the logo.\n\nKevin, 2026-11-12: "i\'m using a refined logo, which incorporates the construction\nimprovements".\n');
+    put(root, 'src/app/brand/Quote.tsx', '/* Kevin, 2026-11-13: "Refined logo\n * only" */\nexport const Q = 1;\n');
+    passes(root);
+    put(root, 'docs/notes.md', 'The header draws the refined logo.\n');
+    fails(root, /rule 16 name docs\/notes\.md:1: "refined logo"; write the logo/);
+    root = checkout();
+    put(root, 'src/lib/catalog.ts', "export const SHORTLIST = ['refined-1112'];\n");
+    fails(root, /rule 16 name src\/lib\/catalog\.ts:1: "refined-1112"/);
+    root = checkout();
+    put(root, 'BRAND.md', 'Locadex carries its own mark, Doubled lambda.\n');
+    fails(root, /rule 16 name BRAND\.md:1: "Doubled lambda"; write the Locadex logo/);
+    root = checkout((m) => ({ ...m, generated: m.generated.map((entry, i) => (i === 0 ? { ...entry, reason: 'draws the refined globe' } : entry)) }));
+    fails(root, /rule 16 name scripts\/lint\/logo\.json:\d+: "refined globe"/);
+  });
+
   it("rule 15: fails on the hub's Locadex logo in the production mirror and passes on gt-cloud's mark", () => {
     let root = checkout();
     put(root, 'src/app/d/production/sections/Nav.tsx', "export const Nav = () => <img src='/brand/no-bg-locadex-logo-light.png' />;\n");
@@ -121,7 +138,7 @@ describe('lint:logo', () => {
     put(root, 'src/app/d/production/sections/Footer.tsx', "export const Footer = () => <img src='/brand/locadex-logo-light.svg' />;\n");
     fails(root, /rule 15 mirror Locadex mark src\/app\/d\/production\/sections\/Footer\.tsx:1/);
     root = checkout();
-    put(root, 'src/app/d/production/sections/tower.css', "\n.ldx { mask: url('/marks/locadex/doubled-lambda.svg'); }\n");
+    put(root, 'src/app/d/production/sections/tower.css', "\n.ldx { mask: url('/marks/locadex/locadex-logo.svg'); }\n");
     fails(root, /rule 15 mirror Locadex mark src\/app\/d\/production\/sections\/tower\.css:2/);
   });
 
