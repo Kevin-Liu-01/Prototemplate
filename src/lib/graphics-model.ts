@@ -39,6 +39,8 @@ export type Block = {
   label: string;
   /** the sidebar name when the label runs past two lines (src/lib/post-names.ts) */
   short?: string;
+  /** the post's parts in order, each opening the rows whose `part` it names under a divider with its lead (the docs series) */
+  parts?: readonly { name: string; lead: string }[];
   lead: string;
   ordinal: number;
   entries: readonly Entry[];

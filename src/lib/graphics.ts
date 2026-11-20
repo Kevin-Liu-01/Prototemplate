@@ -34,14 +34,19 @@ export type Visual = {
 
 import type { Block, Entry, Variant } from '@/lib/graphics-model';
 
-/** The sections of the docs series post, in its order; each names the images that illustrate it. */
-const AREA_NAMES: Readonly<Record<string, string>> = {
-  A: 'Intuitive flow and direction',
-  B: 'Cleaning up mental clutter',
-  C: 'One singular accordion',
-  D: 'Drawing the eye',
-  E: 'A unique General Translation flair',
-  F: 'The hit list',
+/**
+ * The parts of the docs series post in the book: the covers, then the
+ * post's six sections, each with a line on what its images show and how
+ * the set was made for it.
+ */
+const AREA_NAMES: Readonly<Record<string, { name: string; lead: string }>> = {
+  H: { name: 'Covers', lead: 'The header cover in both themes with the social card cut from it, and the wireframe-map direction kept as the alternate.' },
+  A: { name: 'Intuitive flow and direction', lead: 'The zones of the page and the reading path; inline in the post, then the carousel.' },
+  B: { name: 'Cleaning up mental clutter', lead: 'The redline of what was deleted, then the before-and-after set.' },
+  C: { name: 'One singular accordion', lead: 'The navigation census and the anatomy of the sidebar, then its persistence, the comparison and the tree.' },
+  D: { name: 'Drawing the eye', lead: 'Icons, separators and type, one image each, then the quickstart before and after.' },
+  E: { name: 'A unique General Translation flair', lead: 'The two clips, the UI primitives carousel, and the localized page.' },
+  F: { name: 'The hit list', lead: 'The anti-patterns as a poster and as a mock; the list itself renders as text.' },
 };
 
 /** The covers first, then the post's sections in order. */
@@ -359,7 +364,7 @@ const POST_LEADS: Readonly<Record<string, string>> = {
   'paraglide-js-context': 'The Paraglide JS context post, not yet published: the cover and social card in both themes, and the four figures the post shows as live components.',
   'daniel-white': 'The open-source grant to Cuelume, Daniel White’s library of interaction sounds: the cover in Cuelume’s green, then seven figures on how its cues are made and heard.',
   'supporting-slash-companies': 'The translation credits for companies that bank with Slash, published with one cover.',
-  [DOCS_SERIES]: 'Part two of the series: the header cover in both themes with the social card cut from it and the wireframe-map direction kept as the alternate, then the figures in the order of the post’s sections, each row naming its section.',
+  [DOCS_SERIES]: 'Part two of the series, in the order of the post: the covers, then the figures of each of its six sections under the section’s name.',
   'rewriting-our-docs': 'Part one of the series: the content rewrite, illustrated with captures of the shipped docs.',
   'fuma-nama': 'The interview with the creator of Fumadocs: the landing page, the slider, and the architecture diagram drawn in the post.',
   'supporting-open-source-software': 'The announcement of the open-source grants, published with one cover.',
@@ -368,9 +373,17 @@ const POST_LEADS: Readonly<Record<string, string>> = {
 /** The docs series post's images from the manifest: the covers, then each section's visuals in the post's order. */
 function docsSeriesEntries(visuals: readonly Visual[]): Entry[] {
   return AREA_ORDER.flatMap((area) => {
-    const part = AREA_NAMES[area];
+    const part = AREA_NAMES[area]?.name;
     const entries = visualEntries(visuals.filter((v) => v.area === area));
     return part ? entries.map((entry) => ({ ...entry, part })) : entries;
+  });
+}
+
+/** The docs series' parts that hold images, in order, for the book's part dividers. */
+function docsSeriesParts(visuals: readonly Visual[]): Block['parts'] {
+  return AREA_ORDER.flatMap((area) => {
+    const part = AREA_NAMES[area];
+    return part && visuals.some((v) => v.area === area) ? [part] : [];
   });
 }
 
@@ -385,9 +398,11 @@ function postBlocks(visuals: readonly Visual[]): Omit<Block, 'ordinal'>[] {
     ...getPosts().map((post) => ({ slug: post.slug, title: post.title, summary: post.summary, set: keptPost(post) })),
   ];
   return posts.flatMap(({ slug, title, set, summary }) => {
-    const entries = slug === DOCS_SERIES ? docsSeriesEntries(visuals) : postEntries(set);
+    const docs = slug === DOCS_SERIES;
+    const entries = docs ? docsSeriesEntries(visuals) : postEntries(set);
     if (!entries.length) return [];
-    return [{ id: slug, label: title, short: POST_SHORT[slug], lead: POST_LEADS[slug] ?? summary, entries }];
+    const block = { id: slug, label: title, short: POST_SHORT[slug], lead: POST_LEADS[slug] ?? summary, entries };
+    return [docs ? { ...block, parts: docsSeriesParts(visuals) } : block];
   });
 }
 

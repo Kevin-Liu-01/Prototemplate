@@ -978,6 +978,7 @@ function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }:
   return (
     <div className='mk-book pt-book-col'>
       <BookHead
+        skill='gt-brand'
         title={PAGE_NAMES.marks.name}
         lead={BOOK_LEAD}
         note={<LiveStrip onJump={onContents} />}

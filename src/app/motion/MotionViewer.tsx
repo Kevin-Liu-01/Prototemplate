@@ -256,6 +256,7 @@ function MotionBook({ roster, summaries, records, sheetRef, jumpRef, activeOut, 
   return (
     <div className='gx-book mo-book pt-book-col'>
       <BookHead
+        skill='gt-films'
         title={TITLE}
         lead={LEAD}
         note={NOTE}

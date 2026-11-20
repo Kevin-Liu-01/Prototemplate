@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import type { RefObject } from 'react';
-import { useMemo, useRef } from 'react';
+import { Fragment, useMemo, useRef } from 'react';
 
 import { BookHead } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
@@ -51,6 +51,30 @@ function shellSections(blocks: readonly Block[]): readonly ShellSection[] {
   }));
 }
 
+/**
+ * A part of a post that has parts (the docs series): the part's number and
+ * image range in the gutter, its name and the line on what its images show
+ * and how they were made. The row above draws the rule.
+ */
+function PartDivider({ block, part }: { block: Block; part: string | undefined }) {
+  const index = block.parts?.findIndex((p) => p.name === part) ?? -1;
+  const info = block.parts?.[index];
+  if (!info) return null;
+  const rows = block.entries.filter((entry) => entry.part === part);
+  return (
+    <div className='gx-part'>
+      <small>
+        <span>Part {index + 1}</span>
+        <span>Images {rangeText(rows)}</span>
+      </small>
+      <div>
+        <h3>{info.name}</h3>
+        <p>{info.lead}</p>
+      </div>
+    </div>
+  );
+}
+
 type GraphicsBookProps = {
   blocks: readonly Block[];
   /** the flow sheet's scroll region */
@@ -84,6 +108,7 @@ function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut, posts, updated }: 
   return (
     <div className='gx-book pt-book-col'>
       <BookHead
+        skill='gt-graphics'
         title={TITLE}
         lead={LEAD}
         note={NOTE}
@@ -121,9 +146,10 @@ function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut, posts, updated }: 
               <p>{block.lead}</p>
             </div>
           </div>
-          {block.entries.map((entry) => (
+          {block.entries.map((entry, j) => (
+            <Fragment key={entry.id}>
+              {block.parts && entry.part !== block.entries[j - 1]?.part ? <PartDivider block={block} part={entry.part} /> : null}
             <article
-              key={entry.id}
               id={entry.id}
               className={cn('gx-row', entry.id === active && 'is-active')}
               data-id={entry.id}
@@ -134,12 +160,13 @@ function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut, posts, updated }: 
                 <b>{entry.n}</b>
               </div>
               <div className='gx-body'>
-                <h3>{entry.title}</h3>
+                {block.parts ? <h4>{entry.title}</h4> : <h3>{entry.title}</h3>}
                 <p>{entry.why}</p>
                 <VariantFigure entry={entry} />
                 <p className='gx-line'>{metaText(entry)}</p>
               </div>
             </article>
+            </Fragment>
           ))}
         </section>
       ))}

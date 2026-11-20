@@ -67,7 +67,57 @@
   min-width: 0;
 }
 
-.gx-body h3 {
+/* a part of a post (the docs series' covers and six sections): the part's
+   number and image range in the gutter on the name's last baseline, the
+   name at the third display size, the line under it at the reading size;
+   the row above draws the rule */
+.gx-part {
+  display: grid;
+  grid-template-columns: var(--pt-gutter) minmax(0, 1fr);
+  column-gap: var(--pt-gutter-gap);
+  row-gap: 6px;
+  align-items: last baseline;
+  padding: 40px 0 4px;
+}
+
+.gx-part > div {
+  display: contents;
+}
+
+.gx-part > small {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-variant-numeric: tabular-nums;
+  color: var(--pt-titanium);
+}
+
+.gx-part > small span {
+  display: block;
+}
+
+.gx-part h3 {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  font-size: var(--pt-d3);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
+  color: var(--pt-ink);
+}
+
+.gx-part p {
+  grid-column: 2;
+  margin: 0;
+  max-width: var(--pt-measure);
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+  text-wrap: pretty;
+}
+
+.gx-body :is(h3, h4) {
   margin: 0;
   font-size: var(--pt-t-title);
   line-height: var(--pt-t-title-lh);

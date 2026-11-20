@@ -311,6 +311,7 @@ function ComponentsBook({ blocks, sheetRef, jumpRef, activeOut, updated }: Compo
   return (
     <div className='cl-book pt-book-col'>
       <BookHead
+        skill='gt-components'
         title={TITLE}
         lead={`Prototemplate keeps ${docsCount + undocCount} components. The docs document ${docsCount} of them in the ${documented.length} groups of their Components section, and ${undocCount} have no docs page yet.`}
         updated={updated}

@@ -145,6 +145,7 @@ function RaiseBook({ index, sheetRef, jumpRef, activeOut, updated }: RaiseBookPr
   return (
     <div className='gx-book ra-book pt-book-col'>
       <BookHead
+        skill='gt-films'
         title={TITLE}
         lead={LEAD}
         updated={updated}

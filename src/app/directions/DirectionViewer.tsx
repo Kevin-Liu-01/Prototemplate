@@ -196,6 +196,7 @@ function DirectionBook({ direction, updated }: { direction: Direction; updated: 
   return (
     <article className='dr-doc pt-book-col'>
       <BookHead
+        skill='gt-explorations'
         title={direction.name}
         lead={lead}
         note={

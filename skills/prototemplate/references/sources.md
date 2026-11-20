@@ -80,3 +80,4 @@ Provenance for `prototemplate`. The first list is the skill's sources as written
 | Line | Where | Source |
 | --- | --- | --- |
 | `/graphics` lists every illustration of the blog, one section per post, newest first, each cover ahead of its figures | `references/hub.md` | Kevin's note of 2026-11-20 that the graphics sidebar's section titles and order were wrong |
+| A book head ends its panel with a Skill row linking the skill that holds the page's work | `references/chrome.md` | Kevin's request of 2026-11-20 that each main page link the skill related to it |

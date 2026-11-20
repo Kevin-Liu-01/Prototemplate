@@ -219,6 +219,7 @@ function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
   return (
     <div className='an-book pt-book-col'>
       <BookHead
+        skill='gt-website'
         title={TITLE}
         lead={LEAD}
         note={NOTE}

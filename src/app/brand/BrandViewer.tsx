@@ -193,6 +193,7 @@ function BrandBook({ lead, note, updated, readingMinutes, pages, onHeading, jump
     <Sheet variant='flow' scrollRef={region}>
       <div className='pt-book-col'>
         <BookHead
+          skill='gt-brand'
           title={PAGE_NAMES.brand.name}
           badge={<GtVariants />}
           lead={lead}

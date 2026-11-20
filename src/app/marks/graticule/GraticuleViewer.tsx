@@ -431,6 +431,7 @@ function GraticuleBook({ sheetRef, jumpRef, activeOut, updated, loops }: BookPro
   return (
     <div className='pt-book-col'>
       <BookHead
+        skill='gt-brand'
         title={PAGE_NAMES.graticule.name}
         lead={LEAD}
         updated={updated}

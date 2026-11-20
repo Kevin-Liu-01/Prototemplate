@@ -66,6 +66,7 @@ function SkillsBook({ sheetRef, jumpRef, activeOut, updated }: SkillsBookProps) 
   return (
     <div className='sk-book pt-book-col'>
       <BookHead
+        skill='prototemplate'
         title={SKILLS_TITLE}
         lead={BOOK_LEAD}
         note={BOOK_NOTE}

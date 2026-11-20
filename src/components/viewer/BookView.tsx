@@ -3,6 +3,7 @@
 import type { MouseEvent, ReactNode } from 'react';
 import { useMemo, useRef, useSyncExternalStore } from 'react';
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { formatDay, localDay, relativeDay } from '@/lib/dates';
@@ -11,6 +12,7 @@ import type { PageUpdated } from '@/lib/page-updated';
 import { isLocked } from '@/lib/seo/policy';
 import type { ShellItem, ShellSection } from '@/lib/shell-data';
 import { pad2, previewId } from '@/lib/shell-data';
+import { getSkill, skillHref } from '@/lib/skills';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -46,6 +48,8 @@ export type BookHeadProps = BookSlots & {
   note?: ReactNode;
   /** the route's contents nav (.pt-book-toc); left out on a page of fewer than two sections */
   contents?: ReactNode;
+  /** the slug of the skill that holds how the page's work is done, linked in the panel's last row */
+  skill?: string;
 };
 
 export type BookViewProps = BookSlots & {
@@ -124,14 +128,18 @@ function UpdatedValue({ updated }: { updated: PageUpdated }) {
  * first line, one --pt-hair rule under the taller of the two, run across
  * the stage), the note under the rule, the route's contents,
  * and the hatch band that ends the front matter. The panel holds four
- * slots after Updated: three facts, or one fact and the install field. A
+ * slots: Updated and three facts, or Updated, one fact and the install
+ * field; a page whose work a skill holds ends the panel with a Skill row
+ * linking to it. A
  * page differs from another only in its words and its facts. A locked
  * page (LOCKED in src/lib/seo/policy.ts) carries the lock after its title.
  * Rendered inside the route's .pt-book-col, before its first
  * section.pt-book-part.
  */
-export function BookHead({ title, badge, lead, updated, note, contents, facts, install }: BookHeadProps) {
+export function BookHead({ title, badge, lead, updated, note, contents, facts, install, skill }: BookHeadProps) {
   const locked = isLocked(usePathname() ?? '');
+  const linked = skill ? getSkill(skill) : undefined;
+  if (skill && !linked) throw new Error(`BookHead: no skill ${skill} in src/lib/skills.ts`);
   return (
     <>
       <header className='pt-book-head'>
@@ -182,6 +190,19 @@ export function BookHead({ title, badge, lead, updated, note, contents, facts, i
                   <dt className='pt-book-vh'>Install command</dt>
                   <dd>
                     <InstallField command={install} />
+                  </dd>
+                </div>
+              ) : null}
+              {linked ? (
+                <div className='pt-book-fact is-skill'>
+                  <dt>
+                    <Icon name='skill' />
+                    Skill
+                  </dt>
+                  <dd>
+                    <Link href={skillHref(linked.id)} title={linked.title}>
+                      {linked.id}
+                    </Link>
                   </dd>
                 </div>
               ) : null}

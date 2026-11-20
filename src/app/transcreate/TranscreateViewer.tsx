@@ -413,6 +413,7 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
   return (
     <div className='gx-book pt-book-col'>
       <BookHead
+        skill='gt-films'
         title={title}
         lead={head.lead}
         updated={updated}

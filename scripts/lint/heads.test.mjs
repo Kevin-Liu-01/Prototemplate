@@ -6,6 +6,7 @@ import { test } from 'node:test';
 
 import {
   H9_GAP,
+  H9_ROW,
   aliasesIn,
   judgeBand,
   judgeClearance,
@@ -158,6 +159,19 @@ test('H5: the panel', () => {
   assert.match(judgePanel(f, { day: '2026-10-06', wide: true })[0], /^H5 the panel's first row sits -2px from the lead's first baseline/);
 });
 
+test('H5: the Skill row ends the panel and links to its skill', () => {
+  const skillRow = (i) => ({ cls: 'pt-book-fact is-skill', rect: { y: 157.76 + i * 26.35 }, field: false, skill: true, link: true, svgs: 1, cut: false, baseline: 174 + i * 26.35, time: null, copy: null });
+  const d = head();
+  d.panel.rows.push(skillRow(4));
+  assert.deepEqual(judgePanel(d, { day: '2026-10-06', wide: true }), []);
+  const first = head();
+  first.panel.rows.splice(1, 0, skillRow(1));
+  assert.ok(judgePanel(first, { day: '2026-10-06', wide: true }).some((x) => /Skill row is not the panel's last row/.test(x)));
+  const bare = head();
+  bare.panel.rows.push({ ...skillRow(4), link: false });
+  assert.ok(judgePanel(bare, { day: '2026-10-06', wide: true }).some((x) => /not a link/.test(x)));
+});
+
 test('H6: the mast rule', () => {
   assert.deepEqual(judgeRule(head()), []);
   const d = head();
@@ -202,6 +216,11 @@ test('H9: one standard mast at 1440', () => {
   const d = head();
   d.rule.y += 1.28;
   assert.match(judgeStandard(d)[0], /^H9 /);
+  const skill = head();
+  skill.panel.rows.push({ ...skill.panel.rows[1], cls: 'pt-book-fact is-skill', skill: true, link: true });
+  assert.match(judgeStandard(skill)[0], /with a Skill row is 219\.51px/);
+  skill.rule.y += H9_ROW;
+  assert.deepEqual(judgeStandard(skill), []);
 });
 
 test('the repository passes', () => {

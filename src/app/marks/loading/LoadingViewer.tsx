@@ -473,6 +473,7 @@ function LoadingBook({ sheetRef, jumpRef, activeOut, updated, timing }: BookProp
   return (
     <div className='pt-book-col'>
       <BookHead
+        skill='gt-motion'
         title={PAGE_NAMES.loading.name}
         lead={LEAD}
         updated={updated}

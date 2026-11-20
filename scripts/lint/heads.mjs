@@ -52,7 +52,8 @@
  *   H4 lead       at most the lead measure wide, 1 to 3 lines at 1440 and
  *                 6 at 390, 200 characters at most
  *   H5 panel      Updated first, dated as src/lib/updated.ts records the
- *                 route; four slots (the install field is two); a glyph per
+ *                 route; four slots (the install field is two), then
+ *                 an optional Skill row last, linked to /skills; a glyph per
  *                 label; no value cut; side by side, the first row's
  *                 baseline is the lead's first and every row sits on the
  *                 lead's baselines; at 390 under the lead, the copy target
@@ -72,7 +73,8 @@
  *                 two lines in titanium, `Section n` first; every h2 sits
  *                 the same distance under its rule (35.5 at 1440, 79 at 390)
  *   H9 standard   at 1440, a one-line title's mast rule is the same distance
- *                 under it on every page (193.16)
+ *                 under it on every page (193.16), one panel row more
+ *                 (26.35) on a page with a Skill row
  *
  * Exit 0 on a pass, 1 on findings, 2 on an infrastructure failure.
  * --report prints without failing.
@@ -556,6 +558,8 @@ export function collectHead() {
           cls: row.className,
           rect: rect(row),
           field: row.classList.contains('is-field'),
+          skill: row.classList.contains('is-skill'),
+          link: dd ? dd.querySelector('a[href^="/skills/"]') !== null : false,
           svgs: dt ? dt.querySelectorAll('svg').length : 0,
           hiddenLabel: dt ? dt.classList.contains('pt-book-vh') : false,
           cut: dd ? dd.scrollWidth > dd.clientWidth + 0.5 : false,
@@ -707,8 +711,11 @@ export function judgePanel(d, { day, wide }) {
   if (!first || !/\bis-updated\b/.test(first.cls)) out.push('H5 the panel\'s first row is not Updated');
   else if (!first.time) out.push('H5 the Updated row has no time[datetime]');
   else if (day && first.time.slice(0, 10) !== day) out.push(`H5 the Updated row reads ${first.time.slice(0, 10)}; src/lib/updated.ts records ${day} for the route`);
-  const slots = p.rows.reduce((n, r) => n + (r.field ? 2 : 1), 0);
-  if (slots !== 4) out.push(`H5 the panel holds ${slots} slots; it holds four: Updated and three facts, or Updated, one fact and the install field (two slots)`);
+  const slots = p.rows.reduce((n, r) => n + (r.skill ? 0 : r.field ? 2 : 1), 0);
+  if (slots !== 4) out.push(`H5 the panel holds ${slots} slots; it holds four: Updated and three facts, or Updated, one fact and the install field (two slots), then the Skill row where the page has one`);
+  const skillAt = p.rows.findIndex((r) => r.skill);
+  if (skillAt >= 0 && skillAt !== p.rows.length - 1) out.push('H5 the Skill row is not the panel\'s last row');
+  if (skillAt >= 0 && !p.rows[skillAt].link) out.push('H5 the Skill row\'s value is not a link to /skills/<slug>');
   for (const r of p.rows) {
     if (!r.field && r.svgs !== 1) out.push(`H5 a panel row's label draws ${r.svgs} glyphs; it draws one`);
     if (r.cut) out.push('H5 a panel value is cut (scrollWidth over clientWidth)');
@@ -791,12 +798,18 @@ export function judgeDividers(d, { wide }) {
 
 /** H9: one standard mast at 1440. */
 export const H9_GAP = 193.16;
+/** One panel row at 1440: the Skill row's share of the mast. */
+export const H9_ROW = 26.35;
 export function judgeStandard(d) {
   /* the side-by-side mast only: a narrow head (the blog's 720px column) stacks its panel */
   const side = d.lead && d.panel && d.panel.rect.x > d.lead.rect.r;
   if (!side || !d.h1 || !d.rule || d.h1.rect.h > d.h1.lh * 1.5) return [];
   const gap = d.rule.y - d.h1.rect.y;
-  return near(gap, H9_GAP) ? [] : [`H9 the mast's rule is ${f1(gap)}px under the title's top; every one-line title's is ${H9_GAP}px (45.76 + 14 + 2 + 105.4 + 26)`];
+  /* a Skill row adds one panel row under the four slots */
+  const skill = d.panel.rows.some((r) => r.skill);
+  const want = skill ? H9_GAP + H9_ROW : H9_GAP;
+  const sum = skill ? '45.76 + 14 + 2 + 105.4 + 26.35 + 26' : '45.76 + 14 + 2 + 105.4 + 26';
+  return near(gap, want) ? [] : [`H9 the mast's rule is ${f1(gap)}px under the title's top; every one-line title's${skill ? ' with a Skill row' : ''} is ${f1(want)}px (${sum})`];
 }
 
 /** Every live rule over one page. */

@@ -70,6 +70,7 @@ function BlogBook({ sheetRef, jumpRef, activeOut, updated, coverNotes }: BlogBoo
   return (
     <div className='bl-book pt-book-col'>
       <BookHead
+        skill='gt-website'
         title={TITLE}
         lead={LEAD}
         note={NOTE}
