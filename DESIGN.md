@@ -307,7 +307,11 @@ display size of its own. The /d/ directions keep their own type.
 - **Features.** h1 and h2 (and a display sentence such as the brand
   plate's `.ptc-every`) take `--pt-ff-display`, which is `normal`:
   headings in Katagami Text take no stylistic feature tags, so they
-  match generaltranslation.com. Everything else takes `--pt-ff-text`,
+  match generaltranslation.com's landing and docs heads. One exception:
+  gt-cloud's plate heading (`.typo-page-heading` in packages/ui's
+  plate.css and the dashboard's brand-tokens.css) still sets `cv11` and
+  `ss01`, and the plate port and /d/production follow it until gt-cloud
+  drops them. Everything else takes `--pt-ff-text`,
   `'liga' 1, 'calt' 1`, because Chrome turns contextual forms off under
   any letter-spacing. The base rules on the
   shell's roots set them; a rule never writes a feature list.

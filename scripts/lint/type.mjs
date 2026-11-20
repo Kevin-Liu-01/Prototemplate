@@ -37,8 +37,8 @@
  *   T4 features    font-feature-settings reads var(--pt-ff-text) or
  *                  var(--pt-ff-display) (`normal` on the nameplate); the
  *                  text token holds 'liga' 1 and 'calt' 1, and the display
- *                  token is `normal`, as generaltranslation.com sets
- *                  Katagami Text's headings with no feature tags
+ *                  token is `normal`, as generaltranslation.com's landing
+ *                  and docs heads set Katagami Text with no feature tags
  *   T5 variation   no font-variation-settings, no font-optical-sizing: none
  *   T6 weight      nothing above 500 outside the nameplate and the
  *                  specimens; tokens.css holds the :is(b, strong) base rule
@@ -397,7 +397,7 @@ export function lintCss(rel, source) {
           report(line, 'T4', `${prop} must hold 'liga' 1 and 'calt' 1 (Chrome turns them off under letter-spacing)`);
         }
         if (isTokens && prop === '--pt-ff-display' && v !== 'normal') {
-          report(line, 'T4', `${prop} must be normal: headings in Katagami Text take no feature tags, as on generaltranslation.com`);
+          report(line, 'T4', `${prop} must be normal: headings in Katagami Text take no feature tags, as on generaltranslation.com's landing and docs heads`);
         }
         continue;
       }

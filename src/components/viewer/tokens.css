@@ -81,7 +81,8 @@
   /* --pt-face-serif and --pt-face-grot: see .pt-faces below */
 
   /* Features. Headings (h1, h2 and display sentences) take Katagami Text's
-     default forms with no feature tags, as generaltranslation.com sets them:
+     default forms with no feature tags, as generaltranslation.com's landing
+     and docs heads set them:
      no stylistic set or character variant is ever turned on. Text names
      liga and calt, which are on by default, because Chrome turns them off
      under any letter-spacing. */
