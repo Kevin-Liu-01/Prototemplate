@@ -141,6 +141,7 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
     source: 'Finished artwork',
     headings: [
       heading('made-with-the-system', 'blog-films', 'Blog films'),
+      heading('made-with-the-system', 'email-headers', 'Email headers'),
       heading('made-with-the-system', 'partnership-globes', 'Partnership globes'),
     ],
   },
