@@ -132,7 +132,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/blog/supporting-slash-companies': { day: '2026-11-18', at: '2026-11-18T16:39:20-08:00', commit: '7733178', src: '9a8b3000' },
   '/graphics': { day: '2026-11-20', at: '2026-11-20T10:38:52-08:00', commit: '4ef9ac7', src: 'd0e23102' },
   '/motion': { day: '2026-11-19', at: '2026-11-19T19:46:13-08:00', commit: '319ee16', src: '6f42aa05' },
-  '/raise': { day: '2026-11-20', at: '2026-11-20T12:06:34-08:00', commit: 'b03f2bd', src: '2a62d8f8' },
+  '/raise': { day: '2026-11-20', at: '2026-11-20T12:46:46-08:00', commit: '8c14a76', src: '2a62d8f8' },
   '/motion/hunayn': { day: '2026-11-19', at: '2026-11-19T19:11:44-08:00', commit: '206ae3d', src: '7a05cd03' },
   '/motion/jihe-yuanben': { day: '2026-11-19', at: '2026-11-19T19:11:44-08:00', commit: '206ae3d', src: '7deaa67a' },
   '/motion/journey-to-the-west': { day: '2026-11-19', at: '2026-11-19T19:11:44-08:00', commit: '206ae3d', src: 'f066292e' },
