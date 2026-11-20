@@ -63,9 +63,9 @@ The tracked width equals the tracked width with `calt` off, so the tracking had 
 | Token | Value | Where it applies |
 | --- | --- | --- |
 | `--pt-ff-text` | `'liga' 1, 'calt' 1` | Every element |
-| `--pt-ff-display` | `'liga' 1, 'calt' 1, 'cv11' 1, 'ss01' 1` | h1, h2 and display sentences (`cv11` is the single-storey a, `ss01` the open digits) |
+| `--pt-ff-display` | `normal` | h1, h2 and display sentences. Since 2026-11-19 headings in Katagami Text take no feature tags, so they draw its default forms |
 
-A rule that needs aligned figures adds `font-variant-numeric: tabular-nums`, which composes with either token. The brand deck's headings still list `'cv11', 'ss01'` without `calt`, and the 2026-10-05 audit named that as the deck's only type defect. Lint rule T4 fails a feature list outside the two tokens, and the live rule L7 fails tracking without `calt`.
+A rule that needs aligned figures adds `font-variant-numeric: tabular-nums`, which composes with either token. The brand deck's headings still list `'cv11', 'ss01'` without `calt`, and the 2026-10-05 audit named that as the deck's only type defect. Lint rule T4 fails a feature list outside the two tokens. The live rule L7 covers the text token only: it fails a tracked element that should carry `'liga' 1, 'calt' 1` and does not.
 
 ## Optical size
 
@@ -146,7 +146,7 @@ Chrome rounds the ascent and descent to whole pixels and floors the half-leading
 
 ## Canvas text
 
-A 2D canvas ignores `font-feature-settings`. A heading with two single-storey a's painted on a canvas with plain Inter came out 12px shorter than the same heading in the DOM. Build a `FontFace` from the Inter file with `featureSettings` (`cv11` for headings, `tnum` for figures) and load it before the first paint.
+A 2D canvas ignores `font-feature-settings`. A heading with two single-storey a's painted on a canvas with plain Inter came out 12px shorter than the same heading in the DOM. Build a `FontFace` from the Inter file with `featureSettings` (`tnum` for figures) and load it before the first paint.
 
 WebKit adds two more differences. Its canvas picks the optical size from the painted pixel size, so an export paints with copies of the font pinned to one opsz. `text-rendering: optimizeLegibility` turns automatic optical sizing on in WebKit even under `font-optical-sizing: none`, so canvas text uses `text-rendering: auto`. `geometricPrecision` softens Chromium's small text. The [gt-films](/skills/gt-films) skill carries the film kit's version of this rule.
 

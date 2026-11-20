@@ -763,8 +763,8 @@ export function checkGroups(page, { lead = false } = {}) {
     if (g.style.weight > 500 && !g.specimen) say(failures, 'L5', g, `weight ${g.style.weight}`);
     /* L6: headings balance */
     if (g.heading && !/balance/.test(g.style.wrap ?? '')) say(failures, 'L6', g, `text-wrap ${g.style.wrap}`);
-    /* L7: tracking keeps calt */
-    if (g.style.lsEm !== 0 && !/calt/.test(g.style.ffs)) say(failures, 'L7', g, `tracked ${g.style.lsEm}em without calt (${g.style.ffs})`);
+    /* L7: tracking keeps calt, where the role's features name it (the hub's display token is normal) */
+    if (want !== 'normal' && g.style.lsEm !== 0 && !/calt/.test(g.style.ffs)) say(failures, 'L7', g, `tracked ${g.style.lsEm}em without calt (${g.style.ffs})`);
     /* L8: a head lead in two or three lines of 75 characters at most */
     if (lead && g.lead) {
       const perLine = Math.round(g.chars / Math.max(1, g.lines));
