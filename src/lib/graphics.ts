@@ -1,15 +1,18 @@
 import { closeSync, openSync, readdirSync, readFileSync, readSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { getPost, postFigures } from '@/lib/blog';
+import { getPosts, postFigures } from '@/lib/blog';
+import type { Post } from '@/lib/blog';
+import { POST_SHORT } from '@/lib/post-names';
 import { pictureNote } from '@/lib/previous-mark';
 
 /**
  * The illustration set behind /graphics: the manifest
  * graphics/build/gen-visuals.js writes (one row per visual) joined with
  * the exports under public/static/blogs, the grounds under
- * public/graphics/bg, the contact sheets, and the figures of the two
- * earlier posts. Read on the server at build time. Every version of one
+ * public/graphics/bg, the contact sheets, and the covers and figures of
+ * every other post. Read on the server at build time. Each post is one
+ * section, newest first, with its cover ahead of its figures. Every version of one
  * image (dark and light, the social card cut from a cover, a clip's still,
  * GIF and video) is one entry with variants, so the viewer shows them in
  * one place. Each variant's size is read from its file's header, so the
@@ -31,17 +34,21 @@ export type Visual = {
 
 import type { Block, Entry, Variant } from '@/lib/graphics-model';
 
-const AREA_NAMES: Readonly<Record<string, { name: string; slot: string }>> = {
-  H: { name: 'Covers', slot: 'The header cover in both themes with the social card cut from it, and the wireframe-map direction kept as the alternate.' },
-  A: { name: 'Intuitive flow and direction', slot: 'The zones of the page and the reading path; inline in the post, then the carousel.' },
-  B: { name: 'Cleaning up mental clutter', slot: 'The redline of what was deleted, then the before-and-after set.' },
-  C: { name: 'One singular accordion', slot: 'The navigation census and the anatomy of the sidebar, then its persistence, the comparison and the tree.' },
-  D: { name: 'Drawing the eye', slot: 'Icons, separators and type, one image each, then the quickstart before and after.' },
-  E: { name: 'A unique General Translation flair', slot: 'The two clips, the UI primitives carousel, and the localized page.' },
-  F: { name: 'The hit list', slot: 'The anti-patterns as a poster and as a mock; the list itself renders as text.' },
+/** The sections of the docs series post, in its order; each names the images that illustrate it. */
+const AREA_NAMES: Readonly<Record<string, string>> = {
+  A: 'Intuitive flow and direction',
+  B: 'Cleaning up mental clutter',
+  C: 'One singular accordion',
+  D: 'Drawing the eye',
+  E: 'A unique General Translation flair',
+  F: 'The hit list',
 };
 
-const AREA_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'H'] as const;
+/** The covers first, then the post's sections in order. */
+const AREA_ORDER = ['H', 'A', 'B', 'C', 'D', 'E', 'F'] as const;
+
+/** The post the manifest illustrates. */
+const DOCS_SERIES = 'designing-docs-for-humans';
 
 /** The clips, by visual id: the GIF the post embeds and the MP4 master beside it. */
 const CLIPS: Readonly<Record<string, { gif: string; video: string }>> = {
@@ -242,13 +249,15 @@ function groundEntries(visuals: readonly Visual[]): Entry[] {
   }
   const entries: Entry[] = [];
   for (const folder of ['user', 'blue'] as const) {
-    const files = readdirSync(join(root, folder)).filter((f) => f.endsWith('.webp')).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    const files = readdirSync(join(root, folder)).filter((f) => f.endsWith('.webp')).sort((a, b) => a.slice(0, -5).localeCompare(b.slice(0, -5), undefined, { numeric: true }));
     for (const file of files) {
       const stem = file.replace(/\.webp$/, '');
       const key = folder === 'user' ? stem : Object.entries(BLUE_GROUNDS).find(([, path]) => path === `${folder}/${file}`)?.[0];
       const users = key ? byKey.get(key) ?? [] : [];
       const number = /(\d+)/.exec(stem)?.[1] ?? stem;
-      const flavor = folder === 'blue' ? (stem.endsWith('light') ? ', light ground' : `, blue duotone ${stem.split('-')[1] ?? ''}`.trimEnd()) : '';
+      const [, tone = '', ...cut] = stem.split('-');
+      const cutName = cut.join(' ').replace(/\bog\b/, 'social card');
+      const flavor = folder === 'blue' ? (stem.endsWith('light') ? ', light ground' : `, blue duotone ${tone}${cutName ? `, ${cutName}` : ''}`) : '';
       const src = `/graphics/bg/${folder}/${file}`;
       entries.push({
         id: `ground-${folder}-${stem}`,
@@ -317,20 +326,11 @@ function postEntries(post: PostGraphics): Entry[] {
   return entries;
 }
 
-/** A post content/blog keeps: its frontmatter covers and its figures. */
-function keptPost(slug: string): (PostGraphics & { title: string }) | undefined {
-  const post = getPost(slug);
-  if (!post) return undefined;
-  return { slug, title: post.title, image: post.image, imageLight: post.imageLight, ogImage: post.ogImage, figures: postFigures(post.body) };
+/** A post's graphics read from its file in content/blog: the frontmatter covers and the figures of the body. */
+function keptPost(post: Post): PostGraphics {
+  return { slug: post.slug, image: post.image, imageLight: post.imageLight, ogImage: post.ogImage, figures: postFigures(post.body) };
 }
 
-/**
- * The other posts after the series: part one of the series first, then the
- * rest of the blog newest first, each read from its file in content/blog.
- * A carousel's figures take its label as their title. The Daniel White
- * post's portrait is a Spotlight attribute, a photograph rather than a
- * graphic, so it stays out.
- */
 const PARAGLIDE_CONTEXT_DIR = '/static/blogs/paraglide-js-context';
 
 /** Kept here as images: the post shows its four figures as live components in gt-cloud, and its file is not in content/blog. */
@@ -349,37 +349,64 @@ const PARAGLIDE_CONTEXT: PostGraphics & { title: string } = {
   ],
 };
 
-const POSTS: readonly { slug: string; lead: string; set?: PostGraphics & { title: string } }[] = [
-  { slug: 'rewriting-our-docs', lead: 'Part one of the series: the content rewrite, illustrated with captures of the shipped docs.' },
-  { slug: 'paraglide-js-context', lead: 'The Paraglide JS context post: the cover and social card in both themes, and the four figures the post shows as live components.', set: PARAGLIDE_CONTEXT },
-  { slug: 'daniel-white', lead: 'The open-source grant to Cuelume, Daniel White’s library of interaction sounds: the cover in Cuelume’s green, then seven figures on how its cues are made and heard.' },
-  { slug: 'supporting-slash-companies', lead: 'The translation credits for companies that bank with Slash, published with one cover.' },
-  { slug: 'fuma-nama', lead: 'The interview with the creator of Fumadocs: the landing page, the slider, and the architecture diagram drawn in the post.' },
-  { slug: 'supporting-open-source-software', lead: 'The announcement of the open-source grants, published with one cover.' },
-];
+/**
+ * What each post's section holds, by slug; a post without a line here leads
+ * with its summary. The Daniel White post's portrait is a Spotlight
+ * attribute, a photograph rather than a graphic, so it stays out.
+ */
+const POST_LEADS: Readonly<Record<string, string>> = {
+  'paraglide-js': 'The announcement that Paraglide JS joins General Translation, published with one cover and its social card.',
+  'paraglide-js-context': 'The Paraglide JS context post, not yet published: the cover and social card in both themes, and the four figures the post shows as live components.',
+  'daniel-white': 'The open-source grant to Cuelume, Daniel White’s library of interaction sounds: the cover in Cuelume’s green, then seven figures on how its cues are made and heard.',
+  'supporting-slash-companies': 'The translation credits for companies that bank with Slash, published with one cover.',
+  [DOCS_SERIES]: 'Part two of the series: the header cover in both themes with the social card cut from it and the wireframe-map direction kept as the alternate, then the figures in the order of the post’s sections, each row naming its section.',
+  'rewriting-our-docs': 'Part one of the series: the content rewrite, illustrated with captures of the shipped docs.',
+  'fuma-nama': 'The interview with the creator of Fumadocs: the landing page, the slider, and the architecture diagram drawn in the post.',
+  'supporting-open-source-software': 'The announcement of the open-source grants, published with one cover.',
+};
 
-/** The posts /graphics illustrates: the docs series, then each post in POSTS that has a section. */
-export function graphicsPostCount(blocks: readonly Block[]): number {
-  return 1 + blocks.filter((block) => POSTS.some((post) => post.slug === block.id)).length;
+/** The docs series post's images from the manifest: the covers, then each section's visuals in the post's order. */
+function docsSeriesEntries(visuals: readonly Visual[]): Entry[] {
+  return AREA_ORDER.flatMap((area) => {
+    const part = AREA_NAMES[area];
+    const entries = visualEntries(visuals.filter((v) => v.area === area));
+    return part ? entries.map((entry) => ({ ...entry, part })) : entries;
+  });
 }
 
-/** Every section of /graphics with its entries numbered through the whole set. */
+/**
+ * One section per post, newest first as /blog lists them, with the
+ * unpublished context post ahead of them: the docs series from the
+ * manifest, the others from their files in content/blog.
+ */
+function postBlocks(visuals: readonly Visual[]): Omit<Block, 'ordinal'>[] {
+  const posts: readonly { slug: string; title: string; summary: string; set: PostGraphics }[] = [
+    { slug: PARAGLIDE_CONTEXT.slug, title: PARAGLIDE_CONTEXT.title, summary: '', set: PARAGLIDE_CONTEXT },
+    ...getPosts().map((post) => ({ slug: post.slug, title: post.title, summary: post.summary, set: keptPost(post) })),
+  ];
+  return posts.flatMap(({ slug, title, set, summary }) => {
+    const entries = slug === DOCS_SERIES ? docsSeriesEntries(visuals) : postEntries(set);
+    if (!entries.length) return [];
+    return [{ id: slug, label: title, short: POST_SHORT[slug], lead: POST_LEADS[slug] ?? summary, entries }];
+  });
+}
+
+/** The sections that are not posts: the docs series' contact sheets and the grounds of its visuals. */
+const TOOLCHAIN_BLOCKS = new Set(['sheets', 'grounds']);
+
+/** The posts /graphics illustrates: every section but the sheets and the grounds. */
+export function graphicsPostCount(blocks: readonly Block[]): number {
+  return blocks.filter((block) => !TOOLCHAIN_BLOCKS.has(block.id)).length;
+}
+
+/** Every section of /graphics with its entries numbered through the whole set: the posts, then the sheets and the grounds. */
 export function getGraphicsBlocks(): readonly Block[] {
   const visuals = readManifest();
-  const blocks: Omit<Block, 'ordinal'>[] = [];
-  for (const id of AREA_ORDER) {
-    const area = AREA_NAMES[id];
-    const entries = visualEntries(visuals.filter((v) => v.area === id));
-    if (!entries.length || !area) continue;
-    blocks.push({ id: `area-${id.toLowerCase()}`, label: area.name, lead: area.slot, entries });
-  }
-  blocks.push({ id: 'sheets', label: 'Contact sheets', lead: 'The finished set tiled at thumbnail size, the way a reader meets it.', entries: sheetEntries() });
-  blocks.push({ id: 'grounds', label: 'Backgrounds', lead: 'The glyphfield exports the visuals sit on, at their native 1920 by 1080 and their own aspect; each names the visuals that use it.', entries: groundEntries(visuals) });
-  for (const { slug, lead, set } of POSTS) {
-    const post = set ?? keptPost(slug);
-    const entries = post ? postEntries(post) : [];
-    if (post && entries.length) blocks.push({ id: slug, label: post.title, lead, entries });
-  }
+  const blocks: Omit<Block, 'ordinal'>[] = [
+    ...postBlocks(visuals),
+    { id: 'sheets', label: 'Contact sheets', lead: 'The docs series tiled at thumbnail size, the way a reader meets it.', entries: sheetEntries() },
+    { id: 'grounds', label: 'Backgrounds', lead: 'The glyphfield exports the docs series sits on, at their native 1920 by 1080 and their own aspect; each names the visuals that use it.', entries: groundEntries(visuals) },
+  ];
   let n = 0;
   return blocks.map((block, i) => ({
     ...block,

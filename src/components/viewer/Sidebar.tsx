@@ -504,9 +504,20 @@ function runDigits(run: readonly Group[]): 2 | 3 {
   return widest > 2 ? 3 : 2;
 }
 
-/** A run shows labels when two or more of its groups hold more than one row (Films and Translation series); a group of one row is that row. */
+/** A run shows labels when two or more of its groups hold more than one row (Films and Translation series). */
 function isLabelled(run: readonly Group[]): boolean {
   return run.filter((group) => group.rows.length > 1).length >= 2;
+}
+
+/**
+ * True for a group a labelled run shows under its label. A group of one
+ * row that names the group (a marks family) is that row; a group of one
+ * row with a name of its own (a post's cover on /graphics) keeps its
+ * label, so the row never reads as part of the group above it.
+ */
+function showsLabel(group: Group): boolean {
+  const only = group.rows.length === 1 ? group.rows[0] : undefined;
+  return !only || only.name !== group.label;
 }
 
 /** Where a row sits: its top-level group, the page row whose run holds it, the label it opens under. */
@@ -521,7 +532,7 @@ function placesOf(groups: readonly Group[]): ReadonlyMap<string, Place> {
         if (!out.has(row.key)) out.set(row.key, { top, row, page, label });
         if (!row.subs) continue;
         const labelled = isLabelled(row.subs);
-        for (const sub of row.subs) add(sub.rows, row, labelled && sub.rows.length > 1 ? sub : undefined);
+        for (const sub of row.subs) add(sub.rows, row, labelled && showsLabel(sub) ? sub : undefined);
       }
     };
     add(top.rows);
@@ -1030,7 +1041,8 @@ export type SidebarProps = {
  * number in the icon's slot and a name that wraps (two lines at most for
  * the data the routes give, never cut). When two or more of the page's
  * sections hold more than one row, each gets a label with a chevron and a
- * count inside the run; a section of one row is that row. A run of 40 rows
+ * count inside the run; a section of one row that names the section is
+ * that row (showsLabel). A run of 40 rows
  * or fewer opens every label; past 40 only the label holding the active
  * item opens. The headings of the item being read (SubRows) hang under it
  * as a deep run, in the list mode only.
@@ -1535,7 +1547,7 @@ export function Sidebar({
     return run.map((group) => {
       const rows = visibleRows(group);
       if (rows.length === 0) return null;
-      if (!labelled || group.rows.length === 1) {
+      if (!labelled || !showsLabel(group)) {
         return <Fragment key={group.key}>{rows.map((row) => renderRow(row, { variant: 'run', parent: pageId }))}</Fragment>;
       }
       const open = isOpen(group);

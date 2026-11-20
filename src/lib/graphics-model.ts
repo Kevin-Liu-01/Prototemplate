@@ -29,12 +29,16 @@ export type Entry = {
   shot: { light: string; dark?: string };
   /** what the row says when a version shows the previous mark (src/lib/previous-mark.ts), from the server */
   markNote?: string;
+  /** the section of the post the image illustrates, for the docs series */
+  part?: string;
 };
 
-/** One section of the viewer: an area of the post, the covers, the sheets, the grounds, an earlier post. */
+/** One section of the viewer: a post (its cover first, then its figures in order), the contact sheets or the grounds. */
 export type Block = {
   id: string;
   label: string;
+  /** the sidebar name when the label runs past two lines (src/lib/post-names.ts) */
+  short?: string;
   lead: string;
   ordinal: number;
   entries: readonly Entry[];

@@ -627,7 +627,8 @@ name that wraps (a run row to two lines at most, a deep heading to three)
 and is never cut; a title that is a sentence takes a short name
 (`ShellItem.short`). When two or more of the page's sections hold more than
 one row, each gets a label with a chevron and a count inside the run; a
-section of one row is that row. The
+section of one row that names the section is that row, and a section of
+one row with a name of its own keeps its label. The
 headings of the item being read hang under it as a deep run, at 12.5px
 titanium, ink while read. A chevron button at the right
 end of the page row folds the run for the visit; the run opens again on

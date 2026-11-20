@@ -1,6 +1,7 @@
 import { BLOG_POSTS, BLOG_RELEASES } from '@/lib/blog-posts';
 import type { BlogPostMeta, BlogRelease } from '@/lib/blog-posts';
 import { formatDay } from '@/lib/dates';
+import { POST_SHORT } from '@/lib/post-names';
 import type { ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 import { getSurface } from '@/lib/surfaces';
@@ -67,12 +68,6 @@ export function authorNames(post: BlogPostMeta): string {
   return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
 }
 
-/** The sidebar names of the titles that run past two lines in the 208px run; the title stays the grid caption and the hover title. */
-const SHORT: Readonly<Record<string, string>> = {
-  'daniel-white': 'Daniel White',
-  'fuma-nama': 'Fuma Nama',
-};
-
 /**
  * The run under the Knowledge group's Blog row (`under`): /raise first, as
  * one row that opens its page, then every post
@@ -106,7 +101,7 @@ export const SECTIONS: readonly ShellSection[] = [
       id: post.slug,
       n,
       title: post.title,
-      short: SHORT[post.slug],
+      short: POST_SHORT[post.slug],
       href: postHref(post.slug),
       desc: `${formatDay(post.date)}. ${authorNames(post)}. ${post.summary}`,
       ...(post.image ? { shot: post.imageLight ? { light: post.imageLight, dark: post.image } : { light: post.image } } : {}),

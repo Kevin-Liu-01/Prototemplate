@@ -74,3 +74,9 @@ Provenance for `prototemplate`. The first list is the skill's sources as written
 | Line | Where | Source |
 | --- | --- | --- |
 | `/marks` leads its shortlist with the logo and its state, and `/marks/graticule` holds the best marks, the logo's progression, every graticule mark, the hovers, the loader and the line globe animations, the globe rows and the variations | `references/hub.md` | Kevin's choice of the logo on 2026-11-06 and his request of 2026-11-07 to update Prototemplate with the progression and the logos |
+
+## Added or changed on 2026-11-20
+
+| Line | Where | Source |
+| --- | --- | --- |
+| `/graphics` lists every illustration of the blog, one section per post, newest first, each cover ahead of its figures | `references/hub.md` | Kevin's note of 2026-11-20 that the graphics sidebar's section titles and order were wrong |

@@ -11,7 +11,7 @@ const route = seoRoute({
   title: PAGE_NAMES.graphics.name,
   kind: 'page',
   description:
-    'Every illustration of the General Translation blog in every version it ships in: the docs series by area, then the covers and figures of the other posts.',
+    'Every illustration of the General Translation blog in every version it ships in, one section per post with its cover first and then its figures.',
 });
 
 export const metadata = route.metadata;

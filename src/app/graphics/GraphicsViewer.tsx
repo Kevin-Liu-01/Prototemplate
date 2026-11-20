@@ -24,26 +24,14 @@ import './graphics.css';
 const TITLE = PAGE_NAMES.graphics.name;
 const MODES: readonly ShellMode[] = ['book', 'grid'];
 const LEAD =
-  'Every illustration of the blog: the docs series by the area of the post it sits in, its covers, contact sheets and glyphfield grounds, then the other posts.';
+  'Every illustration of the blog, one section per post with the newest first. Each post opens with its cover and then shows its figures in order; the docs series’ contact sheets and glyphfield grounds close the page.';
 const NOTE =
   'Each image is one row. The row switches in place between the versions the image ships in: dark and light, the social card cut from a cover, and a clip’s GIF, video and still. The frame opens the file at full size.';
 
-/**
- * The sidebar names of the areas whose labels are post titles, keyed by
- * block id (src/lib/graphics.ts POSTS): a sentence would run past two
- * lines in the 208px list. The label stays the grid caption and the
- * divider's title.
- */
-const SIDEBAR_AREA: Readonly<Record<string, string>> = {
-  'rewriting-our-docs': 'Rewriting our docs',
-  'daniel-white': 'Daniel White',
-  'fuma-nama': 'Fuma Nama',
-};
-
-
-/** The meta line under a row: the ground, the size of the first version, the number of versions. */
+/** The meta line under a row: the post's section, the ground, the size of the first version, the number of versions. */
 function metaText(entry: Entry): string {
   const parts: string[] = [];
+  if (entry.part) parts.push(entry.part);
   if (entry.ground) parts.push(backgroundLabel(entry.ground));
   const first = entry.variants[0];
   if (first?.w && first?.h) parts.push(`${first.w}×${first.h}`);
@@ -57,7 +45,7 @@ function shellSections(blocks: readonly Block[]): readonly ShellSection[] {
   return blocks.map((block) => ({
     id: block.id,
     label: block.label,
-    short: SIDEBAR_AREA[block.id],
+    short: block.short,
     under: 'graphics',
     items: block.entries.map((entry) => ({ id: entry.id, n: entry.n, title: entry.title, desc: entry.why, shot: entry.shot, inPlace: true as const })),
   }));
@@ -168,11 +156,10 @@ type GraphicsViewerProps = {
 };
 
 /**
- * The graphics on the viewer shell: one section per area of the post, the
- * covers, the sheets, the grounds and the other posts, nested under
- * Knowledge > Graphics in the list with one row per image; the whole set
- * as ruled rows with figures inside the 1280px flow sheet, and every image
- * as a captured thumbnail in the grid. Flow keys, so Space and the arrows
+ * The graphics on the viewer shell: one section per post, then the sheets
+ * and the grounds, nested under Knowledge > Graphics in the list with one
+ * row per image; the whole set as ruled rows with figures inside the
+ * 1280px flow sheet, and every image as a captured thumbnail in the grid. Flow keys, so Space and the arrows
  * scroll; the sidebar filter matches names and descriptions. The hash
  * names the row in view.
  */
