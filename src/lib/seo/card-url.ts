@@ -9,7 +9,7 @@
  */
 
 /** Changes when the card's design changes, so every cached card is fetched again. */
-export const OG_VERSION = '1';
+export const OG_VERSION = '2';
 
 /** The generated card's size: 1.91 to 1, the size X and LinkedIn draw a large card at. */
 export const OG_WIDTH = 1200;

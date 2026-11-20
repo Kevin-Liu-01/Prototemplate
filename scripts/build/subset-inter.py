@@ -49,17 +49,19 @@ SUBSETS = [
 # renderer reads TTF, OTF and WOFF but not WOFF2, and applies no variable axes
 # and no font-feature-settings. So the route gets two static instances of the
 # same roman file, cut to the latin subset: the display face for the title and
-# the labels, and the text face for the description and the footer. The
-# display face carries the site's display features (--pt-ff-display: cv11, the
-# single-storey a, and ss01, the open digits) by pointing the cmap at the
-# alternate glyphs, since the renderer would not apply the features.
+# the labels, and the text face for the description and the footer. Neither
+# face takes a stylistic alternate: the hub's headings set no feature tags
+# (--pt-ff-display is normal), so the card's title draws the double-storey a
+# and Inter's default digits as the page heading does. A face that needs one lists
+# its tags below, and the cut points the cmap at the alternate glyphs, since
+# the renderer would not apply the features.
 CARD_DIR = ROOT / 'src' / 'app' / 'og'
 CARD_FACES = [
     # (file, wght, opsz, cmap features)
-    ('Inter-Display-500.ttf', 500, 32, ('cv11', 'ss01')),
+    ('Inter-Display-500.ttf', 500, 32, ()),
     ('Inter-Text-400.ttf', 400, 28, ()),
 ]
-# the code points the display features remap: a and the ten digits
+# the code points a face's cmap features may remap: a and the ten digits
 CARD_REMAP = [0x61] + list(range(0x30, 0x3A))
 
 
