@@ -1858,10 +1858,10 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
       src: '/motion/sheets/kb-translate-product-walkthroughs.webp',
       width: 3093,
       height: 2844,
-      bytes: 371488,
+      bytes: 371578,
       frames: 100,
       png: '/motion/sheets/kb-translate-product-walkthroughs.png',
-      pngBytes: 569108,
+      pngBytes: 569016,
     },
     script: {
       src: '/motion/scripts/kb-translate-product-walkthroughs.md',

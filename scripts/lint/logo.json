@@ -1988,38 +1988,6 @@
       "sha256": "36881c4fe6302b64427188f4c043faaddc2b02947188a191b9513231b5be032f"
     },
     {
-      "path": "public/media/translate-product-walkthroughs-film.mp4",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "0a1621f93287295e22f4f388310c40705afd93b27a64bd3f332aa603d64ab1ca"
-    },
-    {
-      "path": "public/motion/sheets/kb-translate-product-walkthroughs.png",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "449e90dda94886e26cfa80f9d7ac87aa32e07a5c2468a4aafaa538bd7bc02ca7"
-    },
-    {
-      "path": "public/motion/sheets/kb-translate-product-walkthroughs.webp",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "0b49c5745ee2ca460ec9387449e2be338bdfc9d17fbd6bbe560390b67f445a4a"
-    },
-    {
-      "path": "public/media/translate-product-walkthroughs-poster.jpg",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "1c782cffd832574d89377c77f2a87869e3e7f9d6e31dbae5de45be260f32393f"
-    },
-    {
       "path": "public/media/translate-react-app-film.mp4",
       "rules": [
         8
@@ -2640,6 +2608,26 @@
       "path": "public/motion/sheets/blog-fuma-nama.webp",
       "reason": "rendered again on the logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
       "sha256": "922e9b679dcdb463a39179eb2bd2c8a52b05d54f5181eea5b7d3364e65b49314"
+    },
+    {
+      "path": "public/media/translate-product-walkthroughs-film.mp4",
+      "reason": "rendered again on the logo on 2026-11-18 (kit/film.mjs final); every frame matched against the logo and the previous logo: the logo in both places, the previous logo in none",
+      "sha256": "32013ccc5d78d4283a0dc39bee2bd58686e8c9bc0bb5bc52a186488915b0ced7"
+    },
+    {
+      "path": "public/media/translate-product-walkthroughs-poster.jpg",
+      "reason": "rendered again on the logo on 2026-11-18 (kit/film.mjs final); every frame matched against the logo and the previous logo: the logo in both places, the previous logo in none",
+      "sha256": "6358fda8f5b9f2a75d2f1a0ed7e82b34a703d2fe4c46b7349bab00c55303b017"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-product-walkthroughs.png",
+      "reason": "rendered again on the logo on 2026-11-18 (kit/film.mjs final); every frame matched against the logo and the previous logo: the logo in both places, the previous logo in none",
+      "sha256": "faf8a4434cb29941738a6824eb259de358555481affb00895e34d831591e2ff4"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-product-walkthroughs.webp",
+      "reason": "rendered again on the logo on 2026-11-18 (kit/film.mjs final); every frame matched against the logo and the previous logo: the logo in both places, the previous logo in none",
+      "sha256": "8c9b380c98c232c9a5995f31e71498bda195c73e044ae9a5ec830125203cbc58"
     },
     {
       "path": "deck/shots/opener-brand-light.jpg",
