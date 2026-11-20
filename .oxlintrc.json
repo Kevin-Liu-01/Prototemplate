@@ -44,7 +44,7 @@
         "gt-ui/no-smooth-scroll": "error",
         "gt-ui/no-gif-mark": "error",
         "gt-ui/icon-tiers": "error",
-        "gt-ui/inter-only": "error",
+        "gt-ui/katagami-text-only": "error",
         "gt-ui/no-raw-locale-flags": "error",
         "gt-ui/typed-text-var": "error",
         "gt-ui/no-hex-colors": "error"
@@ -77,17 +77,17 @@
       }
     },
     {
-      // The two files that load a face beside Inter. DESIGN.md section 4
+      // The two files that load a face beside Katagami Text. DESIGN.md section 4
       // gives the nameplate a serif (Fraunces) and a grotesk (Space Grotesk)
       // voice, and the presenter's intro lockup sets two words in Sora and
       // Instrument Sans. The rule stays on everywhere else, so a font class
-      // or an inline fontFamily outside Inter is still reported.
+      // or an inline fontFamily outside Katagami Text is still reported.
       "files": [
         "src/lib/brand-fonts.ts",
         "src/app/present/fonts.ts"
       ],
       "rules": {
-        "gt-ui/inter-only": "off"
+        "gt-ui/katagami-text-only": "off"
       }
     },
     {

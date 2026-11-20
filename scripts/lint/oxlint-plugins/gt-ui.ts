@@ -341,14 +341,7 @@ function createStringRule(regex, message) {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Icon tiers. A mark that carries meaning (a card, a feature, a link
-// destination, a section, package or status mark) is Heroicons solid, sized
-// with a class: '@heroicons/react/24/solid', or '16/solid' for a mark set
-// inline with running text. A control is Lucide outline. Brand marks are
-// their own class (react-simple-icons, masked logos, PythonLogo, LocadexMark).
-// Lucide is therefore allowed only for the glyphs on this list; a Lucide
-// import outside it is a meaning mark drawn in the wrong tier.
+// Lucide is the control tier, so only these glyphs may come from it; meaning marks use Heroicons solid.
 const CONTROL_LUCIDE_GLYPHS = new Set([
   'Airplay',
   'AlignLeft',
@@ -435,27 +428,23 @@ export function isAllowedHeroiconsSource(source) {
   return HEROICONS_SOLID_SOURCES.has(source);
 }
 
-// ---------------------------------------------------------------------------
-// Inter only. The site sets type in Inter (rsms.me's variable build, loaded
-// locally in apps/landing/src/lib/fonts.ts) and Geist Mono for code. No other
-// face is loaded, no utility switches to one, and an inline fontFamily stays
-// inside that type.
+// The site loads only Katagami Text (locally) and Geist Mono.
 const ALLOWED_GOOGLE_FONTS = new Set(['Geist_Mono']);
-const INTER_FONT_FILE = /inter/i;
-const ALLOWED_FONT_FAMILY_VALUE =
-  /^(?:inherit|initial|unset)$|inter|geist|var\(--font|monospace/i;
+const TEXT_FACE_FONT_FILE = /katagamitext/i;
+// Only the first family counts because it is the one the browser uses.
+const ALLOWED_FIRST_FONT_FAMILY =
+  /^(?:inherit|initial|unset)$|^katagami text\b|^geist\b|^var\(--font|^(?:ui-)?monospace$|\bmono$|^(?:menlo|consolas|courier new|sfmono-regular)$/i;
 
 export function isAllowedGoogleFont(name) {
   return ALLOWED_GOOGLE_FONTS.has(name);
 }
 
-export function isInterFontFile(path) {
-  return INTER_FONT_FILE.test(path);
+export function isTextFaceFontFile(path) {
+  return TEXT_FACE_FONT_FILE.test(path);
 }
 
-// font-serif, and any arbitrary font-[...] value that is a family rather
-// than a numeric weight (font-[530] is a weight and stays legal).
-export function getNonInterFontClasses(value) {
+// An arbitrary font-[...] value counts only when it names a family, not a numeric weight.
+export function getNonTextFaceFontClasses(value) {
   return value
     .split(/\s+/)
     .filter(Boolean)
@@ -468,7 +457,6 @@ export function getNonInterFontClasses(value) {
 
       if (utility.startsWith('font-[')) {
         const inner = utility.slice('font-['.length, -1);
-        // a numeric value is a weight; inherit keeps the parent's face
         return !/^\d+(?:\.\d+)?$/.test(inner) && inner !== 'inherit';
       }
 
@@ -477,14 +465,14 @@ export function getNonInterFontClasses(value) {
 }
 
 export function isAllowedFontFamilyValue(value) {
-  return ALLOWED_FONT_FAMILY_VALUE.test(value.trim());
+  const first = value
+    .split(',')[0]
+    .trim()
+    .replace(/^['"]|['"]$/g, '');
+  return ALLOWED_FIRST_FONT_FAMILY.test(first);
 }
 
-// ---------------------------------------------------------------------------
-// Locale flags. Flags render through LocaleFlag
-// (packages/ui/src/components/ui/LocaleFlag.tsx), which owns the flag-icons
-// sprite classes and the fallback. Hand-written sprite classes, emoji flags
-// (drawn differently by every platform) and flag images bypass it.
+// Flags render through LocaleFlag, which owns the flag-icons sprite classes and the fallback.
 const FLAG_SPRITE_CLASS =
   /(?:^|\s)!?fi(?:s)?(?:\s|$)|(?:^|\s)!?fi-[a-z]{2}(?:-[a-z]+)?(?:\s|$)/;
 const REGIONAL_INDICATOR_PAIR = /[\u{1F1E6}-\u{1F1FF}]{2}/u;
@@ -525,19 +513,11 @@ function getJsxAttributeStringValue(openingElement, attributeName) {
   return null;
 }
 
-// ---------------------------------------------------------------------------
-// Copy and layout laws of the landing (the brand questionnaire, the gt-landing
-// skill and engine.css), each checked where a static string can carry the
-// violation. Every message names the rule it enforces.
-
-// The em dash is not used in copy; a period or a comma does its work.
 const EM_DASH = /—/;
 export function hasEmDash(text) {
   return EM_DASH.test(text);
 }
 
-// An eyebrow: small uppercase, tracked-out text above a heading. Section
-// heads are a heading and one lead paragraph, nothing above.
 export function isEyebrowClassList(value) {
   const utilities = value.split(/\s+/).filter(Boolean).map(getTailwindUtility);
   const uppercase = utilities.includes('uppercase');
@@ -551,15 +531,12 @@ export function isEyebrowClassList(value) {
   return uppercase && tracked;
 }
 
-// Every landing button is the shared Cta; hand-rolled tc-btn markup drifts.
 const CTA_CLASS = /(?:^|\s)!?tc-btn(?:-[a-z0-9-]+)?(?:\s|$)/;
 export function hasHandRolledCta(value) {
   return CTA_CLASS.test(value);
 }
 
-// Tailwind v4 reads text-[var(--x)] as a COLOR unless the value carries a
-// length: hint (or color: to say so). An untyped var() in a text-[...]
-// utility is the bug that ships a size token as an invisible color.
+// Tailwind v4 reads text-[var(--x)] as a color unless the value carries a length: or color: hint.
 export function getUntypedTextVarClasses(value) {
   return value
     .split(/\s+/)
@@ -569,9 +546,6 @@ export function getUntypedTextVarClasses(value) {
     );
 }
 
-// The nearest JSX attribute above a node, or null when the node is not
-// inside one. The walk stops at the attribute, at the opening element or at
-// the element itself: a string in JSX child position has no attribute.
 function getEnclosingJsxAttributeName(node) {
   let currentNode = node.parent;
 
@@ -597,10 +571,6 @@ function getEnclosingJsxAttributeName(node) {
   return null;
 }
 
-// The nearest object property above a node, or null. Stops at the property
-// or at any container that is not a plain expression, so a literal inside a
-// conditional or a logical expression still resolves to the property that
-// holds it.
 function getEnclosingPropertyName(node) {
   let currentNode = node.parent;
 
@@ -629,8 +599,6 @@ function getEnclosingPropertyName(node) {
   return null;
 }
 
-// The static entries of a style={{ ... }} object as [name, value] pairs; a
-// number stays a number, a string stays a string, anything else is null.
 function getStyleObjectEntries(objectExpression) {
   const entries = [];
 
@@ -694,8 +662,6 @@ function getTailwindUtilities(value) {
   return value.split(/\s+/).filter(Boolean).map(getTailwindUtility);
 }
 
-// An eyebrow written as an inline style: textTransform uppercase plus a
-// positive letterSpacing in the same style object.
 export function isEyebrowStyleEntries(entries) {
   const uppercase = entries.some(
     ([name, value]) => name === 'textTransform' && value === 'uppercase'
@@ -712,11 +678,7 @@ export function isEyebrowStyleEntries(entries) {
   return uppercase && tracked;
 }
 
-// Colours come from tokens. A hex literal inside a Tailwind arbitrary value
-// (bg-[#0a0a0a], [--x:#fff]) bypasses the theme in any string; a bare hex
-// value bypasses it when it sits in a style or className attribute. Canvas,
-// raster and satori code keep their literal colours, so a hex in a plain
-// string is not the rule's business.
+// Canvas, raster and satori code keep literal colours, so a hex in a plain string is allowed.
 const HEX_IN_UTILITY =
   /\b[a-z-]+-\[[^\]]*#[0-9a-fA-F]{3,8}(?![0-9a-zA-Z])[^\]]*\]|\[[a-z-]+:#[0-9a-fA-F]{3,8}(?![0-9a-zA-Z])[^\]]*\]/;
 const HEX_VALUE = /^#[0-9a-fA-F]{3,8}$/;
@@ -728,7 +690,6 @@ export function hasHexColorUtility(value) {
 export function isHexColorValue(value) {
   return HEX_VALUE.test(value.trim());
 }
-// A whole hex value, or a hex token inside a longer value ('1px solid #fff').
 export function hasHexColorToken(value) {
   return isHexColorValue(value) || HEX_TOKEN.test(value);
 }
@@ -736,8 +697,6 @@ export function isStyleAttributeName(name) {
   return name !== null && STYLE_ATTRIBUTES.has(name);
 }
 
-// Mono is an instrument voice (code, tokens, numbers), never the voice of a
-// heading or a paragraph.
 const VOICE_ELEMENTS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p']);
 const MONO_FONT_FAMILY = /mono|menlo|courier|consolas|sf mono/i;
 export function isMonoVoice(elementName, className) {
@@ -755,10 +714,7 @@ export function isVoiceElement(elementName) {
   return VOICE_ELEMENTS.has(elementName);
 }
 
-// One rail. The .tc-rail wrapper draws the column's pair once; a band or a
-// section inside it draws no side rails, a wrapper never nests in a wrapper,
-// no element stacks two full-height side-border siblings, and the outer pair
-// at +-10px (--tc-rail-outer) is retired.
+// The .tc-rail wrapper draws the column's side rails once, so nothing inside it draws its own.
 const SIDE_BORDER_WIDTH = /^border-(x|l|r)(?:-\d+(?:\.\d+)?|-\[\d[^\]]*\])?$/;
 const ARBITRARY_BORDER_INLINE = /^\[border-inline(?:-width)?:/;
 function drawsSideRails(utilities) {
@@ -789,8 +745,6 @@ export function isNestedRailWrapper(value, ancestorClassLists) {
     getTailwindUtilities(classList).includes('tc-rail')
   );
 }
-// A hand-drawn rail pair: an absolutely positioned, full-height element that
-// draws both side borders. Two of them under one parent are two pairs.
 export function isRailPairClassList(value) {
   const utilities = getTailwindUtilities(value);
   const positioned =
@@ -806,8 +760,7 @@ export function countRailPairs(childClassNames) {
   return childClassNames.filter(isRailPairClassList).length;
 }
 
-// The site does not smooth-scroll (brand questionnaire avoid-list): no
-// scroll-smooth utility, no scrollBehavior: smooth, no scroll library.
+// The brand avoid-list bans smooth scrolling.
 const SCROLL_LIBRARIES = new Set([
   'lenis',
   'lenis/react',
@@ -825,10 +778,7 @@ export function hasSmoothScrollClass(value) {
 export function isScrollLibrary(source) {
   return SCROLL_LIBRARIES.has(source);
 }
-// scrollBehavior is the CSS property: always the page. A behavior option
-// is the page when the call is scrollIntoView, or scrollTo / scroll /
-// scrollBy on window or document; the same option on an element (a
-// carousel track paging) is a control transition and passes.
+// A smooth behavior option on an element, such as carousel paging, is a control transition and passes.
 export function isPageSmoothScroll(propertyName, value, call) {
   if (value !== 'smooth') {
     return false;
@@ -851,8 +801,6 @@ export function isPageSmoothScroll(propertyName, value, call) {
   );
 }
 
-// The member call whose argument list holds the node: { method, objectName }
-// with objectName the root identifier (window, document, a ref) or null.
 function getEnclosingMemberCall(node) {
   let currentNode = node.parent;
 
@@ -886,9 +834,6 @@ function getEnclosingMemberCall(node) {
   };
 }
 
-// A heading is a plain line with no trailing period (plain technical
-// English). An ellipsis, a question mark or an exclamation mark is not a
-// period.
 export function endsWithPeriod(text) {
   const trimmed = text.trim();
   return trimmed.endsWith('.') && !trimmed.endsWith('..');
@@ -898,8 +843,6 @@ export function isHeadingElement(elementName) {
   return HEADING_ELEMENT.test(elementName);
 }
 
-// Marks are drawn: an SVG, the canvas field or LocadexMark. A gif is never a
-// mark.
 const GIF_SOURCE = /\.gif(?:$|[?#])/i;
 export function isGifSource(source) {
   return GIF_SOURCE.test(source.trim());
@@ -910,8 +853,6 @@ export function isMediaElement(elementName) {
   return MEDIA_ELEMENTS.has(elementName);
 }
 
-// Cta labels are Title Case: every word capitalised except a short function
-// word after the first. Interpolations, symbols and numbers pass.
 const SMALL_WORDS = new Set([
   'a',
   'an',
@@ -948,8 +889,6 @@ export function isTitleCaseLabel(label) {
   });
 }
 
-// The static label strings an expression can produce: a literal, the first
-// argument of gt()/t(), or each branch of a conditional or a fallback.
 function collectStaticLabels(expression) {
   if (!expression) {
     return [];
@@ -987,8 +926,6 @@ function collectStaticLabels(expression) {
   }
 }
 
-// The static text pieces of an element's children, in order. Text inside an
-// inline wrapper (<T>, <span>, <em>, <strong>) counts as the heading's own.
 const INLINE_TEXT_WRAPPERS = new Set(['T', 'span', 'em', 'strong', 'b', 'i']);
 function collectChildText(children) {
   const pieces = [];
@@ -1266,19 +1203,19 @@ const plugin = {
         };
       },
     },
-    'inter-only': {
+    'katagami-text-only': {
       meta: {
         type: 'problem',
         schema: [],
         messages: {
           googleFont:
-            'Type is Inter (local, apps/landing/src/lib/fonts.ts) and Geist Mono only; `{{name}}` from next/font/google is another face.',
+            'Type is Katagami Text (local, apps/landing/src/lib/fonts.ts) and Geist Mono only; `{{name}}` from next/font/google is another face.',
           localFontFile:
-            'localFont loads Inter builds only; `{{path}}` is another face.',
+            'localFont loads Katagami Text builds only; `{{path}}` is another face.',
           fontClass:
-            '`{{className}}` sets a face outside Inter. Use font-sans, font-mono or the tc font tokens.',
+            '`{{className}}` sets a face outside Katagami Text. Use font-sans, font-mono or the tc font tokens.',
           fontFamilyStyle:
-            'An inline fontFamily stays inside the site type: inherit, a --font variable, Inter, Geist or the mono stack.',
+            'An inline fontFamily stays inside the site type: inherit, a --font variable, Katagami Text, Geist or the mono stack.',
         },
       },
       create(context) {
@@ -1289,7 +1226,7 @@ const plugin = {
             return;
           }
 
-          for (const className of getNonInterFontClasses(value)) {
+          for (const className of getNonTextFaceFontClasses(value)) {
             context.report({
               node,
               messageId: 'fontClass',
@@ -1359,7 +1296,7 @@ const plugin = {
                       )
                     : getStringValue(entry ?? {});
 
-                if (path && !isInterFontFile(path)) {
+                if (path && !isTextFaceFontFile(path)) {
                   context.report({
                     node: entry,
                     messageId: 'localFontFile',

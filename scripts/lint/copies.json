@@ -5,8 +5,8 @@
       "path": "scripts/lint/oxlint-plugins/gt-ui.ts",
       "mode": "pin",
       "from": "gt-cloud:tooling/oxlint-plugins/gt-ui.ts",
-      "sha256": "b1c27952e0498d5449f87749974c2d1633a79f91ad1f6f80eec8bcfdcf707a19",
-      "reason": "the gt-ui lint plugin behind pnpm lint:code, frozen at the 2026-10-10 copy; a re-sync fixes or exempts its new findings before lint:code passes"
+      "sha256": "bc117f211ef2f6d8c9cee30ec70fe0e7ae81a1632a16048a340d3b0e6c751dba",
+      "reason": "the gt-ui lint plugin behind pnpm lint:code, frozen at the 2026-11-19 copy (katagami-text-only replaced inter-only in gt-cloud #5765); a re-sync fixes or exempts its new findings before lint:code passes"
     },
     {
       "path": "scripts/media/mood-tone",
