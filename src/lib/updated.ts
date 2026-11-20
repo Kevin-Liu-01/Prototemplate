@@ -130,7 +130,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/blog/rewriting-our-docs': { day: '2026-11-17', at: '2026-11-17T18:14:59-08:00', commit: 'a5fd822', src: 'a79d18f4' },
   '/blog/supporting-open-source-software': { day: '2026-11-17', at: '2026-11-17T18:14:59-08:00', commit: 'a5fd822', src: '4cf25d61' },
   '/blog/supporting-slash-companies': { day: '2026-11-18', at: '2026-11-18T16:39:20-08:00', commit: '7733178', src: '9a8b3000' },
-  '/graphics': { day: '2026-11-19', at: '2026-11-19T19:46:02-08:00', commit: 'c36f0e9', src: 'd0e23102' },
+  '/graphics': { day: '2026-11-20', at: '2026-11-20', commit: null, src: 'd0e23102' },
   '/motion': { day: '2026-11-19', at: '2026-11-19T19:46:13-08:00', commit: '319ee16', src: '6f42aa05' },
   '/raise': { day: '2026-11-10', at: '2026-11-10T21:23:33-08:00', commit: '057e973', src: '2a62d8f8' },
   '/motion/hunayn': { day: '2026-11-19', at: '2026-11-19T19:11:44-08:00', commit: '206ae3d', src: '7a05cd03' },

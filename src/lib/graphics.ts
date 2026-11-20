@@ -269,6 +269,7 @@ type PostGraphics = {
   image?: string;
   imageLight?: string;
   ogImage?: string;
+  ogImageLight?: string;
   /** each figure's file and the post's alt text; `title` names it where the file name would not */
   figures: readonly { src: string; alt: string; title?: string }[];
 };
@@ -290,6 +291,7 @@ function postEntries(post: PostGraphics): Entry[] {
     const variants: Variant[] = [variantOf('dark', post.imageLight ? 'Dark' : 'Cover', post.image)];
     if (post.imageLight) variants.push(variantOf('light', 'Light', post.imageLight));
     if (card) variants.push(variantOf('card', 'Card', card));
+    if (card && post.ogImageLight) variants.push(variantOf('card-light', 'Card, light', post.ogImageLight));
     const cover = post.imageLight ? 'The header cover in both themes' : 'The header cover';
     entries.push({
       id: `${slug}-cover`,
@@ -329,13 +331,32 @@ function keptPost(slug: string): (PostGraphics & { title: string }) | undefined 
  * post's portrait is a Spotlight attribute, a photograph rather than a
  * graphic, so it stays out.
  */
-const POSTS = [
+const PARAGLIDE_CONTEXT_DIR = '/static/blogs/paraglide-js-context';
+
+/** Kept here as images: the post shows its four figures as live components in gt-cloud, and its file is not in content/blog. */
+const PARAGLIDE_CONTEXT: PostGraphics & { title: string } = {
+  slug: 'paraglide-js-context',
+  title: 'How we extract translation context from compiled i18n',
+  image: `${PARAGLIDE_CONTEXT_DIR}/cover.webp`,
+  imageLight: `${PARAGLIDE_CONTEXT_DIR}/cover-light.webp`,
+  ogImage: `${PARAGLIDE_CONTEXT_DIR}/og.png`,
+  ogImageLight: `${PARAGLIDE_CONTEXT_DIR}/og-light.png`,
+  figures: [
+    { src: `${PARAGLIDE_CONTEXT_DIR}/order-in-context.webp`, title: 'Order in context', alt: 'One en.json entry, "order": "Order", called as m.order() in a <button>, an <h1> and a <select aria-label>, translated as a verb, a noun and a sequence in German, Spanish and Chinese.' },
+    { src: `${PARAGLIDE_CONTEXT_DIR}/call-site.webp`, title: 'Call site', alt: 'A split diff of src/Header.tsx: the two versions match except line 3, where <h1>Hello {name}!</h1> becomes <h1>{m.greeting({ name })}</h1>.' },
+    { src: `${PARAGLIDE_CONTEXT_DIR}/tracing.webp`, title: 'Tracing', alt: 'The four tracing steps (module graph, usage collector, value evaluator, call-site and importer indexes), each with the code it reads and the message or pattern it finds: Paraglide output, an alias, greeting and err_*.' },
+    { src: `${PARAGLIDE_CONTEXT_DIR}/context-window.webp`, title: 'Context window', alt: 'CheckoutSummary.tsx with the 10 lines around m.order highlighted, and the en.metadata.json entry that records them as before, target and after.' },
+  ],
+};
+
+const POSTS: readonly { slug: string; lead: string; set?: PostGraphics & { title: string } }[] = [
   { slug: 'rewriting-our-docs', lead: 'Part one of the series: the content rewrite, illustrated with captures of the shipped docs.' },
+  { slug: 'paraglide-js-context', lead: 'The Paraglide JS context post: the cover and social card in both themes, and the four figures the post shows as live components.', set: PARAGLIDE_CONTEXT },
   { slug: 'daniel-white', lead: 'The open-source grant to Cuelume, Daniel White’s library of interaction sounds: the cover in Cuelume’s green, then seven figures on how its cues are made and heard.' },
   { slug: 'supporting-slash-companies', lead: 'The translation credits for companies that bank with Slash, published with one cover.' },
   { slug: 'fuma-nama', lead: 'The interview with the creator of Fumadocs: the landing page, the slider, and the architecture diagram drawn in the post.' },
   { slug: 'supporting-open-source-software', lead: 'The announcement of the open-source grants, published with one cover.' },
-] as const;
+];
 
 /** The posts /graphics illustrates: the docs series, then each post in POSTS that has a section. */
 export function graphicsPostCount(blocks: readonly Block[]): number {
@@ -354,8 +375,8 @@ export function getGraphicsBlocks(): readonly Block[] {
   }
   blocks.push({ id: 'sheets', label: 'Contact sheets', lead: 'The finished set tiled at thumbnail size, the way a reader meets it.', entries: sheetEntries() });
   blocks.push({ id: 'grounds', label: 'Backgrounds', lead: 'The glyphfield exports the visuals sit on, at their native 1920 by 1080 and their own aspect; each names the visuals that use it.', entries: groundEntries(visuals) });
-  for (const { slug, lead } of POSTS) {
-    const post = keptPost(slug);
+  for (const { slug, lead, set } of POSTS) {
+    const post = set ?? keptPost(slug);
     const entries = post ? postEntries(post) : [];
     if (post && entries.length) blocks.push({ id: slug, label: post.title, lead, entries });
   }
