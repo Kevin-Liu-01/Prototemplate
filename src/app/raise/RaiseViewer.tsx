@@ -30,7 +30,7 @@ const LEAD =
 /** The section leads under each divider. */
 const LEADS = {
   finals: 'Every deliverable once, with the cut that shipped in the frame and its other cuts folded under it.',
-  history: 'The cuts the finals replaced: the first translation demo, the earlier posters, walls and films, and the drafts before the launch films. None of them is in the finals.',
+  history: 'The cuts the finals replaced: round 10 of the translation demo, the earlier posters, walls and films, and the drafts before the launch films. None of them is in the finals.',
   rounds: 'The rounds of work in date order. Each page gives the account of how Kevin directed the round, the files it showed and what carried forward.',
   method: 'The working rules the film, still and page lanes settled on.',
 } as const;

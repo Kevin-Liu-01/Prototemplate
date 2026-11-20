@@ -1,4 +1,3 @@
-import type { MotionFilm } from '@/lib/motion';
 import { dayLabel, duration, fileUrl } from '@/lib/raise';
 import type { Raise, RaiseCut, RaiseDeliverable, RaiseItem, RaiseRound, RaiseStatus } from '@/lib/raise';
 import type { ShellItem, ShellSection } from '@/lib/shell-data';
@@ -22,10 +21,6 @@ import { METHOD_ID, roundId, SECTION, SECTION_LABEL } from './sections';
  * (the loader, the music, the Poster D alternates) is a row of its own
  * after them. The History group's items are the History section, kept out
  * of the finals.
- *
- * One row is not the store's: the translation demo plays the product film
- * /motion shows today (`gif-how-gt-works` in src/lib/motion.ts), and the
- * demo the launch lanes cut stays under History.
  */
 
 /** One file as a frame on the page: a still, a film or a score, with its addresses resolved. */
@@ -194,39 +189,8 @@ function rowId(item: RaiseDeliverable): string {
   return item.id.replace(/^ready-/, '');
 }
 
-/** The current product film from /motion that replaces the launch's translation demo. */
-export const DEMO_FILM_SLUG = 'gif-how-gt-works';
-
-function demoRow(film: MotionFilm | undefined): RaiseViewRow | null {
-  const media = film?.media;
-  if (!film || !media) return null;
-  return {
-    id: 'translation-demo',
-    n: '',
-    title: 'Translation demo',
-    place: 'X, LinkedIn and the blog',
-    note: 'The product film /motion shows today. The demo cut for the launch is under History.',
-    main: [
-      {
-        key: film.slug,
-        kind: 'film',
-        label: film.title,
-        about: `16:9, 1920 x 1080, ${film.runtime ?? film.length}`,
-        chip: 'Current',
-        tone: 'shipped',
-        src: media.video,
-        image: media.poster,
-        w: 1920,
-        h: 1080,
-      },
-    ],
-    others: [],
-    link: { href: `/motion#${film.id}`, label: 'See it on /motion' },
-  };
-}
-
 /** The finals and the history rows, numbered in reading order. */
-function showRows(raise: Raise, demo: MotionFilm | undefined): { finals: RaiseViewRow[]; history: RaiseViewRow[] } {
+function showRows(raise: Raise): { finals: RaiseViewRow[]; history: RaiseViewRow[] } {
   const groups = raise.data.show;
   const ready = groups.find((group) => group.id === READY)?.items ?? [];
   const posting = groups.filter((group) => group.id !== READY && group.id !== HISTORY).flatMap((group) => group.items);
@@ -254,10 +218,6 @@ function showRows(raise: Raise, demo: MotionFilm | undefined): { finals: RaiseVi
     const cuts = merged.get(item.id) ?? item.cuts;
     finals.push({ id: rowId(item), n: '', title: item.title, place: item.place, ...splitCuts(cuts, false) });
   }
-  /* the translation demo after the launch films, where the launch posted it */
-  const demoAt = finals.findIndex((row) => row.id === 'launch') + 1;
-  const demoView = demoRow(demo);
-  if (demoView) finals.splice(demoAt, 0, demoView);
   for (const item of own) {
     const note =
       item.state === 'progress' ? 'Still in progress.' : item.state === 'alternates' ? 'Alternates that were not posted.' : undefined;
@@ -331,8 +291,8 @@ function shellSections(route: string, finals: readonly RaiseViewRow[], history: 
 }
 
 /** Everything the index and the record pages read, for one route. */
-export function raiseIndex(raise: Raise, demo: MotionFilm | undefined, route = 'index'): RaiseIndex {
-  const { finals, history } = showRows(raise, demo);
+export function raiseIndex(raise: Raise, route = 'index'): RaiseIndex {
+  const { finals, history } = showRows(raise);
   const rounds = roundRows(raise, finals.length + history.length + 1);
   const methodN = pad2(finals.length + history.length + rounds.length + 1);
   const first = raise.data.rounds[0];

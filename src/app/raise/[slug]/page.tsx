@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 
-import { getMotionFilm } from '@/lib/motion';
 import { dayLabel, loadRaise } from '@/lib/raise';
 import type { Raise } from '@/lib/raise';
 import JsonLd from '@/lib/seo/JsonLd';
@@ -8,7 +7,7 @@ import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
 import { METHOD, METHOD_LEAD, METHOD_SLUG, METHOD_TITLE } from '../method';
-import { DEMO_FILM_SLUG, itemCut, raiseIndex } from '../model';
+import { itemCut, raiseIndex } from '../model';
 import { METHOD_ID, roundId, stateWord } from '../sections';
 import type { RaiseRecord, RaiseRecordPart } from './RaiseRecordViewer';
 import RaiseRecordViewer from './RaiseRecordViewer';
@@ -126,7 +125,7 @@ export default async function RaiseRecordPage({ params }: Params) {
   const head = describe(raise, slug);
   const record = slug === METHOD_SLUG ? methodRecord() : raise ? roundRecord(raise, slug) : null;
   if (!head || !record) notFound();
-  const sections = raise ? raiseIndex(raise, getMotionFilm(DEMO_FILM_SLUG), slug).sections : [];
+  const sections = raise ? raiseIndex(raise, slug).sections : [];
   return (
     <>
       <JsonLd nodes={recordRoute(slug, head).jsonLd} />

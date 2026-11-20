@@ -1,11 +1,10 @@
-import { getMotionFilm } from '@/lib/motion';
 import { PAGE_NAMES } from '@/lib/page-names';
 import { loadRaise } from '@/lib/raise';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
-import { DEMO_FILM_SLUG, raiseIndex } from './model';
+import { raiseIndex } from './model';
 import RaiseViewer from './RaiseViewer';
 import StoreMissing from './StoreMissing';
 
@@ -27,9 +26,8 @@ export const metadata = route.metadata;
  * /raise: the media of the funding announcement on the viewer shell, in
  * the format of /motion. The finals, the history and the rounds are read
  * from the Blob store (src/lib/raise.ts) and shaped here on the server
- * (model.ts), so the client receives plain rows; the translation demo plays
- * the product film /motion publishes. A store that cannot be read shows one
- * line in the same shell.
+ * (model.ts), so the client receives plain rows. A store that cannot be
+ * read shows one line in the same shell.
  */
 export default async function RaisePage() {
   const raise = await loadRaise();
@@ -37,7 +35,7 @@ export default async function RaisePage() {
   return (
     <>
       <JsonLd nodes={route.jsonLd} />
-      {raise ? <RaiseViewer index={raiseIndex(raise, getMotionFilm(DEMO_FILM_SLUG))} updated={updated} /> : <StoreMissing updated={updated} />}
+      {raise ? <RaiseViewer index={raiseIndex(raise)} updated={updated} /> : <StoreMissing updated={updated} />}
     </>
   );
 }
