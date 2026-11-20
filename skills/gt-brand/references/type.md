@@ -85,14 +85,14 @@ On a designer's machine with desktop Inter 3 installed, a failed woff2 therefore
 | `--pt-text-hant`, `--pt-text-hans`, `--pt-text-ja`, `--pt-text-he` | the Inter variable, then that script's faces | Traditional and Simplified Chinese, Japanese, Hebrew |
 | `--pt-face-serif`, `--pt-face-grot` | Fraunces and Space Grotesk stacks | the nameplate and the gallery's grotesk labels only |
 | `--pt-ff-text` | `'liga' 1, 'calt' 1` | every element |
-| `--pt-ff-display` | `'liga' 1, 'calt' 1, 'cv11' 1, 'ss01' 1` | h1, h2 and display sentences |
+| `--pt-ff-display` | `normal` | h1, h2 and display sentences |
 | `--pt-w-text`, `--pt-w-label`, `--pt-w-display`, `--pt-w-strong` | 400, 500, 500, 500 | weights |
 | `--pt-d1`, `--pt-d2`, `--pt-d3` | 44px/1.04/-0.025em, 32px/1.05/-0.025em, 24px/1.25/-0.02em | page title, section title, h2 in prose |
 | `--pt-t-title`, `--pt-t-lead`, `--pt-t-body`, `--pt-t-small`, `--pt-t-meta`, `--pt-t-group` | 18/1.35, 17/1.55, 16/1.6, 14/1.55, 13/1.5, 12.5 | the text ladder |
 | `--pt-track-label`, `--pt-track-group` | -0.01em, -0.005em | weight 500 at 13 to 18px, and at 12 to 12.5px |
 | `--pt-measure`, `--pt-measure-lead` | 32em, 30em | body and lead measure |
 
-Under 900px the display steps drop to d1 32px, d2 26px at 1.15 and d3 21px. The base rules in the same file set the family, the text features, `font-optical-sizing: auto` and weight 400 on the shell's roots (`.pt-viewer`, `.pt-search`, `.pt-panel`, `.pt-help`, `.pt-preview`, `.pt-corner`, `.pt-toast`, `.pt-root`, `.blog-root`), the display features, weight 500 and balanced wrap on `h1` and `h2`, weight 500 and balanced wrap on `h3` and `h4`, weight 500 on `b` and `strong`, and the mono stack on `code`, `pre` and `samp`. `kbd` stays Inter, because the search key chip and the help card's keys are labels. The base sits on the shell's roots and never on `html`, so the `/d/` directions keep their own type.
+Under 900px the display steps drop to d1 32px, d2 26px at 1.15 and d3 21px. The base rules in the same file set the family, the text features, `font-optical-sizing: auto` and weight 400 on the shell's roots (`.pt-viewer`, `.pt-search`, `.pt-panel`, `.pt-help`, `.pt-preview`, `.pt-corner`, `.pt-toast`, `.pt-root`, `.blog-root`), the display token (no features), weight 500 and balanced wrap on `h1` and `h2`, weight 500 and balanced wrap on `h3` and `h4`, weight 500 on `b` and `strong`, and the mono stack on `code`, `pre` and `samp`. `kbd` stays Inter, because the search key chip and the help card's keys are labels. The base sits on the shell's roots and never on `html`, so the `/d/` directions keep their own type.
 
 gt-cloud's tokens: `--font-sans` and `--font-mono` from the landing's `fonts.ts`; on the dashboard's plate pages, `$GT_CLOUD/apps/dashboard/src/app/brand-tokens.css` caps `h1` to `h4`, `b`, `strong`, `.font-semibold` and `.font-bold` at 500 and sets the ladder classes (`.typo-page-heading` 30px/1.08 at -0.025em with `cv11` and `ss01`; `.typo-lede` 15px/1.55 in ink-2; `.typo-key` 13px/1.45 at weight 500 in titanium; `.typo-caption` 13px/1.45 at +0.01em).
 
@@ -116,9 +116,9 @@ Width of "General Translation Motion brand" at weight 500, in px:
 
 ## Features
 
-- `cv11` is the single-storey a and `ss01` the open digits. They go on display sizes only, as the deck sets them on `h1, h2, .big` (`deck/parts/head.html:62`). Labels, numerals, h3 and contents links take the text list. A current sidebar row and its neighbours must draw the same a, so a state change alters weight or color and never letterforms.
+- Headings in Katagami Text take no stylistic feature tags, so the hub's headings match generaltranslation.com, which sets none (Kevin, 2026-11-19: "yeah match generaltrasnlation.com"). `--pt-ff-display` is `normal`, and `pnpm lint:type` (T4) fails any other value. `cv11` (the single-storey a) and `ss01` (the open digits) stay only on the deck's Inter headings, `h1, h2, .big` in `deck/parts/head.html`. Labels, numerals, h3 and contents links take the text list. A current sidebar row and its neighbours must draw the same a, so a state change alters weight or color and never letterforms.
 - **Chrome drops `calt` under letter-spacing.** Measured at 44px weight 500 on `a -> b => c 10:30 A-B`: untracked 399.94px; untracked with `calt` off 421.64px; tracked -0.025em 398.55px; tracked with `calt` off 398.55px (identical, so tracking already turned it off); tracked with `'calt' 1, 'liga' 1` 380.81px. Without the explicit list a tracked heading loses the `->` arrow, the colon centred between digits, the hyphen raised between capitals and parentheses fitted to capitals. rsms.me's own CSS writes `font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */`.
-- `font-feature-settings` is one property, and a rule that sets it replaces the inherited list. Every element therefore reads one of the two tokens, and a rule that needs figures adds `font-variant-numeric: tabular-nums`, which composes with the tokens.
+- `font-feature-settings` is one property, and a rule that sets it replaces the inherited list. Every element therefore reads one of the two tokens (the display token is `normal`, so a tracked heading draws Katagami Text's defaults as the site's do), and a rule that needs figures adds `font-variant-numeric: tabular-nums`, which composes with the tokens.
 - The deck still writes `'cv11', 'ss01'` without `liga` and `calt` on its headings (`head.html:62`), so its tracked headings lose `calt`, and its stacks still name `'Inter', 'Helvetica Neue', Arial`. `head.html` is edited only on instruction (`deck/DECK-GRAMMAR.md`), so both fixes wait for the deck's owner; the type audit of 2026-10-05 names the missing `calt` as the deck's only type defect.
 
 ## Tracking, in full

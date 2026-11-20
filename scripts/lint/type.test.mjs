@@ -109,6 +109,10 @@ describe('T4 features', () => {
   test('normal on the nameplate passes', () => passes('.pt-face-grot { font-feature-settings: normal; }'));
   test('a token definition without calt fails', () =>
     fails(":root { --pt-ff-text: 'liga' 1; } :is(b, strong) { font-weight: var(--pt-w-strong); }", 'T4', PATHS.tokens));
+  test('a display token with a stylistic tag fails, normal passes', () => {
+    fails(":root { --pt-ff-display: 'liga' 1, 'calt' 1, 'cv11' 1; } :is(b, strong) { font-weight: var(--pt-w-strong); }", 'T4', PATHS.tokens);
+    passes(":root { --pt-ff-display: normal; } :is(b, strong) { font-weight: var(--pt-w-strong); }", PATHS.tokens);
+  });
   test('an inline literal in TSX fails, the token passes', () => {
     assert.ok(lintTsx('src/x.tsx', "<p style={{ fontFeatureSettings: \"'ss01'\" }} />").some((p) => p.rule === 'T4'));
     assert.deepEqual(lintTsx('src/x.tsx', "<p style={{ fontFeatureSettings: 'var(--pt-ff-text)' }} />"), []);

@@ -80,12 +80,13 @@
   --pt-text-he: var(--font-inter), 'Arial Hebrew', 'Noto Sans Hebrew', sans-serif;
   /* --pt-face-serif and --pt-face-grot: see .pt-faces below */
 
-  /* Features. Display (h1, h2 and display sentences) adds the single-storey
-     a and the open digits; text keeps Inter's default forms. Both name liga
-     and calt because Chrome turns them off under any letter-spacing
-     (rsms.me/inter's own fix). */
+  /* Features. Headings (h1, h2 and display sentences) take Katagami Text's
+     default forms with no feature tags, as generaltranslation.com sets them:
+     no stylistic set or character variant is ever turned on. Text names
+     liga and calt, which are on by default, because Chrome turns them off
+     under any letter-spacing. */
   --pt-ff-text: 'liga' 1, 'calt' 1;
-  --pt-ff-display: 'liga' 1, 'calt' 1, 'cv11' 1, 'ss01' 1;
+  --pt-ff-display: normal;
 
   /* Weights (BRAND.md section 6): nothing above 500. */
   --pt-w-text: 400;
@@ -234,15 +235,15 @@
 }
 
 /* Type base on the shell's roots, not on html, so the /d/ directions keep
-   their own type. The display features reach h1 and h2 only (the deck's
-   rule, head.html:62); every other element takes the text features. The
+   their own type. h1 and h2 take the display token, which sets no
+   features; every other element takes the text features. The
    /d/production blog port carries .blog-root beside .toolchain-root and
    keeps its own type: :where() leaves the exclusion at no specificity.
    The docs site's root (fumadocs' #nd-notebook-layout) carries .pt-docs
    from src/app/docs/layout.tsx, a class so the lists keep their
    specificity; it skips the form controls rule, because preflight's
    button rule already inherits the features there and the text list
-   would strip the display list from a button inside a heading. */
+   would replace the heading's features on a button inside a heading. */
 :is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-preview, .pt-corner, .pt-toast, .pt-root, .blog-root:not(:where(.toolchain-root)), .pt-docs) {
   font-family: var(--pt-text);
   font-feature-settings: var(--pt-ff-text);

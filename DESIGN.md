@@ -305,10 +305,11 @@ display size of its own. The /d/ directions keep their own type.
   name system faces after Inter. The nameplate's faces are
   `--pt-face-serif` and `--pt-face-grot`.
 - **Features.** h1 and h2 (and a display sentence such as the brand
-  plate's `.ptc-every`) take `--pt-ff-display`: the single-storey a
-  (cv11) and the open digits (ss01). Everything else takes
-  `--pt-ff-text`. Both name `'liga' 1, 'calt' 1`, because Chrome turns
-  contextual forms off under any letter-spacing. The base rules on the
+  plate's `.ptc-every`) take `--pt-ff-display`, which is `normal`:
+  headings in Katagami Text take no stylistic feature tags, so they
+  match generaltranslation.com. Everything else takes `--pt-ff-text`,
+  `'liga' 1, 'calt' 1`, because Chrome turns contextual forms off under
+  any letter-spacing. The base rules on the
   shell's roots set them; a rule never writes a feature list.
 - **Weight.** 400 for text, 500 for labels, headings and `strong`.
   Nothing above 500.

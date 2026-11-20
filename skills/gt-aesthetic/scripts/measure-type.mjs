@@ -9,7 +9,7 @@
 // flags: a weight above 500 on a heading, a display heading (32px and up) on
 // more than two lines, a lead on more than three lines (five at phone
 // widths), prose wider than 75 characters, a heading without balanced
-// wrapping, a display heading without cv11 and ss01, tracking above +0.02em
+// wrapping, tracking above +0.02em
 // or below -0.03em, a face other than Inter outside code, a last line under a
 // fifth of the widest one, and text under the WCAG contrast floor (4.5:1, or
 // 3:1 at 24px and up).
@@ -222,7 +222,6 @@ function readType({ selector, max }) {
     if (lead && lines > leadLimit) flags.push(`lead on ${lines} lines`);
     if (!heading && lines >= 2 && cpl > 75) flags.push(`measure ${cpl} chars`);
     if (heading && lines >= 2 && !wrap.includes('balance')) flags.push('no balance');
-    if (heading && size >= 32 && !(/cv11/.test(features) && /ss01/.test(features))) flags.push('no cv11/ss01');
     if (track > 0.021) flags.push(`tracking +${track.toFixed(3)}em`);
     if (track < -0.031) flags.push(`tracking ${track.toFixed(3)}em`);
     if (!code && !/inter/i.test(family)) flags.push(`face ${family}`);

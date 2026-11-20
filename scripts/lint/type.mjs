@@ -35,8 +35,10 @@
  *                  into CSS chunks that other routes share, and Next
  *                  preloads every font a route's CSS names
  *   T4 features    font-feature-settings reads var(--pt-ff-text) or
- *                  var(--pt-ff-display) (`normal` on the nameplate); both
- *                  token definitions hold 'liga' 1 and 'calt' 1
+ *                  var(--pt-ff-display) (`normal` on the nameplate); the
+ *                  text token holds 'liga' 1 and 'calt' 1, and the display
+ *                  token is `normal`, as generaltranslation.com sets
+ *                  Katagami Text's headings with no feature tags
  *   T5 variation   no font-variation-settings, no font-optical-sizing: none
  *   T6 weight      nothing above 500 outside the nameplate and the
  *                  specimens; tokens.css holds the :is(b, strong) base rule
@@ -391,8 +393,11 @@ export function lintCss(rel, source) {
           if (!/^var\(--font-inter\)/.test(v)) report(line, 'T2', `${prop}: the Inter stack must start with var(--font-inter)`);
           if (splitTop(v, ',').some((item) => /^(['"]?Helvetica Neue['"]?|['"]?Arial['"]?)$/.test(item.trim()))) report(line, 'T2', `${prop}: Helvetica Neue and Arial after var(--font-inter) are dead (next/font's fallback face is local Arial)`);
         }
-        if (isTokens && /^--pt-ff-(text|display)$/.test(prop) && !(/'liga' 1/.test(v) && /'calt' 1/.test(v))) {
+        if (isTokens && prop === '--pt-ff-text' && !(/'liga' 1/.test(v) && /'calt' 1/.test(v))) {
           report(line, 'T4', `${prop} must hold 'liga' 1 and 'calt' 1 (Chrome turns them off under letter-spacing)`);
+        }
+        if (isTokens && prop === '--pt-ff-display' && v !== 'normal') {
+          report(line, 'T4', `${prop} must be normal: headings in Katagami Text take no feature tags, as on generaltranslation.com`);
         }
         continue;
       }
