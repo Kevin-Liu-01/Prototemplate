@@ -5,8 +5,9 @@ import { cache } from 'react';
 import { formatLongDay } from '@/lib/dates';
 
 /**
- * /raise: the media history of the funding announcement, round by round, as a
- * docs site. The rounds, their accounts and their files are read from the
+ * /raise: the media of the funding announcement on the viewer shell, the
+ * finals first, then the cuts they replaced, the rounds and the method
+ * (src/app/raise). The rounds, their accounts and their files are read from the
  * locked areas' Blob store under locked/raise/ (scripts/locked/sync.mjs
  * uploads it) when a page is built and again every five minutes, so the
  * raise folder stays the one source and a sync updates the pages without a
@@ -109,9 +110,6 @@ export type RaiseText = { title?: string; lead?: string; directed?: string[]; bo
 
 export type Raise = { data: RaiseData; text: Record<string, RaiseText> };
 
-/** The slug of the run of show's page, after the last round. */
-export const FINALS = 'finals';
-
 /** A text file of the store, or null when the store or the file is missing. */
 async function readStore(path: string): Promise<string | null> {
   const token = process.env.LOCKED_BLOB_READ_WRITE_TOKEN;
@@ -173,15 +171,9 @@ export function fileUrl(path: string): string {
   return `${RAISE_FILES}${path.split('/').map(encodeURIComponent).join('/')}`;
 }
 
-/** The rounds by day, in the order data.js lists them (its own date order). */
-export function roundsByDay(rounds: readonly RaiseRound[]): { day: string; label: string; rounds: RaiseRound[] }[] {
-  const days: { day: string; label: string; rounds: RaiseRound[] }[] = [];
-  for (const round of rounds) {
-    const last = days.at(-1);
-    if (last && last.day === round.date) last.rounds.push(round);
-    else days.push({ day: round.date, label: formatLongDay(round.date).replace(/, \d{4}$/, ''), rounds: [round] });
-  }
-  return days;
+/** A round's day without its year: `October 28`. */
+export function dayLabel(date: string): string {
+  return formatLongDay(date).replace(/, \d{4}$/, '');
 }
 
 /** A length in seconds as m:ss. */

@@ -1,109 +1,214 @@
-/* The raise pages' own parts on top of the docs stylesheet (src/app/docs/
-   docs.css, which src/app/raise/layout.tsx also imports): the round tag in
-   the sidebar, the facts row, the media grid, the status chips and the
-   folded list of every other file. Colors, corners and type come from
-   tokens.css; the one line role is the row hairline. */
+/* Raise: the funding announcement media on the viewer shell.
 
-/* the round's tag before its title in the sidebar: the title's face in the
-   muted ink, never broken across lines (the row is a flex box, so the tag
-   is its own item and keeps its width) */
-.pt-raise .raise-tag {
-  flex: none;
-  white-space: nowrap;
-  color: var(--color-fd-muted-foreground);
+   The index (/raise) reuses the graphics book's row grammar (gx-, from
+   src/app/graphics/graphics.css) and a round's or the method's page the
+   book's prose grammar (ptd-, from src/components/book/book.css); this
+   sheet holds only what the pages add, under the ra- prefix. Every value
+   reads the shell's --pt- tokens. Nothing here draws a line beside one
+   that already exists: the dividers own the section rules, BookHead owns
+   the head rule and the rows rule themselves. The frames are .gx-frame's,
+   in the frame role (--pt-edge) every picture in the shell takes; the
+   chips take the chip corner and no border. */
+
+/* ---------- a deliverable ---------- */
+
+/* where it is posted, under the title, and the link to its source */
+.gx-body > p.ra-place {
+  margin-top: 4px;
 }
 
-/* the facts under the lead, one after another */
-.raise-facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
+.ra-place a,
+.ra-book .gx-body h3 a {
+  color: var(--pt-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
-/* the files: as many columns as fit at 220 px, each file at its own ratio */
-.raise-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 24px 16px;
-  margin: 16px 0 24px;
+.ra-book .gx-body h3 a {
+  text-decoration-color: var(--pt-hair);
 }
 
-.raise-media {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 0;
-  min-width: 0;
+.ra-book .gx-body h3 a:hover {
+  text-decoration-color: currentColor;
 }
 
-.raise-frame {
-  display: block;
-  overflow: hidden;
-  border-radius: var(--pt-radius-card);
-  background: var(--pt-plate);
+.ra-place a:focus-visible,
+.ra-book .gx-body h3 a:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
 }
 
-.raise-frame img,
-video.raise-frame {
+/* the frame: the 16:9 stage every cut shares, a poster, a card or a film
+   centred on the plate at its own aspect */
+.ra-frame {
+  position: relative;
+}
+
+.ra-frame video {
+  background: var(--pt-panel-ink);
+}
+
+/* the film's play button fills the frame; its poster sits contained like a still */
+.ra-film {
+  position: absolute;
+  inset: 0;
+}
+
+.ra-film .ptb-film-play {
+  inset: 0;
+}
+
+.ra-film .ptb-film-poster {
+  object-fit: contain;
+}
+
+/* a score: its waveform on a 4:1 plate, the player under it */
+.ra-frame.is-score {
+  aspect-ratio: 4 / 1;
+}
+
+.ra-score audio {
   display: block;
   width: 100%;
-  height: auto;
-  margin: 0;
-  border-radius: var(--pt-radius-card);
+  height: 40px;
+  margin-top: 8px;
 }
 
-/* a score candidate: its waveform over the player */
-.raise-track {
-  display: flex;
-  flex-direction: column;
-}
-.raise-track audio {
-  width: 100%;
-}
-
-.raise-media figcaption {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 8px;
-  margin: 0;
-  font-size: var(--pt-t-small);
-  line-height: var(--pt-t-small-lh);
-  color: var(--color-fd-foreground);
+/* the cut control under the frame: it scrolls sideways inside its own row
+   when its options run wider than the column */
+.ra-seg {
+  max-width: 100%;
+  overflow-x: auto;
+  margin-top: 12px;
 }
 
-.raise-caption {
-  font-weight: 500;
+.ra-seg .gx-seg {
+  margin-top: 0;
 }
 
-.raise-note {
-  flex-basis: 100%;
-  color: var(--color-fd-muted-foreground);
+/* the cut's line: its label in ink, its format, its chip */
+.ra-fig figcaption .ra-line {
+  margin-top: 8px;
 }
 
-.raise-quiet {
-  color: var(--color-fd-muted-foreground);
+.ra-label {
+  color: var(--pt-ink);
 }
 
-/* the status chip: quiet for a reference or a drop, inked for a file that stood */
-.raise-chip {
+.ra-chip {
+  display: inline-block;
+  margin-left: 8px;
   padding: 0 6px;
-  border: 1px solid var(--pt-hair);
   border-radius: var(--pt-radius-chip);
-  font-size: var(--pt-t-small);
-  color: var(--color-fd-muted-foreground);
-}
-.raise-chip:is([data-status='kept'], [data-status='pick'], [data-status='shipped']) {
-  color: var(--color-fd-foreground);
+  background: var(--pt-plate);
+  color: var(--pt-ink-2);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  white-space: nowrap;
 }
 
-/* every other file of a round, folded until asked for */
-.raise-more {
-  margin: 16px 0 24px;
+.ra-chip[data-tone='shipped'] {
+  background: var(--pt-ink);
+  color: var(--pt-paper);
 }
-.raise-more > summary {
+
+/* the folded cuts under the frame */
+.ra-more {
+  margin-top: 14px;
+}
+
+.ra-more summary {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink);
   cursor: pointer;
-  width: fit-content;
-  min-height: 24px;
-  color: var(--color-fd-primary);
+}
+
+.ra-more summary:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+/* cuts as small frames: as many columns as fit at 200px */
+.ra-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px 16px;
+  margin-top: 14px;
+}
+
+.ra-tile {
+  min-width: 0;
+  margin: 0;
+}
+
+.ra-tile figcaption {
+  margin-top: 6px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
+.ra-tile .ra-chip {
+  margin-left: 6px;
+}
+
+.ra-about {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- a round on the index ---------- */
+
+/* four of its files in a row of small frames, under the lead */
+.ra-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.ra-strip .ra-film .ptb-film-badge {
+  width: 28px;
+  height: 28px;
+}
+
+.ra-strip .ra-film .ptb-film-badge svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ---------- a round's or the method's page ---------- */
+
+.ra-part {
+  scroll-margin-top: 20px;
+}
+
+/* a part with files takes the column's full width for its grid */
+.ra-book .ptd-body.ra-wide {
+  max-width: none;
+}
+
+.ra-book .ptd-body .ra-tile figcaption {
+  font-size: var(--pt-t-meta);
+}
+
+/* ---------- narrow ---------- */
+
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .ra-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 12px;
+  }
+
+  .ra-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ra-more summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
 }

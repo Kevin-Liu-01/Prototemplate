@@ -36,7 +36,7 @@
  *   S6 tokens   the book page's spaces in BookView.css and Sheet.css read
  *               their tokens, never the literal px they stand for
  *
- * Live mode reads /brand, /motion, the first package, /graphics, /skills, the first skill, /components, /marks, /marks/graticule, /marks/loading, the first
+ * Live mode reads /brand, /motion, the first package, /raise, /graphics, /skills, the first skill, /components, /marks, /marks/graticule, /marks/loading, the first
  * direction, /blog, the newest post and the three Transcreate pages at 1440x900 and 390x844 in both themes:
  *
  *   H1 structure  one header.pt-book-head; the mast is h1, the lead, the
@@ -98,7 +98,7 @@ helpIfAsked(import.meta.url);
 export const OWNERS = ['src/components/viewer/BookView.css', 'src/components/viewer/InstallField.css'];
 
 /** The record routes: their heads carry the record's own title. */
-export const RECORDS = ['src/app/motion/[slug]/PackageViewer.tsx', 'src/app/skills/SkillViewer.tsx', 'src/app/directions/DirectionViewer.tsx', 'src/app/blog/PostViewer.tsx'];
+export const RECORDS = ['src/app/motion/[slug]/PackageViewer.tsx', 'src/app/raise/[slug]/RaiseRecordViewer.tsx', 'src/app/skills/SkillViewer.tsx', 'src/app/directions/DirectionViewer.tsx', 'src/app/blog/PostViewer.tsx'];
 
 /** The component's own file: BookView passes its title through. */
 const COMPONENT = 'src/components/viewer/BookView.tsx';
@@ -110,7 +110,7 @@ export const STANDARD = ['pt-book-head', 'pt-book-mast', 'pt-book-lead', 'pt-boo
 const BOX_TYPE = /^(margin|padding|border|gap$|row-gap$|column-gap$|grid-|display$|font|line-height$|letter-spacing$|color$|background|height$|min-height$|width$|max-width$)/;
 
 /** The book routes S3 reads, and the gallery files and the craft article it allows by name. */
-const BOOK_ROUTES = ['src/app/brand/', 'src/components/book/', 'src/app/motion/', 'src/app/graphics/', 'src/app/skills/', 'src/app/components/', 'src/app/marks/', 'src/app/directions/', 'src/app/blog/', 'src/components/viewer/BookView', 'src/components/viewer/InstallField'];
+const BOOK_ROUTES = ['src/app/brand/', 'src/components/book/', 'src/app/motion/', 'src/app/raise/', 'src/app/graphics/', 'src/app/skills/', 'src/app/components/', 'src/app/marks/', 'src/app/directions/', 'src/app/blog/', 'src/components/viewer/BookView', 'src/components/viewer/InstallField'];
 const HATCH_ALLOWED = ['src/app/prototemplate.css', 'src/app/system-ledger.css', 'src/app/GalleryViewer.tsx', 'src/app/AnatomyWall.tsx', 'src/app/craft/'];
 
 /** S5's exception: the home page (the nameplate). */
@@ -371,7 +371,7 @@ export function lintHeads(root) {
 /* ------------------------------------------------------------------ */
 
 /** The routes live mode reads, by kind: the single pages and the first of each record (from lint-type's list). */
-const LIVE_PATHS = /^\/(brand|motion(\/[\w-]+)?|graphics|skills(\/[\w-]+)?|components|marks(\/(graticule|loading))?|directions\/[\w-]+|blog(\/[\w-]+)?|transcreate(\/[\w-]+)?)$/;
+const LIVE_PATHS = /^\/(brand|motion(\/[\w-]+)?|raise|graphics|skills(\/[\w-]+)?|components|marks(\/(graticule|loading))?|directions\/[\w-]+|blog(\/[\w-]+)?|transcreate(\/[\w-]+)?)$/;
 
 /**
  * Runs in the page: the head's geometry and the lines around it. Every

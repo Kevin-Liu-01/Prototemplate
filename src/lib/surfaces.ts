@@ -243,7 +243,7 @@ const KNOWLEDGE: readonly Surface[] = [
     'raise',
     pageLabel('raise'),
     '/raise',
-    'The media of the funding announcement, round by round, with an account of how each round was directed, then every deliverable in posting order.',
+    'The finals of the funding announcement media in posting order, the cuts they replaced, the rounds that made them and how the media was made.',
     'Knowledge',
     thumb('raise')
   ),

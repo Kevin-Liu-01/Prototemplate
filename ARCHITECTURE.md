@@ -65,12 +65,13 @@ src/
                           (LOCKED in src/lib/seo/policy.ts) for 30 days;
                           src/lib/access.ts holds the checks, and src/proxy.ts
                           and each locked route run them
-    raise/                /raise, a public docs site in the notebook layout
-                          whose words and media are read at request time
-                          from the locked areas' Blob store
-                          (src/lib/raise.ts), which
-                          scripts/locked/sync.mjs fills; files/ streams
-                          the media through src/lib/blob-area.ts
+    raise/                /raise, /raise/<round> and /raise/method on the
+                          viewer shell in /motion's format, finals first;
+                          the words and media are read from the locked
+                          areas' Blob store (src/lib/raise.ts, shaped by
+                          model.ts), which scripts/locked/sync.mjs fills;
+                          files/ streams the media through
+                          src/lib/blob-area.ts
     prototemplate.css     the pt grammar (index + craft chrome)
     globals.css           the four color tokens, the reset, the scrollbar,
                           the plate theme import and Tailwind's sources

@@ -109,6 +109,9 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // /raise moved onto the viewer shell on 2026-11-20 with the run of
+      // show as its first section, so the old finals page lands there.
+      { source: '/raise/finals', destination: '/raise', permanent: true },
       // The raw skill files moved from /skills/<slug>.md (the generated
       // bodies under public/skills, retired) to the skill's own folder,
       // served by src/app/skills/[slug]/[...path]/route.ts. A retired slug

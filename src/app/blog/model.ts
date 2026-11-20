@@ -28,7 +28,7 @@ export const RAISE = {
   heading: 'The media of the funding announcement',
   href: RAISE_SURFACE.href,
   desc: RAISE_SURFACE.desc,
-  summary: 'Every round of the launch media with an account of how it was directed, then every deliverable in posting order.',
+  summary: 'The finals of the launch media in posting order, then the cuts they replaced, every round with an account of how it was directed, and the method.',
   cover: { image: '/shots/pages/raise-dark.jpg', imageLight: '/shots/pages/raise-light.jpg' },
 } as const;
 

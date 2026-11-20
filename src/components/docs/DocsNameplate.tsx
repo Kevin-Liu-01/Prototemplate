@@ -10,7 +10,7 @@ import { brandFontVariables } from '@/lib/brand-fonts';
  * slot in the sidebar head and the phone header: the hub's mark and
  * nameplate (proto in Fraunces, template in Space Grotesk, DESIGN.md
  * section 15) link to the hub's home at /, and the section's name links to
- * the section's home (Docs to /docs, Raise to /raise). Each link keeps a
+ * the section's home (Docs to /docs). Each link keeps a
  * box of at least 24 by 24 px.
  */
 export function Nameplate({ className, section, sectionHref }: { className?: string; section: string; sectionHref: string }) {
