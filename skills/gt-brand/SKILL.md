@@ -4,7 +4,7 @@ description: >-
   The General Translation identity as rules: the name and the naming system,
   the four absolute colors and the one accent, the type system on Katagami
   Text, the one typeface (weights, features, tracking, per-script
-  fallbacks, Geist Mono for code, and the Inter build prototemplate.com
+  fallbacks, Geist Mono for code, and the Inter build the brand deck
   still renders), the logo and the generated speed
   marks, language as material, the final avoid list, and what
   never appears on a public surface. Use before making anything that carries
@@ -27,7 +27,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`) unless they na
 
 These files hold the detail:
 
-- `references/type.md`: Katagami Text's files, bindings, features and tracking; then the Inter build prototemplate.com still renders, with its file, bindings, tokens, optical size, ladders, per-script stacks, the type lint and the gotchas.
+- `references/type.md`: Katagami Text's files, bindings, features and tracking; then the Inter build the brand deck still renders, with its file, bindings, tokens, optical size, ladders, per-script stacks, the type lint and the gotchas.
 - `references/marks.md`: the current mark and its files, the review standard for a new mark, the name in running text, the speed set and how to regenerate it, the Locadex mark, the dithered shimmer and third-party logos.
 - `references/color.md`, `references/language.md` and `references/third-party.md`: the color exceptions, the language devices and the rules for material the company did not make.
 - `references/sources.md`: where every rule comes from, with dates.
@@ -97,7 +97,7 @@ The color rules have four documented exceptions, each named in `references/color
 
 **Katagami Text is the one typeface** (Kevin, 2026-11-09: "YES. katagami text"). It sets everything: the name in the logo, display, interface and body. It replaced Inter. Geist Mono sets code. Detail: `references/type.md`.
 
-**Known gap.** Some builds still render Inter until their own switch: prototemplate.com (the shell, the deck, `/brand`; `pnpm lint:type` holds that build), its films kit (`motion/kit`) and blog graphics (`graphics/`), and gt-cloud's dashboard (`--font-sans`; #5765 switched only the landing). The Inter block below describes them until then. New work anywhere else takes Katagami Text.
+**Known gap.** Some builds still render Inter until their own switch: the brand deck (`deck/`; prototemplate.com's shell sets Katagami Text), its films kit (`motion/kit`) and blog graphics (`graphics/`), and gt-cloud's dashboard (`--font-sans`; #5765 switched only the landing). The Inter block below describes them until then. New work anywhere else takes Katagami Text.
 
 **The face.** Katagami Text 1.200 from the Katagami family (katagami.kevinliu.studio, SIL Open Font License 1.1): roman and italic, variable on one axis, wght 100 to 900, no optical size axis. 15,212 glyphs: Latin, Greek, Cyrillic and 28 more scripts. Cap height 1430 of 2048 units (0.698em).
 
@@ -117,7 +117,7 @@ The color rules have four documented exceptions, each named in `references/color
 
 **Scripts.** generaltranslation.com's subset keeps Latin, Greek and Cyrillic; CJK, Arabic, Hebrew and Indic text falls back to a script face, and every layout is checked in CJK, RTL and Indic text as well as Latin. A real Arabic or Hebrew face takes its own rule with nothing in front (`references/type.md`).
 
-**Prototemplate's Inter build, until its switch.** The self-hosted rsms InterVariable 4.1 (`public/fonts/InterVariable.woff2`, sha1 `f55b18fd`, and the italic, `a5f0513e`), bound as `ptInter` on `--font-inter` with unicode-range subsets, stack `var(--font-inter), system-ui, sans-serif`, `font-optical-sizing: auto`, the display list `'liga' 1, 'calt' 1, 'cv11' 1, 'ss01' 1` and the text list `'liga' 1, 'calt' 1` through tokens, and the -0.025em ladder. The deck inlines the roman as `'Inter'`. No other Inter is ever loaded and no stack names a bare `'Inter'`. The bindings, tokens, ladders and gotchas are in `references/type.md`.
+**The deck's Inter build, until its switch.** The self-hosted rsms InterVariable 4.1 (`public/fonts/InterVariable.woff2`, sha1 `f55b18fd`, and the italic, `a5f0513e`). prototemplate.com's `ptInter` binding on `--font-inter` moved to Katagami Text on 2026-11-19 and kept the rest: stack `var(--font-inter), system-ui, sans-serif`, `font-optical-sizing: auto`, the display list `'liga' 1, 'calt' 1, 'cv11' 1, 'ss01' 1` and the text list `'liga' 1, 'calt' 1` through tokens, and the -0.025em ladder. The deck inlines the roman as `'Inter'`. No other Inter is ever loaded and no stack names a bare `'Inter'`. The bindings, tokens, ladders and gotchas are in `references/type.md`.
 
 **Exceptions.** The nameplate's Fraunces and Space Grotesk, the gallery's grotesk labels on `/`, the `/d/` directions, the presenter's faces, the weight specimens (deck slide 27, `.ptb-display`) and the speed marks' outline faces. Each is named in `references/type.md` so no sweep removes it.
 

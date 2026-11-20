@@ -454,7 +454,7 @@
   color: var(--pt-ink);
 }
 
-.ptb-inter {
+.ptb-body {
   max-width: 44ch;
   margin-top: 12px;
   font-family: var(--pt-text);
@@ -463,7 +463,7 @@
   color: var(--pt-ink-2);
 }
 
-.ptb-inter.is-italic {
+.ptb-body.is-italic {
   font-style: italic;
   color: var(--pt-ink-3);
 }

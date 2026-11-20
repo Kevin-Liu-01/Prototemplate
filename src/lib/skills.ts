@@ -113,7 +113,7 @@ export const SKILLS: readonly Skill[] = [
     id: 'gt-brand',
     name: 'gt-brand',
     title: 'Brand and Katagami Text',
-    description: 'The General Translation identity as rules: the name and the naming system, the four absolute colors and the one accent, the type system on Katagami Text, the one typeface (weights, features, tracking, per-script fallbacks, Geist Mono for code, and the Inter build prototemplate.com still renders), the logo and the generated speed marks, language as material, the final avoid list, and what never appears on a public surface. Use before making anything that carries the brand (a page, a slide, a graphic, a film, an email or a social image), when choosing a face, weight, tracking or color, when placing a mark or a third-party logo, and when reviewing a surface against the brand.',
+    description: 'The General Translation identity as rules: the name and the naming system, the four absolute colors and the one accent, the type system on Katagami Text, the one typeface (weights, features, tracking, per-script fallbacks, Geist Mono for code, and the Inter build the brand deck still renders), the logo and the generated speed marks, language as material, the final avoid list, and what never appears on a public surface. Use before making anything that carries the brand (a page, a slide, a graphic, a film, an email or a social image), when choosing a face, weight, tracking or color, when placing a mark or a third-party logo, and when reviewing a surface against the brand.',
     areas: ['aesthetic'],
     updated: '2026-11-18',
     files: ['references/color.md', 'references/language.md', 'references/marks.md', 'references/sources.md', 'references/third-party.md', 'references/type.md'],

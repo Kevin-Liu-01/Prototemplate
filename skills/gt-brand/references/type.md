@@ -1,6 +1,6 @@
 # Type: Katagami Text, and the Inter build in detail
 
-This file backs section 4 of `gt-brand`. Katagami Text is the one typeface (Kevin, 2026-11-09: "YES. katagami text"), and the first section below holds its detail. prototemplate.com itself still renders Inter until its own switch, so every section after it describes that Inter build: they stay accurate for it until then, and they are the checklist for the switch. For the Inter build it records the font file and how to verify it, the bindings on each surface, the tokens, the measurements behind the rules, the type lint and the gotchas. The measurements come from the type audit of 2026-10-05 on the Prototemplate dev server (Chrome for Testing through playwright-core, dark theme, 1440 and 390 wide, after `document.fonts.ready`). Paths are relative to `$PROTOTEMPLATE` unless they name `$GT_CLOUD`.
+This file backs section 4 of `gt-brand`. Katagami Text is the one typeface (Kevin, 2026-11-09: "YES. katagami text"), and the first section below holds its detail. prototemplate.com sets its text in Katagami Text since 2026-11-19, through the same `ptInter` binding and tokens. Every section after the first describes the Inter build it set before, which the brand deck still renders: they stay accurate for the deck until its switch, and the site's binding rows are updated in place. For the Inter build it records the font file and how to verify it, the bindings on each surface, the tokens, the measurements behind the rules, the type lint and the gotchas. The measurements come from the type audit of 2026-10-05 on the Prototemplate dev server (Chrome for Testing through playwright-core, dark theme, 1440 and 390 wide, after `document.fonts.ready`). Paths are relative to `$PROTOTEMPLATE` unless they name `$GT_CLOUD`.
 
 ## Katagami Text, the one typeface
 
@@ -198,7 +198,7 @@ A new exception goes into DESIGN.md section 15 or the lint allowlist with its re
 
 ## The rules of SKILL.md section 4 in full (the Inter build)
 
-These blocks stood in `SKILL.md` section 4 until 2026-10-10 and moved here unchanged to keep the body under its budget. Since 2026-11-09 they hold for the Inter build prototemplate.com renders until its switch; Katagami Text's rules are in the first section of this file.
+These blocks stood in `SKILL.md` section 4 until 2026-10-10 and moved here unchanged to keep the body under its budget. Since 2026-11-19 they hold for the Inter build the brand deck renders until its switch; Katagami Text's rules are in the first section of this file.
 
 **The binding.**
 

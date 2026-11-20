@@ -60,7 +60,7 @@ The name is Katagami Text at weight 400, letter-spacing -0.0496 em (`LOCKUP.trac
 
 - A round mark that only matches the height of flat-topped text looks shorter than the text, for the same reason round letters such as O overshoot the cap height and the baseline: at 2.3643 cap heights the globe stands just past the G's top and the foot of the a.
 - The globe rows on `/marks/graticule` set the name at this size: `NAME_WIDTH` in `src/app/marks/graticule/content.ts` is the name's width in globes (2.5591), and the column in `graticule.css` carries the same number, with the gap track 0.2464 of a globe.
-- Running copy never retypes the logo's name in place of a logo file. General Translation in a sentence is body copy, set in Katagami Text 400 like the rest of the sentence, never in Inter. prototemplate.com still renders it in Inter until its own switch (the known gap in `gt-brand` section 4).
+- Running copy never retypes the logo's name in place of a logo file. General Translation in a sentence is body copy, set in Katagami Text 400 like the rest of the sentence, never in Inter.
 - Measure the span on the name as set, in the face and weight it ships in, and size the globe from it; never size the globe to the name's line box.
 
 ### The four-globe lockup

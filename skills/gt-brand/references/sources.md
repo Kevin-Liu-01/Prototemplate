@@ -73,7 +73,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 ## Lines changed on 2026-11-09: the one-line lockup, clear space and minimum sizes
 
 - Section 5's lockups line, `references/marks.md`, "The one-line lockup, clear space and minimum sizes", and BRAND.md section 4's three bullets after the stacked lockup: the brand kit's definitions (its README and its build's geometry: the globe 2.2 cap heights tall at the ring-to-stem match, the 0.5637 cap gap, X a quarter of the globe's height, a 9px cap and a 24px globe), which Kevin approved on 2026-11-08. The kit's numbers come from its generator, which checks its stacked lockup against the reference lockup, geometry and pixels.
-- `references/marks.md`, the line on running copy: Katagami Text, never Inter, with prototemplate.com's Inter build named as the known gap.
+- `references/marks.md`, the line on running copy: Katagami Text, never Inter.
 
 ## Lines changed on 2026-11-09: the lockup gap
 

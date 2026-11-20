@@ -267,8 +267,8 @@ third section, Black, white, dither and blue.
   WOFF2 and never loaded from a font CDN. generaltranslation.com sets
   all its text in it since gt-cloud #5765 merged on 2026-11-09.
 - **Known gap: some builds still render Inter** until their own switch:
-  prototemplate.com (the shell, the deck and `/brand`), its films kit,
-  and gt-cloud's dashboard. The blog graphics toolchain sets its labels in
+  the brand deck, the films kit and gt-cloud's dashboard.
+  prototemplate.com's shell and `/brand` set their text in Katagami Text. The blog graphics toolchain sets its labels in
   Katagami Text. The Inter rules in `gt-brand`
   describe them until then; new work anywhere else takes Katagami Text.
 - **Headings use weight 500 at most.** Display text never goes bolder than

@@ -85,7 +85,7 @@ const SWATCHES = [
   ['is-paper', 'paper', '#ffffff'],
 ] as const;
 
-const INTER_WEIGHTS = [300, 400, 500, 600, 700, 800] as const;
+const TEXT_WEIGHTS = [300, 400, 500, 600, 700, 800] as const;
 
 const PILL_LOCS = ['en-GB', 'es', 'ja', 'ar-EG', 'ko', 'zh-Hant', 'hi', 'pt'] as const;
 
@@ -356,7 +356,7 @@ const PAGES: readonly BrandPage[] = [
           &ldquo;Translation&rdquo;, {LOCKUP.mark} cap heights tall and centred on the name&rsquo;s ink.
           The name is Katagami Text at weight {LOCKUP.weight} and {stated(LOCKUP.tracking, 4)} em, both lines from
           one pen origin, drawn as outlines. Katagami Text is also the face of running copy, headings and interface
-          text; this site still renders Inter until its own switch.
+          text, and this site sets its text in it.
         </p>
         <div className='ptb-marks ptb-lockups'>
           <figure className='ptb-mark is-paper'>
@@ -454,9 +454,8 @@ const PAGES: readonly BrandPage[] = [
           One face carries the brand. <strong>Katagami Text</strong>{' '}is the display,
           interface and text typeface: the name in the logo, headlines, interface chrome,
           captions and long-form reading are all set in it, self-hosted rather than loaded
-          from a font CDN. It replaced Inter. This site still renders Inter (the rsms.me
-          variable build, version 4.1) until its own switch, so the specimens below are
-          this site&rsquo;s build, not the brand face. Headings use weight 500 at most.
+          from a font CDN. It replaced Inter. This site sets its text in Katagami Text,
+          and the specimens below are drawn in it. Headings use weight 500 at most.
           Long-form text is set at weight 400. Monospace is an <em>instrument</em> voice
           for code artifacts (tokens, terminals, file paths, small labels in technical
           diagrams and product UI) and appears nowhere else; even those labels are
@@ -471,22 +470,22 @@ const PAGES: readonly BrandPage[] = [
         </p>
         <div className='ptb-type'>
           <div className='ptb-face'>
-            <span className='ptb-face-tag'>Inter, this site&rsquo;s build · 300–800, headings at 500 or lighter</span>
-            {INTER_WEIGHTS.map((weight) => (
+            <span className='ptb-face-tag'>Katagami Text · 300–800, headings at 500 or lighter</span>
+            {TEXT_WEIGHTS.map((weight) => (
               <p className='ptb-display' key={weight} style={{ fontWeight: weight }}>
                 Every product in every language
               </p>
             ))}
           </div>
           <div className='ptb-face'>
-            <span className='ptb-face-tag'>Inter, this site&rsquo;s build · text, roman + italic</span>
-            <p className='ptb-inter'>
+            <span className='ptb-face-tag'>Katagami Text · text, roman + italic</span>
+            <p className='ptb-body'>
               General Translation builds full-stack infrastructure for localizing apps,
               docs, and websites: i18n libraries, context-aware translation, and the
               platform that runs them.
             </p>
-            <p className='ptb-inter is-italic'>
-              The optical size axis adjusts the letterforms to the point size.
+            <p className='ptb-body is-italic'>
+              Emphasis inside running text is set in the italic.
             </p>
           </div>
         </div>
