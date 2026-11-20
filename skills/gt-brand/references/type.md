@@ -60,7 +60,7 @@ In a page, `getComputedStyle(document.body).getPropertyValue('--font-inter')` st
 
 | surface | file | binding | notes |
 | --- | --- | --- | --- |
-| Prototemplate site and shell | `src/lib/fonts.ts` | `ptInter`, the roman's latin subset only, on `--font-inter`; the other subsets and the italic are `@font-face` rules with a `unicode-range` in the `ptInter` family in `src/app/inter-subsets.css` (`scripts/build/subset-inter.py`), so no route preloads them | `fontVariables` is the class on `<html>` in `src/app/layout.tsx` |
+| Prototemplate site and shell | `src/lib/fonts.ts` | `ptInter`, Katagami Text's roman latin subset only, on `--font-inter`; the rest of the roman, the italic, Arabic and Devanagari are `@font-face` rules with a `unicode-range` in the `ptInter` family in `src/app/text-subsets.css`, so no route preloads them | `fontVariables` is the class on `<html>` in `src/app/layout.tsx` |
 | Prototemplate nameplate | `src/lib/brand-fonts.ts` | `fraunces` (600) and `grotesk` (500) on `--font-fraunces`, `--font-grotesk` | the one place chrome steps outside Inter (DESIGN.md section 15) |
 | The brand deck | `deck/fonts/deck-fonts.css`, inlined by `scripts/build/deck.mjs` in place of `<!--FONTS-->` | `@font-face { font-family: 'Inter' }`, roman only | a data URI cannot fail, so it always hides an installed Inter; no italic is inlined, so an italic in the deck would be synthesised |
 | gt-cloud landing | `$GT_CLOUD/apps/landing/src/lib/fonts.ts` | `inter`, roman only, on `--font-sans`; `mono` is Geist Mono on `--font-mono` | the base module stays roman so the 388 KB italic is not preloaded on every route |
@@ -202,7 +202,7 @@ These blocks stood in `SKILL.md` section 4 until 2026-10-10 and moved here uncha
 
 **The binding.**
 
-- Prototemplate binds the roman's latin subset as `ptInter` in `src/lib/fonts.ts`, on `--font-inter`, and declares the other subsets and the italic as plain `@font-face` rules with a `unicode-range` in the same `ptInter` family in `src/app/inter-subsets.css`, which `scripts/build/subset-inter.py` writes. So every route preloads the roman latin subset, and a browser fetches any other subset only where the page draws a code point in its range.
+- Prototemplate binds Katagami Text's roman latin subset as `ptInter` in `src/lib/fonts.ts`, on `--font-inter`, and declares the rest of the roman, the italic, Arabic and Devanagari as plain `@font-face` rules with a `unicode-range` in the same `ptInter` family in `src/app/text-subsets.css`. So every route preloads the roman latin subset, and a browser fetches any other subset only where the page draws a code point in its range.
 - next/font names the family after the JavaScript identifier, and CSS family names are case-insensitive. A binding named `inter` therefore shares its name with an installed Inter. If the woff2 fails to load, that installed Inter renders (desktop Inter 3, for example, which has no opsz axis), and the metric-matched fallback never engages.
 - gt-cloud's landing still binds `inter` on `--font-sans`, and its built CSS reads `"inter", "inter Fallback"`, so it carries the same exposure.
 

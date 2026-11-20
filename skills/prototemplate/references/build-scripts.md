@@ -17,7 +17,7 @@ Detail for section 7 of `prototemplate`, moved from SKILL.md on 2026-10-10 with 
 | `pnpm graphics:serve`, `:gen`, `:render`, `:export`, `:audit` | `graphics/` | the illustrations (`gt-graphics`) |
 | `pnpm mood-tone <sources dir>` | source pictures, with `--set deck` (the default) or `--set plate` | the tone grids in `deck/shots/tone` or `public/brand/mood` (`gt-dither`) |
 | `python3 scripts/build/fetch-google-faces.py` | Google Fonts | `public/fonts/google` and its `MANIFEST.json` |
-| `pnpm build:inter` | `public/fonts/InterVariable*.woff2`, through fonttools and brotli (`pip install --user fonttools brotli`) | the subsets in `public/fonts/inter`, their faces in `src/app/inter-subsets.css` and the latin range in `src/lib/fonts.ts` |
+| `pnpm build:inter` | `public/fonts/InterVariable*.woff2`, through fonttools and brotli (`pip install --user fonttools brotli`) | the subsets in `public/fonts/inter`, which the presenter's type slide reads, and the social card's two static instances in `src/app/og` |
 
 - The generated outputs are committed (`src/lib/skills.ts`, `src/lib/motion.ts`, `public/brand-deck.html`, `public/deck-assets`, `public/shots`, `public/marks`), so the site builds without `motion/` or any other checkout.
 - `build:motion` only reads `motion/`. It throws before writing when a brief's or a script's shape changes or a web copy differs from the cut `public/motion/published.json` pins, so the last generated files stay intact. It publishes a film's credits, sheet and script only from the folder whose render is the pinned cut, and lists a newer cut as in review (`--pin <slug>` pins a new web copy once Kevin approves it).

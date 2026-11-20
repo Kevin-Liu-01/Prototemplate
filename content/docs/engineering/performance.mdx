@@ -10,7 +10,7 @@ sources:
   - skills/gt-website/references/docs.md
   - skills/gt-brand/references/type.md
   - src/lib/fonts.ts
-  - src/app/inter-subsets.css
+  - src/app/text-subsets.css
 ---
 
 Performance work on this site and on generaltranslation.com, General Translation's site, makes a surface faster and leaves every pixel where it was. The rule comes from Kevin Liu, who reviews the work, on 2026-08-05: "fix the lighthouse without changing anything aesthetically". An audit whose fix would change the design, such as a contrast or a tap-target change, is listed with its measured gain for him to decide. The [gt-performance skill](/skills/gt-performance) holds every rule below with its date.
@@ -104,7 +104,7 @@ await context.close();
 
 | Cause | Fix |
 | --- | --- |
-| next/font preloads every face a module declares on every page that imports the module, and Turbopack shares CSS chunks between routes, so a display face used on one page loaded on all of them | Only the roman Inter preloads; every other `localFont` sets `preload: false`; a face used on one route gets a family name that only that route's CSS names |
+| next/font preloads every face a module declares on every page that imports the module, and Turbopack shares CSS chunks between routes, so a display face used on one page loaded on all of them | Only the text face's roman latin subset preloads; every other `localFont` sets `preload: false`; a face used on one route gets a family name that only that route's CSS names |
 | A family re-pointed for one route leaked: a face joined to `inter` in blog CSS was fetched by the home page | Scope a route's rules under its root class |
 | React 19 hoists an eager `<img>` into a high-priority preload | `loading='lazy'` on every picture outside the first view |
 | A `<video poster>` is fetched at load wherever the video sits | Paint the poster as a lazy image and preload nothing until play |
@@ -112,7 +112,7 @@ await context.close();
 | Data and panels used only after an open shipped with the page | `import()` on the first open, or on the first hover or focus of the trigger |
 | GSAP loaded on routes with no tween | Load it only where a tween runs |
 
-This site preloads one font file, the roman Inter's latin subset at 112,748 bytes, out of a 352,240-byte full roman. The other subsets and the italic (387,976 bytes whole) are `@font-face` rules with a `unicode-range` in the same family, so a browser fetches one only where a page draws a character in its range. The binding is in `src/lib/fonts.ts` and `src/app/inter-subsets.css`, and lint-type's T3 rule checks every next/font binding. [Type](/docs/craft/type) covers the subsets.
+This site preloads one font file, Katagami Text's roman latin subset at 79,548 bytes. The rest of the roman (297,164 bytes), the italic (86,220 bytes for latin, 318,232 for the rest), Arabic and Devanagari are `@font-face` rules with a `unicode-range` in the same family, so a browser fetches one only where a page draws a character in its range. The binding is in `src/lib/fonts.ts` and `src/app/text-subsets.css`, and lint-type's T3 rule checks every next/font binding. [Type](/docs/craft/type) covers the subsets.
 
 ## Shader and module weight
 

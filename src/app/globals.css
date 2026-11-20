@@ -67,7 +67,7 @@
 /* An empty <i> draws no glyph of its own, but its line box still takes its
    font's metrics, so the decorative <i> marks (the Prototemplate mark, the
    flags, the /d pages' rules and carets) would fetch the italic latin subset
-   (src/app/inter-subsets.css) on every page for no glyph. */
+   (src/app/text-subsets.css) on every page for no glyph. */
 i:empty {
   font-style: normal;
 }

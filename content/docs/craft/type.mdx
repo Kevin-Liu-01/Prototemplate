@@ -8,7 +8,7 @@ sources:
   - skills/gt-films/references/traps.md
   - skills/gt-performance/references/recipes.md
   - src/lib/fonts.ts
-  - src/app/inter-subsets.css
+  - src/app/text-subsets.css
   - src/components/viewer/tokens.css
   - src/app/docs/docs.css
   - scripts/build/subset-inter.py
@@ -16,7 +16,7 @@ sources:
   - DESIGN.md
 ---
 
-Prototemplate sets one face, the rsms InterVariable 4.1, self-hosted from `public/fonts/`. The one General Translation exception is the name in the lockup, Katagami Text 400 at -0.0496 em drawn as outlines, which no page loads as a font ([Marks](/docs/components/marks#when-to-use-it)). The roman file is 352,240 bytes with sha1 `f55b18fd`, and it has two axes: optical size (`opsz`, 14 to 32) and weight (`wght`, 100 to 900). Most of the work is keeping the browser from replacing that file or degrading it, and the browser reports none of these failures. The measurements below come from a type audit on 2026-10-05 (Chrome for Testing, dark theme, 1440 and 390 wide, read after `document.fonts.ready`) and from a probe of these docs on 2026-10-21. The [gt-brand](/skills/gt-brand) skill holds the rules, and `scripts/lint/type.mjs` enforces them.
+Prototemplate set one face, the rsms InterVariable 4.1, self-hosted from `public/fonts/`, until it switched to Katagami Text, the brand face, through the same binding. The brand deck still sets that Inter build, and this page records how to set it well. The roman file is 352,240 bytes with sha1 `f55b18fd`, and it has two axes: optical size (`opsz`, 14 to 32) and weight (`wght`, 100 to 900). Most of the work is keeping the browser from replacing that file or degrading it, and the browser reports none of these failures. The measurements below come from a type audit on 2026-10-05 (Chrome for Testing, dark theme, 1440 and 390 wide, read after `document.fonts.ready`) and from a probe of these docs on 2026-10-21. The [gt-brand](/skills/gt-brand) skill holds the rules, and `scripts/lint/type.mjs` enforces them.
 
 ## The binding
 
@@ -29,7 +29,7 @@ Bind a self-hosted font to an identifier that no installed font carries. next/fo
 
 On a machine with desktop Inter 3 installed, a failed file therefore renders Inter 3, which has no optical-size axis and different metrics. The same collision happens between pages of one site. Eight of the hub's `/d/` direction pages declared `const display = localFont(...)`, Turbopack gave every one the family `display`, and a client-side navigation could swap one page's face for another's. Give every `localFont` call a unique identifier.
 
-The hub binds the roman's latin subset as `ptInter` in `src/lib/fonts.ts` and publishes it as `--font-inter`. In a page, `getComputedStyle(document.body).getPropertyValue('--font-inter')` starts with `"ptInter"`. The type lint's rule T3 fails any other binding in that file.
+The hub binds Katagami Text's roman latin subset as `ptInter` in `src/lib/fonts.ts` and publishes it as `--font-inter`. In a page, `getComputedStyle(document.body).getPropertyValue('--font-inter')` starts with `"ptInter"`. The type lint's rule T3 fails any other binding in that file.
 
 ## Subsets and glyph names
 
@@ -37,12 +37,12 @@ Keep glyph names when you subset a variable font. pyftsubset's default writes a 
 
 | File | Bytes | How it loads |
 | --- | --- | --- |
-| Full roman | 352,240 | The source of the subsets; the brand deck inlines it whole as a data URI |
-| Roman latin subset | 112,748 | Preloaded on every route through `ptInter` |
-| Roman latin-ext, latin-ext-a, Greek, Cyrillic, Vietnamese and symbols subsets | 15,000 to 130,984 each | `@font-face` rules with a `unicode-range` in `src/app/inter-subsets.css`, fetched only where a page draws a code point in the range |
-| Italic subsets | 15,016 to 143,800 each | The same, in the same `ptInter` family |
+| Full Inter roman | 352,240 | The source of the Inter subsets; the brand deck inlines it whole as a data URI |
+| Katagami Text roman latin subset | 79,548 | Preloaded on every route through `ptInter` |
+| Katagami Text rest of the roman, Arabic and Devanagari | 130,300 to 297,164 each | `@font-face` rules with a `unicode-range` in `src/app/text-subsets.css`, fetched only where a page draws a code point in the range |
+| Katagami Text italic latin subset and rest of the italic | 86,220 and 318,232 | The same, in the same `ptInter` family |
 
-The latin subset also carries the arrows, the command key, the check, the play glyph, the star, the bullet and the comparison signs that the shell draws beside Latin text, so a page of Latin text needs no symbols file. `pnpm build:inter` writes the subsets. Every `localFont` call outside `src/lib/fonts.ts` and the nameplate's `src/lib/brand-fonts.ts` sets `preload: false`, and lint rule T3 holds that.
+The Katagami Text latin subset carries the arrows and the bullet. The command key, the check, the play glyph, the star and the comparison signs are in the rest of the roman, which a page fetches once it draws one of them. `pnpm build:inter` writes the Inter subsets, and the presenter's type slide reads the latin one. Every `localFont` call outside `src/lib/fonts.ts` and the nameplate's `src/lib/brand-fonts.ts` sets `preload: false`, and lint rule T3 holds that.
 
 ## Contextual alternates under letter-spacing
 

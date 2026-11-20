@@ -1,0 +1,52 @@
+/* The ptInter faces beside the roman latin subset that src/lib/fonts.ts
+   binds and preloads. The files are Katagami Text's own subsets in
+   public/fonts/katagami, and the ranges are the ones
+   src/app/d/production/prod-shell.css gives the same files, so together
+   with the roman latin subset they cover every code point the face maps,
+   in roman and italic. A browser fetches a face only when the page draws a
+   code point in its unicode-range. */
+
+@font-face {
+  font-family: ptInter; /* lint-type: allow a subset face of the family src/lib/fonts.ts declares */
+  src: url('../../public/fonts/katagami/KatagamiText.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852;
+}
+
+@font-face {
+  font-family: ptInter; /* lint-type: allow a subset face of the family src/lib/fonts.ts declares */
+  src: url('../../public/fonts/katagami/KatagamiText-arabic.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+600-8FF, U+FB50-FEFF;
+}
+
+@font-face {
+  font-family: ptInter; /* lint-type: allow a subset face of the family src/lib/fonts.ts declares */
+  src: url('../../public/fonts/katagami/KatagamiText-devanagari.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+900-97F, U+1CD0-1CF9, U+A8E0-A8FF;
+}
+
+@font-face {
+  font-family: ptInter; /* lint-type: allow a subset face of the family src/lib/fonts.ts declares */
+  src: url('../../public/fonts/katagami/KatagamiText-Italic-latin.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215;
+}
+
+@font-face {
+  font-family: ptInter; /* lint-type: allow a subset face of the family src/lib/fonts.ts declares */
+  src: url('../../public/fonts/katagami/KatagamiText-Italic.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852;
+}

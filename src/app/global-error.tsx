@@ -3,7 +3,7 @@
 import { fontVariables } from '@/lib/fonts';
 
 import './globals.css';
-import './inter-subsets.css';
+import './text-subsets.css';
 import '@/components/viewer/tokens.css';
 import './error.css';
 

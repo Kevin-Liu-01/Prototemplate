@@ -17,7 +17,7 @@ import {
 } from '@/lib/seo/site';
 
 import './globals.css';
-import './inter-subsets.css';
+import './text-subsets.css';
 import '@/components/viewer/tokens.css';
 
 /* the site card, which a route that sets no card of its own shows; every

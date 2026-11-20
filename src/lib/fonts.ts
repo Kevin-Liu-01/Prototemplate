@@ -6,14 +6,14 @@ import localFont from 'next/font/local';
  * latin subset, public/fonts/katagami/KatagamiText-latin.woff2 (the same
  * file the brand kit and the Atlas magazine set), is the one file every
  * route preloads. Its unicode-range is the subset's own, so a code point
- * outside it still falls to the Inter subsets and the Inter italic that
- * src/app/inter-subsets.css declares in the same family, until those are
- * cut from Katagami Text too.
+ * outside it falls to the Katagami Text faces src/app/text-subsets.css
+ * declares in the same family: the rest of the roman, the italic, Arabic
+ * and Devanagari, each fetched only where a page draws it.
  *
  * The binding keeps the name `ptInter` and the variable `--font-inter`,
- * which the type tokens, scripts/lint/type.mjs (rule T3) and the subset
- * faces in src/app/inter-subsets.css all name: next/font names the family
- * after the identifier, and those faces join it by that name.
+ * which the type tokens, scripts/lint/type.mjs (rule T3) and the faces in
+ * src/app/text-subsets.css all name: next/font names the family after the
+ * identifier, and those faces join it by that name.
  */
 export const ptInter = localFont({
   src: [

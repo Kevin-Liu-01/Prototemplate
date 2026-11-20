@@ -147,9 +147,9 @@ scripts/                  pnpm names are the interface; every entry point
                           lint:updated, in the build), with its tests
   build/speed-marks.mjs   the speed marks under public/marks
   build/subset-inter.py   the Inter roman and italic to unicode-range
-                          subsets in public/fonts/inter, their faces in
-                          src/app/inter-subsets.css and the latin range in
-                          src/lib/fonts.ts (pnpm build:inter)
+                          subsets in public/fonts/inter, which the
+                          presenter's type slide reads, and the social
+                          card's two static instances (pnpm build:inter)
   build/motion.mjs        motion/ to src/lib/motion.ts and public/motion,
                           run only when the Videos session hands a film over
   check/capture-pages.mjs the 1440x900 page captures in public/shots/pages
