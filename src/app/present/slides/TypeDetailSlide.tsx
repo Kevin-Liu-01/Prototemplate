@@ -11,12 +11,12 @@ import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { useDeckSetup } from '../deck-setup';
 import { PRESENT_DIRECTIONS } from '../directions';
-import { googleInter } from '../fonts';
+import { googleInter, rsmsInter } from '../fonts';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, ScrambleTextPlugin);
 
-/** The official Inter release from rsms.me, the site's own face (src/lib/fonts.ts). */
-const RSMS_STACK = 'var(--font-inter), sans-serif';
+/** The official Inter release from rsms.me, bound for this slide in ../fonts.ts. */
+const RSMS_STACK = 'var(--font-rsms-inter), sans-serif';
 
 /**
  * Google Fonts' build of Inter, cut to this file's specimen strings plus a to
@@ -518,7 +518,7 @@ export default function TypeDetailSlide() {
     // not requested in the first layout and the glitch does not run before.
     <section
       ref={root}
-      className={`pr-slide pr-detail${ready ? ` is-ready ${googleInter.variable}` : ''}`}
+      className={`pr-slide pr-detail ${rsmsInter.variable}${ready ? ` is-ready ${googleInter.variable}` : ''}`}
       data-slide='detail'
     >
       <div ref={pin} className='pr-pin pr-detail-inner'>

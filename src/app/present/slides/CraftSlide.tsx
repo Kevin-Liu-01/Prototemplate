@@ -210,7 +210,7 @@ export default function CraftSlide() {
             <span className='pr-plate-icon'>
               <Icon name='type' size={22} />
             </span>
-            <h3>One family, every weight: Inter carries the voice</h3>
+            <h3>One family, every weight: Katagami Text carries the voice</h3>
             <div className='pr-weights'>
               {WEIGHTS.map((weight) => (
                 <div key={weight} className='pr-weight-row' style={{ fontWeight: weight }}>

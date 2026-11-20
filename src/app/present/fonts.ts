@@ -39,3 +39,15 @@ export const googleInter = localFont({
   display: 'swap',
   preload: false,
 });
+
+/**
+ * The rsms InterVariable 4.1 for the Details slide's rsms specimen and the
+ * glitch: the latin subset pnpm build:inter cuts. The site's own
+ * --font-inter is Katagami Text, so the slide names this build directly.
+ */
+export const rsmsInter = localFont({
+  src: [{ path: '../../../public/fonts/inter/InterVariable-latin.woff2', weight: '100 900', style: 'normal' }],
+  variable: '--font-rsms-inter',
+  display: 'swap',
+  preload: false,
+});
