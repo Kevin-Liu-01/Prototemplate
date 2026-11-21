@@ -56,6 +56,13 @@
   padding: 12px;
 }
 
+/* the featured film's row: the name and line beside the gutter number,
+   then the compare viewer across the whole column, gutter included */
+.tc-feature-film {
+  grid-column: 1 / -1;
+  margin-top: 6px;
+}
+
 /* the credits: each product's name, then its original in a sentence */
 .tc-credits {
   display: grid;

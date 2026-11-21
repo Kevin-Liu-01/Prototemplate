@@ -10,7 +10,7 @@ const route = seoRoute({
   title: PAGE_NAMES.transcreate.name,
   kind: 'page',
   description:
-    'Eight product videos with their on-screen text translated from English to Japanese, all eight at once beside the originals.',
+    'Profound\'s launch film beside its Japanese version with a Japanese dub, then eight product videos with their on-screen text translated from English to Japanese.',
   updated: requireUpdated('/transcreate'),
 });
 
@@ -18,7 +18,7 @@ export const metadata = route.metadata;
 
 /**
  * /transcreate: the overview of the English to Japanese videos, with the
- * grid of all eight. The Transcreate pages are private
+ * featured film (PairViewer) and the grid of all eight. The Transcreate pages are private
  * (src/lib/seo/policy.ts, PRIVATE_PATHS): each answers noindex, nofollow,
  * and the sitemap and /llms.txt leave them out. The videos are web copies
  * in public/media/transcreate (videos.ts).

@@ -155,7 +155,7 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   marks: 'logo axis and meridian behind oval globe axis behind logo state mark monogram wordmark lockup GT shortlist graticule wireframe globe stencil crescent lune bolt needle speed race bars cut plate livery ascii dither production locadex lambda doubled-line hemispheres poster favicon construction closed-top',
   graticule: 'graticule logo progression history picks axis and meridian behind lockup size name beside globe wireframe meridian latitude equator ring jaw thicker no meridian heavy GT G animations animated motion hover loading loader poles fold meridian then G lap rows name language globe turn mark to globe best variations studies oval axis behind depth lockup traced redraws stub gaps crossings thin medium star fillet rounded T curved bar stem short arc plumb slanted chamfered point ends',
   loading: 'loading loader spinner hover draw back meridian then g lap logo motion animation reduced motion compare pane safari webkit property linear easing plus-lighter mask test frames before after fix',
-  transcreate: 'video translation japanese spanish english on-screen text side by side stacked columns notion linear ramp asana stripe miro credits',
+  transcreate: 'video translation japanese spanish english on-screen text side by side stacked overlay columns profound dub notion linear ramp asana stripe miro credits',
   archive: 'retired versions captures history',
 };
 

@@ -1,0 +1,381 @@
+/* PairViewer: the featured film on /transcreate, the original and its
+   Japanese version on one stage with one transport.
+
+   The stage is the film's frame: the panel ink ground, the 1px --pt-edge
+   border at the card corner, ink while the row is read, as .tc-film draws a
+   video. Inside it one canvas draws both pictures; the still layers under
+   it show the poster in the overlay before any script runs. The bar under
+   the stage is the shell's own controls (ToolButton, Seg) and a range
+   input for the position. In full screen the viewer is the whole screen on
+   the panel ink, the bar stays under the stage so it never covers the film,
+   and the bar's tokens remap to the panel's light ink. */
+
+.tcp {
+  container: tcp / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  outline: none;
+}
+
+.tcp-stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-panel-ink);
+  background-clip: padding-box;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.gx-row.is-active .tcp-stage,
+.tcp:focus-visible .tcp-stage {
+  border-color: var(--pt-ink);
+}
+
+/* the overlay: a drag anywhere on the stage moves the divider, and a
+   vertical swipe still scrolls the page on a phone */
+.tcp.is-overlay .tcp-stage {
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+
+.tcp-still,
+.tcp-video,
+.tcp-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* the poster holds the pair as the file does, one picture above the other:
+   each layer shows one half at the stage's full size */
+.tcp-still {
+  background-repeat: no-repeat;
+  background-size: 100% 200%;
+  background-position: 50% 0;
+}
+
+.tcp-still.is-ja {
+  background-position: 50% 100%;
+  clip-path: inset(0 0 0 50%);
+}
+
+.tcp[data-canvas] .tcp-still,
+.tcp:not(.is-overlay) .tcp-still {
+  visibility: hidden;
+}
+
+/* the decoder: laid out under the canvas so every browser keeps decoding
+   its frames, and never seen */
+.tcp-video {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* the divider: a 2px line in the panel's light ink along the cut, its
+   place, height and opacity written per frame by the draw */
+.tcp-divider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  transform: translate3d(50%, 0, 0);
+  pointer-events: none;
+}
+
+.tcp-divider::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  background: var(--pt-panel-text);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--pt-panel-ink) 30%, transparent);
+}
+
+/* the grip: the control corner, a 44px hit box around its 24 by 40 face */
+.tcp-grip {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+  border-radius: var(--pt-radius-control);
+  background: var(--pt-panel-text);
+  color: var(--pt-panel-ink);
+  box-shadow: 0 1px 6px color-mix(in srgb, var(--pt-panel-ink) 40%, transparent);
+  pointer-events: auto;
+  cursor: ew-resize;
+  outline: none;
+  transition: scale var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.tcp-grip::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+}
+
+.tcp-grip svg {
+  width: 14px;
+  height: 14px;
+}
+
+.tcp[data-dragging] .tcp-grip,
+.tcp-grip:active {
+  scale: 0.96;
+}
+
+.tcp-grip:focus-visible {
+  outline: 2px solid var(--pt-panel-text);
+  outline-offset: 2px;
+}
+
+.tcp-divider[aria-hidden='true'] .tcp-grip {
+  pointer-events: none;
+}
+
+/* ---------- the bar ---------- */
+
+.tcp-bar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+  grid-template-areas: 'play time views sound full';
+  align-items: center;
+  gap: 8px;
+  transition: opacity var(--pt-dur-slide) var(--pt-ease-out);
+}
+
+.tcp-play {
+  grid-area: play;
+}
+
+.tcp-time {
+  grid-area: time;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.tcp-views {
+  grid-area: views;
+}
+
+.tcp-sound {
+  grid-area: sound;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tcp-full {
+  grid-area: full;
+}
+
+.tcp-clock {
+  flex: 0 0 auto;
+  font-size: var(--pt-t-meta);
+  color: var(--pt-ink-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* the position: a 2px row line filled in ink up to the playhead (--p,
+   written per frame), a 12px ink thumb, and a 28px tall hit box */
+.tcp-scrub {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.tcp-scrub:focus {
+  outline: none;
+}
+
+.tcp-scrub::-webkit-slider-runnable-track {
+  height: 2px;
+  background: linear-gradient(to right, var(--pt-ink) var(--p, 0%), var(--pt-hair) var(--p, 0%));
+}
+
+.tcp-scrub::-moz-range-track {
+  height: 2px;
+  background: var(--pt-hair);
+}
+
+.tcp-scrub::-moz-range-progress {
+  height: 2px;
+  background: var(--pt-ink);
+}
+
+.tcp-scrub::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+  margin-top: -5px;
+  border: 0;
+  border-radius: var(--pt-radius-round);
+  background: var(--pt-ink);
+  appearance: none;
+  -webkit-appearance: none;
+  transition: scale var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.tcp-scrub::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: var(--pt-radius-round);
+  background: var(--pt-ink);
+}
+
+.tcp-scrub:active::-webkit-slider-thumb {
+  scale: 0.96;
+}
+
+.tcp-scrub:focus-visible::-webkit-slider-thumb {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.tcp-scrub:focus-visible::-moz-range-thumb {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+/* ---------- full screen ---------- */
+
+/* the panel's light ink on its dark ground, whatever the page's theme */
+.tcp.is-full {
+  --pt-ink: var(--pt-panel-text);
+  --pt-ink-2: color-mix(in srgb, var(--pt-panel-text) 72%, transparent);
+  --pt-paper: var(--pt-panel-ink);
+  --pt-hair: color-mix(in srgb, var(--pt-panel-text) 26%, transparent);
+  --pt-hair-soft: color-mix(in srgb, var(--pt-panel-text) 12%, transparent);
+  --pt-plate: color-mix(in srgb, var(--pt-panel-text) 8%, transparent);
+  width: 100%;
+  height: 100%;
+  gap: 0;
+  background: var(--pt-panel-ink);
+  color: var(--pt-ink);
+}
+
+/* a phone with no element full screen: the viewer covers the window */
+.tcp.is-cover {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  height: 100dvh;
+}
+
+.tcp.is-full .tcp-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: var(--pt-radius-shell);
+}
+
+.tcp.is-full .tcp-bar {
+  padding: 12px max(16px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+/* while a full screen film plays and the pointer rests, the bar fades and
+   keeps its place, so the film never moves */
+.tcp.is-idle {
+  cursor: none;
+}
+
+.tcp.is-idle .tcp-stage {
+  cursor: none;
+}
+
+.tcp.is-idle .tcp-bar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tcp-stage,
+  .tcp-bar,
+  .tcp-grip,
+  .tcp-scrub::-webkit-slider-thumb {
+    transition: none;
+  }
+}
+
+/* ---------- narrow ---------- */
+
+/* the bar on two rows: the play button, the position and full screen; then
+   the views and the sound. The mute button leaves, since a phone has its own
+   volume keys. */
+@container tcp (max-width: 720px) {
+  .tcp-bar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'play time full'
+      'views views sound';
+    row-gap: 10px;
+  }
+
+  .tcp-views {
+    justify-self: start;
+  }
+
+  .tcp-sound {
+    justify-self: end;
+  }
+
+  .tcp-mute {
+    display: none;
+  }
+
+  .tcp-views .pt-ib {
+    padding: 0 9px;
+  }
+}
+
+@container tcp (max-width: 320px) {
+  .tcp-total {
+    display: none;
+  }
+}
+
+/* a touch phone: every control answers a 44px tap while its drawing keeps
+   its size, as .tc-seg does */
+@media (pointer: coarse) {
+  .tcp-bar .pt-seg {
+    overflow: visible;
+  }
+
+  .tcp-bar .pt-ib {
+    position: relative;
+  }
+
+  .tcp-bar .pt-ib::after {
+    content: '';
+    position: absolute;
+    inset: -6px 0;
+  }
+
+  .tcp-scrub {
+    height: 44px;
+  }
+}

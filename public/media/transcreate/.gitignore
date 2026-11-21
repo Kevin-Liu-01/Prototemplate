@@ -1,6 +1,8 @@
 # The web copies the /transcreate pages play, with their posters.
 *
 !.gitignore
+!profound-pair.mp4
+!profound-pair.jpg
 !all-side.mp4
 !all-side.jpg
 !all-columns.mp4

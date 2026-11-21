@@ -1,6 +1,7 @@
 /**
  * The videos the /transcreate pages show, in page order, and the web copies
- * under public/media/transcreate: the grid of all eight, side by side and as
+ * under public/media/transcreate: the featured film, Introducing Profound,
+ * as one file that packs its original and its Japanese version; the grid of all eight, side by side and as
  * columns, and each video side by side and stacked; then the four Databricks
  * videos, with their grid and each video in Japanese and stacked; then Ramp
  * Procurement in English, Spanish and Japanese, with its grid and each
@@ -10,6 +11,28 @@
  */
 
 export const MEDIA = '/media/transcreate';
+
+/**
+ * The featured film: Profound's launch film and its Japanese version, packed
+ * in one file so the two pictures share one clock. The picture is 1280 by
+ * 1440, the original on top of the Japanese version, the two paired by frame
+ * index (2,406 frames each at 30000/1001). The sound is 5.1: the original's
+ * stereo in the front pair and the Japanese dub's stereo in the surround pair,
+ * with the centre and LFE silent, and PairViewer picks one pair through Web
+ * Audio. The Japanese picture is the free agent's run of 2026-11-21 and the
+ * dub its ElevenLabs pass. The poster is frame 552 of the packed picture.
+ */
+export const PROFOUND = {
+  slug: 'profound',
+  file: 'profound-pair',
+  name: 'Introducing Profound',
+  owner: 'Profound',
+  /** one picture of the pair */
+  panel: { width: 1280, height: 720 },
+  frames: 2406,
+  fps: 30000 / 1001,
+  seconds: 80,
+} as const;
 
 /** The grid of all eight: side by side at 2560 by 1440, or as columns at 4096 by 576; 30 seconds, no sound. */
 export const GRID = {
@@ -126,7 +149,9 @@ export const RAMP_VERSIONS: readonly RampVersion[] = [
 ];
 
 /** The companies the originals belong to, each once, in page order. */
-export const OWNERS: readonly string[] = [...new Set([...VIDEOS.map((video) => video.owner), DATABRICKS_OWNER, RAMP.owner])];
+export const OWNERS: readonly string[] = [
+  ...new Set([PROFOUND.owner, ...VIDEOS.map((video) => video.owner), DATABRICKS_OWNER, RAMP.owner]),
+];
 
-/** Every video on the pages: the eight, the four Databricks videos and Ramp Procurement. */
-export const VIDEO_COUNT = VIDEOS.length + DATABRICKS.length + 1;
+/** Every video on the pages: Introducing Profound, the eight, the four Databricks videos and Ramp Procurement. */
+export const VIDEO_COUNT = 1 + VIDEOS.length + DATABRICKS.length + 1;

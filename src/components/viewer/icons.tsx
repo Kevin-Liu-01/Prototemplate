@@ -35,6 +35,8 @@
  * compare) and sync (arrows-up-down). The book head's panel draws updated,
  * duration, done, in-progress, planned, skill, area, attachment, language,
  * post, people, speed and explore; the install field draws copy and check.
+ * The featured film's transport on /transcreate draws present as its play
+ * button, pause, sound (speaker-wave) and muted (speaker-x-mark).
  * A locked item (LOCKED in src/lib/seo/policy.ts) carries lock (lock-closed)
  * after its name, and /sign-in draws unlock (lock-open) once signed in.
  */
@@ -47,6 +49,9 @@ export type IconName =
   | 'book'
   | 'index'
   | 'present'
+  | 'pause'
+  | 'sound'
+  | 'muted'
   | 'fullscreen'
   | 'exit-fullscreen'
   | 'link'
@@ -129,6 +134,19 @@ const PATHS: Record<IconName, readonly IconPath[]> = {
   /* play */
   'present': [
     { d: 'M6.3 2.84A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.27l9.344-5.891a1.5 1.5 0 0 0 0-2.538L6.3 2.841Z' },
+  ],
+  /* pause */
+  'pause': [
+    { d: 'M5.75 3a.75.75 0 0 0-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 0 0 .75-.75V3.75A.75.75 0 0 0 7.25 3h-1.5ZM12.75 3a.75.75 0 0 0-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 0 0 .75-.75V3.75a.75.75 0 0 0-.75-.75h-1.5Z' },
+  ],
+  /* speaker-wave */
+  'sound': [
+    { d: 'M10.5 3.75a.75.75 0 0 0-1.264-.546L5.203 7H2.667a.75.75 0 0 0-.7.48A6.985 6.985 0 0 0 1.5 10c0 .887.165 1.737.468 2.52.111.29.39.48.7.48h2.535l4.033 3.796a.75.75 0 0 0 1.264-.546V3.75ZM16.45 5.05a.75.75 0 0 0-1.06 1.061 5.5 5.5 0 0 1 0 7.778.75.75 0 0 0 1.06 1.06 7 7 0 0 0 0-9.899Z' },
+    { d: 'M14.329 7.172a.75.75 0 0 0-1.061 1.06 2.5 2.5 0 0 1 0 3.536.75.75 0 0 0 1.06 1.06 4 4 0 0 0 0-5.656Z' },
+  ],
+  /* speaker-x-mark */
+  'muted': [
+    { d: 'M10.047 3.062a.75.75 0 0 1 .453.688v12.5a.75.75 0 0 1-1.264.546L5.203 13H2.667a.75.75 0 0 1-.7-.48A6.985 6.985 0 0 1 1.5 10c0-.887.165-1.737.468-2.52a.75.75 0 0 1 .7-.48h2.535l4.033-3.796a.75.75 0 0 1 .811-.142ZM13.78 7.22a.75.75 0 1 0-1.06 1.06L14.44 10l-1.72 1.72a.75.75 0 0 0 1.06 1.06l1.72-1.72 1.72 1.72a.75.75 0 1 0 1.06-1.06L16.56 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L15.5 8.94l-1.72-1.72Z' },
   ],
   /* arrows-pointing-out */
   'fullscreen': [

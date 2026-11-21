@@ -18,8 +18,19 @@ import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 
+import PairViewer from './PairViewer';
 import type { TranscreateRoute } from './sections';
-import { CREDITS_ROW, DATABRICKS_ROW, GRID_ROW, RAMP_ROW, ROUTE_PAGE, ROUTE_PATH, transcreateSections, videoRow } from './sections';
+import {
+  CREDITS_ROW,
+  DATABRICKS_ROW,
+  GRID_ROW,
+  PROFOUND_ROW,
+  RAMP_ROW,
+  ROUTE_PAGE,
+  ROUTE_PATH,
+  transcreateSections,
+  videoRow,
+} from './sections';
 import {
   DATABRICKS,
   DATABRICKS_GRID,
@@ -28,6 +39,7 @@ import {
   MEDIA,
   OWNERS,
   PANEL_WIDTH,
+  PROFOUND,
   RAMP,
   RAMP_GRID,
   RAMP_VERSIONS,
@@ -218,7 +230,7 @@ const HEAD: Readonly<Record<TranscreateRoute, { lead: string; facts: readonly [B
     ],
   },
   credits: {
-    lead: 'Each original video belongs to its company. The first eight videos show 29 to 30 seconds of their originals.',
+    lead: 'Each original video belongs to its company. The eight product videos show 29 to 30 seconds of their originals.',
     facts: [
       { icon: 'film', key: 'Videos', value: VIDEO_COUNT },
       { icon: 'people', key: 'Companies', value: OWNERS.length },
@@ -298,6 +310,10 @@ function VideoFigure({ entry }: { entry: Entry }) {
 function Credits() {
   return (
     <dl className='tc-credits'>
+      <div key={PROFOUND.slug}>
+        <dt>{PROFOUND.name}</dt>
+        <dd>The original video belongs to {PROFOUND.owner}.</dd>
+      </div>
       {VIDEOS.map((video) => (
         <div key={video.slug}>
           <dt>{video.name}</dt>
@@ -354,6 +370,27 @@ function VideoRow({ entry, active }: { entry: Entry; active: string }) {
   );
 }
 
+/**
+ * The featured film's row: its number, name and line, then the compare
+ * viewer across the whole column, gutter included, so the film gets the
+ * widest frame the book has.
+ */
+function FeatureRow({ active }: { active: string }) {
+  const on = active === PROFOUND_ROW;
+  return (
+    <article id={PROFOUND_ROW} className={cn('gx-row', on && 'is-active')} data-id={PROFOUND_ROW} aria-current={on ? 'true' : undefined}>
+      <div className='gx-n'>
+        <b>01</b>
+      </div>
+      <div className='gx-body'>
+        <h3>{PROFOUND.name}</h3>
+        <p>English to Japanese, with a Japanese dub</p>
+      </div>
+      <PairViewer className='tc-feature-film' />
+    </article>
+  );
+}
+
 type PartProps = { index: number; id: string; label: string; fact: string; lead: string; children: ReactNode };
 
 /** One section: its divider (`Section n`, one fact, the h2 and its lead), then its rows. */
@@ -390,7 +427,7 @@ type TranscreateBookProps = {
 /**
  * One Transcreate page read top to bottom inside the flow sheet, in the
  * graphics book's row grammar: the head, then the page's sections under
- * their dividers. The overview holds the grid of all eight and a contents
+ * their dividers. The overview holds the featured film (PairViewer), the grid of all eight and a contents
  * list of the five pages, the videos page each video, the Databricks page
  * its grid and each of its videos, the Ramp page its grid and each of its
  * versions, and the credits page the originals. The reading state is the shared read line
@@ -421,6 +458,10 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
         contents={
           route === 'overview' ? (
             <nav className='gx-toc pt-book-toc' aria-label='Contents'>
+              <a href={`#${PROFOUND_ROW}`} onClick={(e) => onContents(e, PROFOUND_ROW)}>
+                <span>{PROFOUND.name}</span>
+                <small>{`${PROFOUND.seconds} s`}</small>
+              </a>
               <a href={`#${GRID_ROW}`} onClick={(e) => onContents(e, GRID_ROW)}>
                 <span>All eight videos</span>
                 <small>8 videos</small>
@@ -447,9 +488,20 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
       />
 
       {route === 'overview' ? (
-        <Part index={1} id='transcreate-all' label='All eight videos' fact='8 videos' lead='The eight videos play at once in one frame.'>
-          <VideoRow entry={GRID_ENTRY} active={active} />
-        </Part>
+        <>
+          <Part
+            index={1}
+            id='transcreate-featured'
+            label='Featured film'
+            fact={`${PROFOUND.seconds} s`}
+            lead='The launch film plays beside its Japanese version, and its speech is dubbed into Japanese.'
+          >
+            <FeatureRow active={active} />
+          </Part>
+          <Part index={2} id='transcreate-all' label='All eight videos' fact='8 videos' lead='The eight videos play at once in one frame.'>
+            <VideoRow entry={GRID_ENTRY} active={active} />
+          </Part>
+        </>
       ) : null}
 
       {route === 'videos' ? (
@@ -533,7 +585,7 @@ const SECTIONS: Readonly<Record<TranscreateRoute, ReturnType<typeof transcreateS
 
 /** The row each page opens on when the hash names none. */
 const FIRST_ROW: Readonly<Record<TranscreateRoute, string>> = {
-  overview: GRID_ROW,
+  overview: PROFOUND_ROW,
   videos: videoRow(VIDEOS[0]?.slug ?? ''),
   databricks: DATABRICKS_ROW,
   ramp: RAMP_ROW,
