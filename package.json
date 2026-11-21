@@ -73,7 +73,7 @@
     "check:pages": "node scripts/check/pagecheck/pagecheck.mjs",
     "test:pagecheck": "node --test scripts/check/pagecheck/hooks.test.mjs",
     "lint:copies": "node scripts/lint/copies.mjs",
-    "lint:logo": "node scripts/lint/logo.mjs",
+    "lint:logo": "node scripts/lint/logo.mjs && node scripts/build/logo-motion.mjs --check && node motion/kit/brand/logo-motion.mjs --check",
     "test:logo": "node --test scripts/lint/logo.test.mjs",
     "test:logo-pixels": "node --test scripts/lint/logo-pixels.test.mjs",
     "test:copies": "node --test scripts/lint/copies.test.mjs",

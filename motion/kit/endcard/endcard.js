@@ -2,7 +2,7 @@
  * GT motion kit: the series end card.
  *
  * Every film of the series ends on this card after its narrative: the
- * General Translation logo playing its loop, "Meridian, then G"
+ * General Translation logo playing the logo form
  * (kit/brand/gt-logo-motion.js, the site's GtLogoMotion), the post's title in
  * two lines and the post's link, on the palette's ground. The layout, the sizes, the timing and the
  * motion are fixed here; a film passes only its palette, its title and its
@@ -68,7 +68,7 @@ export const LAYOUT = {
 
 /** The motion, in seconds from the cut (README.md has the table). */
 export const TIMING = {
-  loop: { at: 0.5, rest: 0.3 }, // the logo stands still 0.5 s, plays its loop once (4.4 s) and stands still again
+  loop: { at: 0.5, rest: 0.3 }, // the logo stands still 0.5 s, plays the logo form (4.37 s) and stands still again
   title: { at: 0.12, stagger: 0.08, ease: 'expo.out' }, // each line rises out of its mask
   link: { at: 0.4, ease: 'expo.out' },
   settled: 1.0, // every arrival lands on this beat

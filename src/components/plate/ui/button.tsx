@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { Loader2 } from 'lucide-react';
 import { Slot } from 'radix-ui';
 
+import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { cn } from '@/components/plate/lib/utils';
 
 const buttonVariants = cva(
@@ -64,7 +64,7 @@ type ButtonProps = React.ComponentProps<'button'> &
  *   - `link`, Renders as an underlined text link.
  * @param size - Button size (`xs`, `sm`, `default`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg`).
  * @param asChild - When true, renders as a `Slot` so the child element receives button styles.
- * @param loading - When true, disables the button and replaces its content with a centered spinner while preserving the button's natural width.
+ * @param loading - When true, disables the button and replaces its content with the logo's loader, centered, while preserving the button's natural width.
  */
 function Button({
   className,
@@ -79,7 +79,7 @@ function Button({
   const Comp = asChild ? Slot.Root : 'button';
 
   // `loading` is ignored when `asChild` is true: Slot expects a single child
-  // and the wrapping required to swap content for a spinner would break it.
+  // and the wrapping required to swap content for the loader would break it.
   // In practice, action buttons with `loading` don't use `asChild` (which is
   // reserved for link-styled buttons).
   const showLoading = loading && !asChild;
@@ -88,14 +88,14 @@ function Button({
   // items of the button (inheriting the button's gap per size variant).
   // `invisible` inherits `visibility: hidden` down to all descendants,
   // including text nodes, while preserving their layout space, so the
-  // button keeps its natural width when the spinner replaces the content.
+  // button keeps its natural width when the loader replaces the content.
   const content = showLoading ? (
     <>
       <span className='invisible contents'>{children}</span>
-      <Loader2
-        className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin'
-        aria-hidden='true'
-      />
+      {/* the logo's own stylesheet sets its position, so the centring sits on a wrapper */}
+      <span className='absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2'>
+        <GtLogoMotion mode='loader' size={16} label='Loading' />
+      </span>
     </>
   ) : (
     children

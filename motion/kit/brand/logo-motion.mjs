@@ -1,13 +1,14 @@
-// Writes kit/brand/gt-logo-motion.js, the General Translation logo's loop
-// ("Meridian, then G") for films: the site's GtLogoMotion drawn as SVG and
-// moved by a function of time, so a HyperFrames render can seek it.
+// Writes kit/brand/gt-logo-motion.js, the General Translation logo form for
+// films and its loader: the site's GtLogoMotion drawn as SVG and moved by a
+// function of time, so a HyperFrames render can seek it.
 //
 // It reads the two files pnpm build:logo-motion writes for the site,
-// src/components/brand/GtLogoMotion.geometry.ts (the drawing) and
-// GtLogoMotion.css (the channels, the keyframes, the dash rules and the
-// hover's leave easing), and copies their numbers; it adds no motion of its
-// own. The layers and masks follow GtLogoMotion.tsx in loader mode. Rerun it
-// whenever those files change. --check writes nothing and fails when the
+// src/components/brand/GtLogoMotion.geometry.ts (the drawing and the logo
+// form's timing) and GtLogoMotion.css (the channels, the keyframes and the
+// dash rules), and copies their numbers; it adds no motion of its own. The
+// logo form is the loader's lap with the meridian's return moved to start
+// where the G lands. The layers and masks follow GtLogoMotion.tsx in loader
+// mode. Rerun it whenever those files change. --check writes nothing and fails when the
 // script differs from what it would write.
 //
 // Usage: node motion/kit/brand/logo-motion.mjs [--check]
@@ -91,57 +92,56 @@ css.walkAtRules('keyframes', (at) => {
   keyframes[at.params.replace(/^gt-logo-/, '')] = stops;
 });
 
-// the loader's animation list gives each keyframe set its duration and delay
-const anims = declsOf(ruleFor(".gt-logo-motion[data-mode='loader'] > svg"))
-  .animation.split(',')
+// the loader's laps: every keyframe set runs one lap, from the logo to the logo
+const anims = postcss.list
+  .comma(declsOf(ruleFor(".gt-logo-motion:is([data-mode='loader'], [data-play='loop']) > svg")).animation)
   .map((a) => {
-    const m = /^\s*([a-z-]+)\s+(\d+)ms\s+linear(?:\s+(\d+)ms)?/.exec(a);
+    const m = /^\s*([a-z-]+)\s+([\d.]+)ms\s+linear\s.*\binfinite\s*$/.exec(a);
     if (!m) throw new Error(`unexpected animation "${a}"`);
-    return { name: m[1].replace(/^gt-logo-/, ''), ms: Number(m[2]), delay: Number(m[3] || 0), loop: /infinite/.test(a) };
+    return { name: m[1].replace(/^gt-logo-/, ''), ms: Number(m[2]) };
   });
 for (const a of anims) if (!keyframes[a.name]) throw new Error(`no keyframes for ${a.name}`);
-const once = anims.filter((a) => !a.loop);
-const laps = anims.filter((a) => a.loop);
-const BACK_MS = Math.max(...once.map((a) => a.ms + a.delay));
-if (!laps.length || laps.some((a) => a.ms !== laps[0].ms || a.delay !== BACK_MS)) throw new Error('the laps do not share one length and start after the draw-back');
+if (anims.some((a) => a.ms !== anims[0].ms)) throw new Error('the laps do not share one length');
+const T = G.timing;
+const MERIDIAN = anims.find((a) => keyframes[a.name].some(([, st]) => 'meridian' in st));
+if (!MERIDIAN || anims.some((a) => a !== MERIDIAN && keyframes[a.name].some(([, st]) => 'meridian' in st))) throw new Error('one keyframe set must carry the meridian');
+if (T.lap !== anims[0].ms || T.form.meridianReturn[0] < T.meridianReturn[0]) throw new Error('the logo form does not fit the lap');
 
-// the hover's leave: the resting hover rule's transitions on the meridian's
-// dashes, stroke-dasharray easing the channel and stroke-dashoffset its -at
-const leave = {};
-const PROP_OF = { 'stroke-dasharray': '', 'stroke-dashoffset': '-at' };
-for (const t of declsOf(ruleFor(".gt-logo-motion[data-mode='hover'] .gt-logo-motion-meridian")).transition.split(/,\s*(?=stroke-)/)) {
-  const m = /^(stroke-dash(?:array|offset))\s+(\d+)ms\s+linear\((.*)\)\s*$/.exec(t.trim());
-  if (!m) throw new Error(`unexpected transition "${t}"`);
-  const pts = m[3].split(/,\s*/).map((p) => {
-    const [v, at] = p.trim().split(/\s+/);
-    return [Number(at.replace('%', '')) / 100, Number(v)];
-  });
-  leave[`meridian${PROP_OF[m[1]]}`] = { ms: Number(m[2]), ease: pts };
-}
-
-const data = { geometry: G, rest, dash: DASH, keyframes, anims, leave, back: BACK_MS, lap: laps[0].ms };
+const data = {
+  geometry: G,
+  rest,
+  dash: DASH,
+  keyframes,
+  anims: anims.map((a) => a.name),
+  meridian: MERIDIAN.name,
+  lap: T.lap,
+  back: T.drawBack,
+  returns: T.meridianReturn,
+  form: T.form.meridianReturn,
+};
 const body = `/* Written by kit/brand/logo-motion.mjs from src/components/brand/GtLogoMotion.geometry.ts and GtLogoMotion.css. Do not edit by hand. */
 /*
- * window.GTLogoMotion: the General Translation logo and its loop, "Meridian,
- * then G", for films. The drawing, the layers and every number are the site's
+ * window.GTLogoMotion: the General Translation logo form for films, and its
+ * loader. The drawing, the layers and every number are the site's
  * GtLogoMotion in loader mode; time comes from the film, so every frame is a
  * function of it.
  *
  *   const logo = GTLogoMotion.create({ ink: '#ffffff' });   // logo.svg is an <svg>, sized by its parent
- *   logo.set(t);   // t in seconds from the loop's start
+ *   logo.set(t);   // t in seconds from the form's start
  *
- * The sequence: the logo (t < 0); the draw-back (0 to ${BACK_MS / 1000} s); one lap, a line once round
- * the meridian, then the G off and back on once round the equator; the hover's
- * leave back to the logo; then the logo again. GTLogoMotion.DURATION is its length
- * with one lap; create({ laps: n }) runs n.
+ * The logo form, the default: the logo (t < 0); the meridian draws back (0 to ${T.drawBack / 1000} s)
+ * and a line runs once round it; the G draws off and back on round the
+ * equator, landing at ${T.form.meridianReturn[0] / 1000} s; then the meridian draws on again, landing on the
+ * logo at ${T.form.meridianReturn[1] / 1000} s (GTLogoMotion.DURATION); then the logo again.
+ * create({ loader: true, laps: n }) runs n laps of the loader instead, where
+ * the meridian draws on again from behind the G as it returns; each lap is
+ * ${T.lap / 1000} s (GTLogoMotion.LAP) and lands on the logo.
  */
 (function () {
   const D = ${JSON.stringify(data)};
   const NS = 'http://www.w3.org/2000/svg';
-  const CH = ${JSON.stringify(PROPS)};
-  const BACK = D.back / 1000;
   const LAP = D.lap / 1000;
-  const LEAVE = Math.max(...Object.values(D.leave).map((l) => l.ms)) / 1000;
+  const FORM = D.form[1] / 1000;
   function at(stops, f) {
     if (f <= stops[0][0]) return stops[0][1];
     for (let i = 1; i < stops.length; i++) {
@@ -156,28 +156,21 @@ const body = `/* Written by kit/brand/logo-motion.mjs from src/components/brand/
     }
     return stops[stops.length - 1][1];
   }
-  function ease(pts, x) {
-    if (x <= pts[0][0]) return pts[0][1];
-    for (let i = 1; i < pts.length; i++) {
-      if (x <= pts[i][0]) {
-        const [x0, y0] = pts[i - 1];
-        const [x1, y1] = pts[i];
-        return x1 > x0 ? y0 + (y1 - y0) * ((x - x0) / (x1 - x0)) : y1;
-      }
-    }
-    return pts[pts.length - 1][1];
-  }
-  // the channels at loop time u: the draw-back, then laps, from the loader's keyframes
-  function loop(u) {
+  // the channels at ms into a lap, each keyframe set at its own lap time
+  function frame(lapMs) {
     const s = Object.assign({}, D.rest);
-    for (const a of D.anims) {
-      const k = (u * 1000 - a.delay) / a.ms;
-      if (k < 0) continue;
-      const f = a.loop ? k - Math.floor(k) : Math.min(1, k);
-      Object.assign(s, at(D.keyframes[a.name], f));
-    }
+    for (const a of D.anims) Object.assign(s, at(D.keyframes[a], lapMs(a) / D.lap));
     return s;
   }
+  // the loader at ms from its start
+  const loader = (ms) => frame(() => ms % D.lap);
+  // the logo form at ms: the lap until the G lands, with the meridian's return moved to start there
+  const form = (ms) =>
+    frame((a) => {
+      if (a !== D.meridian) return Math.min(ms, D.form[0]);
+      if (ms < D.returns[0]) return ms;
+      return Math.min(D.returns[1], Math.max(D.returns[0], ms - (D.form[0] - D.returns[0])));
+    });
   function el(name, attrs, parent) {
     const e = document.createElementNS(NS, name);
     for (const k in attrs) e.setAttribute(k, attrs[k]);
@@ -186,7 +179,7 @@ const body = `/* Written by kit/brand/logo-motion.mjs from src/components/brand/
   }
   let made = 0;
   function create(opts) {
-    const o = Object.assign({ ink: 'currentColor', laps: 1 }, opts);
+    const o = Object.assign({ ink: 'currentColor', loader: false, laps: 1 }, opts);
     const g = D.geometry;
     const id = 'gtlm' + made++;
     const url = (n) => 'url(#' + id + '-' + n + ')';
@@ -199,6 +192,8 @@ const body = `/* Written by kit/brand/logo-motion.mjs from src/components/brand/
     };
     const meridian = (ink, parent) => dash('meridian', g.meridian.d, Object.assign({ mask: url('zone') }, line(g.meridian.width, ink)), parent);
     const lap = (c, ink, parent) => dash(c, g.latitude.d, line(c === 'fill' ? g.fill.width : g.under.width, ink), parent);
+    // the logo's meridian where it is drawn, cut faces included, while the G laps under it
+    const meridianInk = (parent) => el('path', { 'fill-rule': g.rest.fillRule, d: g.rest.d, mask: url('ink') }, parent);
     const less = (parent, ...cs) => cs.forEach((c) => lap(c, '#000', parent));
     const round = { 'stroke-linecap': 'round', 'stroke-linejoin': 'round' };
     // where no mask reaches: the ring from just inside its inner edge, less every point near a line's ink in the
@@ -239,6 +234,9 @@ const body = `/* Written by kit/brand/logo-motion.mjs from src/components/brand/
     lap('head', '#fff', head);
     less(head, 'fill');
     lap('fill', '#fff', mask('fill'));
+    const ink = mask('ink');
+    el('path', Object.assign({ d: g.meridianInk.d }, line(g.meridianInk.width, '#fff')), ink);
+    dash('meridian', g.meridian.d, line(g.meridian.width, '#000'), ink);
     const inside = mask('inside');
     el('rect', { width: 256, height: 256, fill: '#fff' }, inside);
     el('circle', Object.assign({ cx: g.ring.cx, cy: g.ring.cy, r: g.free.core.r, 'shape-rendering': 'crispEdges' }, line(g.free.core.width, '#000')), inside);
@@ -262,9 +260,13 @@ const body = `/* Written by kit/brand/logo-motion.mjs from src/components/brand/
     const b = add('bare');
     el('path', { d: g.stem }, b);
     el('path', { d: g.c }, b);
-    add('under');
-    el('path', Object.assign({ d: g.latitude.d }, line(g.width, o.ink)), add('head'));
-    el('path', { d: g.stem }, add('fill'));
+    meridianInk(add('under'));
+    const h = add('head');
+    el('path', Object.assign({ d: g.latitude.d }, line(g.width, o.ink)), h);
+    meridianInk(h);
+    const f = add('fill');
+    el('path', { d: g.stem }, f);
+    meridianInk(f);
     dash('lap', g.meridianLap.d, Object.assign({ mask: url('inside') }, line(g.width, o.ink)), stack);
     function paint(s) {
       for (const [p, c] of dashes) {
@@ -273,30 +275,18 @@ const body = `/* Written by kit/brand/logo-motion.mjs from src/components/brand/
         p.setAttribute('stroke-dashoffset', r.lead - s[c + '-at']);
       }
     }
-    const looped = BACK + LAP * o.laps;
-    const total = looped + LEAVE;
+    const total = o.loader ? LAP * o.laps : FORM;
     function set(t) {
       const moving = t > 0 && t < total;
       // '' inherits, so a hidden card hides the logo too
       restPath.style.visibility = moving ? 'hidden' : '';
       move.style.visibility = moving ? '' : 'hidden';
-      if (!moving) return;
-      if (t < looped) return paint(loop(t));
-      // the leave: from where the last lap ends back to the logo, on the hover's leave easing
-      const from = loop(looped);
-      const x = (t - looped) / LEAVE;
-      const s = Object.assign({}, D.rest);
-      for (const c of CH) {
-        const l = D.leave[c];
-        const k = l ? ease(l.ease, Math.min(1, (x * LEAVE * 1000) / l.ms)) : 1;
-        s[c] = from[c] + (D.rest[c] - from[c]) * k;
-      }
-      paint(s);
+      if (moving) paint(o.loader ? loader(t * 1000) : form(t * 1000));
     }
     set(-1);
     return { svg, set, duration: total };
   }
-  window.GTLogoMotion = { create, DURATION: BACK + LAP + LEAVE, BACK, LAP, LEAVE, viewBox: D.geometry.viewBox, restPath: D.geometry.rest.d };
+  window.GTLogoMotion = { create, DURATION: FORM, LAP, viewBox: D.geometry.viewBox, restPath: D.geometry.rest.d };
 })();
 `;
 
@@ -309,5 +299,5 @@ if (process.argv.includes('--check')) {
   console.log('kit/brand/gt-logo-motion.js matches');
 } else {
   writeFileSync(OUT, body);
-  console.log(`wrote kit/brand/gt-logo-motion.js (${body.length} bytes; ${anims.length} animations, channels ${LINES.join(', ')}, leave ${Object.keys(leave).join(', ')})`);
+  console.log(`wrote kit/brand/gt-logo-motion.js (${body.length} bytes; ${anims.length} animations, channels ${LINES.join(', ')})`);
 }

@@ -239,7 +239,7 @@ export default function BrandKit() {
       <h3 id={headingId('brand-kit', 'motion')}>Motion</h3>
       <p>
         The kit carries the loader and the hover as MP4 films on paper and on ink. The two figures below are the
-        same motion drawn live in SVG and CSS. Hover the second figure to run the draw-back.
+        same motion drawn live in SVG and CSS. Hover the second figure to run the loader.
       </p>
       <div className='ptb-kit-motion'>
         <figure className='ptb-kit-motion-cell'>
@@ -252,7 +252,7 @@ export default function BrandKit() {
           <div className='ptb-kit-motion-art is-ink' data-gt-logo-host=''>
             <GtLogoMotion mode='hover' size={88} />
           </div>
-          <figcaption>The hover: the meridian draws back while the pointer is over the logo.</figcaption>
+          <figcaption>The hover: the loader runs while the pointer is over the logo.</figcaption>
         </figure>
       </div>
       <p className='ptb-kit-links ptb-kit-row'>

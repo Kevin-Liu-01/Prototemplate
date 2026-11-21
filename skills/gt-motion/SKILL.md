@@ -332,9 +332,8 @@ renders).
   the scan beam through `beamAt(t)`, so its aperture pivots under the
   capstone while its land line runs the plate.
 - **The logo in motion** is `src/components/brand/GtLogoMotion.tsx`: the
-  logo as a link on hover (the meridian draws back) and the loader (a line
-  once round the meridian, then the G once round the equator), SVG and
-  CSS alone. Each part is a dashed ellipse arc, each gap a mask, and
+  loader (meridian, then G), also the hover of the logo as a link, SVG and
+  CSS alone. Films play the logo form (`gt-films`). Each part is a dashed ellipse arc, each gap a mask, and
   `pnpm build:logo-motion` writes both from the videos' timing and eases
   on the logo's construction.
 

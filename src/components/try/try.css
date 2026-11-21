@@ -244,18 +244,6 @@
   opacity: 1;
 }
 
-/* the loading arc: an open 270° hairline segment, rotating */
-.try-go-arc {
-  display: block;
-  animation: try-arc-spin 900ms linear infinite;
-}
-
-@keyframes try-arc-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* disabled is designed, not browser-gray: the ink ground steps back
    toward the paper while the face stays legible at full opacity */
 .try-root .try-form .try-go:disabled {
@@ -303,7 +291,6 @@
 
 .try-strip[data-state='loading'] .try-strip-tick {
   background: var(--tc-accent);
-  animation: try-tick-pulse 1.6s ease-in-out infinite;
 }
 
 /* error: the text takes full ink; the tick carries the red */
@@ -325,30 +312,13 @@
   background: var(--try-strip-grade, var(--tc-accent));
 }
 
-@keyframes try-tick-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.3;
-  }
-}
-
-/* reduced motion: the affordance and button faces swap instantly, the
-   arc stands still, the tick holds steady */
+/* reduced motion: the affordance and button faces swap instantly */
 @media (prefers-reduced-motion: reduce) {
   .try-url-glass,
   .try-url-fav,
   .try-go-face,
   .try-go-wait {
     transition: none;
-  }
-
-  .try-go-arc,
-  .try-strip[data-state='loading'] .try-strip-tick {
-    animation: none;
   }
 }
 
@@ -1616,22 +1586,6 @@
   }
 }
 
-/* the loading pulse: at most a faint opacity breath on the ghosts */
-.try-report.is-waiting .try-ghost {
-  animation: try-ghost-pulse 2.6s ease-in-out infinite;
-}
-
-@keyframes try-ghost-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.55;
-  }
-}
-
 /* the fill-in: score group and verdict rise first, then the rows in a
    90ms stagger — summary and fix rise 8px as the achieved segment
    lights */
@@ -1683,7 +1637,6 @@
     transition: none;
   }
 
-  .try-report.is-waiting .try-ghost,
   .try-report.is-filled .try-score-group,
   .try-report.is-filled .try-verdict,
   .try-report.is-filled .try-cat-summary,

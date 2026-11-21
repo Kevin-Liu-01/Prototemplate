@@ -58,7 +58,7 @@ export const MOTION_LOOPS: readonly MotionLoop[] = [
   {
     id: 'meridian-then-g',
     name: 'Meridian, then G',
-    caption: 'While a page loads, the meridian draws back once, then a line runs once round its oval and the G runs once round the equator: its stroke draws off from one end and back on until it rests as the G again. The ring and the T hold still the whole time.',
+    caption: 'Recorded before 20 November 2026, when the meridian began drawing on again with the G. While a page loads, the meridian draws back once, then a line runs once round its oval and the G runs once round the equator: its stroke draws off from one end and back on until it rests as the G again. The ring and the T hold still the whole time.',
     poster: true,
   },
 ];
@@ -71,7 +71,7 @@ export const motionPoster = (loop: MotionLoop, theme: 'light' | 'dark') => `/mar
 export const MOTION_GROUP = {
   id: 'animations-hover',
   title: 'Hover and loading',
-  lead: `The first hover and the loader are the live logo's own, recorded on the logo on 2026-11-12, where only the line being drawn moves. The other two hovers were recorded on Axis and meridian behind, the previous logo, and settle it into Oval globe, axis behind.`,
+  lead: `The first hover and the loader were recorded on the live logo on 2026-11-12, where only the line being drawn moves. Since 2026-11-20 the loader is the live logo's hover too, and the three hovers are explorations. The other two were recorded on Axis and meridian behind, the previous logo, and settle it into Oval globe, axis behind.`,
 };
 
 /** The animations in the order they were chosen. Each starts and ends on the exact mark. */

@@ -1,7 +1,8 @@
-// Writes the live logo motion from its numbers: the hover (the meridian
-// draws back along its oval) and the loader (the same draw-back once, then a
-// line runs once round the meridian and the G draws off and back on once
-// round the equator), drawn with SVG and CSS alone.
+// Writes the live logo motion from its numbers: the loader, from the logo to
+// the logo (the meridian draws back along its oval and a line runs once round
+// it, then the G draws off and back on once round the equator while the
+// meridian draws on again), which is also the hover, and the settle
+// (the draw-back run backward), drawn with SVG and CSS alone.
 //
 //   src/components/brand/GtLogoMotion.geometry.ts  the drawing: the logo's
 //       path (LOGO in src/lib/logo.ts) and the strokes and masks that move
@@ -91,7 +92,15 @@ const { mid: R, inner: R_IN } = CONSTRUCTION.new.ring;
 const h = w / 2;
 const { gTail0, gHead0 } = SRC.source;
 const { hover: HOVER_S, beats, rate } = SRC.timing;
-const LOOP_S = beats.D1 + beats.R1 + beats.D2 + beats.R2;
+/* the lap, logo to logo: the meridian draws back (HOVER_S) and its line
+   runs once round (D1); a rest (R1); the G draws off and back on round the
+   equator (D2), and the meridian draws on again over RETURN_S from when the
+   G reaches its join (M_BACK), landing at ML; a rest on the logo (R2).
+   LOOP_S is set once the drawing is measured, below ENDS. */
+const M1 = HOVER_S + beats.D1;
+const G0 = M1 + beats.R1;
+const GE = G0 + beats.D2;
+const RETURN_S = 0.9;
 const C = 128;
 const DEG = Math.PI / 180;
 /** units: a keyframe is kept where dropping it moves a dash end more than this */
@@ -259,7 +268,6 @@ function gLap(x) {
     head: headAt > S_TIP ? span(Math.max(tail, S_TIP - HEAD_IN), headAt) : none(S_TIP - HEAD_IN),
   };
 }
-const G0 = beats.D1 + beats.R1;
 /* outside its lap each channel is empty where its dash appears (before the
    lap) or leaves (after it), so no interpolation between keyframes sweeps a
    dash along the G */
@@ -269,9 +277,107 @@ const gAt = (t) => {
   return { under: none(after ? S_TIP : 0), fill: { ...none(after ? S_TIP + AXIS : AXIS), snap: '' }, head: none(S_TIP - HEAD_IN) };
 };
 function lapAt(t) {
-  if (t >= beats.D1) return { len: 0, off: LAP.length };
-  const [tail, head] = table(SRC.tables.meridianLap, t / beats.D1);
+  if (t <= HOVER_S) return NONE;
+  if (t >= M1) return { len: 0, off: LAP.length };
+  const [tail, head] = table(SRC.tables.meridianLap, (t - HOVER_S) / beats.D1);
   return span(LAP.s(tail), LAP.s(head));
+}
+/* the meridian on the loader and the hover: its undrawn stretch runs from
+   past the cut face round its oval to past the join on one power2.inOut
+   course over the meridian's visible length. Near each pole the meridian
+   runs into the ring, which covers the share of its width past the ring's
+   inner edge; the end crosses each stretch in time to the share that shows
+   (no less than SEEN_MIN), so it moves at one even pace wherever it can be
+   seen and never stalls under the ring. The source's course (meridianBack,
+   kept for the armillary's Open beat) sped through both poles and crawled
+   down the left. */
+const inOut = (x) => (x < 0.5 ? 2 * x * x : 1 - ((2 - 2 * x) ** 2) / 2);
+const SEEN_MIN = 0.2;
+const SEEN = (() => {
+  const n = 4000;
+  const s = [0];
+  const v = [0];
+  for (let i = 1; i <= n; i++) {
+    const t0 = TH_MIN + ((TH_MAX - TH_MIN) * (i - 1)) / n;
+    const t1 = TH_MIN + ((TH_MAX - TH_MIN) * i) / n;
+    const [x, y] = LINES.meridian.at((t0 + t1) / 2);
+    const r = Math.hypot(x - C, y - C);
+    const shown = Math.min(1, Math.max(SEEN_MIN, (R_IN - (r - h)) / w));
+    const ds = MER.s(t1) - MER.s(t0);
+    s.push(s[i - 1] + ds);
+    v.push(v[i - 1] + ds * shown);
+  }
+  return { s, v };
+})();
+/** the meridian's arc length at a share of its visible length from the join */
+function seenAt(share) {
+  const { s, v } = SEEN;
+  const target = share * v.at(-1);
+  let lo = 0;
+  let hi = v.length - 1;
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (v[mid] < target) lo = mid;
+    else hi = mid;
+  }
+  const k = v[hi] === v[lo] ? 0 : (target - v[lo]) / (v[hi] - v[lo]);
+  return lerp(s[lo], s[hi], k);
+}
+function meridianOff(x) {
+  return span(seenAt(1 - inOut(clamp01(x))), MER.length);
+}
+/* the G's undrawn stretch is longest at G_TURN, where it turns back */
+const [G_TURN] = (() => {
+  let best = [G0, 0];
+  for (let i = 0; i <= 4000; i++) {
+    const t = G0 + (beats.D2 * i) / 4000;
+    const { len } = gAt(t).under;
+    if (len > best[1]) best = [t, len];
+  }
+  return best;
+})();
+/** cubic-bezier(x1, y1, x2, y2) as CSS defines it: progress at a share of the time */
+function cubicBezier(x1, y1, x2, y2) {
+  const at = (a, b, u) => 3 * (1 - u) * (1 - u) * u * a + 3 * (1 - u) * u * u * b + u * u * u;
+  return (x) => {
+    let lo = 0;
+    let hi = 1;
+    for (let i = 0; i < 60; i++) {
+      const mid = (lo + hi) / 2;
+      if (at(x1, x2, mid) < x) lo = mid;
+      else hi = mid;
+    }
+    return at(y1, y2, (lo + hi) / 2);
+  };
+}
+/* the meridian's return is an arrival: a gentle start and a long settle */
+const ARRIVE = cubicBezier(0.4, 0, 0.2, 1);
+/* the meridian's join stands behind the G's lower arc, so the meridian
+   starts back once the G, drawing back on from the right node, has reached
+   it, and STAGGER_S after (M_BACK), so the G leads and the meridian follows
+   out from behind it */
+const STAGGER_S = 0.09;
+let mBack = null;
+const M_BACK = () => {
+  if (mBack !== null) return mBack;
+  const join = LAT.s(ENDS[1]);
+  mBack = GE;
+  for (let i = 0; i <= 4000; i++) {
+    const t = G_TURN + ((GE - G_TURN) * i) / 4000;
+    if (gAt(t).under.off >= join) {
+      mBack = Math.ceil((t + STAGGER_S) * 1000) / 1000;
+      break;
+    }
+  }
+  return mBack;
+};
+/* the meridian over the lap: drawn back, held off through its line's lap
+   and the G's draw-off, and drawn on again over RETURN_S from M_BACK, the
+   share of its visible length on the ARRIVE curve */
+function meridianAt(t) {
+  if (t < HOVER_S) return meridianOff(t / HOVER_S);
+  if (t < M_BACK()) return meridianOff(1);
+  return span(seenAt(ARRIVE(Math.min(1, (t - M_BACK()) / RETURN_S))), MER.length);
 }
 
 /* ------------------------------------------------------------ keyframes */
@@ -330,49 +436,28 @@ const f2 = (n) => {
   const v = Math.round(n * 100) / 100;
   return Object.is(v, -0) ? '0' : String(v);
 };
-const pct = (t) => `${f3(t * 100)}%`;
-/** keyframes that set one channel's two custom properties, its dash's length and its start along the path, in px (the svg's units) */
-function keyframes(name, channel, fn, seconds) {
-  const rows = stops(fn, seconds).map((p) => `  ${pct(p.t)} { --gt-logo-${channel}: ${f2(p.len)}px; --gt-logo-${channel}-at: ${f2(p.off)}px; }`);
-  return `@keyframes ${name} {\n${rows.join('\n')}\n}`;
-}
-
+/* seven decimals of a percent: a stop of the 3.8 s lap and its mirror in the 0.6 s settle then stand on the same value */
+const pct = (t) => `${+(t * 100).toFixed(7)}%`;
 /**
- * The hover as transitions: one property's course over the draw-back as a
- * linear() easing, its progress from the rest value to the hovered one at
- * the stops a straight line between neighbours cannot stand for. `back` is
- * the same course run backward in time, for the leave. A property that does
- * not move returns null.
+ * keyframes that set one channel's two custom properties, its dash's length
+ * and its start along the path, in px (the svg's units). A stop beside a
+ * still stretch is rounded into that stretch, so no dash starts a hair early
+ * or lands a hair late on a beat: Chrome draws a dash of almost no length as
+ * a sliver across its line.
  */
-function easing(fn, seconds, back = false) {
-  const n = Math.round(seconds * rate);
-  const v = [];
-  for (let i = 0; i <= n; i++) v.push(fn((seconds * i) / n));
-  const range = v[n] - v[0];
-  if (Math.abs(range) < 1e-6) return null;
-  let pts = v.map((y, i) => ({ t: i / n, p: (y - v[0]) / range }));
-  if (back) pts = pts.map(({ t, p }) => ({ t: 1 - t, p: 1 - p })).reverse();
-  const tol = TOL / Math.abs(range);
-  const keep = new Set([0, n]);
-  const walk = (i, j) => {
-    let worst = -1;
-    let at = -1;
-    for (let k = i + 1; k < j; k++) {
-      const e = Math.abs(lerp(pts[i].p, pts[j].p, (pts[k].t - pts[i].t) / (pts[j].t - pts[i].t)) - pts[k].p);
-      if (e > worst) {
-        worst = e;
-        at = k;
-      }
-    }
-    if (worst > tol) {
-      keep.add(at);
-      walk(i, at);
-      walk(at, j);
-    }
+function keyframes(name, channel, fn, seconds) {
+  return keyframesOf(name, channel, stops(fn, seconds));
+}
+function keyframesOf(name, channel, pts) {
+  const same = (a, b) => a && b && f2(a.len) === f2(b.len) && f2(a.off) === f2(b.off);
+  const at = (p, i) => {
+    const v = p.t * 1e9;
+    if (same(pts[i - 1], p)) return `${Math.ceil(v) / 1e7}%`;
+    if (same(p, pts[i + 1])) return `${Math.floor(v) / 1e7}%`;
+    return pct(p.t);
   };
-  walk(0, n);
-  const stopsOf = [...keep].sort((a, b) => a - b).map((i) => `${+pts[i].p.toFixed(4)} ${f3(pts[i].t * 100)}%`);
-  return `linear(${stopsOf.join(', ')})`;
+  const rows = pts.map((p, i) => `  ${at(p, i)} { --gt-logo-${channel}: ${f2(p.len)}px; --gt-logo-${channel}-at: ${f2(p.off)}px; }`);
+  return `@keyframes ${name} {\n${rows.join('\n')}\n}`;
 }
 
 /* ------------------------------------------------------------ the drawing */
@@ -425,6 +510,10 @@ const latUnder = (merTheta, upper) => {
 };
 const END_HALF = 20;
 const ENDS = [latUnder(meridianEnd[1], true), latUnder(meridianStart[1], false)];
+/* where the meridian lands on the logo, after the G's own landing, and the lap */
+const ML = Math.max(GE, M_BACK() + RETURN_S);
+/* the rest is R2, stretched by under one sample so the lap is whole samples and every 60 fps frame stands on one */
+const LOOP_S = Math.ceil((ML + beats.R2) * rate - 1e-9) / rate;
 /* units: the meridian's dash reaches this far either side of its line, past every point of its zone (the breaks' far
    corners lie furthest from it), so the dash's sides never cut the zone and only the zone's own edges bound it */
 const DASH_HALF = (() => {
@@ -789,6 +878,15 @@ const geometry = {
   under: { width: +f3(w + 2 * BAND) },
   fill: { width: +f3(w + 2 * AXIS + 2 * REACH) },
   meridianLap: { d: LAP.d, length: +f3(LAP.length), from: 0, to: 360 },
+  meridianInk: { d: arc('meridian', meridianStart[1], meridianEnd[1]).d, width: +f3(w + 2) },
+  timing: {
+    drawBack: +f3(HOVER_S * 1000),
+    lap: +f3(LOOP_S * 1000),
+    meridianReturn: [+f3(M_BACK() * 1000), +f3(ML * 1000)],
+    rests: [[+f3(ML * 1000), +f3(LOOP_S * 1000)]],
+    /* the logo form, for videos: the lap played once, the meridian drawing on only once the G has landed */
+    form: { meridianReturn: [+f3(GE * 1000), +f3((GE + RETURN_S) * 1000)] },
+  },
 };
 
 const ts = `${HEAD}
@@ -812,7 +910,11 @@ const ts = `${HEAD}
  * run on, by theta \`from\` and \`to\` (each \`length\` is its path's own):
  * the undrawn meridian, the undrawn G (\`under\`), the stem whole across its
  * cut (\`fill\`), the G's head past its tip, and the lap line. Every
- * stroke is \`width\` wide unless it says.
+ * stroke is \`width\` wide unless it says. \`timing\` is the motion's
+ * clock in milliseconds: the draw-back, one lap, when the meridian draws on
+ * again and lands, and the rest where the frame is the logo and a hover
+ * stops. \`form\` is the logo form's: the lap played once in a video, its
+ * meridian drawing on again only once the G has landed.
  */
 export const GT_LOGO_MOTION = ${JSON.stringify(geometry, null, 2).replace(/"([a-zA-Z]+)":/g, '$1:').replace(/"/g, "'")} as const;
 `;
@@ -834,28 +936,18 @@ const start = (channel, { len, off }) => `  --gt-logo-${channel}: ${f2(len)}px;\
 const dashRules = CHANNELS.map(
   ([c, path]) => `.gt-logo-motion-${c} {\n  stroke-dasharray: var(--gt-logo-${c}) ${gap(path.length)};\n  stroke-dashoffset: calc(-1 * var(--gt-logo-${c}-at));\n}`,
 ).join('\n\n');
-/* a hover mark moves while its link, its button or an element marked
-   data-gt-logo-host is hovered or keyboard focused, while the mark itself is
-   hovered, or while it is active */
-const HOST = ':is(a, button, [data-gt-logo-host]):is(:hover, :focus-visible)';
-const HOVERED = `:is(${HOST} .gt-logo-motion[data-mode='hover'], .gt-logo-motion[data-mode='hover']:is(:hover, [data-active]))`;
-/* The hover moves the meridian's dashes' own stroke-dasharray and
-   stroke-dashoffset by transitions, not the custom properties on the svg:
-   WebKit (Safari 26) runs a transition of a registered custom property but
-   paints the var() that reads it at its end value, so there the hover
-   jumped. The svg's custom properties change at once on enter and on
-   leave, and each dash follows on the course's easing. */
-/** the meridian's dash transitions: forward on enter, backward in time on leave */
-const hoverTransition = (back) =>
-  [
-    ['stroke-dasharray', (s) => meridianBack(s / HOVER_S).len],
-    ['stroke-dashoffset', (s) => -meridianBack(s / HOVER_S).off],
-  ]
-    .map(([name, course]) => [name, easing(course, HOVER_S, back)])
-    .filter(([, ease]) => ease)
-    .map(([name, ease]) => `\n    ${name} ${ms(HOVER_S)} ${ease}`)
-    .join(',');
 const indent = (text) => text.replace(/^(?=.)/gm, '  ');
+/* the draw-back's stops, shared: the lap's draw-back and the settle (the
+   same stops mirrored) stand on the same values at every point, so a leave
+   or a return during the draw-back lands on the frame it left */
+const BACK = stops((t) => meridianOff(t / HOVER_S), HOVER_S);
+const SETTLE = BACK.map((p) => ({ ...p, t: 1 - p.t })).reverse();
+/* the rest of the lap on the lap's own sample grid, the grid the G's
+   keyframes use, since the meridian's return follows the G */
+const MERIDIAN_LAP = [
+  ...BACK.map((p) => ({ ...p, t: (p.t * HOVER_S) / LOOP_S })),
+  ...stops(meridianAt, LOOP_S).filter((p) => p.t * LOOP_S > HOVER_S + 1e-9),
+];
 
 const css = `${HEAD}
 
@@ -870,18 +962,19 @@ const css = `${HEAD}
    channel the stem whole across its cut, the head channel the G past its tip,
    the lap channel the line that runs round the meridian.
 
-   A loader shows the motion layer, plays the hover's draw-back once
-   (${ms(HOVER_S)}), then the two-beat lap for as long as it is mounted
-   (${ms(LOOP_S)} a lap: the meridian ${ms(beats.D1)}, a rest of ${ms(beats.R1)}, the G ${ms(beats.D2)},
-   a rest of ${ms(beats.R2)}). A hover mark moves the same draw-back by
-   transitions while its host is hovered or keyboard focused: the svg's
-   properties change at once, and the meridian's dashes' stroke-dasharray
-   and stroke-dashoffset follow on the source's course as a linear() easing
-   (Safari paints a transitioned custom property's var() at its end value,
-   so the transitions sit on the dashes themselves); a leave runs the
-   course backward in time. The rest layer hides at once on enter and shows
-   again only when the leave has run. Every rule that moves or swaps a
-   layer sits inside prefers-reduced-motion: no-preference, so under
+   A loader runs the lap for as long as it is mounted, from the logo to the
+   logo (${ms(LOOP_S)}): the meridian draws back (${ms(HOVER_S)}) and its line runs once
+   round (${ms(beats.D1)}); a rest of ${ms(beats.R1)}; the G draws off and back on round the
+   equator (${ms(beats.D2)}, landing at ${ms(GE)}); ${ms(STAGGER_S)} after the G, drawing back on,
+   reaches the meridian's join (${Math.round(M_BACK() * 1000)}ms) the meridian draws on again from behind it
+   over ${ms(RETURN_S)} on cubic-bezier(0.4, 0, 0.2, 1), landing at ${Math.round(ML * 1000)}ms; a rest of ${ms(beats.R2)}. A hover mark is the loader while its host is
+   hovered or keyboard focused: the component sets data-play='loop' on
+   enter; after a leave it waits for the lap's next rest, where the frame is
+   the logo, and clears data-play, and a leave during the draw-back sets
+   data-play='settle', which runs it backward to the logo.
+   --gt-logo-from is where the lap stands when either starts, so a leave
+   or a return halfway runs on from there. Every rule that moves or
+   swaps a layer sits inside prefers-reduced-motion: no-preference, so under
    reduced motion every mode is the still logo. */
 
 ${props}
@@ -897,11 +990,11 @@ ${props}
 .gt-logo-motion > svg {
   display: block;
   overflow: visible;
-${start('meridian', meridianBack(0))}
-${start('under', NONE)}
-${start('fill', NONE)}
-${start('head', none(S_TIP - HEAD_IN))}
-${start('lap', NONE)}
+${start('meridian', meridianOff(0))}
+${start('under', gAt(0).under)}
+${start('fill', gAt(0).fill)}
+${start('head', gAt(0).head)}
+${start('lap', lapAt(0))}
 }
 
 .gt-logo-motion-label {
@@ -937,63 +1030,40 @@ ${dashRules}
 }
 
 @media (prefers-reduced-motion: no-preference) {
-${indent(`/* the loader */
-.gt-logo-motion[data-mode='loader'] .gt-logo-motion-rest {
+${indent(`/* the loader, and a hover mark from its enter until it has settled */
+.gt-logo-motion:is([data-mode='loader'], [data-play]) .gt-logo-motion-rest {
   visibility: hidden;
 }
 
-.gt-logo-motion[data-mode='loader'] .gt-logo-motion-move {
+.gt-logo-motion:is([data-mode='loader'], [data-play]) .gt-logo-motion-move {
   visibility: visible;
 }
 
-.gt-logo-motion[data-mode='loader'] > svg {
+.gt-logo-motion:is([data-mode='loader'], [data-play='loop']) > svg {
   animation:
-    gt-logo-meridian-back ${ms(HOVER_S)} linear both,
-    gt-logo-lap ${ms(LOOP_S)} linear ${ms(HOVER_S)} infinite,
-    gt-logo-under-lap ${ms(LOOP_S)} linear ${ms(HOVER_S)} infinite,
-    gt-logo-fill-lap ${ms(LOOP_S)} linear ${ms(HOVER_S)} infinite,
-    gt-logo-head-lap ${ms(LOOP_S)} linear ${ms(HOVER_S)} infinite;
+    gt-logo-meridian-lap ${ms(LOOP_S)} linear calc(-1 * var(--gt-logo-from, 0ms)) infinite,
+    gt-logo-lap ${ms(LOOP_S)} linear calc(-1 * var(--gt-logo-from, 0ms)) infinite,
+    gt-logo-under-lap ${ms(LOOP_S)} linear calc(-1 * var(--gt-logo-from, 0ms)) infinite,
+    gt-logo-fill-lap ${ms(LOOP_S)} linear calc(-1 * var(--gt-logo-from, 0ms)) infinite,
+    gt-logo-head-lap ${ms(LOOP_S)} linear calc(-1 * var(--gt-logo-from, 0ms)) infinite;
 }
 
-/* the hover: the meridian's dashes run to the hovered values on enter and
-   back on leave; the layers swap at once on enter and only after the leave */
-${HOVERED} > svg {
-${start('meridian', meridianBack(1))}
-}
-
-.gt-logo-motion[data-mode='hover'] .gt-logo-motion-meridian {
-  transition:${hoverTransition(true)};
-}
-
-${HOVERED} .gt-logo-motion-meridian {
-  transition:${hoverTransition(false)};
-}
-
-.gt-logo-motion[data-mode='hover'] .gt-logo-motion-rest {
-  transition: visibility 0s linear ${ms(HOVER_S)};
-}
-
-.gt-logo-motion[data-mode='hover'] .gt-logo-motion-move {
-  transition: visibility 0s linear ${ms(HOVER_S)};
-}
-
-${HOVERED} .gt-logo-motion-rest {
-  visibility: hidden;
-  transition: none;
-}
-
-${HOVERED} .gt-logo-motion-move {
-  visibility: visible;
-  transition: none;
+.gt-logo-motion[data-play='settle'] > svg {
+  animation: gt-logo-meridian-settle ${ms(HOVER_S)} linear calc(var(--gt-logo-from, ${ms(HOVER_S)}) - ${ms(HOVER_S)}) both;
 }`)}
 }
 
-/* the draw-back: the meridian's undrawn stretch runs from past its cut
-   face back round its oval to past its join */
-${keyframes('gt-logo-meridian-back', 'meridian', (s) => meridianBack(s / HOVER_S), HOVER_S)}
+/* the meridian over the lap: its undrawn stretch runs from past its cut
+   face back round its oval to past its join, holds while the line laps, and
+   runs back */
+${keyframesOf('gt-logo-meridian-lap', 'meridian', MERIDIAN_LAP)}
 
-/* the lap: a line once round the meridian, a rest, the G drawn off and back
-   on once round the equator, a rest */
+/* the settle: the draw-back run backward, from the logo without its meridian
+   to the logo */
+${keyframesOf('gt-logo-meridian-settle', 'meridian', SETTLE)}
+
+/* the lap: a line once round the meridian while it is drawn back, then
+   the G drawn off and back on once round the equator */
 ${keyframes('gt-logo-lap', 'lap', lapAt, LOOP_S)}
 
 ${keyframes('gt-logo-under-lap', 'under', (t) => gAt(t).under, LOOP_S)}
@@ -1003,12 +1073,15 @@ ${keyframes('gt-logo-fill-lap', 'fill', (t) => gAt(t).fill, LOOP_S)}
 ${keyframes('gt-logo-head-lap', 'head', (t) => gAt(t).head, LOOP_S)}
 `;
 
-/** the moving ends' course, for the tests: each channel's dash ({ len, off }, in its path's units) at a time in seconds, the loader's lap from its own start and the draw-back from the hover's start */
+/** the moving ends' course, for the tests: each channel's dash ({ len, off }, in its path's units) at a time in seconds from the lap's start (meridian: the draw-back alone; meridianLap: the meridian over the whole lap) */
 export const COURSE = {
   hover: HOVER_S,
   beats,
   loop: LOOP_S,
-  meridian: (s) => meridianBack(s / HOVER_S),
+  meridian: (s) => meridianOff(s / HOVER_S),
+  meridianLap: meridianAt,
+  turn: G_TURN,
+  landing: ML,
   lap: lapAt,
   under: (t) => gAt(t).under,
   fill: (t) => gAt(t).fill,

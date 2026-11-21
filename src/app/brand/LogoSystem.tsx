@@ -111,9 +111,9 @@ export default function LogoSystem() {
 
       <h3 id={headingId('logo-system', 'states')}>States</h3>
       <p>
-        The logo has three states. The still logo is the one every file draws. On hover the meridian draws back, and
-        the logo settles into the globe without its meridian. While a page loads the loader runs. Under reduced
-        motion the hover does nothing and the loader holds the still logo.
+        The logo has two states. The still logo is the one every file draws. While a page loads, and for as long as
+        the pointer is over the logo, the loader runs, and every lap lands on the still logo. On leave it runs on to
+        the end of its lap and stops. Under reduced motion the hover does nothing and the loader holds the still logo.
       </p>
       <div className='ptb-sys-states'>
         <figure className='ptb-kit-motion-cell'>
@@ -127,8 +127,7 @@ export default function LogoSystem() {
             <GtLogoMotion mode='hover' size={72} />
           </div>
           <figcaption>
-            Hover: the meridian draws back over the north pole, down the left and under the south pole. On leave it
-            draws out again.
+            Hover: the loader, for as long as the pointer stays. On leave it finishes its lap on the still logo.
           </figcaption>
         </figure>
         <figure className='ptb-kit-motion-cell'>
@@ -136,8 +135,8 @@ export default function LogoSystem() {
             <GtLogoMotion label='The General Translation loader' mode='loader' size={72} />
           </div>
           <figcaption>
-            Loader, Meridian, then G: the draw-back once, then a line once round the meridian and the G&rsquo;s stroke
-            once round the equator, on a loop.
+            Loader, Meridian, then G: the meridian draws back and a line runs once round it, then the G&rsquo;s stroke
+            runs once round the equator and the meridian draws on again with it, landing on the logo.
           </figcaption>
         </figure>
       </div>

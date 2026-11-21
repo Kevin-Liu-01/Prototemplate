@@ -1,31 +1,33 @@
 /**
  * The words and the files of /marks/loading: the finished loader first, then
- * the hovers, how the motion is built, the checks that hold it, reduced
- * motion, the loader on /compare, and the before and after of the fix. The
+ * the hover, which is the loader, the logo form for videos, how the motion is built, the checks that
+ * hold it, reduced motion, the loader on /compare, the armillary and the
+ * ASCII loader as explorations, and the before and after of the fix. The
  * timings come from scripts/build/logo-motion.json through the server page,
  * so the page and the component never disagree.
  */
 
-/** The beats of the motion in milliseconds, read from scripts/build/logo-motion.json by the server page. */
-export type LoaderTiming = { drawBack: number; meridian: number; restAfterMeridian: number; g: number; restAfterG: number };
+/** The beats of the motion in milliseconds, read from scripts/build/logo-motion.json and the generated geometry by the server page. */
+export type LoaderTiming = { drawBack: number; meridian: number; restAfterMeridian: number; g: number; meridianReturn: readonly [number, number]; lap: number; formReturn: readonly [number, number] };
 
-export const lapOf = (t: LoaderTiming) => t.meridian + t.restAfterMeridian + t.g + t.restAfterG;
+export const lapOf = (t: LoaderTiming) => t.lap;
 
 export const LEAD =
-  'The General Translation logo while a page loads, running live, then the work behind it: the hovers, how the motion is built, the checks that hold it and the fix that keeps everything but the moving line on the logo itself.';
+  'The General Translation logo while a page loads and while it is hovered, running live, and the logo form that videos play, then the work behind it: how the motion is built, the checks that hold it, two loaders kept as explorations and the fix that keeps everything but the moving line on the logo itself.';
 
 export const LOADER_ID = 'loader';
 export const LOADER_TITLE = 'The loader';
 export const LOADER_LEAD =
-  'Meridian, then G. The meridian draws back once, then a line runs once round the meridian and the G draws off and back on once round the equator, for as long as the page loads.';
+  'The loading animation: meridian, then G, from the logo to the logo. The meridian draws back and a line runs once round it; then the G draws off and back on once round the equator, and the meridian draws on again from behind it as it returns, so every lap lands on the logo.';
 
 /** The beats of the loader as rows of the timing table. */
 export const timingRows = (t: LoaderTiming): readonly { name: string; ms: number; note: string }[] => [
-  { name: 'Draw-back', ms: t.drawBack, note: 'Once, when the loader mounts: the meridian draws back along its oval to the logo without its meridian.' },
+  { name: 'Draw-back', ms: t.drawBack, note: 'The meridian draws back along its oval to the logo without its meridian, easing in and out at one even pace wherever it shows.' },
   { name: 'Meridian lap', ms: t.meridian, note: 'A line runs once round the meridian, over the logo without its meridian.' },
   { name: 'Rest', ms: t.restAfterMeridian, note: 'The logo without its meridian holds still.' },
   { name: 'G lap', ms: t.g, note: 'The G draws off from its tip round the equator and back on, landing on its tip again.' },
-  { name: 'Rest', ms: t.restAfterG, note: 'The logo without its meridian holds still before the next lap.' },
+  { name: 'Meridian return', ms: t.meridianReturn[1] - t.meridianReturn[0], note: `From ${t.meridianReturn[0]} ms, a beat after the G drawing back on has reached the meridian’s join, the meridian draws on again from behind the G, gently at first and with a long settle, and lands on the logo at ${t.meridianReturn[1]} ms.` },
+  { name: 'Rest', ms: t.lap - t.meridianReturn[1], note: 'The logo holds still before the next lap.' },
 ];
 
 /** The loader at the sizes the site uses it, with where each one runs. */
@@ -35,10 +37,38 @@ export const LOADER_SIZES: readonly { size: number; where: string }[] = [
   { size: 16, where: 'The smallest size the plate checks' },
 ];
 
+export const FORM_ID = 'logo-form';
+export const FORM_TITLE = 'The logo form';
+export const FORM_LEAD =
+  'The logo forming, for promotional videos and anywhere else the logo appears in a film. It is the loader’s lap played once, except that the meridian waits until the G has landed and only then draws on, so the two never move at once.';
+
+/** The beats of the logo form as rows of its timing table. */
+export const formRows = (t: LoaderTiming): readonly { name: string; ms: number; note: string }[] => [
+  { name: 'Draw-back', ms: t.drawBack, note: 'The meridian draws back, as in the loader.' },
+  { name: 'Meridian lap', ms: t.meridian, note: 'A line runs once round the meridian.' },
+  { name: 'Rest', ms: t.restAfterMeridian, note: 'The logo without its meridian holds still.' },
+  { name: 'G lap', ms: t.g, note: `The G draws off and back on round the equator, landing on its tip at ${t.formReturn[0]} ms.` },
+  { name: 'Meridian return', ms: t.formReturn[1] - t.formReturn[0], note: `Once the G has landed, the meridian draws on again, gently at first and with a long settle, and lands on the logo at ${t.formReturn[1]} ms.` },
+];
+
+export const FORM_LOOP: MotionLoop = {
+  id: 'logo-form',
+  name: 'The logo form',
+  caption: 'Rendered from the film kit’s logo at 1080 pixels and 60 frames a second, still for half a second either side. motion/kit/brand/render-logo-form.mjs writes both themes from the frames a film draws.',
+  shipped: true,
+};
+
+export const FORM_CODE = `<script src="kit/brand/gt-logo-motion.js"></script>
+
+const logo = GTLogoMotion.create({ ink: 'white' });
+box.appendChild(logo.svg);
+// on the film's clock, t in seconds from the form's start
+logo.set(t);   // the logo before 0 and after GTLogoMotion.DURATION`;
+
 export const ARMILLARY_ID = 'armillary';
 export const ARMILLARY_TITLE = 'The armillary loader';
 export const ARMILLARY_LEAD =
-  'The logo read as an armillary sphere. The ring is the outer ring seen face on, the meridian and the latitude are rings turned about their own axes, and the stem and the bar are those rings seen edge on. Once a lap the meridian and the G draw back, both rings swing out of their hinges, a full turn and a half turn, passing over and under as the logo’s own crossings do, and the logo draws back on.';
+  'An exploration that no surface uses as a loading state. The logo read as an armillary sphere. The ring is the outer ring seen face on, the meridian and the latitude are rings turned about their own axes, and the stem and the bar are those rings seen edge on. Once a lap the meridian and the G draw back, both rings swing out of their hinges, a full turn and a half turn, passing over and under as the logo’s own crossings do, and the logo draws back on.';
 
 /** The beats of the armillary as rows of its timing table, from GtLogoArmillary.geometry.ts. */
 export const armillaryRows = (beats: { rest: number; open: number; swing: number; close: number }): readonly { name: string; ms: number; note: string }[] => [
@@ -57,7 +87,7 @@ export const ARMILLARY_SIZES: readonly { size: number; where: string }[] = [
 export const ASCII_ID = 'ascii';
 export const ASCII_TITLE = 'The ASCII loader';
 export const ASCII_LEAD =
-  'The logo turned on its sphere and set in a monospace grid, 45 characters by 21 lines, from - to @ by how much of each cell the lines cover and how much light reaches them. The rings turn once a lap and pass behind the globe.';
+  'An exploration that no surface uses as a loading state. The logo turned on its sphere and set in a monospace grid, 45 characters by 21 lines, from - to @ by how much of each cell the lines cover and how much light reaches them. The rings turn once a lap and pass behind the globe.';
 
 export const ASCII_NOTES: readonly string[] = [
   'The still holds for a second, then the meridian and the latitude each turn once in 2.5 seconds at 24 frames a second, and the lap lands on the still again.',
@@ -66,9 +96,9 @@ export const ASCII_NOTES: readonly string[] = [
 ];
 
 export const HOVER_ID = 'hovers';
-export const HOVER_TITLE = 'The hovers';
+export const HOVER_TITLE = 'The hover';
 export const HOVER_LEAD =
-  'Three hovers were drawn on the logo. Meridian draws back is the one the component ships, and the other two stay as videos.';
+  'The hover is the loader. While the logo’s link is hovered or keyboard focused the loader runs, for as long as the pointer stays. On leave it runs on to the end of its lap, where it lands on the still logo, and stops. The three hovers drawn before it stay as videos.';
 
 /** One hover or loading loop, played from its light and dark videos in /marks/graticule/motion; `poster` when the loop has its own poster, its video's first frame. */
 export type MotionLoop = { id: string; name: string; caption: string; shipped: boolean; poster?: true };
@@ -77,8 +107,8 @@ export const MOTION_LOOPS: readonly MotionLoop[] = [
   {
     id: 'draw-back',
     name: 'Meridian draws back',
-    caption: 'The meridian draws back along its own oval over both poles until the mark is the logo without its meridian, then it draws out again when the cursor leaves. Nothing else moves. The component ships this one.',
-    shipped: true,
+    caption: 'The meridian draws back along its own oval over both poles until the mark is the logo without its meridian, then it draws out again when the cursor leaves. Nothing else moves. The component shipped this one until the loader became the hover on 20 November 2026.',
+    shipped: false,
     poster: true,
   },
   {
@@ -96,7 +126,7 @@ export const MOTION_LOOPS: readonly MotionLoop[] = [
   {
     id: 'meridian-then-g',
     name: 'Meridian, then G',
-    caption: 'The loader as a video, drawn frame by frame from the component in Chrome. It plays the draw-back, three laps and the draw-back reversed, so it starts and ends on the logo. The ring and the T hold still the whole time.',
+    caption: 'The loader as a video, drawn frame by frame from the component in Chrome. It plays the draw-back, three laps and the draw-back reversed, so it starts and ends on the logo. It was recorded before 20 November 2026, when the meridian began drawing on again with the G at the end of every lap. The ring and the T hold still the whole time.',
     shipped: true,
     poster: true,
   },
@@ -114,7 +144,7 @@ export const BUILD_LEAD = 'GtLogoMotion draws with SVG and CSS alone: no video, 
 export const BUILD_PARTS: readonly { term: string; body: string }[] = [
   {
     term: 'The numbers',
-    body: 'scripts/build/logo-motion.json holds the logo’s measures and, for each beat, a table of where each moving end stands at 240 samples a second. They are the numbers the published videos were rendered from.',
+    body: 'scripts/build/logo-motion.json holds the logo’s measures and, for each beat, a table of where each moving end stands at 240 samples a second. They are the numbers the published videos were rendered from. The meridian’s draw-back no longer follows its table, which raced through both poles: it eases in and out over the meridian’s visible length, crossing the stretches the ring covers in time to the share that shows.',
   },
   {
     term: 'The generator',
@@ -126,11 +156,7 @@ export const BUILD_PARTS: readonly { term: string; body: string }[] = [
   },
   {
     term: 'The hover',
-    body: 'The hover transitions each dash’s own stroke-dasharray and stroke-dashoffset, with the beat’s course written as a CSS linear() easing. A leave halfway runs back from where it is.',
-  },
-  {
-    term: 'The WebKit rule',
-    body: 'Transitions sit on each dash’s own properties, never on a registered custom property. Safari runs a transition of a registered custom property but paints the var() that reads it at the end value, so there the hover jumped to its end.',
+    body: 'The hover runs the loader’s own animations. On the host’s enter the component sets data-play to loop; after a leave it waits for the rest at the end of the lap, where the frame is the logo, and clears it. A leave during the draw-back sets data-play to settle, which runs the draw-back backward to the logo. --gt-logo-from carries where the lap stands, read from the running animations, so a leave or a return during the draw-back runs on from the frame on screen.',
   },
   {
     term: 'Only the moving line moves',
@@ -146,7 +172,7 @@ export const BUILD_PARTS: readonly { term: string; body: string }[] = [
   },
   {
     term: 'Browsers',
-    body: 'The motion needs @property, linear() easing and plus-lighter: Chrome 113, Safari 17.2 and Firefox 128 or later.',
+    body: 'The motion needs @property and plus-lighter: Chrome 113, Safari 17.2 and Firefox 128 or later.',
   },
   {
     term: 'The armillary reading',
@@ -167,23 +193,19 @@ export const BUILD_PARTS: readonly { term: string; body: string }[] = [
 ];
 
 export const BUILD_CODE = `import GtLogoMotion from '@/components/brand/GtLogoMotion';
-import GtLogoArmillary from '@/components/brand/GtLogoArmillary';
-import GtLogoAscii from '@/components/brand/GtLogoAscii';
 
 <Link href='/'>
   <GtLogoMotion mode='hover' size={18} />
 </Link>;
-<GtLogoMotion mode='loader' size={56} label='Loading the prototype' />;
-<GtLogoArmillary size={56} label='Loading the prototype' loading={!ready} onRest={show} />;
-<GtLogoAscii width={450} palette='ink' label='Loading' />;`;
+<GtLogoMotion mode='loader' size={56} label='Loading the prototype' />;`;
 
 export const CHECKS_ID = 'checks';
 export const CHECKS_TITLE = 'The checks';
 export const CHECKS_LEAD =
-  'pnpm test:marks runs scripts/lint/logo-motion.test.mjs, which draws the component in Chrome at 4x, seeks it to every 60 fps frame of the hover, the leave, the draw-back and one whole lap, and measures each frame against the logo.';
+  'pnpm test:marks runs scripts/lint/logo-motion.test.mjs, which draws the component in Chrome at 4x, seeks it to every 60 fps frame of the hover’s enter and settle, the draw-back and one whole lap, and measures each frame against the logo.';
 
 export const CHECKS: readonly { term: string; body: string }[] = [
-  { term: 'Hand-off', body: 'At the start of the hover and of the loader, at the end of the leave and at every seam of the lap, the motion layer is the still logo with no pixel different.' },
+  { term: 'Hand-off', body: 'At the start of the hover and of the loader, at the end of the settle and at every seam of the lap, the motion layer is the still logo with no pixel different. The settle starts on the draw-back’s end pose, and a leave or a return during the draw-back starts on the frame it left.' },
   { term: 'Still', body: 'In every frame, every pixel is the logo where the meridian is drawn and the logo without its meridian where it has been undrawn, except within two pixels of the end that moves.' },
   { term: 'Ring', body: 'In every frame the ring’s core and outer edge are the logo’s own pixels, and its inner edge, all the way round, is the logo’s where the meridian is drawn and the ring drawn alone where it has been undrawn.' },
   { term: 'End pose', body: 'The draw-back ends on the logo without its meridian, and on the ring it is exactly the ring drawn alone.' },

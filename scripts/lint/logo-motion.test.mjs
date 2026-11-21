@@ -2,15 +2,18 @@
 // whatever is not being drawn or undrawn is the logo itself. The component
 // is rendered to markup with its stylesheet, drawn by Chrome for Testing
 // through playwright-core at 256 CSS px and 4x (1024 px for the drawn box),
-// its animations and transitions paused and seeked to every 60 fps frame of
-// the hover's enter and leave, the loader's draw-back and one whole lap,
+// its animations paused and seeked to every 60 fps frame of the hover's
+// enter and settle (set as the component sets them: data-play and
+// --gt-logo-from), the loader's draw-back and one whole lap,
 // and each frame measured (scripts/lib/logo-motion-frames.mjs reads where
 // each line's dash stands in that frame from the dashes' computed styles):
 //
 //   hand-off   the hover mark at rest is the still mark, and the motion
 //              layer at the start of the hover and of the loader, at the end
-//              of the leave, and at every seam of the loader's lap, is the
-//              still logo with no pixel different
+//              of the settle, and at every seam of the loader's lap, is the
+//              still logo with no pixel different; the settle starts on the
+//              draw-back's end pose, and a leave or a return during the
+//              draw-back starts on the frame it left
 //   still      in every frame, every pixel is the logo where the meridian is
 //              drawn and the logo without its meridian where it has been
 //              undrawn, except within two pixels of the end that moves; in
@@ -72,7 +75,7 @@ import { inflateSync } from 'node:zlib';
 import { chromium, firefox, webkit } from 'playwright-core';
 import ts from 'typescript';
 
-import { browserTable, cleanThetas, FACE_LINES, FACES, frameBox, frameRule, grow, inkOf, lineMap, meridianIn, not, or, ringZones, stepRule, THEMES } from '../lib/logo-motion-frames.mjs';
+import { band, browserTable, cleanThetas, FACE_LINES, FACES, frameBox, frameRule, grow, inkOf, lineMap, meridianIn, not, or, ringZones, stepRule, THEMES } from '../lib/logo-motion-frames.mjs';
 import { ROOT } from '../lib/root.mjs';
 import { chromePath } from '../lib/site-pages.mjs';
 
@@ -117,10 +120,16 @@ const PX = SIZE * DPR;
 const BOX = frameBox(PX, 0, 0, PX, G.viewBox);
 const HOVER = TIMING.hover * 1000;
 const { D1, R1, D2 } = Object.fromEntries(Object.entries(TIMING.beats).map(([k, v]) => [k, v * 1000]));
-const LOOP = (TIMING.beats.D1 + TIMING.beats.R1 + TIMING.beats.D2 + TIMING.beats.R2) * 1000;
+/* one lap, logo to logo, and where the G and the meridian land on the logo together */
+const LOOP = G.timing.lap;
+const LANDING = G.timing.rests.at(-1)[0];
 const FRAME = 1000 / 60;
-/* the loader's rests and seams: the draw-back's end, the rests after the meridian's lap and after the G's, the end of a lap and the next */
-const SEAMS = [HOVER, HOVER + D1 + R1 / 2, HOVER + D1 + R1 + D2 + (LOOP - D1 - R1 - D2) / 2, HOVER + LOOP - 0.01, HOVER + LOOP, HOVER + 2 * LOOP];
+/* the loader's seams: the draw-back's end and the rest after the meridian's lap stand on the end pose; the rest after the G lands, the end of a lap and the next stand on the logo */
+const POSE_SEAMS = [HOVER, HOVER + D1 + R1 / 2];
+const LOGO_SEAMS = [LANDING + (LOOP - LANDING) / 2, LOOP - 0.01, LOOP, 2 * LOOP];
+const SEAMS = [...POSE_SEAMS, ...LOGO_SEAMS];
+/** where a hover is left or re-entered during its draw-back, in ms */
+const TURNS = [HOVER / 4, HOVER / 2, (3 * HOVER) / 4];
 /** a pixel has changed between two frames when it moves more than this many levels */
 const CHANGED = 8;
 /** pixels round a moving end (and round a moving dash in the lap) that may change */
@@ -240,6 +249,14 @@ const ZONE = G.zone
 const BARE =
   (G.ring.d ? `<path d="${G.ring.d}"/>` : `<circle cx="${G.ring.cx}" cy="${G.ring.cy}" r="${G.ring.r}" fill="none" stroke="currentColor" stroke-width="${W}"/>`) +
   `<path d="${G.bar}"/><path d="${G.stem}"/>${G.c ? `<path d="${G.c}"/>` : ''}`;
+/* what stands round the meridian's two ends while the G and the meridian are undrawn: the ring, the bar and the stem, drawn plainly */
+const STAND = (G.ring.d ? `<path d="${G.ring.d}"/>` : '') + `<path d="${G.bar}"/><path d="${G.stem}"/>`;
+/* the meridian's two ends, its join below the lower arc and its cut face above the upper one, where the G passed over it */
+const MERIDIAN_ENDS = [MEASURES.meridianStart[1], MEASURES.meridianEnd[1]].map((th) => ({
+  x: MEASURES.meridian.cx + MEASURES.meridian.rx * Math.sin((th * Math.PI) / 180),
+  y: MEASURES.meridian.cy - MEASURES.meridian.ry * Math.cos((th * Math.PI) / 180),
+  r: 12,
+}));
 /* the G's tip: 16 units square round its free end */
 const TIP = {
   x: MEASURES.latitude.cx - MEASURES.latitude.rx * Math.cos((MEASURES.gEnd * Math.PI) / 180),
@@ -334,7 +351,17 @@ async function session(engine, theme, size = SIZE, dpr = DPR) {
     const g = await shot();
     return g.map((v) => (v !== parseInt(THEMES[theme].paper.slice(1, 3), 16) ? 1 : 0));
   };
-  return { engine, size, browser, page, shot, load, seek, dashes, ink };
+  /** a hover mark's state as the component sets it: data-play and where the draw-back stands */
+  const play = (state, from) =>
+    page.evaluate(
+      ([st, f]) => {
+        const el = document.querySelector('.gt-logo-motion');
+        el.style.setProperty('--gt-logo-from', `${f}ms`);
+        el.dataset.play = st;
+      },
+      [state, from],
+    );
+  return { engine, size, browser, page, shot, load, seek, dashes, ink, play };
 }
 
 /* ------------------------------------------------------------ the frames */
@@ -350,6 +377,20 @@ async function framesOf(s, theme) {
   out.zoneOut = not(grow(zone, PX, 2));
   await s.load(svgOf(BARE));
   out.bare = await s.shot('bare');
+  await s.load(svgOf(STAND));
+  out.stand = await s.shot('stand');
+  {
+    const [ex, ey, ew] = G.viewBox.split(' ').map(Number);
+    const ends = new Uint8Array(PX * PX);
+    for (let y = 0; y < PX; y++) {
+      for (let x = 0; x < PX; x++) {
+        const ux = ex + ((x + 0.5) / PX) * ew;
+        const uy = ey + ((y + 0.5) / PX) * ew;
+        if (MERIDIAN_ENDS.some((e) => Math.hypot(ux - e.x, uy - e.y) <= e.r)) ends[y * PX + x] = 1;
+      }
+    }
+    out.ends = ends;
+  }
   const tip = new Uint8Array(PX * PX);
   const [vx, vy, vw] = G.viewBox.split(' ').map(Number);
   const toPx = (u, o) => Math.round(((u - o) / vw) * PX);
@@ -361,7 +402,7 @@ async function framesOf(s, theme) {
   await s.seek(HOVER);
   out.pose = await s.shot('pose');
   out.loader = [];
-  for (let t = 0; t <= HOVER + LOOP + 0.01; t += FRAME) {
+  for (let t = 0; t <= LOOP + 0.01; t += FRAME) {
     await s.seek(t);
     out.loader.push({ t, g: await s.shot(SHOTS ? `loader-${Math.round(t)}` : null), dash: await s.dashes() });
   }
@@ -371,21 +412,33 @@ async function framesOf(s, theme) {
     out.seams[t] = await s.shot(SHOTS ? `seam-${Math.round(t)}` : null);
   }
 
-  /* the hover: at rest, then enter, hold, leave */
+  /* the hover: at rest, then the loader's draw-back from the enter, then the settle from a rest */
   await s.load(markOf({ mode: 'hover' }));
   out.hoverRest = await s.shot('hover-rest');
-  await s.page.evaluate(() => document.querySelector('.gt-logo-motion').setAttribute('data-active', ''));
+  await s.play('loop', 0);
   out.enter = [];
   for (let t = 0; t <= HOVER + 0.01; t += FRAME) {
     await s.seek(t);
     out.enter.push({ t, g: await s.shot(SHOTS ? `enter-${Math.round(t)}` : null), dash: await s.dashes() });
   }
-  await s.seek(HOVER);
-  await s.page.evaluate(() => document.querySelector('.gt-logo-motion').removeAttribute('data-active'));
+  await s.play('settle', HOVER);
   out.leave = [];
   for (let t = 0; t <= HOVER + 0.01; t += FRAME) {
     await s.seek(Math.min(t, HOVER - 0.001));
     out.leave.push({ t, g: await s.shot(SHOTS ? `leave-${Math.round(t)}` : null), dash: await s.dashes() });
+  }
+  /* a leave and a return during the draw-back: the settle and the loop started from where the draw-back stands */
+  out.turns = [];
+  for (const x of TURNS) {
+    await s.play('loop', 0);
+    await s.seek(x);
+    const at = await s.shot();
+    await s.play('settle', x);
+    await s.seek(0);
+    const leave = await s.shot(SHOTS ? `turn-leave-${x}` : null);
+    await s.play('loop', x);
+    await s.seek(0);
+    out.turns.push({ x, at, leave, back: await s.shot(SHOTS ? `turn-back-${x}` : null) });
   }
   return out;
 }
@@ -402,19 +455,18 @@ async function smallFramesOf(s, box) {
   out.bare = await s.shot();
   await s.load(markOf({ mode: 'loader' }, s.size));
   out.loader = [];
-  for (let t = 0; t <= HOVER + LOOP + 0.01; t += FRAME) {
+  for (let t = 0; t <= LOOP + 0.01; t += FRAME) {
     await s.seek(t);
     out.loader.push({ t, g: await s.shot(), dash: await s.dashes() });
   }
   await s.load(markOf({ mode: 'hover' }, s.size));
-  await s.page.evaluate(() => document.querySelector('.gt-logo-motion').setAttribute('data-active', ''));
+  await s.play('loop', 0);
   out.enter = [];
   for (let t = 0; t <= HOVER + 0.01; t += FRAME) {
     await s.seek(t);
     out.enter.push({ t, g: await s.shot(), dash: await s.dashes() });
   }
-  await s.seek(HOVER);
-  await s.page.evaluate(() => document.querySelector('.gt-logo-motion').removeAttribute('data-active'));
+  await s.play('settle', HOVER);
   out.leave = [];
   for (let t = 0; t <= HOVER + 0.01; t += FRAME) {
     await s.seek(Math.min(t, HOVER - 0.001));
@@ -459,13 +511,19 @@ for (const engine of BROWSERS) {
         report('the loader on mount', differing(F.rest, F.loader[0].g, slack), slack);
         report('the hover on enter', differing(F.rest, F.enter[0].g, slack), slack);
         report('the hover at the end of the leave', differing(F.rest, F.leave.at(-1).g, slack), slack);
+        report('the settle from a rest against the end pose', differing(F.pose, F.leave[0].g, slack), slack);
+        for (const { x, at, leave, back } of F.turns) {
+          report(`a leave at ${Math.round(x)} ms of the draw-back`, differing(at, leave, slack), slack);
+          report(`a return at ${Math.round(x)} ms of the settle`, differing(at, back, slack), slack);
+        }
         report("the hover's end pose against the loader's", differing(F.pose, F.enter.at(-1).g, slack), slack);
-        for (const t of SEAMS.slice(1)) report(`the loader's seam at ${Math.round(t)} ms against its draw-back's end`, differing(F.pose, F.seams[t], slack), slack);
+        for (const t of POSE_SEAMS.slice(1)) report(`the loader's seam at ${Math.round(t)} ms against its draw-back's end`, differing(F.pose, F.seams[t], slack), slack);
+        for (const t of LOGO_SEAMS) report(`the loader's seam at ${Math.round(t)} ms against the logo`, differing(F.rest, F.seams[t], slack), slack);
       });
 
       test('every frame is the logo or the logo without its meridian but where a line moves', () => {
         for (const [name, frames, from] of [
-          ['loader', F.loader, HOVER],
+          ['loader', F.loader, Infinity],
           ['enter', F.enter, Infinity],
           ['leave', F.leave, Infinity],
         ]) {
@@ -481,7 +539,7 @@ for (const engine of BROWSERS) {
 
       test("the ring is the logo's own in every frame", () => {
         for (const [name, frames, from] of [
-          ['loader', F.loader, HOVER],
+          ['loader', F.loader, Infinity],
           ['enter', F.enter, Infinity],
           ['leave', F.leave, Infinity],
         ]) {
@@ -515,6 +573,16 @@ for (const engine of BROWSERS) {
         }
       });
 
+      test("no bit of the meridian's ends is left while the G is undrawn over them", () => {
+        /* the frame where the G's undrawn stretch is longest: round each of the meridian's ends only the ring, the bar and the stem stand, but where the G's head runs on past its tip */
+        const turn = F.loader.reduce((a, f) => (f.dash.under.len > a.dash.under.len ? f : a));
+        const h = turn.dash.head;
+        const head = h.len > 0 ? band(MAPS.latitude, h.off - 1, h.off + h.len + 1, HALF.head + 1) : null;
+        const region = head ? F.ends.map((v, i) => v & (head[i] ? 0 : 1)) : F.ends;
+        const d = differing(F.stand, turn.g, BARE_SLACK, region);
+        check(d.n === 0, `at ${Math.round(turn.t)} ms, where the G turns back, ${d.n} px round the meridian's ends differ from the ring, the bar and the stem by more than ${BARE_SLACK} levels (worst ${d.worst})`);
+      });
+
       test("the G's tip is the logo's for the whole loop but its own lap", () => {
         const off = F.loader.filter(({ g }) => differing(F.rest, g, SLACK[theme], F.tip).n > 0).map(({ t }) => t);
         const g0 = HOVER + D1 + R1;
@@ -531,17 +599,8 @@ for (const engine of BROWSERS) {
         const rest = meridianIn({ ink: inkOf(F.rest, BOX, theme), poseInk: F.poseInk, box: BOX, lapMap: MAPS.lap, lapHalf: HALF.lap + near, clean: CLEAN, shown: inLogo });
         for (const { t, w } of rest.widths) check(Math.abs(w - W) <= WIDTH_ABS, `the still logo's meridian at ${t} degrees is ${w.toFixed(3)} wide, not ${W}`);
         const restW = Object.fromEntries(rest.widths.map(({ t, w }) => [t, w]));
-        /* where the draw-back's moving end stands, by the course's own table (the same for any version of the component): its progress p from 0 (at the cut face) to 1 (at the join), and the theta it has reached, from just past the cut face to just past the join */
-        const { hoverEnd } = TABLES;
-        const thMax = MEASURES.meridianEnd[1] + 0.5;
-        const thMin = MEASURES.meridianStart[1] - 0.5;
-        const progress = (x) => {
-          const u = Math.min(1, Math.max(0, x)) * (hoverEnd.length - 1);
-          const i = Math.min(hoverEnd.length - 2, Math.floor(u));
-          const v = hoverEnd[i] + (hoverEnd[i + 1] - hoverEnd[i]) * (u - i);
-          return (hoverEnd[0] - v) / (hoverEnd[0] - hoverEnd.at(-1));
-        };
-        const reached = (p) => thMax - (thMax - thMin) * p;
+        /* where the draw-back's moving end stands, read from the frame's own meridian dash: the meridian is drawn from the join up to the dash's start, along its path's length */
+        const drawnS = (th) => PATHS.meridian.s(merTheta(th));
         let worstFace = { d: 0, at: '' };
         let worstWidth = { d: 0, at: '' };
         let offEllipse = { n: 0, at: '' };
@@ -554,8 +613,8 @@ for (const engine of BROWSERS) {
         for (const [name, frames] of runs) {
           for (const { t, g, dash } of frames) {
             const lapOn = dash?.lap && dash.lap.len > 0 && t > HOVER;
-            const p = progress((name === 'leave' ? HOVER - t : t) / HOVER);
-            const drawnTo = reached(p);
+            const m = dash.meridian;
+            const undrawn = m.len > 0;
             /* a clean theta shows the logo's meridian where it is drawn, and the lap's line where the lap is */
             const shown = (th) => {
               if (lapOn) {
@@ -563,7 +622,7 @@ for (const engine of BROWSERS) {
                 return sl > dash.lap.off + 3 && sl < dash.lap.off + dash.lap.len - 3;
               }
               if (t > HOVER) return false;
-              return inLogo(th) && merTheta(th) < drawnTo - 3;
+              return inLogo(th) && (!undrawn || drawnS(th) < m.off - 5);
             };
             const got = meridianIn({ ink: inkOf(g, BOX, theme), poseInk: F.poseInk, box: BOX, lapMap: MAPS.lap, lapHalf: HALF.lap + near, clean: CLEAN, shown });
             if (got.off > offEllipse.n) offEllipse = { n: got.off, at: `${name} ${Math.round(t)} ms` };
@@ -574,8 +633,8 @@ for (const engine of BROWSERS) {
             /* the faces at rest: the bottom one until the undrawn stretch reaches its window, the top one while nothing is undrawn */
             if (t <= HOVER + 0.01 && !lapOn) {
               const at = [];
-              if (drawnTo > FACES.bottom.inside + 2) at.push('bottom');
-              if (p <= 0) at.push('top');
+              if (!undrawn || m.off > drawnS(FACES.bottom.inside + 2)) at.push('bottom');
+              if (!undrawn) at.push('top');
               for (const k of at) {
                 got.faces[k].forEach((p, j) => {
                   const d = p - rest.faces[k][j];
@@ -605,7 +664,7 @@ for (const engine of BROWSERS) {
           ['the hover leave', F.leave],
           ['the draw-back', within(F.loader, 0, HOVER)],
           ["the meridian's lap", within(F.loader, HOVER, HOVER + D1)],
-          ["the G's lap", within(F.loader, HOVER + D1 + R1, HOVER + D1 + R1 + D2)],
+          ["the G's lap and the meridian's return", within(F.loader, HOVER + D1 + R1, LANDING)],
         ];
         for (const [name, frames] of runs) {
           const { ok, line } = stepRule(steps(frames));
@@ -617,7 +676,8 @@ for (const engine of BROWSERS) {
       test('every dash runs on the course, smoothly', { skip: !COURSE || !strict ? 'only for the component pnpm build:logo-motion writes, in Chromium' : false }, () => {
         const moves = [
           ['meridian', F.enter.map(({ t, dash }) => ({ t, d: dash.meridian, c: COURSE.meridian(t / 1000) }))],
-          ...['lap', 'under', 'fill', 'head'].map((ch) => [ch, F.loader.filter(({ t }) => t >= HOVER - 0.01).map(({ t, dash }) => ({ t, d: dash[ch], c: COURSE[ch]((t - HOVER) / 1000) }))]),
+          ['meridian over the lap', F.loader.map(({ t, dash }) => ({ t, d: dash.meridian, c: COURSE.meridianLap(t / 1000) }))],
+          ...['lap', 'under', 'fill', 'head'].map((ch) => [ch, F.loader.map(({ t, dash }) => ({ t, d: dash[ch], c: COURSE[ch](t / 1000) }))]),
         ];
         const notes = [];
         for (const [ch, rows] of moves) {
@@ -631,8 +691,9 @@ for (const engine of BROWSERS) {
           /* each end's steps, the drawn frames against the course's */
           for (const e of [0, 1]) {
             const end = (x) => (e === 0 ? x.off : x.off + x.len);
-            const live = rows.map((r) => (r.d.len > 0 ? end(r.d) : null));
-            const plan = rows.map((r) => (r.c.len > 0 ? end(r.c) : null));
+            /* a dash under 0.05 units long shows nothing, so it has no end to step */
+            const live = rows.map((r) => (r.d.len > 0.05 ? end(r.d) : null));
+            const plan = rows.map((r) => (r.c.len > 0.05 ? end(r.c) : null));
             const stepsOf = (v) => v.map((x, i) => (i && x !== null && v[i - 1] !== null ? x - v[i - 1] : null));
             const sl = stepsOf(live);
             const sp = stepsOf(plan);
@@ -677,10 +738,10 @@ for (const engine of SMALL_BROWSERS) {
         test("the ring is the logo's own in every frame, or the ring alone where the meridian is undrawn", () => {
           const zones = ringZones(box, reachAt(size));
           const region = or(zones.core, zones.edge);
-          const rule = frameRule({ maps: F.maps, zone: F.zone, rest: F.rest, pose: F.loader.at(-1).g, bare: F.bare, half: HALF, near: NEAR * box.unit, slack: SMALL_SLACK });
+          const rule = frameRule({ maps: F.maps, zone: F.zone, rest: F.rest, pose: F.loader.find(({ t }) => t >= HOVER - 0.01).g, bare: F.bare, half: HALF, near: NEAR * box.unit, slack: SMALL_SLACK });
           const px = size * dpr;
           for (const [name, frames, from] of [
-            ['loader', F.loader, HOVER],
+            ['loader', F.loader, Infinity],
             ['enter', F.enter, Infinity],
             ['leave', F.leave, Infinity],
           ]) {

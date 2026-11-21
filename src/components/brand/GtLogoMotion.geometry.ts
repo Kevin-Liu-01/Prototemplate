@@ -19,7 +19,11 @@
  * run on, by theta `from` and `to` (each `length` is its path's own):
  * the undrawn meridian, the undrawn G (`under`), the stem whole across its
  * cut (`fill`), the G's head past its tip, and the lap line. Every
- * stroke is `width` wide unless it says.
+ * stroke is `width` wide unless it says. `timing` is the motion's
+ * clock in milliseconds: the draw-back, one lap, when the meridian draws on
+ * again and lands, and the rest where the frame is the logo and a hover
+ * stops. `form` is the logo form's: the lap played once in a video, its
+ * meridian drawing on again only once the G has landed.
  */
 export const GT_LOGO_MOTION = {
   viewBox: '24.3 24.3 207.4 207.4',
@@ -98,5 +102,29 @@ export const GT_LOGO_MOTION = {
     length: 474.335,
     from: 0,
     to: 360
+  },
+  meridianInk: {
+    d: 'M169.78 182.714A51.281 96.257 0 0 1 150.211 214.104A51.281 96.257 0 0 1 124.982 223.692A51.281 96.257 0 0 1 100.45 209.063A51.281 96.257 0 0 1 82.795 173.902A51.281 96.257 0 0 1 76.466 127.069A51.281 96.257 0 0 1 83.057 80.364A51.281 96.257 0 0 1 100.908 45.554A51.281 96.257 0 0 1 125.521 31.41A51.281 96.257 0 0 1 150.695 41.495A51.281 96.257 0 0 1 170.086 73.27',
+    width: 15.202
+  },
+  timing: {
+    drawBack: 600,
+    lap: 4158.333,
+    meridianReturn: [
+      2926,
+      3826
+    ],
+    rests: [
+      [
+        3826,
+        4158.333
+      ]
+    ],
+    form: {
+      meridianReturn: [
+        3470,
+        4370
+      ]
+    }
   }
 } as const;
