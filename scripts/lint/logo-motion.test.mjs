@@ -2,15 +2,18 @@
 // whatever is not being drawn or undrawn is the logo itself. The component
 // is rendered to markup with its stylesheet, drawn by Chrome for Testing
 // through playwright-core at 256 CSS px and 4x (1024 px for the drawn box),
-// its animations and transitions paused and seeked to every 60 fps frame of
-// the hover's enter and leave, the loader's draw-back and one whole lap,
+// its animations paused and seeked to every 60 fps frame of the hover's
+// enter and settle (set as the component sets them: data-play and
+// --gt-logo-from), the loader's draw-back and one whole lap,
 // and each frame measured (scripts/lib/logo-motion-frames.mjs reads where
 // each line's dash stands in that frame from the dashes' computed styles):
 //
 //   hand-off   the hover mark at rest is the still mark, and the motion
 //              layer at the start of the hover and of the loader, at the end
-//              of the leave, and at every seam of the loader's lap, is the
-//              still logo with no pixel different
+//              of the settle, and at every seam of the loader's lap, is the
+//              still logo with no pixel different; the settle starts on the
+//              draw-back's end pose, and a leave or a return during the
+//              draw-back starts on the frame it left
 //   still      in every frame, every pixel is the logo where the meridian is
 //              drawn and the logo without its meridian where it has been
 //              undrawn, except within two pixels of the end that moves; in
@@ -121,6 +124,8 @@ const LOOP = (TIMING.beats.D1 + TIMING.beats.R1 + TIMING.beats.D2 + TIMING.beats
 const FRAME = 1000 / 60;
 /* the loader's rests and seams: the draw-back's end, the rests after the meridian's lap and after the G's, the end of a lap and the next */
 const SEAMS = [HOVER, HOVER + D1 + R1 / 2, HOVER + D1 + R1 + D2 + (LOOP - D1 - R1 - D2) / 2, HOVER + LOOP - 0.01, HOVER + LOOP, HOVER + 2 * LOOP];
+/** where a hover is left or re-entered during its draw-back, in ms */
+const TURNS = [HOVER / 4, HOVER / 2, (3 * HOVER) / 4];
 /** a pixel has changed between two frames when it moves more than this many levels */
 const CHANGED = 8;
 /** pixels round a moving end (and round a moving dash in the lap) that may change */
@@ -334,7 +339,17 @@ async function session(engine, theme, size = SIZE, dpr = DPR) {
     const g = await shot();
     return g.map((v) => (v !== parseInt(THEMES[theme].paper.slice(1, 3), 16) ? 1 : 0));
   };
-  return { engine, size, browser, page, shot, load, seek, dashes, ink };
+  /** a hover mark's state as the component sets it: data-play and where the draw-back stands */
+  const play = (state, from) =>
+    page.evaluate(
+      ([st, f]) => {
+        const el = document.querySelector('.gt-logo-motion');
+        el.style.setProperty('--gt-logo-from', `${f}ms`);
+        el.dataset.play = st;
+      },
+      [state, from],
+    );
+  return { engine, size, browser, page, shot, load, seek, dashes, ink, play };
 }
 
 /* ------------------------------------------------------------ the frames */
@@ -371,21 +386,33 @@ async function framesOf(s, theme) {
     out.seams[t] = await s.shot(SHOTS ? `seam-${Math.round(t)}` : null);
   }
 
-  /* the hover: at rest, then enter, hold, leave */
+  /* the hover: at rest, then the loader's draw-back from the enter, then the settle from a rest */
   await s.load(markOf({ mode: 'hover' }));
   out.hoverRest = await s.shot('hover-rest');
-  await s.page.evaluate(() => document.querySelector('.gt-logo-motion').setAttribute('data-active', ''));
+  await s.play('loop', 0);
   out.enter = [];
   for (let t = 0; t <= HOVER + 0.01; t += FRAME) {
     await s.seek(t);
     out.enter.push({ t, g: await s.shot(SHOTS ? `enter-${Math.round(t)}` : null), dash: await s.dashes() });
   }
-  await s.seek(HOVER);
-  await s.page.evaluate(() => document.querySelector('.gt-logo-motion').removeAttribute('data-active'));
+  await s.play('settle', HOVER);
   out.leave = [];
   for (let t = 0; t <= HOVER + 0.01; t += FRAME) {
     await s.seek(Math.min(t, HOVER - 0.001));
     out.leave.push({ t, g: await s.shot(SHOTS ? `leave-${Math.round(t)}` : null), dash: await s.dashes() });
+  }
+  /* a leave and a return during the draw-back: the settle and the loop started from where the draw-back stands */
+  out.turns = [];
+  for (const x of TURNS) {
+    await s.play('loop', 0);
+    await s.seek(x);
+    const at = await s.shot();
+    await s.play('settle', x);
+    await s.seek(0);
+    const leave = await s.shot(SHOTS ? `turn-leave-${x}` : null);
+    await s.play('loop', x);
+    await s.seek(0);
+    out.turns.push({ x, at, leave, back: await s.shot(SHOTS ? `turn-back-${x}` : null) });
   }
   return out;
 }
@@ -407,14 +434,13 @@ async function smallFramesOf(s, box) {
     out.loader.push({ t, g: await s.shot(), dash: await s.dashes() });
   }
   await s.load(markOf({ mode: 'hover' }, s.size));
-  await s.page.evaluate(() => document.querySelector('.gt-logo-motion').setAttribute('data-active', ''));
+  await s.play('loop', 0);
   out.enter = [];
   for (let t = 0; t <= HOVER + 0.01; t += FRAME) {
     await s.seek(t);
     out.enter.push({ t, g: await s.shot(), dash: await s.dashes() });
   }
-  await s.seek(HOVER);
-  await s.page.evaluate(() => document.querySelector('.gt-logo-motion').removeAttribute('data-active'));
+  await s.play('settle', HOVER);
   out.leave = [];
   for (let t = 0; t <= HOVER + 0.01; t += FRAME) {
     await s.seek(Math.min(t, HOVER - 0.001));
@@ -459,6 +485,11 @@ for (const engine of BROWSERS) {
         report('the loader on mount', differing(F.rest, F.loader[0].g, slack), slack);
         report('the hover on enter', differing(F.rest, F.enter[0].g, slack), slack);
         report('the hover at the end of the leave', differing(F.rest, F.leave.at(-1).g, slack), slack);
+        report('the settle from a rest against the end pose', differing(F.pose, F.leave[0].g, slack), slack);
+        for (const { x, at, leave, back } of F.turns) {
+          report(`a leave at ${Math.round(x)} ms of the draw-back`, differing(at, leave, slack), slack);
+          report(`a return at ${Math.round(x)} ms of the settle`, differing(at, back, slack), slack);
+        }
         report("the hover's end pose against the loader's", differing(F.pose, F.enter.at(-1).g, slack), slack);
         for (const t of SEAMS.slice(1)) report(`the loader's seam at ${Math.round(t)} ms against its draw-back's end`, differing(F.pose, F.seams[t], slack), slack);
       });

@@ -111,9 +111,9 @@ export default function LogoSystem() {
 
       <h3 id={headingId('logo-system', 'states')}>States</h3>
       <p>
-        The logo has three states. The still logo is the one every file draws. On hover the meridian draws back, and
-        the logo settles into the globe without its meridian. While a page loads the loader runs. Under reduced
-        motion the hover does nothing and the loader holds the still logo.
+        The logo has two states. The still logo is the one every file draws. While a page loads, and for as long as
+        the pointer is over the logo, the loader runs. On leave it runs on to its next rest and the meridian draws
+        out again to the still logo. Under reduced motion the hover does nothing and the loader holds the still logo.
       </p>
       <div className='ptb-sys-states'>
         <figure className='ptb-kit-motion-cell'>
@@ -127,8 +127,8 @@ export default function LogoSystem() {
             <GtLogoMotion mode='hover' size={72} />
           </div>
           <figcaption>
-            Hover: the meridian draws back over the north pole, down the left and under the south pole. On leave it
-            draws out again.
+            Hover: the loader, for as long as the pointer stays. On leave the meridian draws out again to the still
+            logo.
           </figcaption>
         </figure>
         <figure className='ptb-kit-motion-cell'>

@@ -6,9 +6,9 @@ import Plate from './Plate';
 
 /**
  * The logo in motion: the loader at 96, 32 and 16 pixels, and the hover
- * mark at 96 inside a link, which draws its meridian back while the link
- * is hovered or keyboard focused. Both are GtLogoMotion, SVG and CSS alone,
- * and both rest on the logo's own path.
+ * mark at 96 inside a link, which runs the loader while the link is hovered
+ * or keyboard focused. Both are GtLogoMotion, SVG and CSS alone, and both
+ * rest on the logo's own path.
  */
 export default function GtLogoMotionDemo() {
   return (

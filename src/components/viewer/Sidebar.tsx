@@ -104,7 +104,7 @@ function glyph(name: IconName): ReactElement {
   }
   return el;
 }
-/* the General Translation logo draws its meridian back while its link is hovered or focused (GtLogoMotion's hover) */
+/* the General Translation logo runs the loader while its link is hovered or focused (GtLogoMotion's hover) */
 const MARK_NODES: Readonly<Record<ShellMark, ReactElement>> = { gt: <GtLogoMotion mode='hover' size={18} />, pt: <PtMark /> };
 
 /** The filter row, memoized: its props are the query, stable handlers and the route's words. */

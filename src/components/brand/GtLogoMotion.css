@@ -11,18 +11,16 @@
    channel the stem whole across its cut, the head channel the G past its tip,
    the lap channel the line that runs round the meridian.
 
-   A loader shows the motion layer, plays the hover's draw-back once
+   A loader shows the motion layer, plays the draw-back once
    (600ms), then the two-beat lap for as long as it is mounted
    (3200ms a lap: the meridian 1250ms, a rest of 220ms, the G 1400ms,
-   a rest of 330ms). A hover mark moves the same draw-back by
-   transitions while its host is hovered or keyboard focused: the svg's
-   properties change at once, and the meridian's dashes' stroke-dasharray
-   and stroke-dashoffset follow on the source's course as a linear() easing
-   (Safari paints a transitioned custom property's var() at its end value,
-   so the transitions sit on the dashes themselves); a leave runs the
-   course backward in time. The rest layer hides at once on enter and shows
-   again only when the leave has run. Every rule that moves or swaps a
-   layer sits inside prefers-reduced-motion: no-preference, so under
+   a rest of 330ms). A hover mark is the loader while its host is
+   hovered or keyboard focused: the component sets data-play='loop' on enter
+   and, after a leave, data-play='settle' once the lap stands at a rest, which
+   runs the draw-back backward to the logo, then clears data-play.
+   --gt-logo-from is where the draw-back stands when either starts, so a
+   leave or a return halfway runs on from there. Every rule that moves or
+   swaps a layer sits inside prefers-reduced-motion: no-preference, so under
    reduced motion every mode is the still logo. */
 
 @property --gt-logo-meridian {
@@ -164,59 +162,26 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* the loader */
-  .gt-logo-motion[data-mode='loader'] .gt-logo-motion-rest {
+  /* the loader, and a hover mark from its enter until it has settled */
+  .gt-logo-motion:is([data-mode='loader'], [data-play]) .gt-logo-motion-rest {
     visibility: hidden;
   }
 
-  .gt-logo-motion[data-mode='loader'] .gt-logo-motion-move {
+  .gt-logo-motion:is([data-mode='loader'], [data-play]) .gt-logo-motion-move {
     visibility: visible;
   }
 
-  .gt-logo-motion[data-mode='loader'] > svg {
+  .gt-logo-motion:is([data-mode='loader'], [data-play='loop']) > svg {
     animation:
-      gt-logo-meridian-back 600ms linear both,
-      gt-logo-lap 3200ms linear 600ms infinite,
-      gt-logo-under-lap 3200ms linear 600ms infinite,
-      gt-logo-fill-lap 3200ms linear 600ms infinite,
-      gt-logo-head-lap 3200ms linear 600ms infinite;
+      gt-logo-meridian-back 600ms linear calc(-1 * var(--gt-logo-from, 0ms)) both,
+      gt-logo-lap 3200ms linear calc(600ms - var(--gt-logo-from, 0ms)) infinite,
+      gt-logo-under-lap 3200ms linear calc(600ms - var(--gt-logo-from, 0ms)) infinite,
+      gt-logo-fill-lap 3200ms linear calc(600ms - var(--gt-logo-from, 0ms)) infinite,
+      gt-logo-head-lap 3200ms linear calc(600ms - var(--gt-logo-from, 0ms)) infinite;
   }
 
-  /* the hover: the meridian's dashes run to the hovered values on enter and
-     back on leave; the layers swap at once on enter and only after the leave */
-  :is(:is(a, button, [data-gt-logo-host]):is(:hover, :focus-visible) .gt-logo-motion[data-mode='hover'], .gt-logo-motion[data-mode='hover']:is(:hover, [data-active])) > svg {
-    --gt-logo-meridian: 364.3px;
-    --gt-logo-meridian-at: 0px;
-  }
-
-  .gt-logo-motion[data-mode='hover'] .gt-logo-motion-meridian {
-    transition:
-      stroke-dasharray 600ms linear(0 0%, 0 5.556%, 0.001 6.25%, 0.0068 7.639%, 0.0158 9.722%, 0.0252 11.806%, 0.035 13.889%, 0.0383 14.583%, 0.0441 15.278%, 0.0574 15.972%, 0.0705 16.667%, 0.0832 17.361%, 0.0956 18.056%, 0.1076 18.75%, 0.1193 19.444%, 0.1306 20.139%, 0.1417 20.833%, 0.1741 22.917%, 0.185 23.611%, 0.1963 24.306%, 0.2081 25%, 0.2206 25.694%, 0.2339 26.389%, 0.2482 27.083%, 0.2635 27.778%, 0.2744 28.472%, 0.2829 29.861%, 0.2874 30.556%, 0.2967 31.944%, 0.3064 33.333%, 0.3115 34.028%, 0.3221 35.417%, 0.3331 36.806%, 0.3389 37.5%, 0.3507 38.889%, 0.3632 40.278%, 0.3696 40.972%, 0.3828 42.361%, 0.3965 43.75%, 0.4108 45.139%, 0.4256 46.528%, 0.4331 47.222%, 0.4486 48.611%, 0.4645 50%, 0.4808 51.389%, 0.5142 54.167%, 0.5306 55.556%, 0.5467 56.944%, 0.5545 57.639%, 0.5699 59.028%, 0.5847 60.417%, 0.592 61.111%, 0.6061 62.5%, 0.6197 63.889%, 0.6328 65.278%, 0.6454 66.667%, 0.6574 68.056%, 0.6688 69.444%, 0.6797 70.833%, 0.6901 72.222%, 0.6951 72.917%, 0.7048 74.306%, 0.7139 75.694%, 0.7183 76.389%, 0.7267 77.778%, 0.7329 78.472%, 0.7482 79.167%, 0.7625 79.861%, 0.7758 80.556%, 0.7882 81.25%, 0.8 81.944%, 0.8113 82.639%, 0.8222 83.333%, 0.8543 85.417%, 0.8653 86.111%, 0.8765 86.806%, 0.888 87.5%, 0.8999 88.194%, 0.9121 88.889%, 0.9246 89.583%, 0.9375 90.278%, 0.9506 90.972%, 0.9627 91.667%, 0.9726 93.75%, 0.9821 95.833%, 0.9913 97.917%, 1 100%),
-      stroke-dashoffset 600ms linear(0 0%, 0 5.556%, 0.001 6.25%, 0.0068 7.639%, 0.0158 9.722%, 0.0252 11.806%, 0.035 13.889%, 0.0383 14.583%, 0.0441 15.278%, 0.0574 15.972%, 0.0705 16.667%, 0.0832 17.361%, 0.0956 18.056%, 0.1076 18.75%, 0.1193 19.444%, 0.1306 20.139%, 0.1417 20.833%, 0.1741 22.917%, 0.185 23.611%, 0.1963 24.306%, 0.2081 25%, 0.2206 25.694%, 0.2339 26.389%, 0.2482 27.083%, 0.2635 27.778%, 0.2744 28.472%, 0.2829 29.861%, 0.2874 30.556%, 0.2967 31.944%, 0.3064 33.333%, 0.3115 34.028%, 0.3221 35.417%, 0.3331 36.806%, 0.3389 37.5%, 0.3507 38.889%, 0.3632 40.278%, 0.3696 40.972%, 0.3828 42.361%, 0.3965 43.75%, 0.4108 45.139%, 0.4256 46.528%, 0.4331 47.222%, 0.4486 48.611%, 0.4645 50%, 0.4808 51.389%, 0.5142 54.167%, 0.5306 55.556%, 0.5467 56.944%, 0.5545 57.639%, 0.5699 59.028%, 0.5847 60.417%, 0.592 61.111%, 0.6061 62.5%, 0.6197 63.889%, 0.6328 65.278%, 0.6454 66.667%, 0.6574 68.056%, 0.6688 69.444%, 0.6797 70.833%, 0.6901 72.222%, 0.6951 72.917%, 0.7048 74.306%, 0.7139 75.694%, 0.7183 76.389%, 0.7267 77.778%, 0.7329 78.472%, 0.7482 79.167%, 0.7625 79.861%, 0.7758 80.556%, 0.7882 81.25%, 0.8 81.944%, 0.8113 82.639%, 0.8222 83.333%, 0.8543 85.417%, 0.8653 86.111%, 0.8765 86.806%, 0.888 87.5%, 0.8999 88.194%, 0.9121 88.889%, 0.9246 89.583%, 0.9375 90.278%, 0.9506 90.972%, 0.9627 91.667%, 0.9726 93.75%, 0.9821 95.833%, 0.9913 97.917%, 1 100%);
-  }
-
-  :is(:is(a, button, [data-gt-logo-host]):is(:hover, :focus-visible) .gt-logo-motion[data-mode='hover'], .gt-logo-motion[data-mode='hover']:is(:hover, [data-active])) .gt-logo-motion-meridian {
-    transition:
-      stroke-dasharray 600ms linear(0 0%, 0.0087 2.083%, 0.0179 4.167%, 0.0274 6.25%, 0.0373 8.333%, 0.0494 9.028%, 0.0625 9.722%, 0.0754 10.417%, 0.0879 11.111%, 0.1001 11.806%, 0.112 12.5%, 0.1235 13.194%, 0.1347 13.889%, 0.1457 14.583%, 0.1778 16.667%, 0.1887 17.361%, 0.2 18.056%, 0.2118 18.75%, 0.2242 19.444%, 0.2375 20.139%, 0.2518 20.833%, 0.2671 21.528%, 0.2733 22.222%, 0.2817 23.611%, 0.2861 24.306%, 0.2952 25.694%, 0.3049 27.083%, 0.3099 27.778%, 0.3203 29.167%, 0.3312 30.556%, 0.3426 31.944%, 0.3546 33.333%, 0.3672 34.722%, 0.3803 36.111%, 0.3939 37.5%, 0.408 38.889%, 0.4153 39.583%, 0.4301 40.972%, 0.4455 42.361%, 0.4533 43.056%, 0.4694 44.444%, 0.4858 45.833%, 0.5192 48.611%, 0.5355 50%, 0.5514 51.389%, 0.5669 52.778%, 0.5744 53.472%, 0.5892 54.861%, 0.6035 56.25%, 0.6172 57.639%, 0.6304 59.028%, 0.6368 59.722%, 0.6493 61.111%, 0.6611 62.5%, 0.6669 63.194%, 0.6779 64.583%, 0.6885 65.972%, 0.6936 66.667%, 0.7033 68.056%, 0.7126 69.444%, 0.7171 70.139%, 0.7256 71.528%, 0.7365 72.222%, 0.7518 72.917%, 0.7661 73.611%, 0.7794 74.306%, 0.7919 75%, 0.8037 75.694%, 0.815 76.389%, 0.8259 77.083%, 0.8583 79.167%, 0.8694 79.861%, 0.8807 80.556%, 0.8924 81.25%, 0.9044 81.944%, 0.9168 82.639%, 0.9295 83.333%, 0.9426 84.028%, 0.9559 84.722%, 0.9617 85.417%, 0.965 86.111%, 0.9748 88.194%, 0.9842 90.278%, 0.9932 92.361%, 0.999 93.75%, 1 94.444%, 1 100%),
-      stroke-dashoffset 600ms linear(0 0%, 0.0087 2.083%, 0.0179 4.167%, 0.0274 6.25%, 0.0373 8.333%, 0.0494 9.028%, 0.0625 9.722%, 0.0754 10.417%, 0.0879 11.111%, 0.1001 11.806%, 0.112 12.5%, 0.1235 13.194%, 0.1347 13.889%, 0.1457 14.583%, 0.1778 16.667%, 0.1887 17.361%, 0.2 18.056%, 0.2118 18.75%, 0.2242 19.444%, 0.2375 20.139%, 0.2518 20.833%, 0.2671 21.528%, 0.2733 22.222%, 0.2817 23.611%, 0.2861 24.306%, 0.2952 25.694%, 0.3049 27.083%, 0.3099 27.778%, 0.3203 29.167%, 0.3312 30.556%, 0.3426 31.944%, 0.3546 33.333%, 0.3672 34.722%, 0.3803 36.111%, 0.3939 37.5%, 0.408 38.889%, 0.4153 39.583%, 0.4301 40.972%, 0.4455 42.361%, 0.4533 43.056%, 0.4694 44.444%, 0.4858 45.833%, 0.5192 48.611%, 0.5355 50%, 0.5514 51.389%, 0.5669 52.778%, 0.5744 53.472%, 0.5892 54.861%, 0.6035 56.25%, 0.6172 57.639%, 0.6304 59.028%, 0.6368 59.722%, 0.6493 61.111%, 0.6611 62.5%, 0.6669 63.194%, 0.6779 64.583%, 0.6885 65.972%, 0.6936 66.667%, 0.7033 68.056%, 0.7126 69.444%, 0.7171 70.139%, 0.7256 71.528%, 0.7365 72.222%, 0.7518 72.917%, 0.7661 73.611%, 0.7794 74.306%, 0.7919 75%, 0.8037 75.694%, 0.815 76.389%, 0.8259 77.083%, 0.8583 79.167%, 0.8694 79.861%, 0.8807 80.556%, 0.8924 81.25%, 0.9044 81.944%, 0.9168 82.639%, 0.9295 83.333%, 0.9426 84.028%, 0.9559 84.722%, 0.9617 85.417%, 0.965 86.111%, 0.9748 88.194%, 0.9842 90.278%, 0.9932 92.361%, 0.999 93.75%, 1 94.444%, 1 100%);
-  }
-
-  .gt-logo-motion[data-mode='hover'] .gt-logo-motion-rest {
-    transition: visibility 0s linear 600ms;
-  }
-
-  .gt-logo-motion[data-mode='hover'] .gt-logo-motion-move {
-    transition: visibility 0s linear 600ms;
-  }
-
-  :is(:is(a, button, [data-gt-logo-host]):is(:hover, :focus-visible) .gt-logo-motion[data-mode='hover'], .gt-logo-motion[data-mode='hover']:is(:hover, [data-active])) .gt-logo-motion-rest {
-    visibility: hidden;
-    transition: none;
-  }
-
-  :is(:is(a, button, [data-gt-logo-host]):is(:hover, :focus-visible) .gt-logo-motion[data-mode='hover'], .gt-logo-motion[data-mode='hover']:is(:hover, [data-active])) .gt-logo-motion-move {
-    visibility: visible;
-    transition: none;
+  .gt-logo-motion[data-play='settle'] > svg {
+    animation: gt-logo-meridian-settle 600ms linear calc(var(--gt-logo-from, 600ms) - 600ms) both;
   }
 }
 
@@ -310,6 +275,98 @@
   93.75% { --gt-logo-meridian: 363.94px; --gt-logo-meridian-at: 0.37px; }
   94.444% { --gt-logo-meridian: 364.3px; --gt-logo-meridian-at: 0px; }
   100% { --gt-logo-meridian: 364.3px; --gt-logo-meridian-at: 0px; }
+}
+
+/* the settle: the draw-back run backward, from the logo without its meridian
+   to the logo */
+@keyframes gt-logo-meridian-settle {
+  0% { --gt-logo-meridian: 364.3px; --gt-logo-meridian-at: 0px; }
+  5.556% { --gt-logo-meridian: 364.3px; --gt-logo-meridian-at: 0px; }
+  6.25% { --gt-logo-meridian: 363.94px; --gt-logo-meridian-at: 0.37px; }
+  7.639% { --gt-logo-meridian: 361.84px; --gt-logo-meridian-at: 2.47px; }
+  9.722% { --gt-logo-meridian: 358.55px; --gt-logo-meridian-at: 5.75px; }
+  11.806% { --gt-logo-meridian: 355.12px; --gt-logo-meridian-at: 9.19px; }
+  13.889% { --gt-logo-meridian: 351.55px; --gt-logo-meridian-at: 12.75px; }
+  14.583% { --gt-logo-meridian: 350.34px; --gt-logo-meridian-at: 13.97px; }
+  15.278% { --gt-logo-meridian: 348.24px; --gt-logo-meridian-at: 16.07px; }
+  15.972% { --gt-logo-meridian: 343.38px; --gt-logo-meridian-at: 20.92px; }
+  16.667% { --gt-logo-meridian: 338.63px; --gt-logo-meridian-at: 25.67px; }
+  17.361% { --gt-logo-meridian: 334px; --gt-logo-meridian-at: 30.31px; }
+  18.056% { --gt-logo-meridian: 329.49px; --gt-logo-meridian-at: 34.82px; }
+  18.75% { --gt-logo-meridian: 325.1px; --gt-logo-meridian-at: 39.2px; }
+  19.444% { --gt-logo-meridian: 320.85px; --gt-logo-meridian-at: 43.46px; }
+  20.139% { --gt-logo-meridian: 316.71px; --gt-logo-meridian-at: 47.59px; }
+  20.833% { --gt-logo-meridian: 312.68px; --gt-logo-meridian-at: 51.62px; }
+  22.917% { --gt-logo-meridian: 300.89px; --gt-logo-meridian-at: 63.42px; }
+  23.611% { --gt-logo-meridian: 296.9px; --gt-logo-meridian-at: 67.41px; }
+  24.306% { --gt-logo-meridian: 292.78px; --gt-logo-meridian-at: 71.52px; }
+  25% { --gt-logo-meridian: 288.48px; --gt-logo-meridian-at: 75.83px; }
+  25.694% { --gt-logo-meridian: 283.93px; --gt-logo-meridian-at: 80.38px; }
+  26.389% { --gt-logo-meridian: 279.08px; --gt-logo-meridian-at: 85.23px; }
+  27.083% { --gt-logo-meridian: 273.89px; --gt-logo-meridian-at: 90.42px; }
+  27.778% { --gt-logo-meridian: 268.32px; --gt-logo-meridian-at: 95.99px; }
+  28.472% { --gt-logo-meridian: 264.36px; --gt-logo-meridian-at: 99.95px; }
+  29.861% { --gt-logo-meridian: 261.24px; --gt-logo-meridian-at: 103.07px; }
+  30.556% { --gt-logo-meridian: 259.61px; --gt-logo-meridian-at: 104.69px; }
+  31.944% { --gt-logo-meridian: 256.23px; --gt-logo-meridian-at: 108.07px; }
+  33.333% { --gt-logo-meridian: 252.67px; --gt-logo-meridian-at: 111.63px; }
+  34.028% { --gt-logo-meridian: 250.82px; --gt-logo-meridian-at: 113.48px; }
+  35.417% { --gt-logo-meridian: 246.98px; --gt-logo-meridian-at: 117.33px; }
+  36.806% { --gt-logo-meridian: 242.94px; --gt-logo-meridian-at: 121.36px; }
+  37.5% { --gt-logo-meridian: 240.85px; --gt-logo-meridian-at: 123.45px; }
+  38.889% { --gt-logo-meridian: 236.53px; --gt-logo-meridian-at: 127.78px; }
+  40.278% { --gt-logo-meridian: 232px; --gt-logo-meridian-at: 132.3px; }
+  40.972% { --gt-logo-meridian: 229.67px; --gt-logo-meridian-at: 134.64px; }
+  42.361% { --gt-logo-meridian: 224.85px; --gt-logo-meridian-at: 139.45px; }
+  43.75% { --gt-logo-meridian: 219.84px; --gt-logo-meridian-at: 144.46px; }
+  45.139% { --gt-logo-meridian: 214.64px; --gt-logo-meridian-at: 149.66px; }
+  46.528% { --gt-logo-meridian: 209.27px; --gt-logo-meridian-at: 155.04px; }
+  47.222% { --gt-logo-meridian: 206.51px; --gt-logo-meridian-at: 157.79px; }
+  48.611% { --gt-logo-meridian: 200.88px; --gt-logo-meridian-at: 163.43px; }
+  50% { --gt-logo-meridian: 195.08px; --gt-logo-meridian-at: 169.22px; }
+  51.389% { --gt-logo-meridian: 189.14px; --gt-logo-meridian-at: 175.16px; }
+  54.167% { --gt-logo-meridian: 176.97px; --gt-logo-meridian-at: 187.34px; }
+  55.556% { --gt-logo-meridian: 170.99px; --gt-logo-meridian-at: 193.31px; }
+  56.944% { --gt-logo-meridian: 165.16px; --gt-logo-meridian-at: 199.15px; }
+  57.639% { --gt-logo-meridian: 162.3px; --gt-logo-meridian-at: 202.01px; }
+  59.028% { --gt-logo-meridian: 156.7px; --gt-logo-meridian-at: 207.6px; }
+  60.417% { --gt-logo-meridian: 151.28px; --gt-logo-meridian-at: 213.03px; }
+  61.111% { --gt-logo-meridian: 148.63px; --gt-logo-meridian-at: 215.67px; }
+  62.5% { --gt-logo-meridian: 143.49px; --gt-logo-meridian-at: 220.82px; }
+  63.889% { --gt-logo-meridian: 138.53px; --gt-logo-meridian-at: 225.78px; }
+  65.278% { --gt-logo-meridian: 133.76px; --gt-logo-meridian-at: 230.54px; }
+  66.667% { --gt-logo-meridian: 129.2px; --gt-logo-meridian-at: 235.11px; }
+  68.056% { --gt-logo-meridian: 124.82px; --gt-logo-meridian-at: 239.48px; }
+  69.444% { --gt-logo-meridian: 120.65px; --gt-logo-meridian-at: 243.65px; }
+  70.833% { --gt-logo-meridian: 116.67px; --gt-logo-meridian-at: 247.63px; }
+  72.222% { --gt-logo-meridian: 112.89px; --gt-logo-meridian-at: 251.42px; }
+  72.917% { --gt-logo-meridian: 111.06px; --gt-logo-meridian-at: 253.24px; }
+  74.306% { --gt-logo-meridian: 107.56px; --gt-logo-meridian-at: 256.75px; }
+  75.694% { --gt-logo-meridian: 104.23px; --gt-logo-meridian-at: 260.08px; }
+  76.389% { --gt-logo-meridian: 102.63px; --gt-logo-meridian-at: 261.67px; }
+  77.778% { --gt-logo-meridian: 99.56px; --gt-logo-meridian-at: 264.74px; }
+  78.472% { --gt-logo-meridian: 97.29px; --gt-logo-meridian-at: 267.02px; }
+  79.167% { --gt-logo-meridian: 91.73px; --gt-logo-meridian-at: 272.58px; }
+  79.861% { --gt-logo-meridian: 86.54px; --gt-logo-meridian-at: 277.77px; }
+  80.556% { --gt-logo-meridian: 81.69px; --gt-logo-meridian-at: 282.61px; }
+  81.25% { --gt-logo-meridian: 77.15px; --gt-logo-meridian-at: 287.16px; }
+  81.944% { --gt-logo-meridian: 72.85px; --gt-logo-meridian-at: 291.45px; }
+  82.639% { --gt-logo-meridian: 68.75px; --gt-logo-meridian-at: 295.56px; }
+  83.333% { --gt-logo-meridian: 64.77px; --gt-logo-meridian-at: 299.53px; }
+  85.417% { --gt-logo-meridian: 53.07px; --gt-logo-meridian-at: 311.23px; }
+  86.111% { --gt-logo-meridian: 49.08px; --gt-logo-meridian-at: 315.22px; }
+  86.806% { --gt-logo-meridian: 45px; --gt-logo-meridian-at: 319.3px; }
+  87.5% { --gt-logo-meridian: 40.8px; --gt-logo-meridian-at: 323.5px; }
+  88.194% { --gt-logo-meridian: 36.48px; --gt-logo-meridian-at: 327.82px; }
+  88.889% { --gt-logo-meridian: 32.04px; --gt-logo-meridian-at: 332.27px; }
+  89.583% { --gt-logo-meridian: 27.47px; --gt-logo-meridian-at: 336.84px; }
+  90.278% { --gt-logo-meridian: 22.78px; --gt-logo-meridian-at: 341.52px; }
+  90.972% { --gt-logo-meridian: 18px; --gt-logo-meridian-at: 346.31px; }
+  91.667% { --gt-logo-meridian: 13.6px; --gt-logo-meridian-at: 350.71px; }
+  93.75% { --gt-logo-meridian: 9.99px; --gt-logo-meridian-at: 354.32px; }
+  95.833% { --gt-logo-meridian: 6.5px; --gt-logo-meridian-at: 357.8px; }
+  97.917% { --gt-logo-meridian: 3.17px; --gt-logo-meridian-at: 361.13px; }
+  100% { --gt-logo-meridian: 0px; --gt-logo-meridian-at: 364.3px; }
 }
 
 /* the lap: a line once round the meridian, a rest, the G drawn off and back

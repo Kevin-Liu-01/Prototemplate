@@ -19,7 +19,9 @@
  * run on, by theta `from` and `to` (each `length` is its path's own):
  * the undrawn meridian, the undrawn G (`under`), the stem whole across its
  * cut (`fill`), the G's head past its tip, and the lap line. Every
- * stroke is `width` wide unless it says.
+ * stroke is `width` wide unless it says. `timing` is the motion's
+ * clock in milliseconds: the draw-back, one lap, and the rests inside a lap,
+ * where the frame is the draw-back's end pose and a hover may settle.
  */
 export const GT_LOGO_MOTION = {
   viewBox: '24.3 24.3 207.4 207.4',
@@ -98,5 +100,19 @@ export const GT_LOGO_MOTION = {
     length: 474.335,
     from: 0,
     to: 360
+  },
+  timing: {
+    drawBack: 600,
+    lap: 3200,
+    rests: [
+      [
+        1250,
+        1470
+      ],
+      [
+        2870,
+        3200
+      ]
+    ]
   }
 } as const;

@@ -12,7 +12,7 @@ const route = seoRoute({
   path: '/marks/loading',
   title: PAGE_NAMES.loading.name,
   kind: 'page',
-  description: 'The General Translation logo while a page loads, live: the loader, the armillary, the ASCII loader, the hovers, how they are built and the checks.',
+  description: 'The General Translation logo while a page loads, live: the loader, which is also the hover, how it is built, its checks and two loaders kept as explorations.',
   crumbs: [{ name: PAGE_NAMES.marks.name, path: '/marks' }],
   updated: requireUpdated('/marks/loading'),
 });
@@ -30,9 +30,9 @@ const TIMING: LoaderTiming = {
 
 /**
  * /marks/loading: the logo while a page loads. The finished loader runs
- * live first, then the hovers, how the motion is built, the checks that
- * hold it, reduced motion, the loader on /compare, and the before and after
- * of the fix.
+ * live first, then the hover, which is the loader, how the motion is built,
+ * the checks that hold it, reduced motion, the loader on /compare, two
+ * explorations, and the before and after of the fix.
  */
 export default function LoadingPage() {
   return (

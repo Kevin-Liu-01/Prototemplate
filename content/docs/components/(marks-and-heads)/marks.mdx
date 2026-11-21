@@ -17,7 +17,7 @@ sources:
   - skills/gt-deck/references/type.md
 ---
 
-import { DitheredMarkDemo, GtLogoMotionDemo, GtLogoTurnDemo } from '@/components/docs/demos/lazy';
+import { DitheredMarkDemo, GtLogoMotionDemo } from '@/components/docs/demos/lazy';
 import MarksDemo from '@/components/docs/demos/MarksDemo';
 
 Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. Every mark is an SVG file under `public/marks`, listed with its notes in the catalog of `src/lib/marks.ts` and shown in full at [/marks](/marks). The logo (Kevin's drawing of Axis and meridian behind on its own construction, 2026-11-12), leads the shortlist, with its state on hover, on sign-in and while loading, Oval globe, axis behind, after it, and [/marks/graticule](/marks/graticule#progression) shows the marks that led to both. The 11-06 globe is the previous logo: pictures and films already made with it stay as they are, and everything new draws `LOGO`. The viewer's `GtMark` and the plate's `GtMark` (`src/components/plate/icons/GtMark.tsx`) both draw the logo from `LOGO`; the plate's centres it in the wide box the doubled-line monogram had.
@@ -87,7 +87,7 @@ Use `GtMark` where the mark stands alone: the sidebar, the toolbar and the sheet
 
 ## The logo in motion
 
-The plate plays the loader at 96, 32 and 16 pixels and holds a hover mark at 96 inside a link. Hover or focus the link and the meridian draws back along its oval; leave it and the meridian draws out again to the full logo. The loader plays the same draw-back once, then loops: a line runs once round the meridian, then the G draws off and back on once round the equator, leaving its tip and landing on it again. Only the line that is being drawn or undrawn moves. The draw-back ends on the logo without its meridian, at the logo's weight, with the G's arc, its tip and every other part exactly where the logo has them. The published videos on [/marks/graticule](/marks/graticule#animations-hover) are drawn from this component, so they move the same way. [/marks/loading](/marks/loading) runs the loader live with the hovers, how the motion is built, its checks, reduced motion and before and after sheets of the fix.
+The plate plays the loader at 96, 32 and 16 pixels and holds a hover mark at 96 inside a link. The loader draws the meridian back along its oval once, then loops: a line runs once round the meridian, then the G draws off and back on once round the equator, leaving its tip and landing on it again. The hover is the loader. Hover or focus the link and the loader runs for as long as the pointer stays; leave it and the loader runs on to its next rest, then the meridian draws out again to the full logo. Only the line that is being drawn or undrawn moves. The draw-back ends on the logo without its meridian, at the logo's weight, with the G's arc, its tip and every other part exactly where the logo has them. The published videos on [/marks/graticule](/marks/graticule#animations-hover) are drawn from this component, so they move the same way. [/marks/loading](/marks/loading) runs the loader live with the hover, how the motion is built, its checks, reduced motion and before and after sheets of the fix, and keeps the armillary and the ASCII loader there as explorations that no surface uses.
 
 <GtLogoMotionDemo />
 
@@ -106,60 +106,23 @@ import GtLogoMotion from '@/components/brand/GtLogoMotion';
 
 | Prop | Type | Default | What it does |
 | --- | --- | --- | --- |
-| `mode` | `'static'`, `'hover'` or `'loader'` | `'static'` | The still logo; the logo whose meridian draws back while its host is hovered or keyboard focused, or while the mark itself is hovered; or the loader |
+| `mode` | `'static'`, `'hover'` or `'loader'` | `'static'` | The still logo; the logo that runs the loader while its host is hovered or keyboard focused, or while the mark itself is hovered, and settles to the still logo on leave; or the loader |
 | `size` | number | `18` | The drawn box's width and height in CSS pixels |
 | `label` | string | `'Loading'` | The loader's text for assistive technology: the wrapper is a polite live region with this as hidden text |
-| `active` | boolean | `false` | Holds the hover state, for a host that tracks hover itself |
 | `data-gt-logo-host` | attribute on an ancestor | none | Makes that element a host: a hover mark inside it moves while it is hovered or keyboard focused, as it does inside a link or a button |
 | `className` | string | none | A class on the wrapper |
 
-`pnpm build:logo-motion` writes `GtLogoMotion.geometry.ts` and `GtLogoMotion.css` from `scripts/build/logo-motion.json`, the numbers the published videos were rendered from, and `--check` fails when either file is out of date. Never edit the two files by hand. To use the component in another React app, copy the three files into one folder. Its imports are React and its own stylesheet. gt-cloud's `packages/ui` imports no CSS from its components and keeps its styles in `packages/ui/src/css`, so there drop the CSS import and import `GtLogoMotion.css` from a global stylesheet, such as `packages/ui/src/css/shared.css` or the app's globals. The motion needs `@property`, CSS `linear()` easing and `plus-lighter`: Chrome 113, Safari 17.2 and Firefox 128 or later. `pnpm test:marks` draws it frame by frame in Chrome at 4x and fails when a hand-off changes a pixel; when a pixel away from the moving end (or, in the loader's lap, away from the dashes that move) is neither the logo nor the logo without its meridian; when the ring changes; when the draw-back's end is not the logo without its meridian; when the G's tip leaves the logo's outside its own lap; when the meridian adds a pixel off its ellipse, changes its width or moves a cut face by more than 0.05 units before the draw-back reaches it; when a move's first or last step changes more than the step beside it or a step inside a move holds still; or when a dash leaves the course `pnpm build:logo-motion` computes or steps unevenly where the course does not. In the dark theme Chrome rounds a masked layer's antialiased ink by one level, even under an all-white mask, and a mask's soft edge splits a pixel of ink between two layers that each round their share, so those allow one level. Firefox and WebKit round masks and blends by a level here and there, so they are drawn on request rather than held to it. The hover transitions each dash's own `stroke-dasharray` and `stroke-dashoffset` rather than the custom properties the loader animates, because Safari runs a transition of a registered custom property but paints the `var()` that reads it at the end value, so there the hover jumped to its end.
+`pnpm build:logo-motion` writes `GtLogoMotion.geometry.ts` and `GtLogoMotion.css` from `scripts/build/logo-motion.json`, the numbers the published videos were rendered from, and `--check` fails when either file is out of date. Never edit the two files by hand. To use the component in another React app, copy the three files into one folder. Its imports are React and its own stylesheet. gt-cloud's `packages/ui` imports no CSS from its components and keeps its styles in `packages/ui/src/css`, so there drop the CSS import and import `GtLogoMotion.css` from a global stylesheet, such as `packages/ui/src/css/shared.css` or the app's globals. The motion needs `@property` and `plus-lighter`: Chrome 113, Safari 17.2 and Firefox 128 or later. `pnpm test:marks` draws it frame by frame in Chrome at 4x and fails when a hand-off changes a pixel; when a pixel away from the moving end (or, in the loader's lap, away from the dashes that move) is neither the logo nor the logo without its meridian; when the ring changes; when the draw-back's end is not the logo without its meridian; when the G's tip leaves the logo's outside its own lap; when the meridian adds a pixel off its ellipse, changes its width or moves a cut face by more than 0.05 units before the draw-back reaches it; when a move's first or last step changes more than the step beside it or a step inside a move holds still; or when a dash leaves the course `pnpm build:logo-motion` computes or steps unevenly where the course does not. In the dark theme Chrome rounds a masked layer's antialiased ink by one level, even under an all-white mask, and a mask's soft edge splits a pixel of ink between two layers that each round their share, so those allow one level. Firefox and WebKit round masks and blends by a level here and there, so they are drawn on request rather than held to it. The hover is the loader's own animations: on the host's enter the component sets `data-play='loop'`, and after a leave it waits for the lap's next rest, where the frame is the logo without its meridian, then sets `data-play='settle'`, which runs the draw-back backward to the logo. `--gt-logo-from` carries where the draw-back stands, read from the running animations, so a leave or a return during the draw-back runs on from the frame on screen.
 
 ### When to use it
 
-Use the hover mark where the logo is a link, such as a link back to a gallery. The shell's sidebar keeps the static `GtMark` for now, since every route on this site passes `mark='pt'` and the hover's stylesheet would load on every route for a mark no route shows. Use the loader where a page or a frame is still loading and nothing else can be shown, such as a prototype's frame on `/present`, a pane on `/compare` or a live page in a plate. Keep a lazy plate's empty slot empty, since its job is to hold the page's height, and keep the spinner inside a product button copied from the dashboard.
+Use the hover mark where the logo is a link, such as a link back to a gallery. The shell's sidebar head draws it for a route that passes `mark='gt'`. Use the loader where a page or a frame is still loading and nothing else can be shown, such as a prototype's frame on `/present`, a pane on `/compare` or a live page in a plate. Keep a lazy plate's empty slot empty, since its job is to hold the page's height. A product button copied from the dashboard shows the loader in place of its label while it waits, as gt-cloud's `Button` does.
 
-The loader animates registered custom properties and the hover the dashes' own properties, and both run on the page's main thread, not on the compositor. The loader stalls whenever that thread is busy: on `/present`, a same-origin prototype's frame shares the thread while it parses, and the loader pauses with it. Do not use the loader to cover heavy script work on the page itself.
+The loader and the hover animate registered custom properties on the page's main thread, not on the compositor. The loader stalls whenever that thread is busy: on `/present`, a same-origin prototype's frame shares the thread while it parses, and the loader pauses with it. Do not use the loader to cover heavy script work on the page itself.
 
 ### Reduced motion and themes
 
 Under reduced motion the hover does nothing and the loader shows the still logo with its label. The logo fills `currentColor`, so it takes the ink of its parent in both themes.
-
-## The turning loaders
-
-Two more loaders read the logo as an armillary sphere: the ring is the outer ring seen face on, the meridian oval is a ring of radius 96.26 turned 57.81 degrees about the polar axis, the latitude oval a ring of radius 96.25 turned 57.93 degrees about the node axis, and the stem and the bar lie on those rings seen edge on. `GtLogoArmillary` rests on the logo, draws the meridian and the G back to the stand (the ring, the bar and the stem) on `GtLogoMotion`'s own loader layers, grows both rings out of their hinges and turns them, the meridian a full turn and the latitude a half turn, passing over and under as the logo's own crossings do, shrinks them back and draws the logo on again. Every seam is the logo, the stand, or a ring 0 long, so no hand-off moves a pixel. `GtLogoAscii` sets the logo, turned on its sphere, in a 45 by 21 monospace grid and turns the rings once a lap, so they pass behind the globe. [/marks/loading](/marks/loading#armillary) runs both live.
-
-<GtLogoTurnDemo />
-
-### Import and props
-
-```tsx
-import GtLogoArmillary from '@/components/brand/GtLogoArmillary';
-import GtLogoAscii from '@/components/brand/GtLogoAscii';
-
-<GtLogoArmillary size={56} label='Loading the prototype' loading={!ready} onRest={() => setShown(true)} />;
-<GtLogoAscii width={450} palette='ink' label='Loading' />;
-```
-
-| Prop | Type | Default | What it does |
-| --- | --- | --- | --- |
-| `size` (armillary) | number | `56` | The drawn box in CSS pixels, the box `GtMark` and `GtLogoMotion` draw. Made for 32 to 256; below 32 use `GtLogoMotion`'s loader. |
-| `width` (ASCII) | number | `450` | The grid's width in CSS pixels, at least 225. The height is 420 / 450 of it. |
-| `palette` (ASCII) | `'ink'` or `'image'` | `'ink'` | `ink` sets the glyphs in `currentColor`, lit at the upper left; `image` uses blues on their own dark ground. |
-| `label` | string | `'Loading'` | Hidden text in a polite live region. |
-| `loading` | boolean | `true` | When it turns false the lap finishes on the still, in at most 0.85 s (armillary) or 0.75 s (ASCII), then `onRest` runs. |
-| `onRest` | function | none | Called once the frame is the still after `loading` turns false. |
-| `at` | number | none | Draws the frame this many seconds into the lap and does not animate, for tests and figures. |
-
-`GtLogoArmillary.frame.ts` is the sphere and the frames as pure functions of time, and `pnpm build:logo-armillary` writes `GtLogoArmillary.geometry.ts`, the beats and the Open course of the loader's channels, from `scripts/build/logo-motion.json` and the course `pnpm build:logo-motion` uses. The component draws its rest beat as `LOGO.d` itself, Open and Close on `GtLogoMotion`'s loader layers, and through the swing the stand with the rings stroked at the logo's weight and the gaps as masks 5.75 units wide each side of the line on top. `pnpm build:logo-ascii` writes `GtLogoAscii.frames.ts` from `scripts/build/logo-ascii.json` and the same sphere, and `--check` fails when the file is out of date. `pnpm test:marks` checks in Chrome that each of the armillary's hand-offs changes no pixel, that its turns start and end at rest with no speed, and that the ASCII frames use only the ramp, start and end on the still and keep the dots out of the glyphs.
-
-### When to use it
-
-`GtLogoMotion`'s loader stays the default for frames and panes: it needs no script and works from 16 pixels. Use the armillary on a stage of 32 pixels or more where script is already running, and the ASCII loader on large stages and surfaces that read like a terminal, 225 pixels wide or more. Both run on the main thread, so neither covers heavy script work.
-
-### Reduced motion and themes
-
-Under reduced motion both show their still, the logo and the turned logo in ASCII, with their labels, and start no clock. Both draw in `currentColor` by default, so they take the ink of their parent in both themes; the ASCII loader's `image` palette brings its own ground.
 
 ## The dithered shine
 

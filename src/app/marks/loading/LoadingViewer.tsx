@@ -84,21 +84,21 @@ type Part = { id: string; title: string; lead: string; count: number };
 /** The page's sections in order; the finished loader leads. */
 const PARTS: readonly Part[] = [
   { id: LOADER_ID, title: LOADER_TITLE, lead: LOADER_LEAD, count: LOADER_SIZES.length + 1 },
-  { id: ARMILLARY_ID, title: ARMILLARY_TITLE, lead: ARMILLARY_LEAD, count: ARMILLARY_SIZES.length + 1 },
-  { id: ASCII_ID, title: ASCII_TITLE, lead: ASCII_LEAD, count: 2 },
   { id: HOVER_ID, title: HOVER_TITLE, lead: HOVER_LEAD, count: MOTION_LOOPS.length + 1 },
   { id: BUILD_ID, title: BUILD_TITLE, lead: BUILD_LEAD, count: BUILD_PARTS.length },
   { id: CHECKS_ID, title: CHECKS_TITLE, lead: CHECKS_LEAD, count: CHECKS.length },
   { id: REDUCED_ID, title: REDUCED_TITLE, lead: REDUCED_LEAD, count: REDUCED_NOTES.length },
   { id: COMPARE_ID, title: COMPARE_TITLE, lead: COMPARE_LEAD, count: COMPARE_NOTES.length },
+  { id: ARMILLARY_ID, title: ARMILLARY_TITLE, lead: ARMILLARY_LEAD, count: ARMILLARY_SIZES.length + 1 },
+  { id: ASCII_ID, title: ASCII_TITLE, lead: ASCII_LEAD, count: 2 },
   { id: FIX_ID, title: FIX_TITLE, lead: FIX_LEAD, count: 5 },
 ];
 
 /** The gutter note of each section. */
 const FACTS: Readonly<Record<string, (part: Part) => string>> = {
   [LOADER_ID]: () => 'Live',
-  [ARMILLARY_ID]: () => 'Live',
-  [ASCII_ID]: () => 'Live',
+  [ARMILLARY_ID]: () => 'Exploration',
+  [ASCII_ID]: () => 'Exploration',
   [HOVER_ID]: (part) => `${part.count - 1} videos`,
   [BUILD_ID]: (part) => `${part.count} parts`,
   [CHECKS_ID]: (part) => `${part.count} checks`,
@@ -390,7 +390,7 @@ function LoadingBook({ sheetRef, jumpRef, activeOut, updated, timing }: BookProp
             </Link>
             <figcaption>
               <h3>The live hover</h3>
-              <p>Hover or focus this mark, a link back to the marks. The meridian draws back along its oval and draws out again on leave. Inside a link, a button or an element marked data-gt-logo-host, the mark moves with its host.</p>
+              <p>Hover or focus this mark, a link back to the marks. The loader runs for as long as the pointer stays; on leave it runs on to its next rest and the meridian draws out again. Inside a link, a button or an element marked data-gt-logo-host, the mark moves with its host.</p>
             </figcaption>
           </figure>
           <div className='ld-row'>

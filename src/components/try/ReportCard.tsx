@@ -8,13 +8,6 @@ import TryHelpTip from './TryHelpTip';
 
 import type { Report } from '@/lib/try/analyze';
 
-export type ReportCardState =
-  | 'idle'
-  | 'loading'
-  | 'settling'
-  | 'done'
-  | 'error';
-
 const GRADES = ['A', 'B', 'C', 'D', 'F'] as const;
 
 /* The skeleton's static row roster — the six category ids and names are
@@ -139,13 +132,7 @@ function ScoreMeter({ score }: { score: number | null }) {
    info triggers stay out of the tab order; the hero's own live region
    narrates the run. Each row carries a stable id and tabIndex -1 so the
    figure's satellite chips can scroll to it and hand it focus. */
-export default function ReportCard({
-  report,
-  state,
-}: {
-  report: Report | null;
-  state: ReportCardState;
-}) {
+export default function ReportCard({ report }: { report: Report | null }) {
   const filled = report !== null;
   /* The one-open-at-a-time evidence modal: the id of the open category,
      and the rows' elements so close can hand focus back to the opener. */
@@ -167,9 +154,7 @@ export default function ReportCard({
   return (
     <div className='try-report-band'>
       <div
-        className={`try-report${filled ? ' is-filled' : ''}${
-          state === 'loading' || state === 'settling' ? ' is-waiting' : ''
-        }`}
+        className={`try-report${filled ? ' is-filled' : ''}`}
         aria-hidden={filled ? undefined : true}
         inert={filled ? undefined : true}
       >

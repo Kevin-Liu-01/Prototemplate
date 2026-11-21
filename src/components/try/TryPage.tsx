@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 
+import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -308,19 +309,11 @@ export default function TryPage() {
                       className='try-go-wait'
                       aria-hidden={busy ? undefined : true}
                     >
-                      <svg
-                        className='try-go-arc'
-                        viewBox='0 0 16 16'
-                        width={14}
-                        height={14}
-                        fill='none'
-                        stroke='currentColor'
-                        strokeWidth={1.5}
-                        strokeLinecap='butt'
-                        aria-hidden='true'
-                      >
-                        <path d='M8 1.5A6.5 6.5 0 1 1 1.5 8' />
-                      </svg>
+                      <GtLogoMotion
+                        mode={busy ? 'loader' : 'static'}
+                        size={14}
+                        label='Grading'
+                      />
                       Grading…
                     </span>
                   </button>
@@ -373,10 +366,7 @@ export default function TryPage() {
         </div>
       </div>
       <div className='tc-hatch' aria-hidden='true' />
-      <ReportCard
-        report={report.state === 'done' ? report.value : null}
-        state={report.state}
-      />
+      <ReportCard report={report.state === 'done' ? report.value : null} />
     </>
   );
 }
