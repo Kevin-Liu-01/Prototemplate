@@ -134,8 +134,8 @@ docked. Hover and pointer events inside it keep working.
   label that says what loads (2026-11-09).
 - The logo inside a link or a button takes `GtLogoMotion`'s `hover` mode,
   which is the loader: it loops while the link is hovered or focused and
-  settles to the still logo at its next rest on leave, with no hover of its
-  own (Kevin, 2026-11-20: "the only loader i like ... should also be the
+  stops on the still logo at the end of its lap on leave, with no hover of
+  its own (Kevin, 2026-11-20: "the only loader i like ... should also be the
   hover animation"). Both modes draw the logo of 2026-11-12; a copy of the component in
   another repository takes the regenerated `GtLogoMotion.css` and
   `GtLogoMotion.geometry.ts`, never an older copy.

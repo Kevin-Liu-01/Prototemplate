@@ -10,7 +10,7 @@
 /** The beats of the motion in milliseconds, read from scripts/build/logo-motion.json by the server page. */
 export type LoaderTiming = { drawBack: number; meridian: number; restAfterMeridian: number; g: number; restAfterG: number };
 
-export const lapOf = (t: LoaderTiming) => t.meridian + t.restAfterMeridian + t.g + t.restAfterG;
+export const lapOf = (t: LoaderTiming) => t.drawBack + t.meridian + t.restAfterMeridian + t.g + t.restAfterG;
 
 export const LEAD =
   'The General Translation logo while a page loads and while it is hovered, running live, then the work behind it: how the motion is built, the checks that hold it, two loaders kept as explorations and the fix that keeps everything but the moving line on the logo itself.';
@@ -18,15 +18,15 @@ export const LEAD =
 export const LOADER_ID = 'loader';
 export const LOADER_TITLE = 'The loader';
 export const LOADER_LEAD =
-  'Meridian, then G. The meridian draws back once, then a line runs once round the meridian and the G draws off and back on once round the equator, for as long as the page loads.';
+  'Meridian, then G, from the logo to the logo. The meridian draws back and a line runs once round it; then the G draws off and back on once round the equator, and the meridian draws on again with it, so every lap lands on the logo.';
 
 /** The beats of the loader as rows of the timing table. */
 export const timingRows = (t: LoaderTiming): readonly { name: string; ms: number; note: string }[] => [
-  { name: 'Draw-back', ms: t.drawBack, note: 'Once, when the loader mounts: the meridian draws back along its oval to the logo without its meridian.' },
+  { name: 'Draw-back', ms: t.drawBack, note: 'The meridian draws back along its oval to the logo without its meridian.' },
   { name: 'Meridian lap', ms: t.meridian, note: 'A line runs once round the meridian, over the logo without its meridian.' },
   { name: 'Rest', ms: t.restAfterMeridian, note: 'The logo without its meridian holds still.' },
-  { name: 'G lap', ms: t.g, note: 'The G draws off from its tip round the equator and back on, landing on its tip again.' },
-  { name: 'Rest', ms: t.restAfterG, note: 'The logo without its meridian holds still before the next lap.' },
+  { name: 'G lap', ms: t.g, note: 'The G draws off from its tip round the equator and back on, landing on its tip again. From the moment it turns back, the meridian draws on again from its join, the same share of each line at once, so both land on the logo together.' },
+  { name: 'Rest', ms: t.restAfterG, note: 'The logo holds still before the next lap.' },
 ];
 
 /** The loader at the sizes the site uses it, with where each one runs. */
@@ -69,7 +69,7 @@ export const ASCII_NOTES: readonly string[] = [
 export const HOVER_ID = 'hovers';
 export const HOVER_TITLE = 'The hover';
 export const HOVER_LEAD =
-  'The hover is the loader. While the logo’s link is hovered or keyboard focused the loader runs, for as long as the pointer stays. On leave it runs on to its next rest, the logo without its meridian, and the meridian draws out again to the still logo. The three hovers drawn before it stay as videos.';
+  'The hover is the loader. While the logo’s link is hovered or keyboard focused the loader runs, for as long as the pointer stays. On leave it runs on to the end of its lap, where it lands on the still logo, and stops. The three hovers drawn before it stay as videos.';
 
 /** One hover or loading loop, played from its light and dark videos in /marks/graticule/motion; `poster` when the loop has its own poster, its video's first frame. */
 export type MotionLoop = { id: string; name: string; caption: string; shipped: boolean; poster?: true };
@@ -97,7 +97,7 @@ export const MOTION_LOOPS: readonly MotionLoop[] = [
   {
     id: 'meridian-then-g',
     name: 'Meridian, then G',
-    caption: 'The loader as a video, drawn frame by frame from the component in Chrome. It plays the draw-back, three laps and the draw-back reversed, so it starts and ends on the logo, as the hover does. The ring and the T hold still the whole time.',
+    caption: 'The loader as a video, drawn frame by frame from the component in Chrome. It plays the draw-back, three laps and the draw-back reversed, so it starts and ends on the logo. It was recorded before 20 November 2026, when the meridian began drawing on again with the G at the end of every lap. The ring and the T hold still the whole time.',
     shipped: true,
     poster: true,
   },
@@ -127,7 +127,7 @@ export const BUILD_PARTS: readonly { term: string; body: string }[] = [
   },
   {
     term: 'The hover',
-    body: 'The hover runs the loader’s own animations. On the host’s enter the component sets data-play to loop; after a leave it waits for the lap’s next rest, then sets it to settle, which runs the draw-back backward to the logo. --gt-logo-from carries where the draw-back stands, read from the running animations, so a leave or a return during the draw-back runs on from the frame on screen.',
+    body: 'The hover runs the loader’s own animations. On the host’s enter the component sets data-play to loop; after a leave it waits for the rest at the end of the lap, where the frame is the logo, and clears it. A leave during the draw-back sets data-play to settle, which runs the draw-back backward to the logo. --gt-logo-from carries where the lap stands, read from the running animations, so a leave or a return during the draw-back runs on from the frame on screen.',
   },
   {
     term: 'Only the moving line moves',

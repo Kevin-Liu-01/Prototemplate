@@ -58,7 +58,7 @@ export const MOTION_LOOPS: readonly MotionLoop[] = [
   {
     id: 'meridian-then-g',
     name: 'Meridian, then G',
-    caption: 'While a page loads, the meridian draws back once, then a line runs once round its oval and the G runs once round the equator: its stroke draws off from one end and back on until it rests as the G again. The ring and the T hold still the whole time.',
+    caption: 'Recorded before 20 November 2026, when the meridian began drawing on again with the G. While a page loads, the meridian draws back once, then a line runs once round its oval and the G runs once round the equator: its stroke draws off from one end and back on until it rests as the G again. The ring and the T hold still the whole time.',
     poster: true,
   },
 ];

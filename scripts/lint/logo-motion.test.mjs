@@ -120,10 +120,14 @@ const PX = SIZE * DPR;
 const BOX = frameBox(PX, 0, 0, PX, G.viewBox);
 const HOVER = TIMING.hover * 1000;
 const { D1, R1, D2 } = Object.fromEntries(Object.entries(TIMING.beats).map(([k, v]) => [k, v * 1000]));
-const LOOP = (TIMING.beats.D1 + TIMING.beats.R1 + TIMING.beats.D2 + TIMING.beats.R2) * 1000;
+/* one lap, logo to logo, and where the G and the meridian land on the logo together */
+const LOOP = G.timing.lap;
+const LANDING = G.timing.rests.at(-1)[0];
 const FRAME = 1000 / 60;
-/* the loader's rests and seams: the draw-back's end, the rests after the meridian's lap and after the G's, the end of a lap and the next */
-const SEAMS = [HOVER, HOVER + D1 + R1 / 2, HOVER + D1 + R1 + D2 + (LOOP - D1 - R1 - D2) / 2, HOVER + LOOP - 0.01, HOVER + LOOP, HOVER + 2 * LOOP];
+/* the loader's seams: the draw-back's end and the rest after the meridian's lap stand on the end pose; the rest after the G lands, the end of a lap and the next stand on the logo */
+const POSE_SEAMS = [HOVER, HOVER + D1 + R1 / 2];
+const LOGO_SEAMS = [LANDING + (LOOP - LANDING) / 2, LOOP - 0.01, LOOP, 2 * LOOP];
+const SEAMS = [...POSE_SEAMS, ...LOGO_SEAMS];
 /** where a hover is left or re-entered during its draw-back, in ms */
 const TURNS = [HOVER / 4, HOVER / 2, (3 * HOVER) / 4];
 /** a pixel has changed between two frames when it moves more than this many levels */
@@ -376,7 +380,7 @@ async function framesOf(s, theme) {
   await s.seek(HOVER);
   out.pose = await s.shot('pose');
   out.loader = [];
-  for (let t = 0; t <= HOVER + LOOP + 0.01; t += FRAME) {
+  for (let t = 0; t <= LOOP + 0.01; t += FRAME) {
     await s.seek(t);
     out.loader.push({ t, g: await s.shot(SHOTS ? `loader-${Math.round(t)}` : null), dash: await s.dashes() });
   }
@@ -429,7 +433,7 @@ async function smallFramesOf(s, box) {
   out.bare = await s.shot();
   await s.load(markOf({ mode: 'loader' }, s.size));
   out.loader = [];
-  for (let t = 0; t <= HOVER + LOOP + 0.01; t += FRAME) {
+  for (let t = 0; t <= LOOP + 0.01; t += FRAME) {
     await s.seek(t);
     out.loader.push({ t, g: await s.shot(), dash: await s.dashes() });
   }
@@ -491,12 +495,13 @@ for (const engine of BROWSERS) {
           report(`a return at ${Math.round(x)} ms of the settle`, differing(at, back, slack), slack);
         }
         report("the hover's end pose against the loader's", differing(F.pose, F.enter.at(-1).g, slack), slack);
-        for (const t of SEAMS.slice(1)) report(`the loader's seam at ${Math.round(t)} ms against its draw-back's end`, differing(F.pose, F.seams[t], slack), slack);
+        for (const t of POSE_SEAMS.slice(1)) report(`the loader's seam at ${Math.round(t)} ms against its draw-back's end`, differing(F.pose, F.seams[t], slack), slack);
+        for (const t of LOGO_SEAMS) report(`the loader's seam at ${Math.round(t)} ms against the logo`, differing(F.rest, F.seams[t], slack), slack);
       });
 
       test('every frame is the logo or the logo without its meridian but where a line moves', () => {
         for (const [name, frames, from] of [
-          ['loader', F.loader, HOVER],
+          ['loader', F.loader, Infinity],
           ['enter', F.enter, Infinity],
           ['leave', F.leave, Infinity],
         ]) {
@@ -512,7 +517,7 @@ for (const engine of BROWSERS) {
 
       test("the ring is the logo's own in every frame", () => {
         for (const [name, frames, from] of [
-          ['loader', F.loader, HOVER],
+          ['loader', F.loader, Infinity],
           ['enter', F.enter, Infinity],
           ['leave', F.leave, Infinity],
         ]) {
@@ -636,7 +641,7 @@ for (const engine of BROWSERS) {
           ['the hover leave', F.leave],
           ['the draw-back', within(F.loader, 0, HOVER)],
           ["the meridian's lap", within(F.loader, HOVER, HOVER + D1)],
-          ["the G's lap", within(F.loader, HOVER + D1 + R1, HOVER + D1 + R1 + D2)],
+          ["the G's lap and the meridian's return", within(F.loader, HOVER + D1 + R1, LANDING)],
         ];
         for (const [name, frames] of runs) {
           const { ok, line } = stepRule(steps(frames));
@@ -648,7 +653,8 @@ for (const engine of BROWSERS) {
       test('every dash runs on the course, smoothly', { skip: !COURSE || !strict ? 'only for the component pnpm build:logo-motion writes, in Chromium' : false }, () => {
         const moves = [
           ['meridian', F.enter.map(({ t, dash }) => ({ t, d: dash.meridian, c: COURSE.meridian(t / 1000) }))],
-          ...['lap', 'under', 'fill', 'head'].map((ch) => [ch, F.loader.filter(({ t }) => t >= HOVER - 0.01).map(({ t, dash }) => ({ t, d: dash[ch], c: COURSE[ch]((t - HOVER) / 1000) }))]),
+          ['meridian over the lap', F.loader.map(({ t, dash }) => ({ t, d: dash.meridian, c: COURSE.meridianLap(t / 1000) }))],
+          ...['lap', 'under', 'fill', 'head'].map((ch) => [ch, F.loader.map(({ t, dash }) => ({ t, d: dash[ch], c: COURSE[ch](t / 1000) }))]),
         ];
         const notes = [];
         for (const [ch, rows] of moves) {
@@ -708,10 +714,10 @@ for (const engine of SMALL_BROWSERS) {
         test("the ring is the logo's own in every frame, or the ring alone where the meridian is undrawn", () => {
           const zones = ringZones(box, reachAt(size));
           const region = or(zones.core, zones.edge);
-          const rule = frameRule({ maps: F.maps, zone: F.zone, rest: F.rest, pose: F.loader.at(-1).g, bare: F.bare, half: HALF, near: NEAR * box.unit, slack: SMALL_SLACK });
+          const rule = frameRule({ maps: F.maps, zone: F.zone, rest: F.rest, pose: F.loader.find(({ t }) => t >= HOVER - 0.01).g, bare: F.bare, half: HALF, near: NEAR * box.unit, slack: SMALL_SLACK });
           const px = size * dpr;
           for (const [name, frames, from] of [
-            ['loader', F.loader, HOVER],
+            ['loader', F.loader, Infinity],
             ['enter', F.enter, Infinity],
             ['leave', F.leave, Infinity],
           ]) {

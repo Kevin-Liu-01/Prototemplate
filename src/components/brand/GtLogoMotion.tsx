@@ -11,16 +11,16 @@ import './GtLogoMotion.css';
  * and CSS alone: no video, no canvas and no script per frame.
  *
  * - `static` draws the logo, the same path as LOGO in src/lib/logo.ts.
- * - `loader` draws the meridian back along its oval once, over the north
- *   pole, down the left and under the south pole, then loops: a line runs
- *   once round the meridian, then the G draws off and back on once round
- *   the equator, leaving its tip and landing on it again. The wrapper is a
- *   polite live region and `label` its hidden text.
+ * - `loader` loops from the logo to the logo: the meridian draws back
+ *   along its oval, over the north pole, down the left and under the south
+ *   pole, and a line runs once round it; then the G draws off and back on
+ *   once round the equator, leaving its tip and landing on it again, and
+ *   the meridian draws on again as it lands. The wrapper is a polite live
+ *   region and `label` its hidden text.
  * - `hover` draws the logo, and runs the loader for as long as its host is
  *   hovered or keyboard focused. On leave the loader runs on to its next
- *   rest, the logo without its meridian, and the meridian draws out again
- *   to the logo; a leave during the draw-back runs it back from where it
- *   is. The host is the nearest link, button or element marked
+ *   rest, where it is the logo, and stops; a leave during the draw-back
+ *   runs it back from where it is. The host is the nearest link, button or element marked
  *   `data-gt-logo-host` around the mark, or the mark itself.
  *
  * Whatever is not being drawn or undrawn is the logo itself. The motion
@@ -66,18 +66,18 @@ const line = (width: number) => ({ fill: 'none', strokeWidth: width }) as const;
 
 const T = G.timing;
 
-/** how long a lap at `t` ms runs before it stands at a rest; 0 inside one */
+/** how long a lap at `t` ms runs before it stands at a rest, the logo; 0 inside one */
 const toRest = (t: number) => {
   const next = T.rests.find(([, end]) => t <= end);
   return next ? Math.max(0, next[0] - t) : 0;
 };
 
 /**
- * The hover: the loader from the host's enter (data-play='loop') and, after
- * its leave, once the lap stands at a rest, the draw-back run backward
- * (data-play='settle'). --gt-logo-from is where the draw-back stands when
- * either starts, read from the running animations, so no switch moves a
- * pixel. Returns the cleanup.
+ * The hover: the loader from the host's enter (data-play='loop') until, after
+ * its leave, the lap stands at a rest, where the frame is the logo; a leave
+ * during the draw-back runs it backward (data-play='settle').
+ * --gt-logo-from is where the lap stands when either starts, read from the
+ * running animations, so no switch moves a pixel. Returns the cleanup.
  */
 function driveHover(root: HTMLElement) {
   const svg = root.firstElementChild as SVGSVGElement;
@@ -90,10 +90,10 @@ function driveHover(root: HTMLElement) {
     const a = svg.getAnimations().find((x) => x instanceof CSSAnimation && x.animationName === name);
     return a?.effect?.getComputedTiming().progress ?? null;
   };
-  /** how far the meridian has drawn back, in ms of the draw-back */
-  const drawn = () => {
+  /** where the lap stands, in ms; in a settle, how far the meridian has drawn back */
+  const lapAt = () => {
     if (root.dataset.play === 'settle') return (1 - (progress('gt-logo-meridian-settle') ?? 1)) * T.drawBack;
-    return (progress('gt-logo-meridian-back') ?? 0) * T.drawBack;
+    return (progress('gt-logo-meridian-lap') ?? 0) * T.lap;
   };
   const play = (state: 'loop' | 'settle' | null, from = 0) => {
     window.clearTimeout(timer);
@@ -102,18 +102,17 @@ function driveHover(root: HTMLElement) {
     else delete root.dataset.play;
   };
   const settle = () => {
-    const x = drawn();
-    if (x < T.drawBack) return play('settle', x);
-    const lap = progress('gt-logo-lap');
-    const wait = lap === null ? 0 : toRest(lap * T.lap);
-    if (wait === 0) return play('settle', T.drawBack);
+    const t = lapAt();
+    if (t < T.drawBack) return play('settle', t);
+    const wait = toRest(t);
+    if (wait === 0) return play(null);
     timer = window.setTimeout(settle, wait + 20);
   };
   const sync = () => {
     if (still.matches) return play(null);
     if (hovered || focused) {
       if (root.dataset.play === 'loop') window.clearTimeout(timer);
-      else play('loop', drawn());
+      else play('loop', root.dataset.play === 'settle' ? lapAt() : 0);
     } else if (root.dataset.play === 'loop') settle();
   };
   const on = (e: Event) => {
@@ -154,6 +153,8 @@ export default function GtLogoMotion({ mode = 'static', size = 18, label = 'Load
   /* the ring as the logo draws it; it shows only at the inner edge where a
      line merged into the ring, since no mask reaches further into the ring */
   const ring = <path d={G.ring.d} />;
+  /* the logo's meridian where it is drawn, while the G laps under it */
+  const meridianInk = <use href={`#${id('logo')}`} mask={url('ink')} />;
   /* where no mask reaches: the ring from just inside its inner edge, less
      every point near a line's ink in the ring's hole (its outline stroked in
      units and again in CSS pixels, so the reach holds at any size), but
@@ -210,6 +211,10 @@ export default function GtLogoMotion({ mode = 'static', size = 18, label = 'Load
           <mask id={id('fill')} {...SQUARE}>
             {lap('fill', '#fff')}
           </mask>
+          <mask id={id('ink')} {...SQUARE}>
+            <path d={G.meridianInk.d} stroke='#fff' {...line(G.meridianInk.width)} />
+            {meridian('#000')}
+          </mask>
           <mask id={id('inside')} {...SQUARE}>
             <rect width='256' height='256' fill='#fff' />
             <circle cx={G.ring.cx} cy={G.ring.cy} r={G.free.core.r} stroke='#000' shapeRendering='crispEdges' {...line(G.free.core.width)} />
@@ -230,16 +235,19 @@ export default function GtLogoMotion({ mode = 'static', size = 18, label = 'Load
               <g className='gt-logo-motion-add' mask={url('under')}>
                 {ring}
                 <path d={G.bar} />
+                {meridianInk}
               </g>
               <g className='gt-logo-motion-add' mask={url('head')}>
                 {ring}
                 <path d={G.bar} />
                 <path d={G.latitude.d} stroke='currentColor' {...line(G.width)} />
+                {meridianInk}
               </g>
               <g className='gt-logo-motion-add' mask={url('fill')}>
                 {ring}
                 <path d={G.bar} />
                 <path d={G.stem} />
+                {meridianInk}
               </g>
             </g>
             <path className='gt-logo-motion-lap' d={G.meridianLap.d} stroke='currentColor' mask={url('inside')} {...line(G.width)} />

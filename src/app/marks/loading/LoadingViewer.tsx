@@ -390,7 +390,7 @@ function LoadingBook({ sheetRef, jumpRef, activeOut, updated, timing }: BookProp
             </Link>
             <figcaption>
               <h3>The live hover</h3>
-              <p>Hover or focus this mark, a link back to the marks. The loader runs for as long as the pointer stays; on leave it runs on to its next rest and the meridian draws out again. Inside a link, a button or an element marked data-gt-logo-host, the mark moves with its host.</p>
+              <p>Hover or focus this mark, a link back to the marks. The loader runs for as long as the pointer stays; on leave it runs on to the end of its lap and stops on the logo. Inside a link, a button or an element marked data-gt-logo-host, the mark moves with its host.</p>
             </figcaption>
           </figure>
           <div className='ld-row'>
