@@ -127,6 +127,10 @@ function driveHover(root: HTMLElement) {
   const events = ['pointerenter', 'pointerleave', 'focusin', 'focusout'] as const;
   for (const type of events) host.addEventListener(type, on);
   svg.addEventListener('animationend', end);
+  /* a pointer or focus that arrived before hydration fired no event here */
+  hovered = host.matches(':hover');
+  focused = host.matches(':focus-visible');
+  if (hovered || focused) sync();
   return () => {
     window.clearTimeout(timer);
     for (const type of events) host.removeEventListener(type, on);

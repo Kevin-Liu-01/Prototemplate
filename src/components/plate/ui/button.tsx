@@ -92,12 +92,10 @@ function Button({
   const content = showLoading ? (
     <>
       <span className='invisible contents'>{children}</span>
-      <GtLogoMotion
-        mode='loader'
-        size={16}
-        label='Loading'
-        className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-      />
+      {/* the logo's own stylesheet sets its position, so the centring sits on a wrapper */}
+      <span className='absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2'>
+        <GtLogoMotion mode='loader' size={16} label='Loading' />
+      </span>
     </>
   ) : (
     children
