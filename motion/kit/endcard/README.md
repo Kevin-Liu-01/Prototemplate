@@ -2,7 +2,7 @@
 
 Every film of the series ends on this card after its narrative. It is one design. The layout, the sizes, the timing and the motion are fixed in `endcard.js`, and a film passes only three things: its palette, the post's title in two lines and the post's link.
 
-The card shows the General Translation logo (the globe, `kit/brand/gt-logo-motion.js`) playing its loop, "Meridian, then G", the title in two lines and the link as plain text, on the palette's ground. It shows no other text and draws no frame: there are no rails, rules or registration crosses on the card. It runs 5.2 s from a hard cut on the beat to the film's last frame, and that last frame, the logo at rest, is the poster.
+The card shows the General Translation logo (the globe, `kit/brand/gt-logo-motion.js`) playing the logo form, the title in two lines and the link as plain text, on the palette's ground. It shows no other text and draws no frame: there are no rails, rules or registration crosses on the card. It runs 5.2 s from a hard cut on the beat to the film's last frame, and that last frame, the logo at rest, is the poster.
 
 Until 2026-11-09 the mark was the doubled-line GT monogram filled with the film's gem smoke, and the card ran 4.0 s. A mark that draws its lines cannot be a still glass shape, so the smoke left the card, and the card grew by the loop's length. The stills in `stills/` are of that earlier card.
 
@@ -72,8 +72,8 @@ Times are card seconds, so film time is `start + t`.
 | 0.12 to 1.00 | Title line 1 rises out of its mask (`yPercent` 100 to 0). | `expo.out` |
 | 0.20 to 1.00 | Title line 2 rises the same way (80 ms stagger). | `expo.out` |
 | 0.40 to 1.00 | The link rises the same way. | `expo.out` |
-| 0.50 to 4.90 | The logo's loop (`TIMING.loop.at`): the meridian draws back (0.6 s), a line runs once round the meridian, the G draws off and back on round the equator (3.2 s), and the meridian draws out to the logo (0.6 s). The eases are the site's GtLogoMotion. | as the site |
-| 4.90 to 5.20 | The logo at rest (`TIMING.loop.rest`). | |
+| 0.50 to 4.87 | The logo form (`TIMING.loop.at`): the meridian draws back (0.6 s), a line runs once round the meridian, the G draws off and back on round the equator, landing at 3.97 s, and the meridian then draws on again to the logo (0.9 s). The eases are the site's GtLogoMotion. | as the site |
+| 4.87 to 5.20 | The logo at rest (`TIMING.loop.rest` and more). | |
 | 5.20 | The film's last frame, which is the poster. | |
 
 The entrance is a hard cut, which is MOTION.md's transition (b). It needs nothing from the frame before it, so every film can cut to the card from whatever its last beat is.

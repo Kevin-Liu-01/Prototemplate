@@ -49,6 +49,12 @@ import {
   FIX_LEAD,
   FIX_SHEET_CAPTION,
   FIX_TITLE,
+  FORM_CODE,
+  FORM_ID,
+  FORM_LEAD,
+  FORM_LOOP,
+  FORM_TITLE,
+  formRows,
   HOVER_ID,
   HOVER_LEAD,
   HOVER_TITLE,
@@ -85,6 +91,7 @@ type Part = { id: string; title: string; lead: string; count: number };
 const PARTS: readonly Part[] = [
   { id: LOADER_ID, title: LOADER_TITLE, lead: LOADER_LEAD, count: LOADER_SIZES.length + 1 },
   { id: HOVER_ID, title: HOVER_TITLE, lead: HOVER_LEAD, count: MOTION_LOOPS.length + 1 },
+  { id: FORM_ID, title: FORM_TITLE, lead: FORM_LEAD, count: 2 },
   { id: BUILD_ID, title: BUILD_TITLE, lead: BUILD_LEAD, count: BUILD_PARTS.length },
   { id: CHECKS_ID, title: CHECKS_TITLE, lead: CHECKS_LEAD, count: CHECKS.length },
   { id: REDUCED_ID, title: REDUCED_TITLE, lead: REDUCED_LEAD, count: REDUCED_NOTES.length },
@@ -100,6 +107,7 @@ const FACTS: Readonly<Record<string, (part: Part) => string>> = {
   [ARMILLARY_ID]: () => 'Exploration',
   [ASCII_ID]: () => 'Exploration',
   [HOVER_ID]: (part) => `${part.count - 1} videos`,
+  [FORM_ID]: () => 'For videos',
   [BUILD_ID]: (part) => `${part.count} parts`,
   [CHECKS_ID]: (part) => `${part.count} checks`,
   [REDUCED_ID]: () => 'Still',
@@ -400,6 +408,36 @@ function LoadingBook({ sheetRef, jumpRef, activeOut, updated, timing }: BookProp
           </div>
         </div>
       );
+    if (id === FORM_ID)
+      return (
+        <div className='ld-body'>
+          <div className='ld-hero'>
+            <MotionFigure loop={FORM_LOOP} />
+            <table className='ld-timing'>
+              <caption>The logo form runs once in {timing.formReturn[1]} ms, from the logo to the logo.</caption>
+              <thead>
+                <tr>
+                  <th scope='col'>Beat</th>
+                  <th scope='col'>Time</th>
+                  <th scope='col'>What moves</th>
+                </tr>
+              </thead>
+              <tbody>
+                {formRows(timing).map((row, i) => (
+                  <tr key={`${row.name}-${i}`}>
+                    <th scope='row'>{row.name}</th>
+                    <td>{row.ms} ms</td>
+                    <td>{row.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <pre className='ld-code'>
+            <code>{FORM_CODE}</code>
+          </pre>
+        </div>
+      );
     if (id === BUILD_ID)
       return (
         <div className='ld-body'>
@@ -479,7 +517,7 @@ function LoadingBook({ sheetRef, jumpRef, activeOut, updated, timing }: BookProp
         updated={updated}
         facts={[
           { icon: 'sync', key: 'Lap', value: `${lapOf(timing)} ms` },
-          { icon: 'film', key: 'Videos', value: MOTION_LOOPS.length },
+          { icon: 'film', key: 'Videos', value: MOTION_LOOPS.length + 1 },
           { icon: 'check', key: 'Checks', value: CHECKS.length },
         ]}
         contents={
@@ -512,7 +550,7 @@ export type LoadingViewerProps = {
 
 /**
  * The logo while a page loads, on the viewer shell: the finished loader
- * first, then the hovers, how it is built, the checks, reduced motion, the
+ * first, then the hovers, the logo form, how it is built, the checks, reduced motion, the
  * loader on /compare and the before and after of the fix. The list hangs
  * under Marks > Loading; flow keys, so Space and the arrows scroll.
  */

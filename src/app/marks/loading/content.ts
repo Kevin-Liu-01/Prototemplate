@@ -1,6 +1,6 @@
 /**
  * The words and the files of /marks/loading: the finished loader first, then
- * the hover, which is the loader, how the motion is built, the checks that
+ * the hover, which is the loader, the logo form for videos, how the motion is built, the checks that
  * hold it, reduced motion, the loader on /compare, the armillary and the
  * ASCII loader as explorations, and the before and after of the fix. The
  * timings come from scripts/build/logo-motion.json through the server page,
@@ -8,17 +8,17 @@
  */
 
 /** The beats of the motion in milliseconds, read from scripts/build/logo-motion.json and the generated geometry by the server page. */
-export type LoaderTiming = { drawBack: number; meridian: number; restAfterMeridian: number; g: number; meridianReturn: readonly [number, number]; lap: number };
+export type LoaderTiming = { drawBack: number; meridian: number; restAfterMeridian: number; g: number; meridianReturn: readonly [number, number]; lap: number; formReturn: readonly [number, number] };
 
 export const lapOf = (t: LoaderTiming) => t.lap;
 
 export const LEAD =
-  'The General Translation logo while a page loads and while it is hovered, running live, then the work behind it: how the motion is built, the checks that hold it, two loaders kept as explorations and the fix that keeps everything but the moving line on the logo itself.';
+  'The General Translation logo while a page loads and while it is hovered, running live, and the logo form that videos play, then the work behind it: how the motion is built, the checks that hold it, two loaders kept as explorations and the fix that keeps everything but the moving line on the logo itself.';
 
 export const LOADER_ID = 'loader';
 export const LOADER_TITLE = 'The loader';
 export const LOADER_LEAD =
-  'Meridian, then G, from the logo to the logo. The meridian draws back and a line runs once round it; then the G draws off and back on once round the equator, and the meridian draws on again from behind it as it returns, so every lap lands on the logo.';
+  'The loading animation: meridian, then G, from the logo to the logo. The meridian draws back and a line runs once round it; then the G draws off and back on once round the equator, and the meridian draws on again from behind it as it returns, so every lap lands on the logo.';
 
 /** The beats of the loader as rows of the timing table. */
 export const timingRows = (t: LoaderTiming): readonly { name: string; ms: number; note: string }[] => [
@@ -36,6 +36,34 @@ export const LOADER_SIZES: readonly { size: number; where: string }[] = [
   { size: 32, where: 'A pane on /compare in Both, 80 sheet pixels across' },
   { size: 16, where: 'The smallest size the plate checks' },
 ];
+
+export const FORM_ID = 'logo-form';
+export const FORM_TITLE = 'The logo form';
+export const FORM_LEAD =
+  'The logo forming, for promotional videos and anywhere else the logo appears in a film. It is the loader’s lap played once, except that the meridian waits until the G has landed and only then draws on, so the two never move at once.';
+
+/** The beats of the logo form as rows of its timing table. */
+export const formRows = (t: LoaderTiming): readonly { name: string; ms: number; note: string }[] => [
+  { name: 'Draw-back', ms: t.drawBack, note: 'The meridian draws back, as in the loader.' },
+  { name: 'Meridian lap', ms: t.meridian, note: 'A line runs once round the meridian.' },
+  { name: 'Rest', ms: t.restAfterMeridian, note: 'The logo without its meridian holds still.' },
+  { name: 'G lap', ms: t.g, note: `The G draws off and back on round the equator, landing on its tip at ${t.formReturn[0]} ms.` },
+  { name: 'Meridian return', ms: t.formReturn[1] - t.formReturn[0], note: `Once the G has landed, the meridian draws on again, gently at first and with a long settle, and lands on the logo at ${t.formReturn[1]} ms.` },
+];
+
+export const FORM_LOOP: MotionLoop = {
+  id: 'logo-form',
+  name: 'The logo form',
+  caption: 'Rendered from the film kit’s logo at 1080 pixels and 60 frames a second, still for half a second either side. motion/kit/brand/render-logo-form.mjs writes both themes from the frames a film draws.',
+  shipped: true,
+};
+
+export const FORM_CODE = `<script src="kit/brand/gt-logo-motion.js"></script>
+
+const logo = GTLogoMotion.create({ ink: 'white' });
+box.appendChild(logo.svg);
+// on the film's clock, t in seconds from the form's start
+logo.set(t);   // the logo before 0 and after GTLogoMotion.DURATION`;
 
 export const ARMILLARY_ID = 'armillary';
 export const ARMILLARY_TITLE = 'The armillary loader';

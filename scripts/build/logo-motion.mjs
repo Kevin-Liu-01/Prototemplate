@@ -884,6 +884,8 @@ const geometry = {
     lap: +f3(LOOP_S * 1000),
     meridianReturn: [+f3(M_BACK() * 1000), +f3(ML * 1000)],
     rests: [[+f3(ML * 1000), +f3(LOOP_S * 1000)]],
+    /* the logo form, for videos: the lap played once, the meridian drawing on only once the G has landed */
+    form: { meridianReturn: [+f3(GE * 1000), +f3((GE + RETURN_S) * 1000)] },
   },
 };
 
@@ -911,7 +913,8 @@ const ts = `${HEAD}
  * stroke is \`width\` wide unless it says. \`timing\` is the motion's
  * clock in milliseconds: the draw-back, one lap, when the meridian draws on
  * again and lands, and the rest where the frame is the logo and a hover
- * stops.
+ * stops. \`form\` is the logo form's: the lap played once in a video, its
+ * meridian drawing on again only once the G has landed.
  */
 export const GT_LOGO_MOTION = ${JSON.stringify(geometry, null, 2).replace(/"([a-zA-Z]+)":/g, '$1:').replace(/"/g, "'")} as const;
 `;

@@ -14,7 +14,7 @@ const route = seoRoute({
   path: '/marks/loading',
   title: PAGE_NAMES.loading.name,
   kind: 'page',
-  description: 'The General Translation logo while a page loads, live: the loader, which is also the hover, how it is built, its checks and two loaders kept as explorations.',
+  description: 'The General Translation logo while a page loads, live: the loader, which is also the hover, the logo form for videos, how it is built and its checks.',
   crumbs: [{ name: PAGE_NAMES.marks.name, path: '/marks' }],
   updated: requireUpdated('/marks/loading'),
 });
@@ -29,11 +29,12 @@ const TIMING: LoaderTiming = {
   g: Math.round(motion.timing.beats.D2 * 1000),
   meridianReturn: [Math.round(GT_LOGO_MOTION.timing.meridianReturn[0]), Math.round(GT_LOGO_MOTION.timing.meridianReturn[1])],
   lap: Math.round(GT_LOGO_MOTION.timing.lap),
+  formReturn: [Math.round(GT_LOGO_MOTION.timing.form.meridianReturn[0]), Math.round(GT_LOGO_MOTION.timing.form.meridianReturn[1])],
 };
 
 /**
  * /marks/loading: the logo while a page loads. The finished loader runs
- * live first, then the hover, which is the loader, how the motion is built,
+ * live first, then the hover, which is the loader, the logo form, how the motion is built,
  * the checks that hold it, reduced motion, the loader on /compare, two
  * explorations, and the before and after of the fix.
  */

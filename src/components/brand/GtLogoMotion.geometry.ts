@@ -22,7 +22,8 @@
  * stroke is `width` wide unless it says. `timing` is the motion's
  * clock in milliseconds: the draw-back, one lap, when the meridian draws on
  * again and lands, and the rest where the frame is the logo and a hover
- * stops.
+ * stops. `form` is the logo form's: the lap played once in a video, its
+ * meridian drawing on again only once the G has landed.
  */
 export const GT_LOGO_MOTION = {
   viewBox: '24.3 24.3 207.4 207.4',
@@ -118,6 +119,12 @@ export const GT_LOGO_MOTION = {
         3826,
         4158.333
       ]
-    ]
+    ],
+    form: {
+      meridianReturn: [
+        3470,
+        4370
+      ]
+    }
   }
 } as const;
