@@ -1,6 +1,8 @@
 import { createMDX } from 'fumadocs-mdx/next';
 import type { NextConfig } from 'next';
 
+import { ALIAS_HOSTS, SITE_URL } from './src/lib/seo/policy';
+
 /**
  * Files under public/ keep their names when their bytes change, so Next
  * serves them with max-age=0 and a repeat view revalidates every thumbnail,
@@ -109,6 +111,18 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // The two alias hosts send every request to the same path on the
+      // canonical host (Kevin, 2026-11-20: "make my prototemplates redirect
+      // to prototemplate.com"). Kevin's personal Vercel project serves them
+      // from this main branch and holds no store token, so a page served
+      // there could not read the locked areas' store. Host rules come first,
+      // so an old path on an alias lands on its new path on www in one hop.
+      ...ALIAS_HOSTS.map((host) => ({
+        source: '/:path*',
+        has: [{ type: 'host' as const, value: host }],
+        destination: `${SITE_URL}/:path*`,
+        permanent: true,
+      })),
       // /raise moved onto the viewer shell on 2026-11-20 with the run of
       // show as its first section, so the old finals page lands there.
       { source: '/raise/finals', destination: '/raise', permanent: true },

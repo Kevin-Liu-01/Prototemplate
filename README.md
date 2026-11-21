@@ -27,13 +27,11 @@ system, which lives under `src/components/plate` with its state console
 
 ## What is here
 
-The site is served at three addresses:
-https://www.prototemplate.com (the General Translation team's Vercel
-project; the apex domain redirects to www), and
+The site is served at https://www.prototemplate.com (the General
+Translation team's Vercel project; the apex domain redirects to www).
 https://prototemplate.vercel.app and https://prototemplate.kevinliu.studio
-(both from Kevin's personal Vercel project). www.prototemplate.com is the
-canonical address and the other two are aliases. Every route below works
-at each of them.
+(both from Kevin's personal Vercel project) redirect every path to the same
+path on www, from the host redirects in `next.config.ts`.
 
 - `/`: the design lab, the twenty-seven directions read as an article, one live exhibit at a time, or as a grid of captures, with the anatomy wall (the flagship cut into section tiles, light and dark, desktop and mobile) and the capabilities ledger (what the system can do, each entry pointing at where it runs live)
 - `/brand`: the brand book, the identity canon in fourteen sections

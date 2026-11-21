@@ -46,7 +46,8 @@ its two Vercel projects are read after a push. Moved out of `SKILL.md` on
   `scripts/`, `skills/`) and a pathspec. `motion/` is never staged.
 - **Two Vercel projects build every push:** the team project
   `general-translation/prototemplate` (www.prototemplate.com) and Kevin's
-  personal project (prototemplate.vercel.app), each with a Production
+  personal project (prototemplate.vercel.app, which redirects every path
+  to www), each with a Production
   deployment for main and a Preview for any other branch. A red "push
   failed" can come from any of the four. GitHub shows one deployment per
   commit with one status per project: the team's URL ends in

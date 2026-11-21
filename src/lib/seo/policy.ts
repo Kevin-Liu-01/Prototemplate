@@ -34,7 +34,7 @@ export const GT_URL = 'https://generaltranslation.com';
 /** The locale segment of General Translation's canonical URLs. */
 export const GT_LOCALE = 'en-US';
 
-/** The other two hosts of this deployment. Only this file and the archive's capture record may spell them; lint:seo S5 holds that. */
+/** The other two hosts of this deployment, which redirect every path to SITE_URL (next.config.ts, redirects). Only this file and the archive's capture record may spell them; lint:seo S5 holds that. */
 export const ALIAS_HOSTS: readonly string[] = ['prototemplate.vercel.app', 'prototemplate.kevinliu.studio'];
 
 /** The mirror's route prefix. */
