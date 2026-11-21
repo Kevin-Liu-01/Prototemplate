@@ -567,17 +567,8 @@ for (const engine of BROWSERS) {
         const rest = meridianIn({ ink: inkOf(F.rest, BOX, theme), poseInk: F.poseInk, box: BOX, lapMap: MAPS.lap, lapHalf: HALF.lap + near, clean: CLEAN, shown: inLogo });
         for (const { t, w } of rest.widths) check(Math.abs(w - W) <= WIDTH_ABS, `the still logo's meridian at ${t} degrees is ${w.toFixed(3)} wide, not ${W}`);
         const restW = Object.fromEntries(rest.widths.map(({ t, w }) => [t, w]));
-        /* where the draw-back's moving end stands, by the course's own table (the same for any version of the component): its progress p from 0 (at the cut face) to 1 (at the join), and the theta it has reached, from just past the cut face to just past the join */
-        const { hoverEnd } = TABLES;
-        const thMax = MEASURES.meridianEnd[1] + 0.5;
-        const thMin = MEASURES.meridianStart[1] - 0.5;
-        const progress = (x) => {
-          const u = Math.min(1, Math.max(0, x)) * (hoverEnd.length - 1);
-          const i = Math.min(hoverEnd.length - 2, Math.floor(u));
-          const v = hoverEnd[i] + (hoverEnd[i + 1] - hoverEnd[i]) * (u - i);
-          return (hoverEnd[0] - v) / (hoverEnd[0] - hoverEnd.at(-1));
-        };
-        const reached = (p) => thMax - (thMax - thMin) * p;
+        /* where the draw-back's moving end stands, read from the frame's own meridian dash: the meridian is drawn from the join up to the dash's start, along its path's length */
+        const drawnS = (th) => PATHS.meridian.s(merTheta(th));
         let worstFace = { d: 0, at: '' };
         let worstWidth = { d: 0, at: '' };
         let offEllipse = { n: 0, at: '' };
@@ -590,8 +581,8 @@ for (const engine of BROWSERS) {
         for (const [name, frames] of runs) {
           for (const { t, g, dash } of frames) {
             const lapOn = dash?.lap && dash.lap.len > 0 && t > HOVER;
-            const p = progress((name === 'leave' ? HOVER - t : t) / HOVER);
-            const drawnTo = reached(p);
+            const m = dash.meridian;
+            const undrawn = m.len > 0;
             /* a clean theta shows the logo's meridian where it is drawn, and the lap's line where the lap is */
             const shown = (th) => {
               if (lapOn) {
@@ -599,7 +590,7 @@ for (const engine of BROWSERS) {
                 return sl > dash.lap.off + 3 && sl < dash.lap.off + dash.lap.len - 3;
               }
               if (t > HOVER) return false;
-              return inLogo(th) && merTheta(th) < drawnTo - 3;
+              return inLogo(th) && (!undrawn || drawnS(th) < m.off - 5);
             };
             const got = meridianIn({ ink: inkOf(g, BOX, theme), poseInk: F.poseInk, box: BOX, lapMap: MAPS.lap, lapHalf: HALF.lap + near, clean: CLEAN, shown });
             if (got.off > offEllipse.n) offEllipse = { n: got.off, at: `${name} ${Math.round(t)} ms` };
@@ -610,8 +601,8 @@ for (const engine of BROWSERS) {
             /* the faces at rest: the bottom one until the undrawn stretch reaches its window, the top one while nothing is undrawn */
             if (t <= HOVER + 0.01 && !lapOn) {
               const at = [];
-              if (drawnTo > FACES.bottom.inside + 2) at.push('bottom');
-              if (p <= 0) at.push('top');
+              if (!undrawn || m.off > drawnS(FACES.bottom.inside + 2)) at.push('bottom');
+              if (!undrawn) at.push('top');
               for (const k of at) {
                 got.faces[k].forEach((p, j) => {
                   const d = p - rest.faces[k][j];

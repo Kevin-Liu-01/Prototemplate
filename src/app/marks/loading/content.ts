@@ -22,10 +22,10 @@ export const LOADER_LEAD =
 
 /** The beats of the loader as rows of the timing table. */
 export const timingRows = (t: LoaderTiming): readonly { name: string; ms: number; note: string }[] => [
-  { name: 'Draw-back', ms: t.drawBack, note: 'The meridian draws back along its oval to the logo without its meridian.' },
+  { name: 'Draw-back', ms: t.drawBack, note: 'The meridian draws back along its oval to the logo without its meridian, easing in and out at one even pace wherever it shows.' },
   { name: 'Meridian lap', ms: t.meridian, note: 'A line runs once round the meridian, over the logo without its meridian.' },
   { name: 'Rest', ms: t.restAfterMeridian, note: 'The logo without its meridian holds still.' },
-  { name: 'G lap', ms: t.g, note: 'The G draws off from its tip round the equator and back on, landing on its tip again. From the moment it turns back, the meridian draws on again from its join, the same share of each line at once, so both land on the logo together.' },
+  { name: 'G lap', ms: t.g, note: 'The G draws off from its tip round the equator and back on, landing on its tip again. From the moment it turns back, the meridian draws on again from its join, the draw-back run backward over the same time.' },
   { name: 'Rest', ms: t.restAfterG, note: 'The logo holds still before the next lap.' },
 ];
 
@@ -115,7 +115,7 @@ export const BUILD_LEAD = 'GtLogoMotion draws with SVG and CSS alone: no video, 
 export const BUILD_PARTS: readonly { term: string; body: string }[] = [
   {
     term: 'The numbers',
-    body: 'scripts/build/logo-motion.json holds the logo’s measures and, for each beat, a table of where each moving end stands at 240 samples a second. They are the numbers the published videos were rendered from.',
+    body: 'scripts/build/logo-motion.json holds the logo’s measures and, for each beat, a table of where each moving end stands at 240 samples a second. They are the numbers the published videos were rendered from. The meridian’s draw-back no longer follows its table, which raced through both poles: it eases in and out over the meridian’s visible length, crossing the stretches the ring covers in time to the share that shows.',
   },
   {
     term: 'The generator',

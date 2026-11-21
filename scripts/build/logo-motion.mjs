@@ -1,7 +1,7 @@
 // Writes the live logo motion from its numbers: the loader, from the logo to
 // the logo (the meridian draws back along its oval and a line runs once round
 // it, then the G draws off and back on once round the equator while the
-// meridian draws on again with it), which is also the hover, and the settle
+// meridian draws on again), which is also the hover, and the settle
 // (the draw-back run backward), drawn with SVG and CSS alone.
 //
 //   src/components/brand/GtLogoMotion.geometry.ts  the drawing: the logo's
@@ -281,8 +281,52 @@ function lapAt(t) {
   const [tail, head] = table(SRC.tables.meridianLap, (t - HOVER_S) / beats.D1);
   return span(LAP.s(tail), LAP.s(head));
 }
+/* the meridian on the loader and the hover: its undrawn stretch runs from
+   past the cut face round its oval to past the join on one power2.inOut
+   course over the meridian's visible length. Near each pole the meridian
+   runs into the ring, which covers the share of its width past the ring's
+   inner edge; the end crosses each stretch in time to the share that shows
+   (no less than SEEN_MIN), so it moves at one even pace wherever it can be
+   seen and never stalls under the ring. The source's course (meridianBack,
+   kept for the armillary's Open beat) sped through both poles and crawled
+   down the left. */
+const inOut = (x) => (x < 0.5 ? 2 * x * x : 1 - ((2 - 2 * x) ** 2) / 2);
+const SEEN_MIN = 0.2;
+const SEEN = (() => {
+  const n = 4000;
+  const s = [0];
+  const v = [0];
+  for (let i = 1; i <= n; i++) {
+    const t0 = TH_MIN + ((TH_MAX - TH_MIN) * (i - 1)) / n;
+    const t1 = TH_MIN + ((TH_MAX - TH_MIN) * i) / n;
+    const [x, y] = LINES.meridian.at((t0 + t1) / 2);
+    const r = Math.hypot(x - C, y - C);
+    const shown = Math.min(1, Math.max(SEEN_MIN, (R_IN - (r - h)) / w));
+    const ds = MER.s(t1) - MER.s(t0);
+    s.push(s[i - 1] + ds);
+    v.push(v[i - 1] + ds * shown);
+  }
+  return { s, v };
+})();
+/** the meridian's arc length at a share of its visible length from the join */
+function seenAt(share) {
+  const { s, v } = SEEN;
+  const target = share * v.at(-1);
+  let lo = 0;
+  let hi = v.length - 1;
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (v[mid] < target) lo = mid;
+    else hi = mid;
+  }
+  const k = v[hi] === v[lo] ? 0 : (target - v[lo]) / (v[hi] - v[lo]);
+  return lerp(s[lo], s[hi], k);
+}
+function meridianOff(x) {
+  return span(seenAt(1 - inOut(clamp01(x))), MER.length);
+}
 /* the G's undrawn stretch is longest at G_TURN, where it turns back */
-const [G_TURN, G_LONGEST] = (() => {
+const [G_TURN] = (() => {
   let best = [G0, 0];
   for (let i = 0; i <= 4000; i++) {
     const t = G0 + (beats.D2 * i) / 4000;
@@ -292,15 +336,12 @@ const [G_TURN, G_LONGEST] = (() => {
   return best;
 })();
 /* the meridian over the lap: drawn back, held off through its line's lap
-   and the G's draw-off, and drawn on from its join while the G draws back
-   on, the same share of each line at every moment, so the two start
-   together at G_TURN and land on the logo together */
+   and the G's draw-off, and drawn on again from the moment the G turns
+   back, on the draw-back's own course run backward over the same time */
 function meridianAt(t) {
-  if (t < HOVER_S) return meridianBack(t / HOVER_S);
-  if (t < G_TURN) return meridianBack(1);
-  if (t >= GE) return meridianBack(0);
-  const q = Math.min(1, gAt(t).under.len / G_LONGEST);
-  return span(lerp(MER.s(TH_MAX), MER.s(TH_MIN), q), MER.length);
+  if (t < HOVER_S) return meridianOff(t / HOVER_S);
+  if (t < G_TURN) return meridianOff(1);
+  return meridianOff(1 - (t - G_TURN) / HOVER_S);
 }
 
 /* ------------------------------------------------------------ keyframes */
@@ -359,8 +400,8 @@ const f2 = (n) => {
   const v = Math.round(n * 100) / 100;
   return Object.is(v, -0) ? '0' : String(v);
 };
-/* five decimals of a percent: a 3.8 s lap and a 0.6 s settle then place a stop within a microsecond of each other */
-const pct = (t) => `${+(t * 100).toFixed(5)}%`;
+/* seven decimals of a percent: a stop of the 3.8 s lap and its mirror in the 0.6 s settle then stand on the same value */
+const pct = (t) => `${+(t * 100).toFixed(7)}%`;
 /**
  * keyframes that set one channel's two custom properties, its dash's length
  * and its start along the path, in px (the svg's units). A stop beside a
@@ -374,9 +415,9 @@ function keyframes(name, channel, fn, seconds) {
 function keyframesOf(name, channel, pts) {
   const same = (a, b) => a && b && f2(a.len) === f2(b.len) && f2(a.off) === f2(b.off);
   const at = (p, i) => {
-    const v = p.t * 1e7;
-    if (same(pts[i - 1], p)) return `${Math.ceil(v) / 1e5}%`;
-    if (same(p, pts[i + 1])) return `${Math.floor(v) / 1e5}%`;
+    const v = p.t * 1e9;
+    if (same(pts[i - 1], p)) return `${Math.ceil(v) / 1e7}%`;
+    if (same(p, pts[i + 1])) return `${Math.floor(v) / 1e7}%`;
     return pct(p.t);
   };
   const rows = pts.map((p, i) => `  ${at(p, i)} { --gt-logo-${channel}: ${f2(p.len)}px; --gt-logo-${channel}-at: ${f2(p.off)}px; }`);
@@ -854,7 +895,7 @@ const indent = (text) => text.replace(/^(?=.)/gm, '  ');
 /* the draw-back's stops, shared: the lap's draw-back and the settle (the
    same stops mirrored) stand on the same values at every point, so a leave
    or a return during the draw-back lands on the frame it left */
-const BACK = stops((t) => meridianBack(t / HOVER_S), HOVER_S);
+const BACK = stops((t) => meridianOff(t / HOVER_S), HOVER_S);
 const SETTLE = BACK.map((p) => ({ ...p, t: 1 - p.t })).reverse();
 /* the rest of the lap on the lap's own sample grid, the grid the G's
    keyframes use, since the meridian's return follows the G */
@@ -880,8 +921,7 @@ const css = `${HEAD}
    logo (${ms(LOOP_S)}): the meridian draws back (${ms(HOVER_S)}) and its line runs once
    round (${ms(beats.D1)}); a rest of ${ms(beats.R1)}; the G draws off and back on round the
    equator (${ms(beats.D2)}), and from the moment it turns back (${Math.round(G_TURN * 1000)}ms) the
-   meridian draws on again with it, the same share of each line at once, so
-   both land on the logo at ${ms(GE)}; a rest of ${ms(beats.R2)}. A hover mark is the loader while its host is
+   meridian draws on again over ${ms(HOVER_S)}, the draw-back run backward; a rest of ${ms(beats.R2)}. A hover mark is the loader while its host is
    hovered or keyboard focused: the component sets data-play='loop' on
    enter; after a leave it waits for the lap's next rest, where the frame is
    the logo, and clears data-play, and a leave during the draw-back sets
@@ -904,7 +944,7 @@ ${props}
 .gt-logo-motion > svg {
   display: block;
   overflow: visible;
-${start('meridian', meridianBack(0))}
+${start('meridian', meridianOff(0))}
 ${start('under', gAt(0).under)}
 ${start('fill', gAt(0).fill)}
 ${start('head', gAt(0).head)}
@@ -992,7 +1032,7 @@ export const COURSE = {
   hover: HOVER_S,
   beats,
   loop: LOOP_S,
-  meridian: (s) => meridianBack(s / HOVER_S),
+  meridian: (s) => meridianOff(s / HOVER_S),
   meridianLap: meridianAt,
   turn: G_TURN,
   landing: GE,
