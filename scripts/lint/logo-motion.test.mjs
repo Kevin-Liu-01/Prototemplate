@@ -691,8 +691,9 @@ for (const engine of BROWSERS) {
           /* each end's steps, the drawn frames against the course's */
           for (const e of [0, 1]) {
             const end = (x) => (e === 0 ? x.off : x.off + x.len);
-            const live = rows.map((r) => (r.d.len > 0 ? end(r.d) : null));
-            const plan = rows.map((r) => (r.c.len > 0 ? end(r.c) : null));
+            /* a dash under 0.05 units long shows nothing, so it has no end to step */
+            const live = rows.map((r) => (r.d.len > 0.05 ? end(r.d) : null));
+            const plan = rows.map((r) => (r.c.len > 0.05 ? end(r.c) : null));
             const stepsOf = (v) => v.map((x, i) => (i && x !== null && v[i - 1] !== null ? x - v[i - 1] : null));
             const sl = stepsOf(live);
             const sp = stepsOf(plan);

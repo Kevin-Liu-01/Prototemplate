@@ -354,7 +354,9 @@ function cubicBezier(x1, y1, x2, y2) {
 const ARRIVE = cubicBezier(0.4, 0, 0.2, 1);
 /* the meridian's join stands behind the G's lower arc, so the meridian
    starts back once the G, drawing back on from the right node, has reached
-   it (M_BACK), and comes out from behind the G as the G arrives */
+   it, and STAGGER_S after (M_BACK), so the G leads and the meridian follows
+   out from behind it */
+const STAGGER_S = 0.09;
 let mBack = null;
 const M_BACK = () => {
   if (mBack !== null) return mBack;
@@ -363,7 +365,7 @@ const M_BACK = () => {
   for (let i = 0; i <= 4000; i++) {
     const t = G_TURN + ((GE - G_TURN) * i) / 4000;
     if (gAt(t).under.off >= join) {
-      mBack = Math.ceil(t * 1000) / 1000;
+      mBack = Math.ceil((t + STAGGER_S) * 1000) / 1000;
       break;
     }
   }
@@ -960,8 +962,8 @@ const css = `${HEAD}
    A loader runs the lap for as long as it is mounted, from the logo to the
    logo (${ms(LOOP_S)}): the meridian draws back (${ms(HOVER_S)}) and its line runs once
    round (${ms(beats.D1)}); a rest of ${ms(beats.R1)}; the G draws off and back on round the
-   equator (${ms(beats.D2)}, landing at ${ms(GE)}); once the G, drawing back on, reaches
-   the meridian's join (${Math.round(M_BACK() * 1000)}ms) the meridian draws on again from behind it
+   equator (${ms(beats.D2)}, landing at ${ms(GE)}); ${ms(STAGGER_S)} after the G, drawing back on,
+   reaches the meridian's join (${Math.round(M_BACK() * 1000)}ms) the meridian draws on again from behind it
    over ${ms(RETURN_S)} on cubic-bezier(0.4, 0, 0.2, 1), landing at ${Math.round(ML * 1000)}ms; a rest of ${ms(beats.R2)}. A hover mark is the loader while its host is
    hovered or keyboard focused: the component sets data-play='loop' on
    enter; after a leave it waits for the lap's next rest, where the frame is

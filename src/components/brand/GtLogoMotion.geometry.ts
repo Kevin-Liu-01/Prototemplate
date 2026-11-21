@@ -108,15 +108,15 @@ export const GT_LOGO_MOTION = {
   },
   timing: {
     drawBack: 600,
-    lap: 4066.667,
+    lap: 4158.333,
     meridianReturn: [
-      2836,
-      3736
+      2926,
+      3826
     ],
     rests: [
       [
-        3736,
-        4066.667
+        3826,
+        4158.333
       ]
     ]
   }

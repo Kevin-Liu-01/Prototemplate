@@ -26,7 +26,7 @@ export const timingRows = (t: LoaderTiming): readonly { name: string; ms: number
   { name: 'Meridian lap', ms: t.meridian, note: 'A line runs once round the meridian, over the logo without its meridian.' },
   { name: 'Rest', ms: t.restAfterMeridian, note: 'The logo without its meridian holds still.' },
   { name: 'G lap', ms: t.g, note: 'The G draws off from its tip round the equator and back on, landing on its tip again.' },
-  { name: 'Meridian return', ms: t.meridianReturn[1] - t.meridianReturn[0], note: `From ${t.meridianReturn[0]} ms, once the G drawing back on has reached the meridian’s join, the meridian draws on again from behind the G, gently at first and with a long settle, and lands on the logo at ${t.meridianReturn[1]} ms.` },
+  { name: 'Meridian return', ms: t.meridianReturn[1] - t.meridianReturn[0], note: `From ${t.meridianReturn[0]} ms, a beat after the G drawing back on has reached the meridian’s join, the meridian draws on again from behind the G, gently at first and with a long settle, and lands on the logo at ${t.meridianReturn[1]} ms.` },
   { name: 'Rest', ms: t.lap - t.meridianReturn[1], note: 'The logo holds still before the next lap.' },
 ];
 
