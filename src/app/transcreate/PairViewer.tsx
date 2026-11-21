@@ -10,18 +10,20 @@ import { ToolButton } from '@/components/viewer/ToolButton';
 import { cn } from '@/lib/cn';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
-import { MEDIA, PROFOUND } from './videos';
+import type { PairFilm } from './videos';
+import { MEDIA } from './videos';
 
 import './pair.css';
 
 /**
- * The featured film on /transcreate: the original and its Japanese version
- * as one instrument, side by side, stacked, or laid over each other with a
- * divider the reader drags.
+ * The compare viewer: a film and its translation as one instrument, side by
+ * side, stacked, or laid over each other with a divider the reader drags.
+ * The overview's featured film plays in it inline, and every film with a
+ * pair opens in it as the whole window at /transcreate/view/<slug> (app).
  *
- * Both pictures come from one file (videos.ts, PROFOUND): a 1280 by 1440
- * picture with the original on top and the Japanese version below, paired
- * by frame index. One hidden video element decodes it, and one canvas draws
+ * Both pictures come from one file (videos.ts, PairFilm): the original on
+ * top and the translation below, paired by frame index. One hidden video
+ * element decodes it, and one canvas draws
  * the two halves of each decoded frame where the view puts them, so the two
  * pictures are the same frame by construction: there is no second clock to
  * drift, after a seek, a view change or a stall. The canvas draws on each
@@ -29,14 +31,15 @@ import './pair.css';
  * where it is missing or stops firing) and on demand while a view change
  * moves the panels or the divider moves.
  *
- * The sound rides in the same file as 5.1: the original's stereo in the
- * front pair and the Japanese dub's stereo in the surround pair. The video
+ * A dubbed film's sound rides in the same file as 5.1: the original's
+ * stereo in the front pair and the dub's stereo in the surround pair. The video
  * element feeds Web Audio (createMediaElementSource), a splitter takes the
  * six channels apart, and gains choose the pair (PAIRS, in the channel order
  * the browser hands over, which the silent centre reveals), so switching between
  * English and Japanese is a 15ms crossfade that never touches the picture
  * or its clock. The graph is built on the first play, which is the gesture
- * that allows sound.
+ * that allows sound. A film with the original's sound alone plays it from
+ * the element with a mute button, and a silent film has no sound controls.
  *
  * A change of view moves the two panels to their new places over 480ms
  * (none under reduced motion). Full screen asks the browser for the
@@ -61,17 +64,16 @@ const VIEWS: readonly SegOption<PairView>[] = [
   { value: 'overlay', label: 'Overlay', title: 'Overlay (3)' },
 ];
 
-const SOUNDS: readonly SegOption<Sound>[] = [
-  { value: 'en', label: 'EN', title: 'English sound (L)' },
-  { value: 'ja', label: 'JA', title: 'Japanese dub (L)' },
-];
+/** The dub's switch: the original's English, then the translation's dub, by language code. */
+function soundOptions(language: PairFilm['language']): readonly SegOption<Sound>[] {
+  return [
+    { value: 'en', label: 'EN', title: 'English sound (L)' },
+    { value: 'ja', label: language === 'Spanish' ? 'ES' : 'JA', title: `${language} dub (L)` },
+  ];
+}
 
 const VIEW_KEYS: Readonly<Record<string, PairView>> = { '1': 'side', '2': 'stacked', '3': 'overlay' };
 
-const { frames: FRAMES, fps: FPS } = PROFOUND;
-const RATIO = PROFOUND.panel.width / PROFOUND.panel.height;
-const SRC = `${MEDIA}/${PROFOUND.file}.mp4`;
-const POSTER = `${MEDIA}/${PROFOUND.file}.jpg`;
 /** the air between the two pictures, in CSS pixels */
 const GAP = 8;
 const MOVE_MS = 480;
@@ -86,7 +88,7 @@ const lerpRect = (a: Rect, b: Rect, t: number): Rect => ({ x: lerp(a.x, b.x, t),
 const ease = (t: number) => 1 - Math.pow(1 - t, 4);
 
 /** The two pictures' places for a view in a box bw by bh, as fractions of the box. */
-function layoutOf(view: PairView, bw: number, bh: number): Layout {
+function layoutOf(view: PairView, bw: number, bh: number, RATIO: number): Layout {
   if (bw <= 0 || bh <= 0) return { o: { x: 0, y: 0, w: 1, h: 1 }, j: { x: 0, y: 0, w: 1, h: 1 }, wipe: view === 'overlay' ? 1 : 0 };
   const box = (x: number, y: number, w: number, h: number): Rect => ({ x: x / bw, y: y / bh, w: w / bw, h: h / bh });
   if (view === 'side') {
@@ -109,12 +111,10 @@ function layoutOf(view: PairView, bw: number, bh: number): Layout {
   return { o: r, j: r, wipe: 1 };
 }
 
-function clock(frame: number): string {
-  const s = Math.floor(frame / FPS);
+function clock(frame: number, fps: number): string {
+  const s = Math.floor(frame / fps);
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 }
-
-const TOTAL = clock(FRAMES);
 
 /**
  * The two orders a browser hands a 5.1 file's channels to Web Audio in.
@@ -160,7 +160,25 @@ function fullscreenElement(): Element | null {
   return doc.fullscreenElement ?? doc.webkitFullscreenElement ?? null;
 }
 
-export default function PairViewer({ className }: { className?: string }) {
+type PairViewerProps = {
+  /** the packed film to play (videos.ts, PAIR_FILMS) */
+  film: PairFilm;
+  className?: string;
+  /** the viewer is the page: it fills its box as full screen does, and its keys act wherever focus is */
+  app?: boolean;
+};
+
+type KeyLike = Pick<KeyboardEvent, 'key' | 'metaKey' | 'ctrlKey' | 'altKey' | 'defaultPrevented' | 'target' | 'preventDefault'>;
+
+export default function PairViewer({ film, className, app = false }: PairViewerProps) {
+  const { frames: FRAMES, fps: FPS } = film;
+  const RATIO = film.panel.width / film.panel.height;
+  const SRC = `${MEDIA}/${film.file}.mp4`;
+  const POSTER = `${MEDIA}/${film.file}.jpg`;
+  const TOTAL = clock(FRAMES, FPS);
+  /* the dub plays through the Web Audio graph; an original sound plays from the element; a silent film has no sound controls */
+  const dub = film.sound === 'dub';
+  const silent = film.sound === 'none';
   const rootRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -172,7 +190,7 @@ export default function PairViewer({ className }: { className?: string }) {
 
   const [view, setView] = useState<PairView>('overlay');
   const [playing, setPlaying] = useState(false);
-  const [sound, setSound] = useState<Sound>('ja');
+  const [sound, setSound] = useState<Sound>(dub ? 'ja' : 'en');
   const [muted, setMuted] = useState(false);
   const [native, setNative] = useState(false);
   const [cover, setCover] = useState(false);
@@ -196,7 +214,7 @@ export default function PairViewer({ className }: { className?: string }) {
     loop: 0,
     lastVideoFrame: 0,
     graph: null as Graph | null,
-    sound: 'ja' as Sound,
+    sound: (dub ? 'ja' : 'en') as Sound,
     muted: false,
     resume: false,
     idleTimer: 0,
@@ -205,7 +223,7 @@ export default function PairViewer({ className }: { className?: string }) {
 
   /** The current layout: the tween's interpolation while the panels move, the view's own otherwise. */
   const currentLayout = (now: number): { layout: Layout; moving: boolean } => {
-    const target = layoutOf(eng.view, eng.bw, eng.bh);
+    const target = layoutOf(eng.view, eng.bw, eng.bh, RATIO);
     const tw = eng.tween;
     if (!tw) return { layout: target, moving: false };
     const t = eng.reduce ? 1 : clamp((now - tw.start) / MOVE_MS, 0, 1);
@@ -276,10 +294,10 @@ export default function PairViewer({ className }: { className?: string }) {
     if (scrub) {
       scrub.value = String(frame);
       scrub.style.setProperty('--p', `${(frame / (FRAMES - 1)) * 100}%`);
-      scrub.setAttribute('aria-valuetext', `${clock(frame)} of ${TOTAL}`);
+      scrub.setAttribute('aria-valuetext', `${clock(frame, FPS)} of ${TOTAL}`);
     }
     const label = clockRef.current;
-    if (label) label.textContent = clock(frame);
+    if (label) label.textContent = clock(frame, FPS);
   };
 
   const frameOfVideo = () => clamp(Math.floor((videoRef.current?.currentTime ?? 0) * FPS + 1e-3), 0, FRAMES - 1);
@@ -318,7 +336,7 @@ export default function PairViewer({ className }: { className?: string }) {
   /** Builds the sound graph on the first gesture that plays: the six channels apart, one gain per language. */
   const ensureAudio = () => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || !dub) return;
     if (eng.graph) {
       if (eng.graph.ctx.state === 'suspended') void eng.graph.ctx.resume();
       return;
@@ -372,7 +390,11 @@ export default function PairViewer({ className }: { className?: string }) {
 
   const applySound = () => {
     const g = eng.graph;
-    if (!g) return;
+    if (!g) {
+      /* an original sound, or a browser with no graph: the element mutes itself */
+      if (videoRef.current) videoRef.current.muted = eng.muted;
+      return;
+    }
     const t = g.ctx.currentTime;
     for (const o of ['web', 'aac'] as const) {
       for (const sound of ['en', 'ja'] as const) {
@@ -489,7 +511,7 @@ export default function PairViewer({ className }: { className?: string }) {
     setIdle(false);
     eng.idleTimer = window.setTimeout(() => {
       const video = videoRef.current;
-      if (video && !video.paused && rootRef.current?.matches('.is-full')) setIdle(true);
+      if (video && !video.paused && rootRef.current?.matches('.is-full, .is-app')) setIdle(true);
     }, IDLE_MS);
   };
 
@@ -557,7 +579,15 @@ export default function PairViewer({ className }: { className?: string }) {
     video.addEventListener('loadeddata', onData);
     document.addEventListener('fullscreenchange', onFullChange);
     document.addEventListener('webkitfullscreenchange', onFullChange);
+    /* as the page, the keys act from anywhere; a key inside the viewer was already handled there */
+    const onDocKey = (e: KeyboardEvent) => {
+      if (!app || e.defaultPrevented) return;
+      if (e.target instanceof Node && rootRef.current?.contains(e.target)) return;
+      keyRef.current(e);
+    };
+    document.addEventListener('keydown', onDocKey);
     return () => {
+      document.removeEventListener('keydown', onDocKey);
       observer.disconnect();
       eng.loop++;
       cancelAnimationFrame(eng.raf);
@@ -639,7 +669,7 @@ export default function PairViewer({ className }: { className?: string }) {
 
   /* ---------- the keys, while the viewer has focus ---------- */
 
-  const onKey = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+  const onKey = (e: KeyLike) => {
     if (e.metaKey || e.ctrlKey || e.altKey || e.defaultPrevented) return;
     const target = e.target as HTMLElement;
     const onButton = target.closest('button') !== null;
@@ -654,16 +684,19 @@ export default function PairViewer({ className }: { className?: string }) {
     else if (key === 'Home') seek(0);
     else if (key === 'End') seek(FRAMES - 1);
     else if (VIEW_KEYS[key]) chooseView(VIEW_KEYS[key]);
-    else if (key === 'l') chooseSound(eng.sound === 'en' ? 'ja' : 'en');
-    else if (key === 'm') toggleMute();
+    else if (key === 'l' && dub) chooseSound(eng.sound === 'en' ? 'ja' : 'en');
+    else if (key === 'm' && !silent) toggleMute();
     else if (key === 'f') toggleFull();
     else if (key === 'Escape' && cover) setCover(false);
     else done = false;
     if (done) {
       e.preventDefault();
-      if (full) wake();
+      if (full || app) wake();
     }
   };
+  /* the page's own keys, read by the document listener below with this render's state */
+  const keyRef = useRef(onKey);
+  keyRef.current = onKey;
 
   /* the scrubber: a drag pauses the film and lets it play on when it ends */
   const onScrubDown = () => {
@@ -679,13 +712,13 @@ export default function PairViewer({ className }: { className?: string }) {
   return (
     <div
       ref={rootRef}
-      className={cn('tcp', `is-${view}`, full && 'is-full', cover && 'is-cover', idle && 'is-idle', className)}
+      className={cn('tcp', `is-${view}`, app && 'is-app', full && 'is-full', cover && 'is-cover', idle && 'is-idle', className)}
       tabIndex={0}
       role='group'
-      aria-label={`${PROFOUND.name}, the original and the Japanese version`}
+      aria-label={`${film.name}, the original and the ${film.language} version`}
       aria-roledescription='film comparison'
       onKeyDown={onKey}
-      onPointerMove={full ? wake : undefined}
+      onPointerMove={full || app ? wake : undefined}
     >
       <div
         ref={stageRef}
@@ -706,7 +739,7 @@ export default function PairViewer({ className }: { className?: string }) {
             className='tcp-grip'
             role='slider'
             tabIndex={view === 'overlay' ? 0 : -1}
-            aria-label='Divider, the original to the left and the Japanese version to the right'
+            aria-label={`Divider, the original to the left and the ${film.language} version to the right`}
             aria-valuemin={0}
             aria-valuemax={100}
             aria-valuenow={50}
@@ -746,10 +779,12 @@ export default function PairViewer({ className }: { className?: string }) {
           </span>
         </div>
         <Seg className='tcp-views' label='View' options={VIEWS} value={view} onChange={chooseView} />
-        <div className='tcp-sound'>
-          <ToolButton className='tcp-mute' icon={muted ? 'muted' : 'sound'} title={muted ? 'Sound on (M)' : 'Mute (M)'} onClick={toggleMute} />
-          <Seg className='tcp-lang' label='Sound' options={SOUNDS} value={sound} onChange={chooseSound} />
-        </div>
+        {silent ? null : (
+          <div className={cn('tcp-sound', !dub && 'is-one')}>
+            <ToolButton className='tcp-mute' icon={muted ? 'muted' : 'sound'} title={muted ? 'Sound on (M)' : 'Mute (M)'} onClick={toggleMute} />
+            {dub ? <Seg className='tcp-lang' label='Sound' options={soundOptions(film.language)} value={sound} onChange={chooseSound} /> : null}
+          </div>
+        )}
         <ToolButton
           className='tcp-full'
           icon={full ? 'exit-fullscreen' : 'fullscreen'}

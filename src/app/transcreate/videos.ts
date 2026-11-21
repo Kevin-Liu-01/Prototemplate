@@ -13,26 +13,50 @@
 export const MEDIA = '/media/transcreate';
 
 /**
- * The featured film: Profound's launch film and its Japanese version, packed
- * in one file so the two pictures share one clock. The picture is 1280 by
- * 1440, the original on top of the Japanese version, the two paired by frame
- * index (2,406 frames each at 30000/1001). The sound is 5.1: the original's
- * stereo in the front pair and the Japanese dub's stereo in the surround pair,
- * with the centre and LFE silent, and PairViewer picks one pair through Web
- * Audio. The Japanese picture is the free agent's run of 2026-11-21 and the
- * dub its ElevenLabs pass. The poster is frame 552 of the packed picture.
+ * A film the compare viewer (PairViewer) plays: one file that packs the
+ * original above its translation, the two paired by frame index, with a
+ * .jpg poster of the same name in the same layout. Every stacked copy on
+ * these pages has that layout, so each one opens in the viewer at
+ * /transcreate/view/<slug>.
  */
-export const PROFOUND = {
+export type PairFilm = {
+  slug: string;
+  name: string;
+  /** the file stem under MEDIA */
+  file: string;
+  /** the translation's language, as the divider and the sound switch name it */
+  language: 'Japanese' | 'Spanish';
+  /** one picture of the pair */
+  panel: { width: number; height: number };
+  frames: number;
+  fps: number;
+  /**
+   * the sound: `dub` is 5.1 with the original's stereo in the front pair and
+   * the dub's in the surround pair; `original` is the original's stereo; `none` is silent
+   */
+  sound: 'dub' | 'original' | 'none';
+  /** the row the film sits on, where the viewer's back link returns */
+  back: string;
+};
+
+/**
+ * The featured film: Profound's launch film and its Japanese version. The
+ * Japanese picture is the free agent's run of 2026-11-21 and the dub its
+ * ElevenLabs pass. The poster is frame 552 of the packed picture.
+ */
+export const PROFOUND: PairFilm & { owner: string; seconds: number } = {
   slug: 'profound',
-  file: 'profound-pair',
   name: 'Introducing Profound',
   owner: 'Profound',
-  /** one picture of the pair */
+  file: 'profound-pair',
+  language: 'Japanese',
   panel: { width: 1280, height: 720 },
   frames: 2406,
   fps: 30000 / 1001,
   seconds: 80,
-} as const;
+  sound: 'dub',
+  back: '/transcreate#profound',
+};
 
 /** The grid of all eight: side by side at 2560 by 1440, or as columns at 4096 by 576; 30 seconds, no sound. */
 export const GRID = {
@@ -54,25 +78,28 @@ export type TranscreateVideo = {
   seconds: number;
   /** the height of one 1280-wide panel */
   panelHeight: number;
+  /** the stacked copy's frame count and frame rate, which the compare viewer steps by */
+  frames: number;
+  fps: number;
   /** the original video, where its title and address are recorded */
   source?: { title: string; url: string };
 };
 
 export const VIDEOS: readonly TranscreateVideo[] = [
-  { slug: 'notion', name: 'Notion', owner: 'Notion', seconds: 30, panelHeight: 720 },
-  { slug: 'linear-releases', name: 'Linear Releases', owner: 'Linear', seconds: 30, panelHeight: 640 },
-  { slug: 'linear-agents', name: 'Linear Agents', owner: 'Linear', seconds: 30, panelHeight: 720 },
+  { slug: 'notion', frames: 720, fps: 24000 / 1001, name: 'Notion', owner: 'Notion', seconds: 30, panelHeight: 720 },
+  { slug: 'linear-releases', frames: 1800, fps: 60, name: 'Linear Releases', owner: 'Linear', seconds: 30, panelHeight: 640 },
+  { slug: 'linear-agents', frames: 900, fps: 30, name: 'Linear Agents', owner: 'Linear', seconds: 30, panelHeight: 720 },
   {
-    slug: 'ramp-budgets',
+    slug: 'ramp-budgets', frames: 750, fps: 25,
     name: 'Ramp Budgets',
     owner: 'Ramp',
     seconds: 30,
     panelHeight: 720,
     source: { title: 'Introducing Ramp Budgets', url: 'https://www.youtube.com/watch?v=PmhOGrghI5A' },
   },
-  { slug: 'asana', name: 'Asana', owner: 'Asana', seconds: 30, panelHeight: 720 },
+  { slug: 'asana', frames: 720, fps: 24, name: 'Asana', owner: 'Asana', seconds: 30, panelHeight: 720 },
   {
-    slug: 'notion-mail',
+    slug: 'notion-mail', frames: 720, fps: 24,
     name: 'Notion Mail',
     owner: 'Notion',
     seconds: 30,
@@ -80,7 +107,7 @@ export const VIDEOS: readonly TranscreateVideo[] = [
     source: { title: 'Meet Notion Mail', url: 'https://www.youtube.com/watch?v=54l-1NfXnX8' },
   },
   {
-    slug: 'stripe-sessions',
+    slug: 'stripe-sessions', frames: 720, fps: 24000 / 1001,
     name: 'Stripe Sessions',
     owner: 'Stripe',
     seconds: 30,
@@ -88,7 +115,7 @@ export const VIDEOS: readonly TranscreateVideo[] = [
     source: { title: 'Stripe Sessions 2024', url: 'https://www.youtube.com/watch?v=KH0_HM6e66w' },
   },
   {
-    slug: 'miro-canvas',
+    slug: 'miro-canvas', frames: 876, fps: 30,
     name: 'Miro Canvas',
     owner: 'Miro',
     seconds: 29,
@@ -103,6 +130,9 @@ export type DatabricksVideo = {
   name: string;
   /** the running time in whole seconds */
   seconds: number;
+  /** the stacked copy's frame count and frame rate, which the compare viewer steps by */
+  frames: number;
+  fps: number;
   /** true while the video's transcreate run still fixes it: its copies show the newest checkpoint, not a final */
   inProgress?: true;
 };
@@ -117,17 +147,17 @@ export const DATABRICKS_OWNER = 'Databricks';
  * in progress.
  */
 export const DATABRICKS: readonly DatabricksVideo[] = [
-  { slug: 'databricks-how-do-you-genie', name: 'How Do You Genie', seconds: 80 },
-  { slug: 'databricks-agent-memory', name: 'Agent Memory', seconds: 80 },
-  { slug: 'databricks-teach-ai', name: 'Teach AI', seconds: 125 },
-  { slug: 'databricks-full', name: 'Databricks', seconds: 80, inProgress: true },
+  { slug: 'databricks-how-do-you-genie', frames: 4781, fps: 60000 / 1001, name: 'How Do You Genie', seconds: 80 },
+  { slug: 'databricks-agent-memory', frames: 2401, fps: 30, name: 'Agent Memory', seconds: 80 },
+  { slug: 'databricks-teach-ai', frames: 3134, fps: 25, name: 'Teach AI', seconds: 125 },
+  { slug: 'databricks-full', frames: 2403, fps: 30, name: 'Databricks', seconds: 80, inProgress: true },
 ];
 
 /** The grid of the four Databricks videos as columns, English on top: 2560 by 720, 125 seconds, no sound. A shorter video holds its last frame. */
 export const DATABRICKS_GRID = { file: 'databricks-grid', width: 2560, height: 720, seconds: 125 } as const;
 
 /** Ramp Procurement: one Ramp video with no sound, each version 1280 by 1280, 15 seconds at 60 fps. */
-export const RAMP = { slug: 'ramp-procurement', name: 'Ramp Procurement', owner: 'Ramp', seconds: 15, panel: 1280 } as const;
+export const RAMP = { slug: 'ramp-procurement', name: 'Ramp Procurement', owner: 'Ramp', seconds: 15, panel: 1280, frames: 923, fps: 60 } as const;
 
 /** The English original, the Spanish version and the Japanese version of Ramp Procurement as columns: 2556 by 852. */
 export const RAMP_GRID = { file: 'ramp-procurement-grid', width: 2556, height: 852 } as const;
@@ -155,3 +185,50 @@ export const OWNERS: readonly string[] = [
 
 /** Every video on the pages: Introducing Profound, the eight, the four Databricks videos and Ramp Procurement. */
 export const VIDEO_COUNT = 1 + VIDEOS.length + DATABRICKS.length + 1;
+
+/** Every film the compare viewer opens, by its slug: the featured film, the eight, the four Databricks videos and the two Ramp translations. */
+export const PAIR_FILMS: readonly PairFilm[] = [
+  PROFOUND,
+  ...VIDEOS.map((video) => ({
+    slug: video.slug,
+    name: video.name,
+    file: `${video.slug}-stacked`,
+    language: 'Japanese' as const,
+    panel: { width: PANEL_WIDTH, height: video.panelHeight },
+    frames: video.frames,
+    fps: video.fps,
+    sound: 'original' as const,
+    back: `/transcreate/videos#video-${video.slug}`,
+  })),
+  ...DATABRICKS.map((video) => ({
+    slug: video.slug,
+    name: video.name,
+    file: `${video.slug}-stacked`,
+    language: 'Japanese' as const,
+    panel: { width: PANEL_WIDTH, height: 720 },
+    frames: video.frames,
+    fps: video.fps,
+    sound: 'original' as const,
+    back: `/transcreate/databricks#video-${video.slug}`,
+  })),
+  ...RAMP_VERSIONS.filter((version) => version.translation).map((version) => ({
+    slug: `${RAMP.slug}-${version.key}`,
+    name: RAMP.name,
+    file: `${RAMP.slug}-${version.key}-stacked`,
+    language: version.language as 'Japanese' | 'Spanish',
+    panel: { width: RAMP.panel, height: RAMP.panel },
+    frames: RAMP.frames,
+    fps: RAMP.fps,
+    sound: 'none' as const,
+    back: `/transcreate/ramp#video-${RAMP.slug}-${version.key}`,
+  })),
+];
+
+export function pairFilm(slug: string): PairFilm | undefined {
+  return PAIR_FILMS.find((film) => film.slug === slug);
+}
+
+/** The compare viewer's address for a film. */
+export function pairPath(slug: string): string {
+  return `/transcreate/view/${slug}`;
+}

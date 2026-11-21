@@ -8,18 +8,33 @@
    border at the card corner, ink while its row is read), no shadow and no
    rule of its own. */
 
-/* the layout switch above a video (Seg); the frame sits under it at the
-   toggle's gap on /motion, so a switch moves the frame and never the switch */
-.tc-seg {
+/* the row above a video: the layout switch (Seg) at the start and the
+   Compare link to the film's compare viewer at the end; the frame sits under
+   it at the toggle's gap on /motion, so a switch moves the frame and never
+   the switch */
+.tc-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   margin-top: 14px;
+}
+
+.tc-seg {
   max-width: 100%;
+}
+
+.tc-compare {
+  margin-left: auto;
+  text-decoration: none;
 }
 
 .tc-film {
   margin: 14px 0 0;
 }
 
-.tc-seg + .tc-film {
+.tc-tools + .tc-film {
   margin-top: 10px;
 }
 
@@ -118,11 +133,13 @@
     overflow: visible;
   }
 
-  .tc-seg .pt-ib {
+  .tc-seg .pt-ib,
+  .tc-compare {
     position: relative;
   }
 
-  .tc-seg .pt-ib::after {
+  .tc-seg .pt-ib::after,
+  .tc-compare::after {
     content: '';
     position: absolute;
     inset: -7px 0;

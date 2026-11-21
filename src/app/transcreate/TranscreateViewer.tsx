@@ -7,6 +7,7 @@ import { useRef, useState } from 'react';
 import BrandFilm from '@/app/brand/BrandFilm';
 import type { BookFact } from '@/components/viewer/BookView';
 import { BookHead } from '@/components/viewer/BookView';
+import { Icon } from '@/components/viewer/icons';
 import { Seg } from '@/components/viewer/Seg';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
@@ -39,6 +40,7 @@ import {
   MEDIA,
   OWNERS,
   PANEL_WIDTH,
+  pairPath,
   PROFOUND,
   RAMP,
   RAMP_GRID,
@@ -78,6 +80,8 @@ type Entry = {
   seconds: number;
   /** true for a copy with the original's sound, which starts muted */
   sound: boolean;
+  /** the slug of the film's packed pair (PAIR_FILMS), which opens in the compare viewer */
+  pair?: string;
 };
 
 const RANGE = `Videos 01 to ${pad2(VIDEOS.length)}`;
@@ -110,6 +114,7 @@ const VIDEO_ENTRIES: readonly Entry[] = VIDEOS.map((video, i) => ({
   ],
   seconds: video.seconds,
   sound: true,
+  pair: video.slug,
 }));
 
 const DATABRICKS_GRID_ENTRY: Entry = {
@@ -144,6 +149,7 @@ const DATABRICKS_ENTRIES: readonly Entry[] = DATABRICKS.map((video, i) => ({
   ],
   seconds: video.seconds,
   sound: true,
+  pair: video.slug,
 }));
 
 const RAMP_GRID_ENTRY: Entry = {
@@ -192,6 +198,7 @@ const RAMP_ENTRIES: readonly Entry[] = RAMP_VERSIONS.map((version, i) => {
       : [alone],
     seconds: RAMP.seconds,
     sound: false,
+    pair: version.translation ? file : undefined,
   };
 });
 
@@ -283,14 +290,24 @@ function VideoFigure({ entry }: { entry: Entry }) {
 
   return (
     <>
-      {entry.views.length > 1 ? (
-        <Seg
-          className='tc-seg'
-          label={`Layout of ${entry.name}`}
-          options={entry.views.map((v) => ({ value: v.key, label: v.label, title: v.layout }))}
-          value={view.key}
-          onChange={choose}
-        />
+      {entry.views.length > 1 || entry.pair ? (
+        <div className='tc-tools'>
+          {entry.views.length > 1 ? (
+            <Seg
+              className='tc-seg'
+              label={`Layout of ${entry.name}`}
+              options={entry.views.map((v) => ({ value: v.key, label: v.label, title: v.layout }))}
+              value={view.key}
+              onChange={choose}
+            />
+          ) : null}
+          {entry.pair ? (
+            <Link className='pt-ib tc-compare' href={pairPath(entry.pair)} title={`Open ${entry.title} in the compare viewer`}>
+              <Icon name='compare' />
+              <span className='pt-lb'>Compare</span>
+            </Link>
+          ) : null}
+        </div>
       ) : null}
       <figure
         ref={figureRef}
@@ -386,7 +403,7 @@ function FeatureRow({ active }: { active: string }) {
         <h3>{PROFOUND.name}</h3>
         <p>English to Japanese, with a Japanese dub</p>
       </div>
-      <PairViewer className='tc-feature-film' />
+      <PairViewer film={PROFOUND} className='tc-feature-film' />
     </article>
   );
 }

@@ -69,7 +69,8 @@
 }
 
 .tcp[data-canvas] .tcp-still,
-.tcp:not(.is-overlay) .tcp-still {
+.tcp:not(.is-overlay) .tcp-still,
+.tcp.is-app .tcp-still {
   visibility: hidden;
 }
 
@@ -262,14 +263,22 @@
 
 /* ---------- full screen ---------- */
 
-/* the panel's light ink on its dark ground, whatever the page's theme */
-.tcp.is-full {
+/* the panel's light ink on its dark ground, whatever the page's theme: in
+   full screen, as the page itself (is-app) and on the viewer page (.tcv) */
+.tcp.is-full,
+.tcp.is-app,
+.tcv {
   --pt-ink: var(--pt-panel-text);
   --pt-ink-2: color-mix(in srgb, var(--pt-panel-text) 72%, transparent);
   --pt-paper: var(--pt-panel-ink);
   --pt-hair: color-mix(in srgb, var(--pt-panel-text) 26%, transparent);
   --pt-hair-soft: color-mix(in srgb, var(--pt-panel-text) 12%, transparent);
   --pt-plate: color-mix(in srgb, var(--pt-panel-text) 8%, transparent);
+}
+
+/* as the page itself (is-app) the viewer takes full screen's layout in its box */
+.tcp.is-full,
+.tcp.is-app {
   width: 100%;
   height: 100%;
   gap: 0;
@@ -285,7 +294,8 @@
   height: 100dvh;
 }
 
-.tcp.is-full .tcp-stage {
+.tcp.is-full .tcp-stage,
+.tcp.is-app .tcp-stage {
   flex: 1 1 auto;
   min-height: 0;
   aspect-ratio: auto;
@@ -293,7 +303,8 @@
   border-radius: var(--pt-radius-shell);
 }
 
-.tcp.is-full .tcp-bar {
+.tcp.is-full .tcp-bar,
+.tcp.is-app .tcp-bar {
   padding: 12px max(16px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
 }
 
@@ -310,6 +321,46 @@
 .tcp.is-idle .tcp-bar {
   opacity: 0;
   pointer-events: none;
+}
+
+/* ---------- the viewer page (/transcreate/view/<slug>) ---------- */
+
+/* the whole window on the panel ink: the head with the back link and the
+   film's name, then the viewer in the rest */
+.tcv {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--pt-panel-ink);
+  color: var(--pt-ink);
+}
+
+.tcv-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 6px max(12px, env(safe-area-inset-left));
+}
+
+/* the film's name at the third display size, a record's title */
+.tcv-head h1 {
+  margin: 0;
+  font-size: var(--pt-d3);
+  font-weight: var(--pt-w-label);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
+  text-wrap: balance;
+}
+
+.tcv-viewer {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.tcp.tcv-viewer {
+  height: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -345,6 +396,11 @@
 
   .tcp-mute {
     display: none;
+  }
+
+  /* a film with only its original sound keeps the one sound control it has */
+  .tcp-sound.is-one .tcp-mute {
+    display: inline-flex;
   }
 
   .tcp-views .pt-ib {
