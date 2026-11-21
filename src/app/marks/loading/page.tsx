@@ -3,6 +3,8 @@ import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
+import { GT_LOGO_MOTION } from '@/components/brand/GtLogoMotion.geometry';
+
 import motion from '../../../../scripts/build/logo-motion.json';
 
 import type { LoaderTiming } from './content';
@@ -25,7 +27,8 @@ const TIMING: LoaderTiming = {
   meridian: Math.round(motion.timing.beats.D1 * 1000),
   restAfterMeridian: Math.round(motion.timing.beats.R1 * 1000),
   g: Math.round(motion.timing.beats.D2 * 1000),
-  restAfterG: Math.round(motion.timing.beats.R2 * 1000),
+  meridianReturn: [Math.round(GT_LOGO_MOTION.timing.meridianReturn[0]), Math.round(GT_LOGO_MOTION.timing.meridianReturn[1])],
+  lap: Math.round(GT_LOGO_MOTION.timing.lap),
 };
 
 /**

@@ -20,8 +20,9 @@
  * the undrawn meridian, the undrawn G (`under`), the stem whole across its
  * cut (`fill`), the G's head past its tip, and the lap line. Every
  * stroke is `width` wide unless it says. `timing` is the motion's
- * clock in milliseconds: the draw-back, one lap, and the rests inside a lap,
- * where the frame is the draw-back's end pose and a hover may settle.
+ * clock in milliseconds: the draw-back, one lap, when the meridian draws on
+ * again and lands, and the rest where the frame is the logo and a hover
+ * stops.
  */
 export const GT_LOGO_MOTION = {
   viewBox: '24.3 24.3 207.4 207.4',
@@ -107,11 +108,15 @@ export const GT_LOGO_MOTION = {
   },
   timing: {
     drawBack: 600,
-    lap: 3800,
+    lap: 4066.667,
+    meridianReturn: [
+      2836,
+      3736
+    ],
     rests: [
       [
-        3470,
-        3800
+        3736,
+        4066.667
       ]
     ]
   }

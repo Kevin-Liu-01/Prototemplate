@@ -7,10 +7,10 @@
  * so the page and the component never disagree.
  */
 
-/** The beats of the motion in milliseconds, read from scripts/build/logo-motion.json by the server page. */
-export type LoaderTiming = { drawBack: number; meridian: number; restAfterMeridian: number; g: number; restAfterG: number };
+/** The beats of the motion in milliseconds, read from scripts/build/logo-motion.json and the generated geometry by the server page. */
+export type LoaderTiming = { drawBack: number; meridian: number; restAfterMeridian: number; g: number; meridianReturn: readonly [number, number]; lap: number };
 
-export const lapOf = (t: LoaderTiming) => t.drawBack + t.meridian + t.restAfterMeridian + t.g + t.restAfterG;
+export const lapOf = (t: LoaderTiming) => t.lap;
 
 export const LEAD =
   'The General Translation logo while a page loads and while it is hovered, running live, then the work behind it: how the motion is built, the checks that hold it, two loaders kept as explorations and the fix that keeps everything but the moving line on the logo itself.';
@@ -18,15 +18,16 @@ export const LEAD =
 export const LOADER_ID = 'loader';
 export const LOADER_TITLE = 'The loader';
 export const LOADER_LEAD =
-  'Meridian, then G, from the logo to the logo. The meridian draws back and a line runs once round it; then the G draws off and back on once round the equator, and the meridian draws on again with it, so every lap lands on the logo.';
+  'Meridian, then G, from the logo to the logo. The meridian draws back and a line runs once round it; then the G draws off and back on once round the equator, and the meridian draws on again from behind it as it returns, so every lap lands on the logo.';
 
 /** The beats of the loader as rows of the timing table. */
 export const timingRows = (t: LoaderTiming): readonly { name: string; ms: number; note: string }[] => [
   { name: 'Draw-back', ms: t.drawBack, note: 'The meridian draws back along its oval to the logo without its meridian, easing in and out at one even pace wherever it shows.' },
   { name: 'Meridian lap', ms: t.meridian, note: 'A line runs once round the meridian, over the logo without its meridian.' },
   { name: 'Rest', ms: t.restAfterMeridian, note: 'The logo without its meridian holds still.' },
-  { name: 'G lap', ms: t.g, note: 'The G draws off from its tip round the equator and back on, landing on its tip again. From the moment it turns back, the meridian draws on again from its join, the draw-back run backward over the same time.' },
-  { name: 'Rest', ms: t.restAfterG, note: 'The logo holds still before the next lap.' },
+  { name: 'G lap', ms: t.g, note: 'The G draws off from its tip round the equator and back on, landing on its tip again.' },
+  { name: 'Meridian return', ms: t.meridianReturn[1] - t.meridianReturn[0], note: `From ${t.meridianReturn[0]} ms, once the G drawing back on has reached the meridian’s join, the meridian draws on again from behind the G, gently at first and with a long settle, and lands on the logo at ${t.meridianReturn[1]} ms.` },
+  { name: 'Rest', ms: t.lap - t.meridianReturn[1], note: 'The logo holds still before the next lap.' },
 ];
 
 /** The loader at the sizes the site uses it, with where each one runs. */

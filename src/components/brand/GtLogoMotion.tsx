@@ -153,7 +153,7 @@ export default function GtLogoMotion({ mode = 'static', size = 18, label = 'Load
   /* the ring as the logo draws it; it shows only at the inner edge where a
      line merged into the ring, since no mask reaches further into the ring */
   const ring = <path d={G.ring.d} />;
-  /* the logo's meridian where it is drawn, while the G laps under it */
+  /* the logo's meridian where it is drawn, cut faces included, while the G laps under it */
   const meridianInk = <use href={`#${id('logo')}`} mask={url('ink')} />;
   /* where no mask reaches: the ring from just inside its inner edge, less
      every point near a line's ink in the ring's hole (its outline stroked in
@@ -213,7 +213,7 @@ export default function GtLogoMotion({ mode = 'static', size = 18, label = 'Load
           </mask>
           <mask id={id('ink')} {...SQUARE}>
             <path d={G.meridianInk.d} stroke='#fff' {...line(G.meridianInk.width)} />
-            {meridian('#000')}
+            <path className='gt-logo-motion-meridian' d={G.meridian.d} stroke='#000' {...line(G.meridian.width)} />
           </mask>
           <mask id={id('inside')} {...SQUARE}>
             <rect width='256' height='256' fill='#fff' />

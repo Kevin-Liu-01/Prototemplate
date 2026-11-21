@@ -75,7 +75,7 @@ import { inflateSync } from 'node:zlib';
 import { chromium, firefox, webkit } from 'playwright-core';
 import ts from 'typescript';
 
-import { browserTable, cleanThetas, FACE_LINES, FACES, frameBox, frameRule, grow, inkOf, lineMap, meridianIn, not, or, ringZones, stepRule, THEMES } from '../lib/logo-motion-frames.mjs';
+import { band, browserTable, cleanThetas, FACE_LINES, FACES, frameBox, frameRule, grow, inkOf, lineMap, meridianIn, not, or, ringZones, stepRule, THEMES } from '../lib/logo-motion-frames.mjs';
 import { ROOT } from '../lib/root.mjs';
 import { chromePath } from '../lib/site-pages.mjs';
 
@@ -249,6 +249,14 @@ const ZONE = G.zone
 const BARE =
   (G.ring.d ? `<path d="${G.ring.d}"/>` : `<circle cx="${G.ring.cx}" cy="${G.ring.cy}" r="${G.ring.r}" fill="none" stroke="currentColor" stroke-width="${W}"/>`) +
   `<path d="${G.bar}"/><path d="${G.stem}"/>${G.c ? `<path d="${G.c}"/>` : ''}`;
+/* what stands round the meridian's two ends while the G and the meridian are undrawn: the ring, the bar and the stem, drawn plainly */
+const STAND = (G.ring.d ? `<path d="${G.ring.d}"/>` : '') + `<path d="${G.bar}"/><path d="${G.stem}"/>`;
+/* the meridian's two ends, its join below the lower arc and its cut face above the upper one, where the G passed over it */
+const MERIDIAN_ENDS = [MEASURES.meridianStart[1], MEASURES.meridianEnd[1]].map((th) => ({
+  x: MEASURES.meridian.cx + MEASURES.meridian.rx * Math.sin((th * Math.PI) / 180),
+  y: MEASURES.meridian.cy - MEASURES.meridian.ry * Math.cos((th * Math.PI) / 180),
+  r: 12,
+}));
 /* the G's tip: 16 units square round its free end */
 const TIP = {
   x: MEASURES.latitude.cx - MEASURES.latitude.rx * Math.cos((MEASURES.gEnd * Math.PI) / 180),
@@ -369,6 +377,20 @@ async function framesOf(s, theme) {
   out.zoneOut = not(grow(zone, PX, 2));
   await s.load(svgOf(BARE));
   out.bare = await s.shot('bare');
+  await s.load(svgOf(STAND));
+  out.stand = await s.shot('stand');
+  {
+    const [ex, ey, ew] = G.viewBox.split(' ').map(Number);
+    const ends = new Uint8Array(PX * PX);
+    for (let y = 0; y < PX; y++) {
+      for (let x = 0; x < PX; x++) {
+        const ux = ex + ((x + 0.5) / PX) * ew;
+        const uy = ey + ((y + 0.5) / PX) * ew;
+        if (MERIDIAN_ENDS.some((e) => Math.hypot(ux - e.x, uy - e.y) <= e.r)) ends[y * PX + x] = 1;
+      }
+    }
+    out.ends = ends;
+  }
   const tip = new Uint8Array(PX * PX);
   const [vx, vy, vw] = G.viewBox.split(' ').map(Number);
   const toPx = (u, o) => Math.round(((u - o) / vw) * PX);
@@ -549,6 +571,16 @@ for (const engine of BROWSERS) {
           const where = ring.at >= 0 ? ` at ${ring.at % PX},${Math.floor(ring.at / PX)}` : '';
           check(ring.n === 0, `${name}'s end pose on the ring: ${ring.n} px differ by more than ${slack} levels from the ring drawn alone in the meridian's zone and the logo outside it (worst ${ring.worst}${where})`);
         }
+      });
+
+      test("no bit of the meridian's ends is left while the G is undrawn over them", () => {
+        /* the frame where the G's undrawn stretch is longest: round each of the meridian's ends only the ring, the bar and the stem stand, but where the G's head runs on past its tip */
+        const turn = F.loader.reduce((a, f) => (f.dash.under.len > a.dash.under.len ? f : a));
+        const h = turn.dash.head;
+        const head = h.len > 0 ? band(MAPS.latitude, h.off - 1, h.off + h.len + 1, HALF.head + 1) : null;
+        const region = head ? F.ends.map((v, i) => v & (head[i] ? 0 : 1)) : F.ends;
+        const d = differing(F.stand, turn.g, BARE_SLACK, region);
+        check(d.n === 0, `at ${Math.round(turn.t)} ms, where the G turns back, ${d.n} px round the meridian's ends differ from the ring, the bar and the stem by more than ${BARE_SLACK} levels (worst ${d.worst})`);
       });
 
       test("the G's tip is the logo's for the whole loop but its own lap", () => {
