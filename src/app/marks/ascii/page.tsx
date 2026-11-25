@@ -6,7 +6,7 @@ import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
-import { ARMILLARY_FILES, ASCII_ARMILLARY_FILES, FILES, HEADER_FILES } from './content';
+import { ARMILLARY_FILES, ASCII_ARMILLARY_FILES, HEADER_FILES } from './content';
 import AsciiViewer from './AsciiViewer';
 
 const route = seoRoute({
@@ -20,7 +20,8 @@ const route = seoRoute({
 
 export const metadata = route.metadata;
 
-const DIR = join(process.cwd(), 'public', FILES);
+/* a literal folder, so the bundler traces this one folder and not all of public (content.ts FILES names the same path) */
+const DIR = join(process.cwd(), 'public/marks/ascii');
 const HEADER_SVG = readFileSync(join(DIR, 'gt-ascii-header.svg'), 'utf8');
 const [, , cols, rows] = (HEADER_SVG.match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 0 0').split(' ').map(Number);
 const sized = <T extends { file: string }>(files: readonly T[]) => files.map((f) => ({ ...f, bytes: statSync(join(DIR, f.file)).size }));
