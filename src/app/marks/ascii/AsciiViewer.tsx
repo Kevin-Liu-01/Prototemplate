@@ -20,6 +20,10 @@ import {
   ARMILLARY_LEAD,
   ARMILLARY_FILES,
   ARMILLARY_TITLE,
+  ASCII_ARMILLARY_FILES,
+  ASCII_ARMILLARY_ID,
+  ASCII_ARMILLARY_LEAD,
+  ASCII_ARMILLARY_TITLE,
   BUILD_ID,
   BUILD_LEAD,
   BUILD_PARTS,
@@ -47,6 +51,7 @@ type Part = { id: string; title: string; lead: string; fact: string; count: numb
 /** The page's sections in order; the header leads. */
 const PARTS: readonly Part[] = [
   { id: HEADER_ID, title: HEADER_TITLE, lead: HEADER_LEAD, fact: `${HEADER_FILES.length} files`, count: HEADER_FILES.length },
+  { id: ASCII_ARMILLARY_ID, title: ASCII_ARMILLARY_TITLE, lead: ASCII_ARMILLARY_LEAD, fact: '2 GIFs', count: ASCII_ARMILLARY_FILES.length },
   { id: ARMILLARY_ID, title: ARMILLARY_TITLE, lead: ARMILLARY_LEAD, fact: `${ARMILLARY_FILES.length} GIFs`, count: ARMILLARY_FILES.length },
   { id: BUILD_ID, title: BUILD_TITLE, lead: BUILD_LEAD, fact: `${BUILD_PARTS.length} scripts`, count: BUILD_PARTS.length },
 ];
@@ -114,6 +119,7 @@ function Section({ id, n, fact, title, lead, active, children }: SectionProps) {
 
 type Files = {
   headerFiles: readonly AsciiFile[];
+  asciiArmillaryFiles: readonly (AsciiFile & { ground: string })[];
   armillaryFiles: readonly (AsciiFile & { ground: string })[];
   /** the header as plain text */
   text: string;
@@ -128,7 +134,7 @@ type BookProps = Files & {
   updated: PageUpdated;
 };
 
-function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, armillaryFiles, text, grid }: BookProps) {
+function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiArmillaryFiles, armillaryFiles, text, grid }: BookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
@@ -154,6 +160,24 @@ function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, armilla
               <p>{TEXT_CAPTION}</p>
             </figcaption>
           </figure>
+        </div>
+      );
+    if (id === ASCII_ARMILLARY_ID)
+      return (
+        <div className='ax-body'>
+          <div className='ax-gifs is-wide'>
+            {asciiArmillaryFiles
+              .filter((f) => f.file.endsWith('.gif'))
+              .map((f) => (
+                <figure key={f.file} className='ax-fig'>
+                  <img className='ax-gif' src={`${FILES}/${f.file}`} width={530} height={520} alt={`The armillary set in characters, its rings turning, ${f.ground.toLowerCase()}`} loading='lazy' decoding='async' />
+                  <figcaption>
+                    <h3>{f.ground}</h3>
+                  </figcaption>
+                </figure>
+              ))}
+          </div>
+          <Downloads files={asciiArmillaryFiles} />
         </div>
       );
     if (id === ARMILLARY_ID)
@@ -189,7 +213,7 @@ function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, armilla
         facts={[
           { icon: 'globe', key: 'Grid', value: `${grid.cols} by ${grid.rows} dots` },
           { icon: 'sync', key: 'Lap', value: `${LAP} s` },
-          { icon: 'attachment', key: 'Files', value: headerFiles.length + armillaryFiles.length },
+          { icon: 'attachment', key: 'Files', value: headerFiles.length + asciiArmillaryFiles.length + armillaryFiles.length },
         ]}
         contents={
           <nav className='pt-book-toc' aria-label='Contents'>
@@ -218,10 +242,10 @@ export type AsciiViewerProps = Files & {
 };
 
 /**
- * The dot-matrix header and the armillary GIF on the viewer shell. The list
+ * The dot-matrix header, the ASCII armillary and the armillary GIF on the viewer shell. The list
  * hangs under Marks > ASCII; flow keys, so Space and the arrows scroll.
  */
-export default function AsciiViewer({ updated, headerFiles, armillaryFiles, text, grid }: AsciiViewerProps) {
+export default function AsciiViewer({ updated, headerFiles, asciiArmillaryFiles, armillaryFiles, text, grid }: AsciiViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const activeOut = useRef<string>(HEADER_ID);
@@ -244,7 +268,7 @@ export default function AsciiViewer({ updated, headerFiles, armillaryFiles, text
       }}
     >
       <Sheet variant='flow' scrollRef={sheetRef}>
-        <AsciiBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} headerFiles={headerFiles} armillaryFiles={armillaryFiles} text={text} grid={grid} />
+        <AsciiBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} headerFiles={headerFiles} asciiArmillaryFiles={asciiArmillaryFiles} armillaryFiles={armillaryFiles} text={text} grid={grid} />
       </Sheet>
     </ViewerShell>
   );

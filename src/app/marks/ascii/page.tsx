@@ -6,14 +6,14 @@ import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
-import { ARMILLARY_FILES, FILES, HEADER_FILES } from './content';
+import { ARMILLARY_FILES, ASCII_ARMILLARY_FILES, FILES, HEADER_FILES } from './content';
 import AsciiViewer from './AsciiViewer';
 
 const route = seoRoute({
   path: '/marks/ascii',
   title: PAGE_NAMES.ascii.name,
   kind: 'page',
-  description: 'The General Translation header as a terminal draws it, the globe and the name in round dots, and the armillary loader as a GIF, in both themes with their files.',
+  description: 'The General Translation header in round dots, the armillary set in characters and the armillary loader as GIFs, in both themes with their files.',
   crumbs: [{ name: PAGE_NAMES.marks.name, path: '/marks' }],
   updated: requireUpdated('/marks/ascii'),
 });
@@ -26,7 +26,8 @@ const [, , cols, rows] = (HEADER_SVG.match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 0 0
 const sized = <T extends { file: string }>(files: readonly T[]) => files.map((f) => ({ ...f, bytes: statSync(join(DIR, f.file)).size }));
 
 /**
- * /marks/ascii: the dot-matrix header and the armillary GIF. The server
+ * /marks/ascii: the dot-matrix header, the ASCII armillary and the
+ * armillary GIF. The server
  * reads each file's size and the plain text header, so the client loads
  * neither.
  */
@@ -37,6 +38,7 @@ export default function AsciiPage() {
       <AsciiViewer
         updated={requireUpdated('/marks/ascii')}
         headerFiles={sized(HEADER_FILES)}
+        asciiArmillaryFiles={sized(ASCII_ARMILLARY_FILES)}
         armillaryFiles={sized(ARMILLARY_FILES)}
         text={readFileSync(join(DIR, 'gt-ascii-header.txt'), 'utf8')}
         grid={{ cols, rows }}

@@ -41,6 +41,7 @@
     "build:logo-ascii": "node scripts/build/logo-ascii.mjs",
     "build:ascii-header": "node scripts/build/ascii-header.mjs",
     "build:armillary-gif": "node scripts/build/armillary-gif.mjs",
+    "build:ascii-armillary": "node scripts/build/ascii-armillary.mjs",
     "build:logo-motion": "node scripts/build/logo-motion.mjs",
     "build:previous-mark": "node scripts/build/previous-mark.mjs",
     "build:lockup": "python3 scripts/build/lockup.py",

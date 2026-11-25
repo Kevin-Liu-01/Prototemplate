@@ -313,7 +313,7 @@ function pages() {
     },
     {
       id: '/marks/ascii',
-      paths: ['src/app/marks/ascii', 'public/marks/ascii', 'scripts/build/ascii-header.mjs', 'scripts/build/ascii-header.json', 'scripts/build/armillary-gif.mjs'],
+      paths: ['src/app/marks/ascii', 'public/marks/ascii', 'scripts/build/ascii-header.mjs', 'scripts/build/ascii-header.json', 'scripts/build/armillary-gif.mjs', 'scripts/build/ascii-armillary.mjs', 'scripts/build/ascii-armillary.json', 'scripts/lib/ascii-sphere.mjs'],
     },
     {
       id: '/blog',

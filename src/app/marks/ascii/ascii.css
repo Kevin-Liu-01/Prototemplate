@@ -149,6 +149,10 @@
   gap: 24px;
 }
 
+.ax-gifs.is-wide {
+  grid-template-columns: repeat(2, minmax(0, 360px));
+}
+
 .ax-gif {
   display: block;
   width: 100%;
@@ -173,7 +177,8 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .ax-gifs {
+  .ax-gifs,
+  .ax-gifs.is-wide {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }

@@ -218,7 +218,7 @@ const KNOWLEDGE: readonly Surface[] = [
     'ascii',
     pageLabel('ascii'),
     '/marks/ascii',
-    'The header as a terminal draws it, the globe and the name in round dots, and the armillary loader as a GIF, each in both themes with its files.',
+    'The header as a terminal draws it, the globe and the name in round dots, then the armillary in characters and as the loader, each as a GIF in both themes.',
     'Knowledge',
     thumb('ascii')
   ),

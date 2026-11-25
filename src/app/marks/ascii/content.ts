@@ -1,7 +1,8 @@
 /**
  * The words and the files of /marks/ascii: the dot-matrix header first,
- * then the armillary loader as a GIF, then how both are built. Every file
- * is written by a script (scripts/build/ascii-header.mjs and
+ * then the ASCII armillary, then the armillary loader as a GIF, then how
+ * they are built. Every file is written by a script
+ * (scripts/build/ascii-header.mjs, scripts/build/ascii-armillary.mjs and
  * scripts/build/armillary-gif.mjs) into public/marks/ascii.
  */
 
@@ -12,7 +13,7 @@ export const FILES = '/marks/ascii';
 export type AsciiFile = { file: string; label: string; bytes: number };
 
 export const LEAD =
-  'The General Translation header as a terminal draws it, the globe and the name on one grid of round dots, and the armillary loader as a GIF, each in both themes with its files.';
+  'The General Translation header as a terminal draws it, the globe and the name on one grid of round dots, then the armillary in characters and as the loader, each as a GIF in both themes with its files.';
 
 export const HEADER_ID = 'header';
 export const HEADER_TITLE = 'The header';
@@ -41,6 +42,18 @@ export const GRID_ROWS: readonly { term: string; body: string }[] = [
   { term: 'Spacing', body: 'Each letter sits on a whole column at its own advance, with at least one empty column before the next, and 6 empty columns lie between the globe and the name.' },
 ];
 
+export const ASCII_ARMILLARY_ID = 'ascii-armillary';
+export const ASCII_ARMILLARY_TITLE = 'The ASCII armillary';
+export const ASCII_ARMILLARY_LEAD =
+  'The sphere as three rings set in monospace characters, from : to @ by how much light reaches each one, so the rings read as solid hoops. The outer ring faces the viewer while the meridian turns a full turn and the latitude a half turn, their far halves darker, and the lap loops with no seam.';
+
+/** The ASCII armillary's files: the reference's teal on its ground, ink on paper, and one frame as text. */
+export const ASCII_ARMILLARY_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string })[] = [
+  { file: 'gt-ascii-armillary-dark.gif', label: 'GIF on its ground', ground: 'On its ground' },
+  { file: 'gt-ascii-armillary-light.gif', label: 'GIF on paper', ground: 'On paper' },
+  { file: 'gt-ascii-armillary.txt', label: 'One frame as text', ground: '' },
+];
+
 export const ARMILLARY_ID = 'armillary';
 export const ARMILLARY_TITLE = 'The armillary globe';
 export const ARMILLARY_LEAD =
@@ -54,12 +67,16 @@ export const ARMILLARY_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: str
 
 export const BUILD_ID = 'build';
 export const BUILD_TITLE = 'How it is built';
-export const BUILD_LEAD = 'Two scripts write every file on this page, and neither draws anything by hand.';
+export const BUILD_LEAD = 'Three scripts write every file on this page, and none draws anything by hand.';
 
 export const BUILD_PARTS: readonly { term: string; body: string }[] = [
   {
     term: 'pnpm build:ascii-header',
     body: 'Reads the globe’s path and the font, samples both onto the grid in scripts/build/ascii-header.json, and writes the three SVGs, the two PNGs and the plain text. It prints how many dots agree with the reference header: the globe agrees dot for dot.',
+  },
+  {
+    term: 'pnpm build:ascii-armillary',
+    body: 'Draws the outer ring and the two whole rings with the ASCII loader’s own renderer, sets the cuts between glyphs so they fall in the shares of the reference frame, and has Chrome set each frame in Katagami Mono for ffmpeg. It needs no server.',
   },
   {
     term: 'pnpm build:armillary-gif',
