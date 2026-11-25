@@ -312,6 +312,10 @@ function pages() {
       paths: ['src/app/marks/loading', 'src/components/brand/GtLogoMotion.tsx', 'src/components/brand/GtLogoMotion.css', 'src/components/brand/GtLogoArmillary.tsx', 'src/components/brand/GtLogoArmillary.frame.ts', 'src/components/brand/GtLogoAscii.tsx', 'src/components/brand/GtLogoAscii.frames.ts', 'scripts/build/logo-motion.json', 'scripts/build/logo-ascii.json', 'public/marks/loading', 'public/marks/graticule/motion'],
     },
     {
+      id: '/marks/ascii',
+      paths: ['src/app/marks/ascii', 'public/marks/ascii', 'scripts/build/ascii-header.mjs', 'scripts/build/ascii-header.json', 'scripts/build/armillary-gif.mjs'],
+    },
+    {
       id: '/blog',
       paths: [
         'src/app/blog/page.tsx',

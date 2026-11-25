@@ -215,6 +215,14 @@ const KNOWLEDGE: readonly Surface[] = [
     thumb('loading')
   ),
   internal(
+    'ascii',
+    pageLabel('ascii'),
+    '/marks/ascii',
+    'The header as a terminal draws it, the globe and the name in round dots, and the armillary loader as a GIF, each in both themes with its files.',
+    'Knowledge',
+    thumb('ascii')
+  ),
+  internal(
     'blog',
     pageLabel('blog'),
     '/blog',

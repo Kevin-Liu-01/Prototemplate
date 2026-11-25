@@ -1,0 +1,180 @@
+/* ASCII: the dot-matrix header and the armillary GIF, on the viewer shell.
+
+   The column, the head, the contents, the band and the section dividers are
+   the shared book classes (BookView.css). The header is its currentColor SVG
+   used as a mask over the page's ink, so it takes either theme with no box;
+   the plain text sits between two row rules like the loading page's code;
+   the GIFs are drawn on their own grounds and shown side by side. */
+
+.ax-sec {
+  container: ax-sec / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  scroll-margin-top: 20px;
+}
+
+/* every body runs from the text's line, right of the dividers' gutter, to the column's right edge */
+.ax-body {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  min-width: 0;
+  padding-left: calc(var(--pt-gutter) + var(--pt-gutter-gap));
+  color: var(--pt-ink);
+}
+
+.ax-fig {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  margin: 0;
+}
+
+.ax-fig figcaption {
+  display: grid;
+  gap: 6px;
+  max-width: var(--pt-measure);
+}
+
+.ax-fig h3 {
+  margin: 0;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+}
+
+.ax-fig figcaption p {
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+  text-wrap: pretty;
+}
+
+/* the header: the dots in the page's ink, the SVG's own proportions at the column's width */
+.ax-header {
+  width: 100%;
+  background: var(--pt-ink);
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+}
+
+/* the downloads, a label then the files, each with its size */
+.ax-files {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 16px;
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+}
+
+.ax-verb {
+  color: var(--pt-ink-2);
+}
+
+.ax-files a {
+  color: var(--pt-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+}
+
+.ax-files a:hover,
+.ax-files a:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+.ax-files small {
+  font-size: inherit;
+  color: var(--pt-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* terms and what each does: two columns on a wide column and one on a phone, a row rule over each */
+.ax-terms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 32px;
+  margin: 0;
+}
+
+.ax-terms > div {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 14px 0 18px;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.ax-terms dt {
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+}
+
+.ax-terms dd {
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+  text-wrap: pretty;
+}
+
+/* the plain text: sized so its widest line fits the column, a mono cell being 0.6 em wide */
+.ax-text {
+  container: ax-text / inline-size;
+}
+
+.ax-text pre {
+  margin: 0;
+  padding: 16px 0;
+  overflow-x: auto;
+  border-top: 1px solid var(--pt-hair-soft);
+  border-bottom: 1px solid var(--pt-hair-soft);
+  font-family: var(--pt-mono);
+  font-size: min(var(--pt-t-meta), calc(100cqi / (var(--ax-cols) * 0.6)));
+  line-height: 1.2; /* lint-type: allow two rows of dots a line at a 0.6 em cell keep the dots' pitch square */
+  color: var(--pt-ink);
+}
+
+/* the GIFs, on ink and on paper, side by side */
+.ax-gifs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 248px));
+  gap: 24px;
+}
+
+.ax-gif {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* the dividers' own breakpoint (BookView.css), where the gutter folds above the heading: the bodies take the whole
+   column */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .ax-sec {
+    gap: 28px;
+  }
+
+  .ax-body {
+    padding-left: 0;
+  }
+}
+
+/* a phone's column: the terms in one column, the two GIFs sharing the width */
+@container ax-sec (max-width: 539px) {
+  .ax-terms {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ax-gifs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
