@@ -165,6 +165,7 @@ the adoption table for gt-cloud
 | N3 | Comments state invariants, not history |
 | N4 | Plain declarative English in code, prompts, commits and pull requests |
 | N5 | A pull request body states what changed, the tests with counts, what is not proved and what was checked and rejected |
+| N6 | Code in gt-cloud reads as gt-cloud's own |
 
 **Security and keys:** [references/security.md](references/security.md)
 
@@ -190,11 +191,13 @@ git diff <base>...<head> | node skills/gt-code-review/scripts/scan-diff.mjs
 git diff <base>...<head> | node skills/gt-code-review/scripts/scan-diff.mjs --json
 ```
 
-The scan covers M1, M2, M3, M5, C1, C2, T2, T3, TS1, TS2, TS4, P5, S1,
-S3 and N3. It skips test files for M1 and for the non-null part of TS2. On
-gt-cloud #6208 (133 files, 10,085 added lines) it lists 20 candidates. Two
-trial reviewers confirmed 14 of them, in 3 findings, and found 25 more
-findings by reading, so the scan is a start and never the review. The other rules need reading. `node --test
+The scan covers M1, M2, M3, M5, C1, C2, T2, T3, TS1, TS2, TS4, P5, S1, S3,
+N3 and N6, whose comment blocks over 6 lines are a proposed limit and
+Kevin's to confirm. It skips test files for M1 and for the non-null part
+of TS2. On gt-cloud #6208 (133 files, 10,085 added lines) it lists 20
+candidates. Two trial reviewers confirmed 14 of them, in 3 findings, and
+found 25 more findings by reading, so the scan is a start and never the
+review. The other rules need reading. `node --test
 skills/gt-code-review/scripts/scan-diff.test.mjs` runs its tests, which
 build a diff for every rule from generated lines.
 

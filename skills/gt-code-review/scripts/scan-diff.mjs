@@ -15,6 +15,9 @@
 // --json   print one JSON array of { path, line, rule, text } in place of lines.
 //
 // Requires: Node 18 or later. It reads stdin and writes nothing.
+// N6 is read across lines: a run of comment-only lines in the new file,
+// one of them added, longer than COMMENT_BLOCK_MAX.
+//
 // Last real run: 2026-11-25 on gt-cloud #6208 (be57221fc0 against its base):
 // 43 candidates before the trial's tuning, of which the reviewers confirmed 4.
 
@@ -195,13 +198,56 @@ export const RULES = [
   },
 ];
 
+/**
+ * N6: the most comment lines in a row that a block may hold. A proposed
+ * default, Kevin's to confirm (references/naming-writing.md, N6).
+ */
+export const COMMENT_BLOCK_MAX = 6;
+
+/**
+ * Whether a line holds only a comment, given whether a Python docstring is
+ * open before it. Returns [isComment, docstringOpenAfter].
+ */
+export function commentLine(text, path, inDoc) {
+  const s = text.trim();
+  if (!s) return [false, inDoc];
+  if (PY.test(path)) {
+    const quotes = (s.match(/"""|'''/g) ?? []).length;
+    const open = quotes % 2 === 1 ? !inDoc : inDoc;
+    return [inDoc || quotes > 0 || s.startsWith('#'), open];
+  }
+  return [/^(\/\/|\/\*|\*)/.test(s), false];
+}
+
 /** Every candidate in a unified diff: { path, line, rule, text }. */
 export function scan(diff) {
   const found = [];
   let path = null;
   let line = 0;
+  let inDoc = false;
+  let block = null;
+  const endBlock = () => {
+    if (block && block.added && block.length > COMMENT_BLOCK_MAX) {
+      found.push({ path: block.path, line: block.start, rule: 'N6', text: `a comment block of ${block.length} lines` });
+    }
+    block = null;
+  };
+  const track = (text, added) => {
+    if (!CODE.test(path)) return;
+    const [isComment, open] = commentLine(text, path, inDoc);
+    inDoc = open;
+    if (!isComment) {
+      endBlock();
+      return;
+    }
+    block ??= { path, start: line, length: 0, added: false };
+    block.length += 1;
+    block.added ||= added;
+  };
   for (const raw of diff.split('\n')) {
     if (raw.startsWith('+++ ')) {
+      endBlock();
+      inDoc = false;
       const target = raw.slice(4).trim();
       path = target === '/dev/null' ? null : target.replace(/^b\//, '');
       if (path) {
@@ -214,6 +260,8 @@ export function scan(diff) {
     if (raw.startsWith('--- ') || raw.startsWith('diff --git')) continue;
     const hunk = /^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/.exec(raw);
     if (hunk) {
+      endBlock();
+      inDoc = false;
       line = Number(hunk[1]);
       continue;
     }
@@ -223,11 +271,14 @@ export function scan(diff) {
       for (const rule of RULES) {
         if (rule.files.test(path) && rule.test(text, path)) found.push({ path, line, rule: rule.id, text: text.trim() });
       }
+      track(text, true);
       line += 1;
     } else if (raw.startsWith(' ')) {
+      track(raw.slice(1), false);
       line += 1;
     }
   }
+  endBlock();
   return found;
 }
 

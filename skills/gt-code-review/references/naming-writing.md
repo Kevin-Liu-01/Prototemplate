@@ -85,3 +85,56 @@ his replies on
 and
 [#6197](https://github.com/generaltranslation/gt-cloud/pull/6197#discussion_r4685928824),
 which answer a finding with the code path and production counts.
+
+## N6. Code in gt-cloud reads as gt-cloud's own
+
+**Look for:** in a gt-cloud diff,
+- words of the translation pipeline that gt-cloud does not use, such as
+  "the first pass", "the lead", "the box", "scenepass" or "the free agent",
+  in names, comments, prompts or test names;
+- machinery that gt-cloud's harness never calls: a runner, a resume path, a
+  stored-job reader, a parameter or a hook kept for the pipeline's own
+  command line;
+- a comment that restates what the code says, and any comment block longer
+  than 6 lines.
+
+**Why:** gt-cloud's code runs on gt-cloud's harness, and its readers know
+that harness and nothing else. Kevin on 2026-11-26: "for gt cloud our stuff
+runs on its harness with no hashes none of the extra stuff and annoying un
+readable stuff brian is super annoyed by." A comment is kept only where the
+code cannot state the invariant, and it is short. Hashes and history in
+comments are rule N3 and stay there.
+
+The bar is the density of Brian's own files. His 12 product files of the
+image and agent stacks, such as `agent-core/src/store/externalCalls.ts` and
+`translation/gpu/operations.py`, hold 109 comment lines in 866, 12.6
+percent, and 9 of the 12 have no comment block over 6 lines. The image
+code `tcimg` held 1,937 comment lines in 10,667, 18.2 percent, with 43
+blocks over 6 lines, at #6208's head. The limit of 6 lines is a proposed
+default and is Kevin's to confirm.
+
+```python
+# Bad
+# The lead hands this stack to the first pass, which the free agent's
+# critic reads back on its next turn. The box runner passes `box` so a
+# stored job resumes where it stopped; gt-cloud's sandbox is the job's box,
+# so it passes None. `lead` stays for the pipeline's command line. The
+# order of the two writes matters because the critic reads the stack
+# first, and an older run once read a stack that the second write had
+# not reached yet.
+def write_stack(job, stack, box=None, lead=None): ...
+
+# Good
+def write_stack(job: Job, stack: Stack) -> None:
+    """Writes the stack before the render, since the critic reads the stack first."""
+```
+
+**Sources:** Kevin's words of 2026-11-26 00:46 EST, relayed by the
+coordinator session. Brian's
+[#6184](https://github.com/generaltranslation/gt-cloud/pull/6184),
+[#6186](https://github.com/generaltranslation/gt-cloud/pull/6186) and
+[#6189](https://github.com/generaltranslation/gt-cloud/pull/6189), whose
+files set the density above, and his
+[8677867](https://github.com/generaltranslation/gt-cloud/commit/8677867e13cc354c4170a20febc40db4c74ef5f5)
+(removes a standalone runner gt-cloud never calls). Kevin's memory note
+`gtcloud-no-hashes-no-parity`, which rule N3 cites for hashes.
