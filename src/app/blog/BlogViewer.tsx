@@ -12,6 +12,7 @@ import { usePtShell } from '@/components/viewer/shell-context';
 import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
+import { AUTHOR } from '@/lib/credit';
 import { formatDay } from '@/lib/dates';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
@@ -31,6 +32,13 @@ const NOTE = (
     Each post opens on its own page. Each release opens on the <Link href='/d/production/blog'>production mirror</Link>,
     which renders it as the live site does. Every illustration in the posts is on <Link href='/graphics'>the graphics page</Link>.
   </p>
+);
+
+const NOTE_WITH_BYLINE = (
+  <>
+    {NOTE}
+    <p>{AUTHOR} built the blog&rsquo;s pages, and each post names its own authors.</p>
+  </>
 );
 
 /** The cover column in a row: the reading column less the gutter, so the optimizer serves the width it is shown at. */
@@ -73,7 +81,7 @@ function BlogBook({ sheetRef, jumpRef, activeOut, updated, coverNotes }: BlogBoo
         skill='gt-website'
         title={TITLE}
         lead={LEAD}
-        note={NOTE}
+        note={NOTE_WITH_BYLINE}
         updated={updated}
         facts={[
           { icon: 'post', key: 'Posts', value: POSTS.length },

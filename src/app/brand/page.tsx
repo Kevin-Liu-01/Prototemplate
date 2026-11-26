@@ -16,6 +16,7 @@ import LogoSystem from './LogoSystem';
 import ProfileBanners from './ProfileBanners';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import GlyphGlobe from '@/components/shared/GlyphGlobe';
+import { byline } from '@/lib/credit';
 import { LOCKUP, STRIP } from '@/lib/logo';
 import { CLEAR_ONE_LINE, CLEAR_STACKED, stated } from '@/lib/logo-numbers';
 import { PAGE_NAMES } from '@/lib/page-names';
@@ -194,11 +195,14 @@ const LEAD =
 
 /** The rest of the introduction, under the head's rule. */
 const NOTE = (
-  <p>
-    It is written for anyone who builds with the identity. The visual laws are codified in{' '}
-    <Link href='/docs/handbook/design'>the design system</Link>, and every engine runs live
-    in <Link href='/docs/handbook/libraries'>the libraries document</Link>.
-  </p>
+  <>
+    <p>
+      It is written for anyone who builds with the identity. The visual laws are codified in{' '}
+      <Link href='/docs/handbook/design'>the design system</Link>, and every engine runs live
+      in <Link href='/docs/handbook/libraries'>the libraries document</Link>.
+    </p>
+    <p>{byline()}</p>
+  </>
 );
 
 /**

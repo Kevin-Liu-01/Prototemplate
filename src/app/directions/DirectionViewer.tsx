@@ -10,6 +10,7 @@ import type { IconName } from '@/components/viewer/icons';
 import { Sheet } from '@/components/viewer/Sheet';
 import { ThumbShot } from '@/components/viewer/ThumbShot';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
+import { byline } from '@/lib/credit';
 import { DIRECTIONS, directionPageHref, directionPages, directionShots, getDirection } from '@/lib/directions';
 import type { Direction, DirectionPage, Tone } from '@/lib/directions';
 import type { PageUpdated } from '@/lib/page-updated';
@@ -188,9 +189,12 @@ function DirectionBook({ direction, updated }: { direction: Direction; updated: 
   const brief = note && note.length > NOTE_MAX ? note : null;
   const briefOrdinal = direction.site ? 4 : 3;
   const signature = (
-    <p>
-      <b>Signature.</b> {direction.signature}
-    </p>
+    <>
+      <p>
+        <b>Signature.</b> {direction.signature}
+      </p>
+      <p>{byline()}</p>
+    </>
   );
 
   return (

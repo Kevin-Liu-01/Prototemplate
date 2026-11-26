@@ -10,6 +10,7 @@ import { Icon } from '@/components/viewer/icons';
 import { InstallField } from '@/components/viewer/InstallField';
 import { Sheet } from '@/components/viewer/Sheet';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
+import { byline } from '@/lib/credit';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode } from '@/lib/shell-data';
@@ -131,7 +132,12 @@ function SkillPage({ skill, body, updated }: SkillPageProps) {
       <BookHead
         title={skill.title}
         lead={summary}
-        note={<About skill={skill} />}
+        note={
+          <>
+            <About skill={skill} />
+            <p>{byline()}</p>
+          </>
+        }
         updated={updated}
         facts={[
           { icon: 'area', key: 'Area', value: areaLabel(skill.areas[0]) },

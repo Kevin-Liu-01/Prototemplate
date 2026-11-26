@@ -10,6 +10,7 @@ import { usePtShell } from '@/components/viewer/shell-context';
 import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
+import { byline } from '@/lib/credit';
 import { backgroundLabel } from '@/lib/graphics-model';
 import type { Block, Entry } from '@/lib/graphics-model';
 import { PAGE_NAMES } from '@/lib/page-names';
@@ -111,7 +112,12 @@ function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut, posts, updated }: 
         skill='gt-graphics'
         title={TITLE}
         lead={LEAD}
-        note={NOTE}
+        note={
+          <>
+            <p>{NOTE}</p>
+            <p>{byline()}</p>
+          </>
+        }
         updated={updated}
         facts={[
           { icon: 'photo', key: 'Images', value: total },

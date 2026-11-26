@@ -10,6 +10,7 @@ import { usePtShell } from '@/components/viewer/shell-context';
 import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
+import { byline } from '@/lib/credit';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
@@ -222,7 +223,12 @@ function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
         skill='gt-website'
         title={TITLE}
         lead={LEAD}
-        note={NOTE}
+        note={
+          <>
+            <p>{NOTE}</p>
+            <p>{byline('Taylor Fang')}</p>
+          </>
+        }
         updated={updated}
         facts={[
           { icon: 'book', key: 'Stories', value: 4 },

@@ -33,6 +33,7 @@ import {
   PRODUCTION_MARKS,
   shortlist,
 } from '@/lib/marks';
+import { byline } from '@/lib/credit';
 import type { CatalogMark, HemisphereFamily, HemisphereMark, Mark, MarkFamilyRow, ProductionMark } from '@/lib/marks';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
@@ -981,7 +982,12 @@ function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }:
         skill='gt-brand'
         title={PAGE_NAMES.marks.name}
         lead={BOOK_LEAD}
-        note={<LiveStrip onJump={onContents} />}
+        note={
+          <>
+            <LiveStrip onJump={onContents} />
+            <p>{byline()}</p>
+          </>
+        }
         updated={updated}
         facts={[
           { icon: 'swatch', key: 'Marks', value: TOTAL },

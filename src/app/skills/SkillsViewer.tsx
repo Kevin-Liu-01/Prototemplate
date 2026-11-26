@@ -10,6 +10,7 @@ import { usePtShell } from '@/components/viewer/shell-context';
 import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
+import { byline } from '@/lib/credit';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import { rangeText } from '@/lib/shell-data';
@@ -33,6 +34,13 @@ const BOOK_NOTE = (
     to see each step first. Each skill&rsquo;s page holds its full SKILL.md, its supporting files and its own install
     line.
   </p>
+);
+
+const NOTE_WITH_BYLINE = (
+  <>
+    {BOOK_NOTE}
+    <p>{byline()}</p>
+  </>
 );
 
 type SkillsBookProps = {
@@ -69,7 +77,7 @@ function SkillsBook({ sheetRef, jumpRef, activeOut, updated }: SkillsBookProps) 
         skill='prototemplate'
         title={SKILLS_TITLE}
         lead={BOOK_LEAD}
-        note={BOOK_NOTE}
+        note={NOTE_WITH_BYLINE}
         updated={updated}
         facts={[{ icon: 'skill', key: 'Skills', value: `${SKILLS.length} in ${BLOCKS.length} areas` }]}
         install={installLine()}

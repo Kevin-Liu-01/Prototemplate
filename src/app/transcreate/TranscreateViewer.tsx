@@ -14,6 +14,7 @@ import { usePtShell } from '@/components/viewer/shell-context';
 import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
+import { AUTHOR } from '@/lib/credit';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode } from '@/lib/shell-data';
@@ -363,9 +364,6 @@ function Credits() {
     </dl>
   );
 }
-
-/** The system's author, named in every page's head. */
-const AUTHOR = 'Kevin Liu';
 
 /** The methods Kevin Liu devised for Transcreate, each with one sentence, in the order a video meets them. */
 const METHODS: readonly { name: string; text: string }[] = [

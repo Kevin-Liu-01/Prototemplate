@@ -11,6 +11,7 @@ import { usePtShell } from '@/components/viewer/shell-context';
 import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
+import { byline } from '@/lib/credit';
 import type { LineLoops } from '@/lib/graticule/line-loop';
 import { LINE_ANIMATION_TITLES } from '@/lib/graticule/line-loop';
 import type { CatalogMark } from '@/lib/marks';
@@ -434,6 +435,7 @@ function GraticuleBook({ sheetRef, jumpRef, activeOut, updated, loops }: BookPro
         skill='gt-brand'
         title={PAGE_NAMES.graticule.name}
         lead={LEAD}
+        note={byline()}
         updated={updated}
         facts={[
           { icon: 'swatch', key: 'Marks', value: GRATICULE_MARKS.length },
