@@ -85,6 +85,22 @@ file gives the exact link or row beside the rule.
 - https://www.totaltypescript.com/tsconfig-cheat-sheet
 - https://www.totaltypescript.com/ts-reset and https://github.com/total-typescript/ts-reset
 
+## Code quality and readability pages
+
+Read on 2026-11-26 for `references/quality.md`:
+
+- https://google.github.io/styleguide/tsguide.html and https://google.github.io/styleguide/pyguide.html
+- https://peps.python.org/pep-0008/
+- https://refactoring.guru/smells/long-method, https://refactoring.guru/smells/dead-code, https://refactoring.guru/smells/speculative-generality, https://refactoring.guru/smells/duplicate-code and https://refactoring.guru/smells/comments
+- https://refactoring.guru/replace-nested-conditional-with-guard-clauses, https://refactoring.guru/replace-magic-number-with-symbolic-constant and https://refactoring.guru/extract-method
+- https://eslint.org/docs/latest/rules/no-nested-ternary, https://eslint.org/docs/latest/rules/max-depth and https://eslint.org/docs/latest/rules/max-lines
+- https://rules.sonarsource.com/typescript/RSPEC-3776/
+- https://www.destroyallsoftware.com/screencasts/catalog/functional-core-imperative-shell
+- https://oxc.rs/docs/guide/usage/formatter and https://docs.astral.sh/ruff/formatter/
+- https://google.github.io/eng-practices/review/developer/small-cls.html
+- https://abseil.io/resources/swe-book/html/ch12.html and https://abseil.io/resources/swe-book/html/ch13.html
+- https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
+
 ## gt-cloud configuration
 
 - At head be57221fc0: `tooling/ts-config/tsconfig.base.json`,

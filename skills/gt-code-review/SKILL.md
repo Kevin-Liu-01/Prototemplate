@@ -119,6 +119,32 @@ example and source.
 | C5 | A rename or removal searches the whole tree |
 | C6 | No bookkeeping between repositories |
 
+**Code quality:** [references/quality.md](references/quality.md)
+
+| ID | Rule |
+| --- | --- |
+| Q1 | Names say what a thing is |
+| Q2 | Small functions with one job, early returns and no nested ternaries |
+| Q3 | No dead code, commented-out code, unused export or anonymous TODO |
+| Q4 | One level of abstraction per function, and no speculative generality |
+| Q5 | Errors are handled at the boundary |
+| Q6 | No magic numbers, and each constant names its unit |
+| Q7 | Pure functions where possible, and side effects at the edges |
+| Q8 | No duplication across files |
+| Q9 | Formatting comes from the formatter only |
+| Q10 | Small diffs, and one concern per pull request |
+| Q11 | Tests read as the spec |
+| Q12 | Logs say what happened, with ids and no secrets |
+| Q13 | Public interfaces are documented by their types first |
+
+**Readability:** [references/quality.md](references/quality.md#readability)
+
+| ID | Rule |
+| --- | --- |
+| R1 | The code reads top-down in call order |
+| R2 | A reader needs no history to follow the code |
+| R3 | File length, function length, nesting and complexity stay in bounds |
+
 **Tests:** [references/tests.md](references/tests.md)
 
 | ID | Rule |
@@ -192,13 +218,15 @@ git diff <base>...<head> | node skills/gt-code-review/scripts/scan-diff.mjs
 git diff <base>...<head> | node skills/gt-code-review/scripts/scan-diff.mjs --json
 ```
 
-The scan covers M1, M2, M3, M5, C1, C2, T2, T3, TS1, TS2, TS4, P5, S1, S3,
-N3 and N6, whose comment blocks over 6 lines are a proposed limit and
-the owner's to confirm. It skips test files for M1 and for the non-null part
-of TS2. On gt-cloud #6208 (133 files, 10,085 added lines) it lists 20
-candidates. Two trial reviewers confirmed 14 of them, in 3 findings, and
-found 25 more findings by reading, so the scan is a start and never the
-review. The other rules need reading. `node --test
+The scan covers M1, M2, M3, M5, Q2, Q3, C1, C2, T2, T3, TS1, TS2, TS4, P5,
+S1, S3, N3 and N6. N6 flags comment blocks over 6 lines, a proposed limit
+and the owner's to confirm. It skips test files for M1 and for the
+non-null part of TS2. On gt-cloud #6208 (133 files, 10,085 added lines)
+the rules of the first trial listed 20 candidates, and two trial reviewers
+confirmed 14 of them, in 3 findings, and found 25 more findings by
+reading. With N6, Q2 and Q3 the scan lists 53 candidates there, 24 of them
+comment blocks and 9 nested conditionals. The scan is a start and never
+the review. The other rules need reading. `node --test
 skills/gt-code-review/scripts/scan-diff.test.mjs` runs its tests, which
 build a diff for every rule from generated lines.
 
@@ -211,6 +239,18 @@ build a diff for every rule from generated lines.
 - [ ] Each finding was checked against the whole stack before it was written.
 - [ ] Findings that did not hold up are listed with the reason.
 - [ ] Nothing was posted to GitHub or Slack without the owner's word.
+
+## Related skills, by the code under review
+
+- TypeScript: the rules in `references/typescript.md`, and `fix-types` when the compiler reports errors to clear.
+- Security: `security-best-practices` for a language's secure defaults, `security-threat-model` for a new surface or trust boundary, and `security-doctor-chain` for a full scan.
+- React: `react-doctor` for a React or Next.js codebase health check, and `vercel:react-best-practices` for rendering and data fetching.
+- Tests: `tdd` when the change starts from a failing test, and `test-writing` for the tests a change needs.
+- Design: `codebase-design` for module boundaries and interfaces, and `less-is-more` when a change adds more than it removes.
+- Bugs: `diagnosing-bugs` when a finding needs a reproduction before a fix.
+- Performance: `perf` for a measured slowdown, and `gt-performance` for GT's visual surfaces.
+- Accessibility: `accessibility` for UI code.
+- Prototemplate: `gt-lints` for the lints and gates that hold a rule, and `gt-verify` to prove a fix is done.
 
 ## Authors
 

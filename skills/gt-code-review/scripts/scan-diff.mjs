@@ -95,6 +95,26 @@ export const RULES = [
       /\.catch\(\s*\(\s*\w*\s*\)\s*=>\s*(undefined|null|\{\s*\}|\[\s*\])\s*\)/.test(text),
   },
   {
+    id: 'Q2',
+    label: 'a nested ternary or conditional expression',
+    files: CODE,
+    test: (text, path) => {
+      const code = codeOf(text, path).replace(/(['"`])(?:\\.|(?!\1).)*\1/g, '""');
+      if (PY.test(path)) return /\bif\b[^:]*\belse\b[^:]*\bif\b[^:]*\belse\b/.test(code) && !/^\s*(if|elif|while)\b/.test(code);
+      const ternary = code.replace(/\?\.|\?\?=?|\?\s*[),:]/g, '');
+      return (ternary.match(/\?/g) ?? []).length >= 2 && ternary.includes(':');
+    },
+  },
+  {
+    id: 'Q3',
+    label: 'a TODO or FIXME with no issue link',
+    files: CODE,
+    test: (text, path) => {
+      const comment = commentOf(text, path);
+      return /\b(TODO|FIXME|XXX)\b/.test(comment) && !/https?:\/\/|#\d+|\b[A-Z]{2,}-\d+\b|<issue/.test(comment);
+    },
+  },
+  {
     id: 'C1',
     label: 'an old path kept beside its replacement',
     files: CODE,

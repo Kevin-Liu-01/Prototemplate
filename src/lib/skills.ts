@@ -152,7 +152,7 @@ export const SKILLS: readonly Skill[] = [
     description: 'The code review General Translation applies to gt-cloud and to its translation pipelines. Its rules cover mechanism over patch (no regex on model or prompt text, no case-tuned constants, no hand-rolled parser where a library exists, no silent fallback), cutover over compatibility, code quality and readability, tests, TypeScript, Python, naming and writing, and security and keys, each with what to look for, why, a bad and good example and its source. A diff scan lists candidate lines by rule. Use when reviewing a diff, a branch or a pull request in gt-cloud or a pipeline repository, or before any push to gt-cloud.',
     areas: ['lints', 'workflow'],
     updated: '2026-11-26',
-    files: ['references/cutover.md', 'references/mechanism.md', 'references/naming-writing.md', 'references/python.md', 'references/security.md', 'references/sources.md', 'references/tests.md', 'references/typescript.md', 'scripts/scan-diff.mjs', 'scripts/scan-diff.test.mjs'],
+    files: ['references/cutover.md', 'references/mechanism.md', 'references/naming-writing.md', 'references/python.md', 'references/quality.md', 'references/security.md', 'references/sources.md', 'references/tests.md', 'references/typescript.md', 'scripts/scan-diff.mjs', 'scripts/scan-diff.test.mjs'],
   },
   {
     id: 'gt-motion',

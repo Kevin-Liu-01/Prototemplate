@@ -65,6 +65,22 @@ const CASES = {
     hit: ['    except Exception: pass', '    except KeyError: return None'],
     miss: ['    except KeyError as error: raise ImageRefused(str(error)) from error'],
   },
+  Q2: {
+    path: 'src/agent/route.ts',
+    hit: ["const label = isImage ? (isAnimated ? 'video' : 'image') : 'file';", "const k = a ? b : c ? d : e;"],
+    miss: ["const label = isImage ? 'image' : 'file';", 'const name = user?.name ?? fallback;', 'function f(a?: string, b?: number) { return a ? b : 0; }', "const s = 'a ? b : c ? d : e';"],
+  },
+  Q2py: {
+    rule: 'Q2',
+    path: 'tcimg/route.py',
+    hit: ['    kind = "video" if animated else "image" if raster else "svg"'],
+    miss: ['    kind = "video" if animated else "image"', '    if a if b else c: pass'],
+  },
+  Q3: {
+    path: 'tcimg/flow.py',
+    hit: ['    # TODO fix this later', '    x = 1  # FIXME'],
+    miss: ['    # TODO: https://github.com/org/repo/issues/12 - break Thai lines', '    # TODO(GT-123): break Thai lines', '    # TODO: <issue link> - break Thai lines'],
+  },
   C1: {
     path: 'src/agent/run.ts',
     hit: ['export const run = useNew ? runWorker : runImageLegacy;', 'def _old_cut(rows):'],
