@@ -2,8 +2,9 @@
 
 These rules hold for every language under review. Where a rule overlaps a
 group rule of this skill, the entry names that rule and does not repeat it.
-Every number below is a proposed default and the owner's to confirm. All
-pages were read on 2026-11-26.
+The bounds of R3 were confirmed 2026-11-26. Any other number below is a
+proposed default and the owner's to confirm. All pages were read on
+2026-11-26.
 
 ## Code quality
 
@@ -373,7 +374,9 @@ it adds a weight for each level of nesting and does not count a flat
 `switch` once per case. A flat dispatch of twelve cases has high cyclomatic
 and low cognitive complexity; three nested `if`s have the opposite.
 
-The bounds are proposed defaults and the owner's to confirm. The
+The bounds were confirmed 2026-11-26: 500 lines per file, 60 per
+function, nesting of 4, cyclomatic complexity 10 and cognitive complexity
+15. The
 cyclomatic bound of 10 is the limit the NIST structured testing report
 gives as having "significant supporting evidence", and it is ruff's
 default. Each language has its tool:

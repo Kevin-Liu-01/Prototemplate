@@ -111,7 +111,7 @@ and
 hold 109 comment lines in 866, 12.6 percent, and 9 of the 12 have no
 comment block over 6 lines. The image code `tcimg` held 1,937 comment lines
 in 10,667, 18.2 percent, with 43 blocks over 6 lines, at #6208's head. The
-limit of 6 lines is a proposed default and is the owner's to confirm.
+limit of 6 lines was confirmed 2026-11-26.
 
 ```python
 # Bad

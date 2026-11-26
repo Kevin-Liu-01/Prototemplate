@@ -225,8 +225,8 @@ export const RULES = [
 ];
 
 /**
- * N6: the most comment lines in a row that a block may hold. A proposed
- * default, the owner's to confirm (references/naming-writing.md, N6).
+ * N6: the most comment lines in a row that a block may hold, confirmed
+ * 2026-11-26 (references/naming-writing.md, N6).
  */
 export const COMMENT_BLOCK_MAX = 6;
 

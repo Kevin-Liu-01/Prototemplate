@@ -221,16 +221,15 @@ git diff <base>...<head> | node skills/gt-code-review/scripts/scan-diff.mjs --js
 ```
 
 The scan covers M1, M2, M3, M5, Q2, Q3, Q14, C1, C2, T2, T3, TS1, TS2,
-TS4, P5, S1, S3, N3 and N6. N6 flags comment blocks over 6 lines, a
-proposed limit and the owner's to confirm. Q14 flags a type with 3 or more
-boolean fields as a candidate state machine, never a finding by itself. It
-skips test files for M1 and for the non-null part of TS2. On gt-cloud
-#6208 (133 files, 10,085 added lines) the rules of the first trial listed
-20 candidates, and two trial reviewers confirmed 14 of them, in 3
-findings, and found 25 more findings by reading. With N6, Q2 and Q3 the
-scan lists 53 candidates there, 24 of them comment blocks and 9 nested
-conditionals. The scan is a start and never the review. The other rules
-need reading. `node --test
+TS4, P5, S1, S3, N3 and N6. N6 flags comment blocks over 6 lines, a limit
+confirmed 2026-11-26. Q14 flags a type with 3 or more boolean fields as a
+candidate state machine, never a finding by itself. It skips test files
+for M1 and for the non-null part of TS2. On gt-cloud #6208 (133 files,
+10,085 added lines) the rules of the first trial listed 20 candidates, and
+two trial reviewers confirmed 14 of them, in 3 findings, and found 25 more
+findings by reading. With N6, Q2 and Q3 the scan lists 53 candidates
+there, 24 of them comment blocks and 9 nested conditionals. The scan is a
+start and never the review. The other rules need reading. `node --test
 skills/gt-code-review/scripts/scan-diff.test.mjs` runs its tests, which
 build a diff for every rule from generated lines.
 
