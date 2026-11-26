@@ -1,7 +1,7 @@
 # Naming and writing
 
 Code, comments, prompts, commit messages and pull request bodies use
-Kevin's plain technical English. The `gt-voice` skill holds the full voice;
+plain technical English. The `gt-voice` skill holds the full voice;
 these rules are the parts a code review checks.
 
 ## N1. Names match the schema documents, and a rename changes all of them at once
@@ -13,7 +13,7 @@ the schema, the docs and the prompts.
 **Why:** a reader and a model both learn the system from its documents, and
 a second name for one field is a second field to them.
 
-**Source:** Kevin's code rule 5 for his translation pipeline repositories:
+**Source:** Code rule 5 of the translation pipelines' agent rules:
 "A name change updates the schema, the code and every document in one
 change".
 
@@ -25,8 +25,7 @@ change".
 **Why:** a model reading the prompts and a person reading the code each
 assume two words mean two things.
 
-**Source:** Brian's
-[d6d77f2](https://github.com/generaltranslation/gt-cloud/commit/d6d77f2d772f4c69b8fe9a06ba1ec7f6ffbc23d3)
+**Source:** [d6d77f2](https://github.com/generaltranslation/gt-cloud/commit/d6d77f2d772f4c69b8fe9a06ba1ec7f6ffbc23d3)
 ("name tcimg's picture an image").
 
 ## N3. Comments state invariants, not history
@@ -45,8 +44,8 @@ holds stays true until the code changes, and the reviewer can check it.
 # Every later line keeps at least one break.
 ```
 
-**Sources:** Kevin's writing rules for his repositories (complete
-declarative sentences, one claim each). Kevin's memory note
+**Sources:** The writing rules of the translation pipelines (complete
+declarative sentences, one claim each). Memory note
 `gtcloud-no-hashes-no-parity` for hashes.
 
 ## N4. Plain declarative English in code, prompts, commits and pull requests
@@ -55,7 +54,7 @@ declarative sentences, one claim each). Kevin's memory note
 pairs, fragments, adjectives where a number or mechanism would do, and
 marketing words.
 
-**Why:** a sentence that makes one claim can be checked. Kevin's rules ask
+**Why:** a sentence that makes one claim can be checked. The writing rules ask
 for numbers or mechanisms instead of adjectives.
 
 ```text
@@ -63,7 +62,7 @@ Bad:  Massively faster erase, a huge win for long clips!
 Good: The erase takes 0.055 s per crop on the GPU, against 1.39 s on 2 CPU threads.
 ```
 
-**Source:** Kevin's writing rules 1 to 3; the `gt-voice` skill.
+**Source:** Writing rules 1 to 3; the `gt-voice` skill.
 
 ## N5. A pull request body states what changed, the tests with counts, what is not proved and what was checked and rejected
 
@@ -72,15 +71,14 @@ did not run end to end, and bot findings answered with a fix and no
 evidence, or dismissed with no reason.
 
 **Why:** the reviewer decides from the body which parts need a close look.
-Brian's bodies give a "Worth a close look" item, the tests with counts, a
+The bodies of the image stack give a "Worth a close look" item, the tests with counts, a
 "Not proved" line, review callouts for deploy order, and a "Not changed"
 list with one reason per finding.
 
-**Sources:** Brian's
-[#6184](https://github.com/generaltranslation/gt-cloud/pull/6184),
+**Sources:** [#6184](https://github.com/generaltranslation/gt-cloud/pull/6184),
 [#6186](https://github.com/generaltranslation/gt-cloud/pull/6186) and
 [#6189](https://github.com/generaltranslation/gt-cloud/pull/6189) bodies;
-his replies on
+the replies on
 [#5903](https://github.com/generaltranslation/gt-cloud/pull/5903#discussion_r4566762250)
 and
 [#6197](https://github.com/generaltranslation/gt-cloud/pull/6197#discussion_r4685928824),
@@ -99,19 +97,21 @@ which answer a finding with the code path and production counts.
   than 6 lines.
 
 **Why:** gt-cloud's code runs on gt-cloud's harness, and its readers know
-that harness and nothing else. Kevin on 2026-11-26: "for gt cloud our stuff
-runs on its harness with no hashes none of the extra stuff and annoying un
-readable stuff brian is super annoyed by." A comment is kept only where the
-code cannot state the invariant, and it is short. Hashes and history in
-comments are rule N3 and stay there.
+that harness and nothing else. Code that lands there carries no pipeline
+hashes, no machinery for another harness and no text a reader must decode.
+A comment is kept only where the code cannot state the invariant, and it
+is short. Hashes and history in comments are rule N3 and stay there.
 
-The bar is the density of Brian's own files. His 12 product files of the
-image and agent stacks, such as `agent-core/src/store/externalCalls.ts` and
-`translation/gpu/operations.py`, hold 109 comment lines in 866, 12.6
-percent, and 9 of the 12 have no comment block over 6 lines. The image
-code `tcimg` held 1,937 comment lines in 10,667, 18.2 percent, with 43
-blocks over 6 lines, at #6208's head. The limit of 6 lines is a proposed
-default and is Kevin's to confirm.
+The bar is the density of gt-cloud's existing product files. Twelve files
+of the agent and GPU stacks, such as
+[`agent-core/src/store/externalCalls.ts`](https://github.com/generaltranslation/gt-cloud/blob/main/packages/agent-core/src/store/externalCalls.ts),
+[`agent-core/src/session/budgetAlerts.ts`](https://github.com/generaltranslation/gt-cloud/blob/main/packages/agent-core/src/session/budgetAlerts.ts)
+and
+[`translation/gpu/operations.py`](https://github.com/generaltranslation/gt-cloud/blob/main/packages/translation/gpu/operations.py),
+hold 109 comment lines in 866, 12.6 percent, and 9 of the 12 have no
+comment block over 6 lines. The image code `tcimg` held 1,937 comment lines
+in 10,667, 18.2 percent, with 43 blocks over 6 lines, at #6208's head. The
+limit of 6 lines is a proposed default and is the owner's to confirm.
 
 ```python
 # Bad
@@ -129,12 +129,11 @@ def write_stack(job: Job, stack: Stack) -> None:
     """Writes the stack before the render, since the critic reads the stack first."""
 ```
 
-**Sources:** Kevin's words of 2026-11-26 00:46 EST, relayed by the
-coordinator session. Brian's
+**Sources:** The owner's ruling of 2026-11-26, relayed by the coordinator
+session. The pull requests
 [#6184](https://github.com/generaltranslation/gt-cloud/pull/6184),
 [#6186](https://github.com/generaltranslation/gt-cloud/pull/6186) and
-[#6189](https://github.com/generaltranslation/gt-cloud/pull/6189), whose
-files set the density above, and his
+[#6189](https://github.com/generaltranslation/gt-cloud/pull/6189), and
 [8677867](https://github.com/generaltranslation/gt-cloud/commit/8677867e13cc354c4170a20febc40db4c74ef5f5)
-(removes a standalone runner gt-cloud never calls). Kevin's memory note
+(removes a standalone runner gt-cloud never calls). Memory note
 `gtcloud-no-hashes-no-parity`, which rule N3 cites for hashes.

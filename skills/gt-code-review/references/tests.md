@@ -20,8 +20,8 @@ img = load("fixtures/customer-dashboard.png")
 img = draw_lines([("Pricing", 48, (40, 40)), ("Start free", 18, (40, 110))], size=(640, 200))
 ```
 
-**Source:** Kevin's media and git rules 1 and 2 for his translation
-pipeline repositories: "Test fixtures are generated or synthetic".
+**Source:** Media and git rules 1 and 2 of the translation
+pipelines' agent rules: "Test fixtures are generated or synthetic".
 
 ## T2. One test per rule, named by the behaviour it holds
 
@@ -38,11 +38,10 @@ the test goes red. A round's name says nothing once the round is over.
 def test_no_part_is_left_blank_while_the_translation_holds_a_break_for_it(): ...
 ```
 
-**Sources:** Kevin's memory note `production-grade-before-push` (a focused
-test for each parser, gate and retry change). Kevin's replies on
+**Sources:** Memory note `production-grade-before-push` (a focused
+test for each parser, gate and retry change). The replies on
 [#6207](https://github.com/generaltranslation/gt-cloud/pull/6207#discussion_r4688383333),
-each naming the test that holds the fix. Brian's
-[97d2e5b](https://github.com/generaltranslation/gt-cloud/commit/97d2e5b054a7416a0f37cec3f3a637a494ee1842)
+each naming the test that holds the fix. [97d2e5b](https://github.com/generaltranslation/gt-cloud/commit/97d2e5b054a7416a0f37cec3f3a637a494ee1842)
 (the image code's tests live in `__tests__`).
 
 ## T3. No wall-clock assertion
@@ -63,7 +62,7 @@ t0 = time.monotonic(); endpoint.up(); assert time.monotonic() - t0 < 2.0
 clock = FakeClock(); endpoint.up(clock=clock); assert clock.waited == 0
 ```
 
-**Source:** Kevin's memory note `wall-clock-tests-fail-the-gate`.
+**Source:** Memory note `wall-clock-tests-fail-the-gate`.
 
 ## T4. A reader is tested on a real answer's shape, and stand-ins keep the real signature
 
@@ -77,7 +76,7 @@ its shape, with any customer content replaced, as a generated fixture. A
 stand-in that takes `*args, **kwargs` or the real signature fails when the
 signature changes.
 
-**Sources:** Kevin's memory notes `real-files-before-a-reader-joins` and
+**Sources:** Memory notes `real-files-before-a-reader-joins` and
 `stand-ins-on-signature-change`.
 
 ## T5. Tests run with every key unset
@@ -89,7 +88,7 @@ time, and a CI job or command that runs tests with keys in its environment.
 shell. Run tests with the provider keys removed (`env -u` for each), so a
 test that would call a paid service fails at once.
 
-**Source:** Kevin's memory note `tests-with-keys-unset`, 2026-11-19.
+**Source:** Memory note `tests-with-keys-unset`, 2026-11-19.
 
 ## T6. A change runs the tests that read its file by path
 
@@ -101,5 +100,5 @@ table, and no search by function name reaches them. Search the tests for
 the changed file's name with `rg -l -F <file name> tests` before choosing
 which to run.
 
-**Sources:** Kevin's memory notes `tests-that-read-source` and
+**Sources:** Memory notes `tests-that-read-source` and
 `prompt-headings-are-keys`.

@@ -24,7 +24,7 @@ class Review(BaseModel):
 review = models.call(prompt, schema=Review)
 ```
 
-**Source:** Kevin's code rule 8 for his translation pipeline repositories:
+**Source:** Code rule 8 of the translation pipelines' agent rules:
 "Every model call uses a strict response schema".
 
 ## P2. Kinds and reasons are typed fields
@@ -48,8 +48,7 @@ class Line(TypedDict):
 if line["part_of"] is not None: ...
 ```
 
-**Source:** Brian's
-[4160ff8](https://github.com/generaltranslation/gt-cloud/commit/4160ff8f4a12664703dadff713f3db22aa2c67bc)
+**Source:** [4160ff8](https://github.com/generaltranslation/gt-cloud/commit/4160ff8f4a12664703dadff713f3db22aa2c67bc)
 and
 [d5ae706](https://github.com/generaltranslation/gt-cloud/commit/d5ae7069c2c11a1ef477acfc715978726d8daca5)
 (the leftover check knows a kept name "by its kept_as and its place").
@@ -72,11 +71,10 @@ folder = Path(os.environ["WORK"]) / "image"
 def run(folder: Path, job: str) -> None: ...
 ```
 
-**Sources:** Brian's
-[5ac7738](https://github.com/generaltranslation/gt-cloud/commit/5ac773810c7356d9d5f6365b0ba2a636d308a6e1)
+**Sources:** [5ac7738](https://github.com/generaltranslation/gt-cloud/commit/5ac773810c7356d9d5f6365b0ba2a636d308a6e1)
 ("tcimg names the work folder and the job, not $WORK and $JOB") and
 [cdb829d](https://github.com/generaltranslation/gt-cloud/commit/cdb829d482ac0e8528de5d4ed7445beb008a1780)
-(imports at the module's top). Kevin's memory note
+(imports at the module's top). Memory note
 `monkeypatch-global-a-thread-swaps`.
 
 ## P4. A new name never hides an old one
@@ -88,7 +86,7 @@ a local or a function in the same module.
 `UnboundLocalError` in every judged session, and a local `cut` hid the
 module's `cut`. Search the module for the name as a word before adding it.
 
-**Source:** Kevin's memory note `new-name-hides-old-name`.
+**Source:** Memory note `new-name-hides-old-name`.
 
 ## P5. Lint and types gate the commit by exit code
 
@@ -100,8 +98,7 @@ failed lint.
 and a second review. Commit only inside `if [ $rc -eq 0 ]`, and give every
 suppression its code, such as `# type: ignore[arg-type]`, and a reason.
 
-**Sources:** Kevin's memory note `lint-rc-gates-commit`. Brian's
-[#6189](https://github.com/generaltranslation/gt-cloud/pull/6189) test plan
+**Sources:** Memory note `lint-rc-gates-commit`. [#6189](https://github.com/generaltranslation/gt-cloud/pull/6189) test plan
 (`uv run pytest` and `ruff check` clean).
 
 ## P6. Work on the crop, not the whole image
@@ -122,8 +119,7 @@ gap = grey[y0:y1, x0:x1]
 gap = image[y0:y1, x0:x1].astype(np.float32) @ GREY
 ```
 
-**Source:** Brian's
-[#6189](https://github.com/generaltranslation/gt-cloud/pull/6189), section
+**Source:** [#6189](https://github.com/generaltranslation/gt-cloud/pull/6189), section
 "Memory": line breaking checks the combination count before building it,
 measured lines keep a cropped ink mask, and fill components are yielded one
 at a time.

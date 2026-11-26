@@ -2,9 +2,10 @@
 
 A patch makes one observed case pass. A mechanism decides from a typed
 field, a measurement or a maintained library, so it holds on inputs nobody
-looked at. Kevin asked on 2026-11-24 for the image pull requests' "regexes
-and fragile patches" to become "robust, maintainable mechanisms", and Brian
-Lou's cleanup of the same stack removed regexes and temporary workarounds.
+looked at. The decisions log of 2026-11-24 asks for the image pull
+requests' regexes and fragile patches to become maintainable mechanisms,
+and the cleanup of the same stack removed regexes and temporary
+workarounds.
 
 Commit links below are to `github.com/generaltranslation/gt-cloud`.
 
@@ -19,7 +20,7 @@ is not a finding.
 
 **Why:** a model or a person may reword the text at any time, and the
 branch then changes with no error. The decision belongs in a field that a
-schema types. Brian named this class on 2026-11-25: "doing a regex match on
+schema types. A review of 2026-11-25 named this class: "doing a regex match on
 the existence of a sentence in the prompt".
 
 ```ts
@@ -36,14 +37,13 @@ is_name = line["note"].startswith("kept as a name")
 is_name = line["kept_as"] == "name"
 ```
 
-**Sources:** Brian's relayed Slack words, 2026-11-25. Brian's
-[b1551e9](https://github.com/generaltranslation/gt-cloud/commit/b1551e9535428d41d8d9f3195c735a71953cf56c)
+**Sources:** A review relayed on 2026-11-25. Commits [b1551e9](https://github.com/generaltranslation/gt-cloud/commit/b1551e9535428d41d8d9f3195c735a71953cf56c)
 (a worker works in the folder passed as its args, "rather than one read from
 its task's words"),
 [4160ff8](https://github.com/generaltranslation/gt-cloud/commit/4160ff8f4a12664703dadff713f3db22aa2c67bc)
 (a kept line records why it was kept as its own field, `kept_as`), and the
 body of [#6186](https://github.com/generaltranslation/gt-cloud/pull/6186)
-("nothing parses the worker's prompt"). Kevin, decisions log 2026-11-24
+("nothing parses the worker's prompt"). Decisions log 2026-11-24
 23:28 PST.
 
 ## M2. No case-tuned constant
@@ -55,8 +55,8 @@ a branch for one named input.
 
 **Why:** a value tuned on one case breaks the next case, and nothing records
 which case it was tuned on. On 2026-10-16 an audit counted 72 case-tuned
-rules among 108 added in one day, and Kevin said "i dont want band aids. i
-want this to just be able to do it". A rule that must be tuned is measured
+rules among 108 added in one day, and the ruling that followed asked for
+no band-aids: the system has to handle the case itself. A rule that must be tuned is measured
 from the input itself, or it is registered with its case and the mechanism
 that will replace it.
 
@@ -72,8 +72,8 @@ states the sample it was measured on, such as "188 word pairs of eleven
 images", is the registered form and passes. A codec or library setting with
 its purpose stated is no tuned rule.
 
-**Sources:** Kevin, decisions log 2026-10-16, "Fixes are mechanisms, not
-band-aids". Kevin's memory note `no-bandaids-and-self-tagging`.
+**Sources:** Decisions log 2026-10-16, "Fixes are mechanisms, not
+band-aids". Memory note `no-bandaids-and-self-tagging`.
 
 ## M3. No hand-rolled parser or language table where a maintained library exists
 
@@ -83,8 +83,8 @@ header. Check the table below and the repository's dependencies first;
 gt-cloud's `packages/node` already depends on
 `@formatjs/icu-messageformat-parser`.
 
-**Why:** a format's edge cases are many, and a library has met them. Brian
-flagged "a hand-rolled icu parser" on 2026-11-25. His own fixes read a
+**Why:** a format's edge cases are many, and a library has met them. A review of
+2026-11-25 flagged "a hand-rolled icu parser". The cleanup's fixes read a
 file's bit depth from OpenCV's decode and a face's monospace from its font
 tables, in place of rules written by hand.
 
@@ -116,8 +116,7 @@ import { parse, TYPE } from '@formatjs/icu-messageformat-parser';
 const pieces = parse(message).map((el) => (el.type === TYPE.argument ? { arg: el.value } : { text: el.value }));
 ```
 
-**Sources:** Brian's relayed Slack words, 2026-11-25. Brian's
-[7a43680](https://github.com/generaltranslation/gt-cloud/commit/7a43680b635333d8e0232ece1b871b823c4222c6)
+**Sources:** A review relayed on 2026-11-25. Commits [7a43680](https://github.com/generaltranslation/gt-cloud/commit/7a43680b635333d8e0232ece1b871b823c4222c6)
 (bit depth from OpenCV's decode) and
 [24435db](https://github.com/generaltranslation/gt-cloud/commit/24435db67a0bda651f2e430387d02295d524c803)
 (monospace from the font tables).
@@ -140,8 +139,7 @@ const CRITIC_GAP_MS = 30 * 60_000;
 const { criticGapMinutes } = await tcimg.start(job);
 ```
 
-**Sources:** Brian's
-[90a1f11](https://github.com/generaltranslation/gt-cloud/commit/90a1f11e4b83afba69928e81e651bb5622381717)
+**Sources:** [90a1f11](https://github.com/generaltranslation/gt-cloud/commit/90a1f11e4b83afba69928e81e651bb5622381717)
 (a rule in one prompt file that every judge reads),
 [9891f59](https://github.com/generaltranslation/gt-cloud/commit/9891f59c6e271c55800e0866103e379fafa889e7)
 (the particles listed once),
@@ -173,11 +171,10 @@ if img.dtype != np.uint8:
     raise ImageRefused(f"{img.dtype} images are not supported; send an 8-bit PNG or JPEG")
 ```
 
-**Sources:** Kevin, decisions log 2026-11-25 04:59 PST (an off step that
-recorded its keys and drew nothing is "a silent fallback"). Kevin's memory
+**Sources:** Decisions log 2026-11-25 04:59 PST (an off step that
+recorded its keys and drew nothing is "a silent fallback"). Memory
 note `free-agent-no-flag-gpu-required` (a job with no GPU fails at its start
-with a plain line). Brian's
-[#6189](https://github.com/generaltranslation/gt-cloud/pull/6189) (16-bit,
+with a plain line). [#6189](https://github.com/generaltranslation/gt-cloud/pull/6189) (16-bit,
 float and CMYK images "are refused up front instead of being clipped") and
 [eaa3b96](https://github.com/generaltranslation/gt-cloud/commit/eaa3b968997cd7b88182435cad4c74eb2972b0b5)
 (a call whose due time cannot be read fails).
@@ -206,8 +203,7 @@ catch (error) {
 }
 ```
 
-**Sources:** Brian's
-[812353e](https://github.com/generaltranslation/gt-cloud/commit/812353ec6791f7998e5ebcd1b7e0f5b14c0f840b)
+**Sources:** [812353e](https://github.com/generaltranslation/gt-cloud/commit/812353ec6791f7998e5ebcd1b7e0f5b14c0f840b)
 (settle every ask before failing, bound failed retries) and
 [#6189](https://github.com/generaltranslation/gt-cloud/pull/6189) ("A
 retryable model or service failure leaves its request open").
@@ -229,16 +225,14 @@ const audio = await synthesize(text);
 if (text.length > MAX_TAKE_CHARS) throw new ToolInputError('split the text into takes');
 ```
 
-**Sources:** Brian on
-[#5904](https://github.com/generaltranslation/gt-cloud/pull/5904#issuecomment-6926079504)
+**Sources:** [#5904](https://github.com/generaltranslation/gt-cloud/pull/5904#issuecomment-6926079504)
 (`synthesize_speech` refuses text over 3,000 characters "before it calls
 ElevenLabs") and
 [#5904](https://github.com/generaltranslation/gt-cloud/pull/5904#issuecomment-6872880659)
 (batches stop starting when the next may not finish, and finished batches
-are written). Kevin's review on
+are written). The review on
 [#5902](https://github.com/generaltranslation/gt-cloud/pull/5902#issuecomment-6871659893)
-(a turn recorded while a call still runs bills that call as 0). Brian's
-[#6189](https://github.com/generaltranslation/gt-cloud/pull/6189) ("GPU time
+(a turn recorded while a call still runs bills that call as 0). [#6189](https://github.com/generaltranslation/gt-cloud/pull/6189) ("GPU time
 spent on a failed or timed-out POST is billed").
 
 ## M8. Code never overrides the judgement it asked a model for
@@ -258,8 +252,7 @@ if review.accepts(wording) and not looks_abbreviated(wording): ...
 if review.accepts(wording) and not review.is_short_form: ...
 ```
 
-**Source:** Brian's
-[10633dd](https://github.com/generaltranslation/gt-cloud/commit/10633ddd8ab0fbcd4a176c9fc0d734097336eccd)
+**Source:** [10633dd](https://github.com/generaltranslation/gt-cloud/commit/10633ddd8ab0fbcd4a176c9fc0d734097336eccd)
 ("the reading's review alone decides a short form, with no code detector
 that overrides it").
 
@@ -283,11 +276,10 @@ const session = await activeSession(workspaceKey);
 if (session && session.namespace !== job.namespace) throw new AgentCoreError('workspace held by another kind', { retryable: true });
 ```
 
-**Sources:** Kevin's review on
+**Sources:** The review on
 [#5905](https://github.com/generaltranslation/gt-cloud/pull/5905#issuecomment-6871660755)
 (media sessions started in the same deploy that registers their consumer
-reach old workers) and Brian's answer on
+reach old workers) and the answer on
 [#5905](https://github.com/generaltranslation/gt-cloud/pull/5905#issuecomment-6872880985)
-(the flags stay off until every worker has the consumer). Brian's
-[#6189](https://github.com/generaltranslation/gt-cloud/pull/6189) callout
+(the flags stay off until every worker has the consumer). [#6189](https://github.com/generaltranslation/gt-cloud/pull/6189) callout
 on deploy order.

@@ -1,17 +1,15 @@
 ---
 name: gt-code-review
 description: >-
-  The code review General Translation applies to gt-cloud and to Kevin's
-  translation pipelines, built from Kevin Liu's rulings, Brian Lou's reviews
-  and cleanups of the image and video translation stacks, and Matt Pocock's
-  TypeScript guidance. Its rules cover mechanism over patch (no regex on
+  The code review General Translation applies to gt-cloud and to its
+  translation pipelines. Its rules cover mechanism over patch (no regex on
   model or prompt text, no case-tuned constants, no hand-rolled parser where
-  a library exists, no silent fallback), cutover over compatibility, tests,
-  TypeScript, Python, naming and writing, and security and keys, each with
-  what to look for, why, a bad and good example and its source. A diff scan
-  lists candidate lines by rule. Use when reviewing a diff, a branch or a
-  pull request in gt-cloud or a pipeline repository, before any push to
-  gt-cloud, or when Kevin asks for a review to Brian's standard.
+  a library exists, no silent fallback), cutover over compatibility, code
+  quality and readability, tests, TypeScript, Python, naming and writing,
+  and security and keys, each with what to look for, why, a bad and good
+  example and its source. A diff scan lists candidate lines by rule. Use
+  when reviewing a diff, a branch or a pull request in gt-cloud or a
+  pipeline repository, or before any push to gt-cloud.
 metadata:
   title: Code review
   areas: lints, workflow
@@ -23,18 +21,21 @@ metadata:
 # Code review
 
 General Translation (GT) ships its product from gt-cloud
-(`generaltranslation/gt-cloud`). Brian Lou reviews the image and video
-translation stacks there. On 2026-11-24 Kevin said "idk why you keep
-shipping sloppy code" after Brian rebuilt the image stack as #6184 to #6187
-and opened #6189 for its findings. On 2026-11-25 Brian named what he removed
-next: regexes, temporary workarounds and patches, a regex match on a
-sentence in a prompt, and a hand-rolled ICU parser. This skill turns those
-reviews into rules that an agent applies before Brian has to.
+(`generaltranslation/gt-cloud`). The image and video translation stacks
+reached it in late 2026 through
+[#6184](https://github.com/generaltranslation/gt-cloud/pull/6184) to
+[#6187](https://github.com/generaltranslation/gt-cloud/pull/6187), and the
+review findings that followed are in
+[#6189](https://github.com/generaltranslation/gt-cloud/pull/6189). The
+cleanup removed regexes over prompt text, temporary workarounds and
+patches, and named a hand-rolled ICU parser for replacement. This skill
+turns those reviews into rules that an agent applies before a person has
+to.
 
 Every rule is stated once, in the reference file of its group, with what to
 look for, why, a short bad and good example, and its source: a decisions
-log row or memory note for Kevin, a pull request or commit link for Brian,
-and a URL for Matt Pocock. `references/sources.md` lists every source.
+log row, a memory note, a pull request, a commit or a published page.
+`references/sources.md` lists every source.
 
 ## 1. How to run a review
 
@@ -51,17 +52,17 @@ and a URL for Matt Pocock. `references/sources.md` lists every source.
    with `git grep -I -F -e <name>` for each new or removed name, constant
    and prompt heading (rule C5).
 4. **Walk the groups.** Apply each group's rules in the order of section 3.
-   The mechanism group comes first because it held most of Brian's
-   findings. Code that the diff moves verbatim from another file is
+   The mechanism group comes first because it held most of the image
+   stack's findings. Code that the diff moves verbatim from another file is
    reviewed like new code, and its findings are marked "carried", so the
    author can decide whether the fix belongs in this change.
 5. **Verify each finding.** A finding names the file and line, the input
    that breaks it, and what goes wrong. Check it against the whole stack
-   before it is reported, as Brian's #6189 states it did. A finding that
+   before it is reported, as #6189 states its findings were. A finding that
    does not hold up after the check goes to a "checked and not a finding"
    list with the reason, as #6189's "Not changed" section does.
 6. **Report.** Use the format of section 2. Post nothing to GitHub or
-   Slack unless Kevin asks; the review goes to the session or person that
+   Slack unless the owner asks; the review goes to the session or person that
    asked for it.
 
 The review reads code. It runs tests only where the asker allows it, and it
@@ -193,7 +194,7 @@ git diff <base>...<head> | node skills/gt-code-review/scripts/scan-diff.mjs --js
 
 The scan covers M1, M2, M3, M5, C1, C2, T2, T3, TS1, TS2, TS4, P5, S1, S3,
 N3 and N6, whose comment blocks over 6 lines are a proposed limit and
-Kevin's to confirm. It skips test files for M1 and for the non-null part
+the owner's to confirm. It skips test files for M1 and for the non-null part
 of TS2. On gt-cloud #6208 (133 files, 10,085 added lines) it lists 20
 candidates. Two trial reviewers confirmed 14 of them, in 3 findings, and
 found 25 more findings by reading, so the scan is a start and never the
@@ -209,16 +210,11 @@ build a diff for every rule from generated lines.
 - [ ] Each finding names a file and line, an input, what goes wrong and a fix.
 - [ ] Each finding was checked against the whole stack before it was written.
 - [ ] Findings that did not hold up are listed with the reason.
-- [ ] Nothing was posted to GitHub or Slack without Kevin's word.
+- [ ] Nothing was posted to GitHub or Slack without the owner's word.
 
 ## Authors
 
-Kevin Liu wrote this skill and owns its rules. The mechanism, cutover,
-naming and writing rules come from his rulings on the translation
-pipelines. Brian Lou's reviews and cleanups of the image and video
-translation stacks are the source of the rules that cite him, and each of
-those rules links his commit or pull request. Matt Pocock's published
-TypeScript guidance is the source of the rules that cite his pages.
+Kevin Liu wrote this skill and owns its rules.
 
 ## Sources
 

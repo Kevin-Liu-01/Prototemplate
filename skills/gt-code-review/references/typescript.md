@@ -1,6 +1,6 @@
 # TypeScript
 
-The rules come from Matt Pocock's Total TypeScript, each with the page it
+The rules come from Total TypeScript, each with the page it
 was read on, on 2026-11-25. The adoption table at the end compares
 gt-cloud's compiler and lint configuration with them.
 
@@ -171,8 +171,8 @@ and https://www.totaltypescript.com/the-empty-object-type-in-typescript.
 inferred from several branches, except a component that returns JSX.
 
 **Why:** a declared return type is the contract that callers read, and an
-edit inside the function cannot change it by accident. Pocock's earlier tip
-said to infer by default; his later article says to declare at the top
+edit inside the function cannot change it by accident. The earlier tip
+said to infer by default; the later article says to declare at the top
 level, and this skill follows the later one.
 
 **Sources:** https://www.totaltypescript.com/should-you-declare-return-types
