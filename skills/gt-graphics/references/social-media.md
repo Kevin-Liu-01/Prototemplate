@@ -8,11 +8,13 @@
 | --- | --- | --- |
 | Still | 16:9, 3840 by 2160 PNG master | 4:5, 2160 by 2700 PNG master |
 | Film or clip | 16:9, 1920 by 1080 MP4 | 4:5, 1080 by 1350 MP4 |
+| Clip for the X video feed | 9:16, 1080 by 1920 MP4, 15 to 60 seconds | not used |
 | GIF | 1400 wide, posted alone | not used: LinkedIn shows a GIF as a still |
 | Profile banner | 1500 by 500, with a 3000 by 1000 master | 1584 by 396, with a 3168 by 792 master |
 
 - Each X picture has a LinkedIn twin cut at 4:5 from the same composition, named with `-li` (`logo-rounds.png` and `logo-rounds-li.png`). The Series A launch rendered both from one script (funding-graphics `social/tools/render_compare.sh`).
 - A film is H.264 with AAC audio and the moov atom at the front (`-movflags +faststart`). The first frame carries the point, since both feeds autoplay muted.
+- A demo, breakdown or case study meant for X's video feed gets a vertical 9:16 cut beside its 16:9 one, with the hook in its first one or two seconds. The 16:9 cut still plays in the main feed.
 - The web copies Prototemplate serves sit in `public/media/socials/`: webp stills at quality 90, and films re-encoded at CRF 23 to 24 with a poster frame beside each (`<name>-film.mp4`, `<name>-poster.jpg`).
 - A LinkedIn banner keeps its type and marks clear of the profile photo (from x 440 in banner pixels) and of the phone crop (x 132 to 1452).
 

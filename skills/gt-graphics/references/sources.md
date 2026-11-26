@@ -28,3 +28,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 ## Added 2026-11-25
 
 - `references/social-media.md` and its pointer in "The hand-off to a post": the Series A launch media in funding-graphics `social/` (`tools/render_compare.sh` for the 16:9 and 4:5 cuts, `posts.py` for the alt text), the LinkedIn banner notes of 2026-11-10 (sizes, the photo and phone safe zones), `public/media/README.md` (the X banner at 1500 by 500), `src/lib/seo/route.ts` and `src/lib/seo/card-url.ts` (the tags and the 1200 by 630 card), and gt-website `references/blog.md` (`ogImages`). The picture rules (shipped first, the logo only, Katagami Text, undithered faces, no decorative dots, the names that stay out) are Kevin's launch rules, relayed by the launch-social session on 2026-11-25. The platform limits stay in the wiki's `social-draft`, which took the lessons of Eliot's "The Mechanics of Attention" (2026-11-19) on the same day.
+
+## Added 2026-11-26
+
+- The 9:16 row for the X video feed and its line in `references/social-media.md`: Maran's notes on X's ranking after its change of 2026-11-25 (x.com/TheMaran/status/2125596121754173810), which name vertical 9:16 clips of 15 to 60 seconds with the hook in the first one or two seconds as the video feed's best format, and say square and 16:9 video still play in the main feed. Kevin sent the post on 2026-11-26 through the Graphics session. The platform side of the rule is in the wiki's `social-draft`.

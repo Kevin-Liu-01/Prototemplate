@@ -119,7 +119,7 @@ const BLOCKS_INPUT: readonly BlockInput[] = [
   {
     id: 'attention',
     label: 'What earns attention',
-    lead: 'Eliot’s guide to growing on X, read on 2026-11-25 and restated. The social-draft skill holds these rules, and Kevin’s rules win where the two differ.',
+    lead: 'Eliot’s guide to growing on X and Maran’s notes on X’s ranking after its change of 2026-11-25, restated. The social-draft skill holds these rules, and Kevin’s rules win where they differ.',
     rows: [
       {
         id: 'reader-first',
@@ -148,14 +148,25 @@ const BLOCKS_INPUT: readonly BlockInput[] = [
         body: 'A claim against common practice, a prediction someone can check, a moment that shows work people no longer need to do, proof with numbers, or a hard idea explained in under 30 seconds.',
       },
       {
-        id: 'four-checks',
-        title: 'Four checks',
-        body: 'Easy to quote, adds something new, true, and gives people something to reply to. A draft that fails one waits.',
+        id: 'sends-over-likes',
+        title: 'Sends and replies over likes',
+        body: 'X now ranks a copied link, a reply from a mutual follower, a quote and a DM share far above a like, and a report, a mute or a “not interested” costs more than any post earns. Original research, step-by-step guides, tool lists and breakdowns rank; bait, spam replies and gm posts get muted.',
+        link: { href: 'https://x.com/TheMaran/status/2125596121754173810', label: 'Maran’s notes on X' },
+      },
+      {
+        id: 'replies',
+        title: 'Replies with substance',
+        body: 'Reply to mutuals with a fact, a counter-angle or a specific example, never “nice”, and keep a good thread going over several replies. Don’t race to be the first reply on a post that just went up.',
+      },
+      {
+        id: 'checks',
+        title: 'Five checks',
+        body: 'Easy to quote, adds something new, true, gives people something to reply to, and worth copying the link of or sending to someone. A draft that fails one waits.',
       },
       {
         id: 'kevin-wins',
         title: 'Where Kevin’s rules win',
-        body: 'The guide’s triggers built on status or belonging read as slogans and bait, so they stay out. Kevin’s X posts are lowercase, give real detail, and end on that detail with no closing one-liner and at most one emoji.',
+        body: 'Eliot’s triggers built on status or belonging read as slogans and bait, so they stay out, and Maran’s exact weights have no source, so only their order is kept. Kevin’s X posts are lowercase, give real detail, and end on that detail with no closing one-liner and at most one emoji.',
       },
     ],
   },
@@ -325,6 +336,7 @@ const BLOCKS_INPUT: readonly BlockInput[] = [
         specs: [
           { key: 'X still', value: '16:9, 3840 by 2160 master, under 5 MB, up to four per post' },
           { key: 'X film', value: '16:9, 1920 by 1080 MP4, one per post' },
+          { key: 'X video feed', value: '9:16, 1080 by 1920 MP4, 15 to 60 seconds, hook in the first one or two seconds' },
           { key: 'X GIF', value: '1400 wide, under 15 MB, posted alone' },
           { key: 'LinkedIn still', value: '4:5, 2160 by 2700 master' },
           { key: 'LinkedIn film', value: '4:5, 1080 by 1350 MP4; a GIF shows as a still, so none are used' },
