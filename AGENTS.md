@@ -45,6 +45,7 @@ The skills live in `skills/<slug>/SKILL.md`. In this repository they are already
 | A slide, the brand deck or any General Translation presentation | `gt-deck` | `pnpm build:deck` |
 | Options, directions, variants, converging on a pick | `gt-explorations` | `pnpm capture:pages --direction <slug>` |
 | A lint, a gate, a new rule to enforce | `gt-lints` | `pnpm lint:static`, `pnpm lint:all`, `pnpm lint:public` |
+| Reviewing a diff or a PR, or code before a gt-cloud push | `gt-code-review` | `git diff <base>...<head> \| node skills/gt-code-review/scripts/scan-diff.mjs` |
 | Proving a fix or feature is done | `gt-verify` | `pnpm check:pages`, `pnpm lint:lines <url>` |
 | Commits, PRs, review bots, stacks, landing | `gt-ship` | `pnpm build`, `pnpm build:updated --staged`, `pnpm lint:public` |
 | Workflows, subagents, briefs, handoffs, resuming after a stop | `gt-orchestration` | `pnpm skills:usage` |

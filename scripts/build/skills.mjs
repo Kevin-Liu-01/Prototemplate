@@ -110,6 +110,7 @@ const ORDER = [
   'gt-deck',
   'gt-explorations',
   'gt-lints',
+  'gt-code-review',
   'gt-motion',
   'gt-graphics',
   'gt-dither',

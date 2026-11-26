@@ -138,6 +138,7 @@ Each skill carries the scripts its procedure calls, self-contained so an install
 | Skill | Script | What it does |
 | --- | --- | --- |
 | `gt-aesthetic` | `measure-type.mjs` | measure-type.mjs: reads the type of a page's headings and leads the way Kevin reviews it, at each width and theme, and flags what the gt-aesthetic review standard calls a defect. |
+| `gt-code-review` | `scan-diff.mjs` | The candidate scan of gt-code-review (SKILL.md section 4). |
 | `gt-deck` | `check-deck.mjs` | Reads the brand deck's source in a Prototemplate checkout and reports where the slide files and the places that restate them disagree. |
 | `gt-deck` | `heroicon-symbol.mjs` | Prints the sprite \<symbol> for one or more Heroicons 20 solid glyphs, in the form deck/parts/head.html uses, read from the @heroicons/react package in a Prototemplate checkout. |
 | `gt-diagrams` | `deck-page.mjs` | Writes the brand deck as one HTML file with its fonts inlined, assembled the way deck/shoot-slide.mjs assembles it (parts/head.html, every slide in order, parts/tail.html, deck/fonts/deck-fonts.css in place of \<!--FONTS-->), so figure-check.mjs can open one slide in present mode ... |

@@ -133,6 +133,7 @@ reader on GitHub or in an imported copy; `pnpm build:skills` writes it.
 | Aesthetic | Brand deck | [`gt-deck`](./skills/gt-deck/SKILL.md) | Graphics |
 | Aesthetic | Exploration rounds and convergence | [`gt-explorations`](./skills/gt-explorations/SKILL.md) | Website, Landing pages, Graphics |
 | Lints | Lints and gates | [`gt-lints`](./skills/gt-lints/SKILL.md) |  |
+| Lints | Code review | [`gt-code-review`](./skills/gt-code-review/SKILL.md) | Workflow |
 | Motion | Motion rules | [`gt-motion`](./skills/gt-motion/SKILL.md) | Landing pages, Videos, Diagrams |
 | Graphics | Blog and brand graphics | [`gt-graphics`](./skills/gt-graphics/SKILL.md) |  |
 | Graphics | Dither and artifact pictures | [`gt-dither`](./skills/gt-dither/SKILL.md) | Aesthetic |
