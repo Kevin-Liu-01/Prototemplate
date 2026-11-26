@@ -147,6 +147,7 @@ kept here as proof of what the identity does off the page.
 | `glyph-globe/launch.webp` | the launch look's first frame at 1920x1080, the poster `GlyphGlobe` shows before its first frame and without WebGL2. |
 | `gt-globe-*-transparent.png` | each globe's twin: the same art on an alpha ground, for laying beside a partner's mark. A dark twin is for a dark ground and a light twin for a light one. |
 | `gt-globe-*.webp` | each globe on its ground in lossless WebP, pixel-identical to its PNG. `/brand` shows these files, and its download links keep to the PNGs. |
+| `transcreate/<slug>-pair.mp4` | one featured film with the English original on top and the Japanese version below, each 1280x720, at the original's frame rate, H.264 and AAC 5.1 with the moov atom at the front: the original's stereo in the front pair, the Japanese dub in the surround pair, and a silent centre and LFE. The slugs are `profound` (80 s) and `canva-offline` (179.2 s at 30000/1001 fps, 5,371 frames, 70.5 MB). |
 | `transcreate/all-side.mp4` | the eight Transcreate videos at once, from English to Japanese: a 2 by 4 grid of product videos, each cell labelled with the product's name and holding the English original on the left and the Japanese version on the right, 2560x1440, 30.1 s at 30 fps, H.264 with no sound and the moov atom at the front (11.9 MB). |
 | `transcreate/all-columns.mp4` | the same eight videos as columns, each with the English original on top and the Japanese version below, 4096x576, 30.1 s at 30 fps, H.264 with no sound and the moov atom at the front (8.5 MB). |
 | `transcreate/<slug>-side.mp4` | one Transcreate video with the English original on the left and the Japanese version on the right, each panel labelled and 1280x720 (1280x640 for Linear Releases), 29.2 to 30.0 s at the original's frame rate, H.264 and AAC with the original's sound and the moov atom at the front. The slugs are `notion`, `linear-releases`, `linear-agents`, `ramp-budgets`, `asana`, `notion-mail`, `stripe-sessions` and `miro-canvas`. |
@@ -161,14 +162,14 @@ kept here as proof of what the identity does off the page.
 | `socials/` | the Series A launch media shown on `/socials`, posted from 2026-11-10 to 2026-11-23: web copies made from the launch's masters. `series-a-<name>.webp` is the X cut at 16:9 (3840x2160) and `series-a-<name>-li.webp` its LinkedIn twin at 4:5 (2160x2700), webp at quality 90; `series-a-<name>-film.mp4` is H.264 at CRF 23 to 24 with AAC and the moov atom at the front, 1920x1080, beside its `-poster.jpg` frame. The films are the 10 s X film, launch b, and the comparisons of the X film's rounds, the launch film finalists and rounds, the translation demo's rounds and the music; the stills are the logo, poster, blog header, type and mosaic comparisons and the pieces that did not ship. Every comparison puts the shipped version first. |
 | `ideas/` | the pictures shown on `/ideas`. `<artwork>-sample-light.webp`, `<artwork>-high-dark.webp` and `<artwork>-phone-light.webp` are the three readiness artwork versions (`app-window`, `iso-surfaces`, `dither-surfaces`) captured at 2x: the sample score in light and the high score in dark at 1440 wide, and the sample at 390 wide. `ref-<name>.webp` are the brand's visual references from the deck's Visual references slide (`deck/shots/thumb`), Wikimedia Commons photographs in grayscale. Webp at quality 90. |
 
-The Transcreate videos play on `/transcreate`, which holds the grid of all
-eight, on `/transcreate/videos`, which holds each video side by side or
+The Transcreate videos play on `/transcreate`, which holds the two featured
+films and the grid of all eight, on `/transcreate/videos`, which holds each video side by side or
 stacked, on `/transcreate/databricks`, which holds the four Databricks
 videos at once and each one stacked or in Japanese, and on
 `/transcreate/ramp`, which holds Ramp Procurement's three versions at once,
 the original alone and each translation stacked or alone. Each original
-video belongs to its company: Notion, Linear, Ramp, Asana, Stripe, Miro or
-Databricks. `/transcreate/credits` names each original, with its title and
+video belongs to its company: Profound, Canva, Notion, Linear, Ramp, Asana,
+Stripe, Miro or Databricks. `/transcreate/credits` names each original, with its title and
 address where they are recorded. Each of the eight clips shows 29 to 30
 seconds of its original, the Databricks videos run 80 to 125 seconds, and
 Ramp Procurement runs 15 seconds. Ramp Procurement's frames are the frames

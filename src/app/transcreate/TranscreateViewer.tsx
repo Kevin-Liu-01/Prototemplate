@@ -38,12 +38,12 @@ import {
   DATABRICKS,
   DATABRICKS_GRID,
   DATABRICKS_OWNER,
+  FEATURED,
   GRID,
   MEDIA,
   OWNERS,
   PANEL_WIDTH,
   pairPath,
-  PROFOUND,
   RAMP,
   RAMP_GRID,
   RAMP_VERSIONS,
@@ -329,10 +329,12 @@ function VideoFigure({ entry }: { entry: Entry }) {
 function Credits() {
   return (
     <dl className='tc-credits'>
-      <div key={PROFOUND.slug}>
-        <dt>{PROFOUND.name}</dt>
-        <dd>The original video belongs to {PROFOUND.owner}.</dd>
-      </div>
+      {FEATURED.map((film) => (
+        <div key={film.slug}>
+          <dt>{film.name}</dt>
+          <dd>The original video belongs to {film.owner}.</dd>
+        </div>
+      ))}
       {VIDEOS.map((video) => (
         <div key={video.slug}>
           <dt>{video.name}</dt>
@@ -421,22 +423,22 @@ function VideoRow({ entry, active }: { entry: Entry; active: string }) {
 }
 
 /**
- * The featured film's row: its number, name and line, then the compare
+ * A featured film's row: its number, name and line, then the compare
  * viewer across the whole column, gutter included, so the film gets the
  * widest frame the book has.
  */
-function FeatureRow({ active }: { active: string }) {
-  const on = active === PROFOUND_ROW;
+function FeatureRow({ film, n, active }: { film: (typeof FEATURED)[number]; n: number; active: string }) {
+  const on = active === film.slug;
   return (
-    <article id={PROFOUND_ROW} className={cn('gx-row', on && 'is-active')} data-id={PROFOUND_ROW} aria-current={on ? 'true' : undefined}>
+    <article id={film.slug} className={cn('gx-row', on && 'is-active')} data-id={film.slug} aria-current={on ? 'true' : undefined}>
       <div className='gx-n'>
-        <b>01</b>
+        <b>{pad2(n)}</b>
       </div>
       <div className='gx-body'>
-        <h3>{PROFOUND.name}</h3>
+        <h3>{film.name}</h3>
         <p>English to Japanese, with a Japanese dub</p>
       </div>
-      <PairViewer film={PROFOUND} className='tc-feature-film' />
+      <PairViewer film={film} className='tc-feature-film' />
     </article>
   );
 }
@@ -477,7 +479,7 @@ type TranscreateBookProps = {
 /**
  * One Transcreate page read top to bottom inside the flow sheet, in the
  * graphics book's row grammar: the head, then the page's sections under
- * their dividers. The overview holds the featured film (PairViewer), the grid of all eight and a contents
+ * their dividers. The overview holds the two featured films (PairViewer), the grid of all eight and a contents
  * list of the five pages, the videos page each video, the Databricks page
  * its grid and each of its videos, the Ramp page its grid and each of its
  * versions, and the credits page the originals and the author's methods. The reading state is the shared read line
@@ -517,10 +519,12 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
         contents={
           route === 'overview' ? (
             <nav className='gx-toc pt-book-toc' aria-label='Contents'>
-              <a href={`#${PROFOUND_ROW}`} onClick={(e) => onContents(e, PROFOUND_ROW)}>
-                <span>{PROFOUND.name}</span>
-                <small>{`${PROFOUND.seconds} s`}</small>
-              </a>
+              {FEATURED.map((film) => (
+                <a key={film.slug} href={`#${film.slug}`} onClick={(e) => onContents(e, film.slug)}>
+                  <span>{film.name}</span>
+                  <small>{`${film.seconds} s`}</small>
+                </a>
+              ))}
               <a href={`#${GRID_ROW}`} onClick={(e) => onContents(e, GRID_ROW)}>
                 <span>All eight videos</span>
                 <small>8 videos</small>
@@ -551,11 +555,13 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
           <Part
             index={1}
             id='transcreate-featured'
-            label='Featured film'
-            fact={`${PROFOUND.seconds} s`}
-            lead='The launch film plays beside its Japanese version, and its speech is dubbed into Japanese.'
+            label='Featured films'
+            fact={`${FEATURED.length} films`}
+            lead='Each launch film plays beside its Japanese version, and its speech is dubbed into Japanese.'
           >
-            <FeatureRow active={active} />
+            {FEATURED.map((film, i) => (
+              <FeatureRow key={film.slug} film={film} n={i + 1} active={active} />
+            ))}
           </Part>
           <Part index={2} id='transcreate-all' label='All eight videos' fact='8 videos' lead='The eight videos play at once in one frame.'>
             <VideoRow entry={GRID_ENTRY} active={active} />
