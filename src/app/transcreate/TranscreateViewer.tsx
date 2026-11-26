@@ -370,7 +370,7 @@ const AUTHOR = 'Kevin Liu';
 /** The methods Kevin Liu devised for Transcreate, each with one sentence, in the order a video meets them. */
 const METHODS: readonly { name: string; text: string }[] = [
   { name: 'Scene loop', text: 'Each scene gets one agent worker, and a second model that sees only the source and the output names the most visible difference.' },
-  { name: 'Measured end', text: 'A scene ends only when that critic names no difference twice in a row and no measured check holds the scene.' },
+  { name: 'Measured end', text: 'A scene ends only when two critic answers in a row name no difference that holds it and no measured check holds the scene.' },
   { name: 'End by kind', text: 'A minor critic answer ends a scene only when it concerns font or colour.' },
   { name: 'Flicker measure', text: "A claim of flicker holds only where the output changes beyond the source's own motion, read as optical flow." },
   { name: 'Letters check', text: 'Every frame of the output is read, and no frame may show a letter of the source text.' },
