@@ -1,7 +1,7 @@
 /**
  * The words and the files of /marks/ascii: the dot-matrix header first,
- * then the armillary in dots, then the armillary in ink, then how
- * they are built. Every file is written by a script
+ * then the armillary in dots, then the armillary in ink, then its two other
+ * versions, the ring turn and the gimbal, then how they are built. Every file is written by a script
  * (scripts/build/ascii-header.mjs, scripts/build/ascii-armillary.mjs and
  * scripts/build/armillary-gif.mjs) into public/marks/ascii.
  */
@@ -13,7 +13,7 @@ export const FILES = '/marks/ascii';
 export type AsciiFile = { file: string; label: string; bytes: number };
 
 export const LEAD =
-  'The General Translation header as a terminal draws it, the globe and the name on one grid of round dots, then the logo as an armillary sphere whose pieces each turn on their own axis, in dots and in ink, each as a GIF in both themes with its files.';
+  'The General Translation header as a terminal draws it, the globe and the name on one grid of round dots, then the logo as an armillary sphere whose pieces each turn on their own axis, in dots and in ink, and in two more versions, each as a GIF in both themes with its files.';
 
 export const HEADER_ID = 'header';
 export const HEADER_TITLE = 'The header';
@@ -65,6 +65,28 @@ export const ARMILLARY_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: str
   { file: 'gt-armillary-light.gif', label: 'GIF on paper', ground: 'On paper' },
 ];
 
+export const RINGS_ID = 'ring-turn';
+export const RINGS_TITLE = 'The ring turn';
+export const RINGS_LEAD =
+  'The armillary with its rings in place. The ring and the T hold still while the meridian and the G each turn once round their own rings, the meridian clockwise and the G the other way, so the meridian’s gap and the G’s mouth travel round them. The lap starts and ends on the logo.';
+
+/** The ring turn's GIFs, on ink and on paper. */
+export const RINGS_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string })[] = [
+  { file: 'gt-armillary-rings-dark.gif', label: 'GIF on ink', ground: 'On ink' },
+  { file: 'gt-armillary-rings-light.gif', label: 'GIF on paper', ground: 'On paper' },
+];
+
+export const GIMBAL_ID = 'gimbal';
+export const GIMBAL_TITLE = 'The gimbal';
+export const GIMBAL_LEAD =
+  'The armillary as a gimbal. The rings part, the ring outside and the meridian inside, and each swings on the one around it: the ring about the vertical, the G about the line through its nodes and the meridian about the vertical the G carries, while the T holds level at the centre. The lap starts and ends on the logo.';
+
+/** The gimbal's GIFs, on ink and on paper. */
+export const GIMBAL_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string })[] = [
+  { file: 'gt-armillary-gimbal-dark.gif', label: 'GIF on ink', ground: 'On ink' },
+  { file: 'gt-armillary-gimbal-light.gif', label: 'GIF on paper', ground: 'On paper' },
+];
+
 export const BUILD_ID = 'build';
 export const BUILD_TITLE = 'How it is built';
 export const BUILD_LEAD = 'Three scripts write every file on this page, and none draws anything by hand.';
@@ -80,7 +102,7 @@ export const BUILD_PARTS: readonly { term: string; body: string }[] = [
   },
   {
     term: 'pnpm build:armillary-gif',
-    body: 'Turns the logo’s pieces through the lap in scripts/build/armillary.json, cuts each line where another passes over it as the logo does, has Chrome draw each frame, and encodes the lap with ffmpeg in 16 grays and no dithering. At rest the pieces are the logo. It needs no server.',
+    body: 'Moves the logo’s pieces through each version’s lap in scripts/build/armillary.json, the axis turn, the ring turn and the gimbal, cuts each line where another passes over it as the logo does, has Chrome draw each frame, and encodes each lap with ffmpeg in 16 grays and no dithering. At rest the pieces are the logo. It needs no server.',
   },
 ];
 

@@ -29,6 +29,10 @@ import {
   BUILD_PARTS,
   BUILD_TITLE,
   FILES,
+  GIMBAL_FILES,
+  GIMBAL_ID,
+  GIMBAL_LEAD,
+  GIMBAL_TITLE,
   GRID_ROWS,
   HEADER_FILES,
   HEADER_ID,
@@ -36,6 +40,10 @@ import {
   HEADER_TITLE,
   kb,
   LEAD,
+  RINGS_FILES,
+  RINGS_ID,
+  RINGS_LEAD,
+  RINGS_TITLE,
   sectionsIn,
   TEXT_CAPTION,
   TEXT_TITLE,
@@ -53,6 +61,8 @@ const PARTS: readonly Part[] = [
   { id: HEADER_ID, title: HEADER_TITLE, lead: HEADER_LEAD, fact: `${HEADER_FILES.length} files`, count: HEADER_FILES.length },
   { id: ASCII_ARMILLARY_ID, title: ASCII_ARMILLARY_TITLE, lead: ASCII_ARMILLARY_LEAD, fact: '2 GIFs', count: ASCII_ARMILLARY_FILES.length },
   { id: ARMILLARY_ID, title: ARMILLARY_TITLE, lead: ARMILLARY_LEAD, fact: `${ARMILLARY_FILES.length} GIFs`, count: ARMILLARY_FILES.length },
+  { id: RINGS_ID, title: RINGS_TITLE, lead: RINGS_LEAD, fact: `${RINGS_FILES.length} GIFs`, count: RINGS_FILES.length },
+  { id: GIMBAL_ID, title: GIMBAL_TITLE, lead: GIMBAL_LEAD, fact: `${GIMBAL_FILES.length} GIFs`, count: GIMBAL_FILES.length },
   { id: BUILD_ID, title: BUILD_TITLE, lead: BUILD_LEAD, fact: `${BUILD_PARTS.length} scripts`, count: BUILD_PARTS.length },
 ];
 
@@ -114,16 +124,20 @@ function Section({ id, n, fact, title, lead, active, children }: SectionProps) {
   );
 }
 
+type GifFile = AsciiFile & { ground: string };
+
 type Files = {
   headerFiles: readonly AsciiFile[];
-  asciiArmillaryFiles: readonly (AsciiFile & { ground: string })[];
-  armillaryFiles: readonly (AsciiFile & { ground: string })[];
+  asciiArmillaryFiles: readonly GifFile[];
+  armillaryFiles: readonly GifFile[];
+  ringsFiles: readonly GifFile[];
+  gimbalFiles: readonly GifFile[];
   /** the header as plain text */
   text: string;
   /** the header's grid in dots, from its SVG's viewBox */
   grid: { cols: number; rows: number };
-  /** one lap of the armillary in seconds, from scripts/build/armillary.json */
-  lap: number;
+  /** the armillary's laps in seconds, the shortest and the longest of its versions, from scripts/build/armillary.json */
+  laps: { min: number; max: number };
 };
 
 type BookProps = Files & {
@@ -133,7 +147,26 @@ type BookProps = Files & {
   updated: PageUpdated;
 };
 
-function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiArmillaryFiles, armillaryFiles, text, grid, lap }: BookProps) {
+/** One version of the armillary in ink: its GIF on each ground, then its downloads. */
+function InkGifs({ files, alt }: { files: readonly GifFile[]; alt: string }) {
+  return (
+    <div className='ax-body'>
+      <div className='ax-gifs'>
+        {files.map((f) => (
+          <figure key={f.file} className='ax-fig'>
+            <img className='ax-gif' src={`${FILES}/${f.file}`} width={496} height={496} alt={`${alt}, ${f.ground.toLowerCase()}`} loading='lazy' decoding='async' />
+            <figcaption>
+              <h3>{f.ground}</h3>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+      <Downloads files={files} />
+    </div>
+  );
+}
+
+function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiArmillaryFiles, armillaryFiles, ringsFiles, gimbalFiles, text, grid, laps }: BookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
@@ -179,22 +212,9 @@ function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiAr
           <Downloads files={asciiArmillaryFiles} />
         </div>
       );
-    if (id === ARMILLARY_ID)
-      return (
-        <div className='ax-body'>
-          <div className='ax-gifs'>
-            {armillaryFiles.map((f) => (
-              <figure key={f.file} className='ax-fig'>
-                <img className='ax-gif' src={`${FILES}/${f.file}`} width={496} height={496} alt={`The logo as an armillary sphere, its pieces turning, ${f.ground.toLowerCase()}`} loading='lazy' decoding='async' />
-                <figcaption>
-                  <h3>{f.ground}</h3>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-          <Downloads files={armillaryFiles} />
-        </div>
-      );
+    if (id === ARMILLARY_ID) return <InkGifs files={armillaryFiles} alt='The logo as an armillary sphere, its pieces turning' />;
+    if (id === RINGS_ID) return <InkGifs files={ringsFiles} alt='The logo as an armillary sphere, the meridian and the G turning round their own rings' />;
+    if (id === GIMBAL_ID) return <InkGifs files={gimbalFiles} alt='The logo as a gimbal, its rings parting and swinging round the still T' />;
     return (
       <div className='ax-body'>
         <Terms items={BUILD_PARTS} />
@@ -212,8 +232,8 @@ function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiAr
         updated={updated}
         facts={[
           { icon: 'globe', key: 'Grid', value: `${grid.cols} by ${grid.rows} dots` },
-          { icon: 'sync', key: 'Lap', value: `${lap} s` },
-          { icon: 'attachment', key: 'Files', value: headerFiles.length + asciiArmillaryFiles.length + armillaryFiles.length },
+          { icon: 'sync', key: 'Laps', value: laps.min === laps.max ? `${laps.min} s` : `${laps.min} to ${laps.max} s` },
+          { icon: 'attachment', key: 'Files', value: headerFiles.length + asciiArmillaryFiles.length + armillaryFiles.length + ringsFiles.length + gimbalFiles.length },
         ]}
         contents={
           <nav className='pt-book-toc' aria-label='Contents'>
@@ -242,10 +262,10 @@ export type AsciiViewerProps = Files & {
 };
 
 /**
- * The dot-matrix header, the ASCII armillary and the armillary GIF on the viewer shell. The list
+ * The dot-matrix header, the ASCII armillary and the armillary GIFs on the viewer shell. The list
  * hangs under Marks > ASCII; flow keys, so Space and the arrows scroll.
  */
-export default function AsciiViewer({ updated, headerFiles, asciiArmillaryFiles, armillaryFiles, text, grid, lap }: AsciiViewerProps) {
+export default function AsciiViewer({ updated, headerFiles, asciiArmillaryFiles, armillaryFiles, ringsFiles, gimbalFiles, text, grid, laps }: AsciiViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const activeOut = useRef<string>(HEADER_ID);
@@ -268,7 +288,7 @@ export default function AsciiViewer({ updated, headerFiles, asciiArmillaryFiles,
       }}
     >
       <Sheet variant='flow' scrollRef={sheetRef}>
-        <AsciiBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} headerFiles={headerFiles} asciiArmillaryFiles={asciiArmillaryFiles} armillaryFiles={armillaryFiles} text={text} grid={grid} lap={lap} />
+        <AsciiBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} headerFiles={headerFiles} asciiArmillaryFiles={asciiArmillaryFiles} armillaryFiles={armillaryFiles} ringsFiles={ringsFiles} gimbalFiles={gimbalFiles} text={text} grid={grid} laps={laps} />
       </Sheet>
     </ViewerShell>
   );

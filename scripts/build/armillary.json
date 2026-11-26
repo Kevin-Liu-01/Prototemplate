@@ -1,24 +1,88 @@
 {
-  "$comment": "The armillary's pieces and their lap, shared by pnpm build:armillary-gif and pnpm build:ascii-armillary through scripts/lib/armillary-pieces.mjs. Lengths are in the logo's 256 unit square (src/lib/logo-construction.json), angles in degrees, times in seconds. The meridian and the G are the logo's stretches of their rings (GtLogoArmillary.frame.ts): each runs a few degrees past the logo's own end into the line that cuts it at rest, so at rest the cut, the logo's gap, sets its end. t is the T in the logo's plane: the bar from the meridian's centre line at rest (left) to the ring's (end), the stem from the bar to the ring's, and the fillets between them, from the construction's new block. gaps are the space a line leaves where another passes over it, each the mean of the construction's pair: c where the meridian passes over the G or the T (its outer side only), meridian where the G passes over the meridian, and stem where the G and the T pass over each other or the meridian. deep is how far out of the outline, as a share of the radius, a line must stand to cut the T or be cut by it. Each piece turns once in its window, easing in and out, and the windows start half a second apart, so the three move on their own and the lap starts and ends on the still logo. step is the degrees between drawn points.",
-  "lap": {
-    "seconds": 4.5,
-    "fps": 20
-  },
-  "turns": {
-    "meridian": {
-      "from": 0.5,
-      "to": 3,
-      "turn": 360
+  "$comment": "The armillary's pieces and the laps of its three versions, shared by pnpm build:armillary-gif and pnpm build:ascii-armillary through scripts/lib/armillary-pieces.mjs. Lengths are in the logo's 256 unit square (src/lib/logo-construction.json), angles in degrees, times in seconds. versions holds each version's motion, its files' stem, its lap and its turns: each piece named in turns moves once in its window, easing in and out: a turn is one whole turn of its degrees, and a swing tilts the piece out by its degrees, back through the logo to as far the other way, and back to the logo, the windows start half a second apart, and a piece not named stays still, so every lap starts and ends on the still logo. In axis the meridian turns about the poles, the G about the line of its bar and the T about its stem. In rings the ring of each line keeps the logo's tilt and the line's stretch slides once round it, the meridian clockwise on screen and the G the other way, so the meridian's gap and the G's mouth travel round. In gimbal the lines nest as a gimbal's rings and each swings: the outer ring about the vertical axis, the G inside it about the line through its nodes, which the ring carries, and the meridian inside the G about the vertical axis the G carries, while the T holds level at the centre. Its nest parts the rings as a gimbal's are parted: each ring's radius changes by its number (the ring out, the G and the meridian in), easing out over open and back over close, which waits until the swings have all but settled, so the rings ride one inside another and are one sphere again at rest. The meridian and the G are the logo's stretches of their rings (GtLogoArmillary.frame.ts): each runs a few degrees past the logo's own end into the line that cuts it at rest, so at rest the cut, the logo's gap, sets its end. t is the T in the logo's plane: the bar from the meridian's centre line at rest (left) to the ring's (end), the stem from the bar to the ring's, and the fillets between them, from the construction's new block. gaps are the space a line leaves where another passes over it, each the mean of the construction's pair: c where the meridian passes over the G or the T (its outer side only), meridian where the G passes over the meridian, and stem where the G and the T pass over each other or the meridian, and where the turned outer ring passes over a line or under it. deep is how far out of the outline, as a share of the radius, a line must stand to cut the T or the outer ring or be cut by them. step is the degrees between drawn points.",
+  "versions": {
+    "axis": {
+      "motion": "axis",
+      "file": "gt-armillary",
+      "lap": {
+        "seconds": 4.5,
+        "fps": 20
+      },
+      "turns": {
+        "meridian": {
+          "from": 0.5,
+          "to": 3,
+          "turn": 360
+        },
+        "g": {
+          "from": 1,
+          "to": 3.5,
+          "turn": 360
+        },
+        "t": {
+          "from": 1.5,
+          "to": 4,
+          "turn": 360
+        }
+      }
     },
-    "g": {
-      "from": 1,
-      "to": 3.5,
-      "turn": 360
+    "rings": {
+      "motion": "rings",
+      "file": "gt-armillary-rings",
+      "lap": {
+        "seconds": 4,
+        "fps": 20
+      },
+      "turns": {
+        "meridian": {
+          "from": 0.5,
+          "to": 3,
+          "turn": 360
+        },
+        "g": {
+          "from": 1,
+          "to": 3.5,
+          "turn": -360
+        }
+      }
     },
-    "t": {
-      "from": 1.5,
-      "to": 4,
-      "turn": 360
+    "gimbal": {
+      "motion": "gimbal",
+      "file": "gt-armillary-gimbal",
+      "lap": {
+        "seconds": 5,
+        "fps": 20
+      },
+      "turns": {
+        "ring": {
+          "from": 0.5,
+          "to": 3.5,
+          "swing": 40
+        },
+        "g": {
+          "from": 1,
+          "to": 4,
+          "swing": -50
+        },
+        "meridian": {
+          "from": 1.5,
+          "to": 4.5,
+          "swing": -60
+        }
+      },
+      "nest": {
+        "open": {
+          "from": 0.5,
+          "to": 1.5
+        },
+        "close": {
+          "from": 4,
+          "to": 4.8
+        },
+        "ring": 18,
+        "g": -8,
+        "meridian": -34
+      }
     }
   },
   "meridian": {

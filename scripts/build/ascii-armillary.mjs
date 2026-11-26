@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 /* oxlint-disable no-console -- a generator reporting what it wrote. */
 /**
- * Writes the ASCII armillary to public/marks/ascii: the armillary GIF's own
- * frames (scripts/lib/armillary-pieces.mjs, the logo's pieces each turning on
- * its own axis) on the dot-matrix header's grid. Frames at rest take the
+ * Writes the ASCII armillary to public/marks/ascii: the axis armillary GIF's
+ * own frames (scripts/lib/armillary-pieces.mjs, the logo's pieces each
+ * turning on its own axis) on the dot-matrix header's grid. Frames at rest take the
  * header's globe dots from its SVG, so the still is the header's globe. The
  * script stops unless the pieces drawn at rest give those same dots, so the
  * lap leaves and lands on the still with no jump; the ring never moves, so a
  * still dot on the ring that sits on the threshold is kept in every frame. The grid, the threshold, the dot and the
  * grounds are the header's (scripts/build/ascii-header.json): the globe
  * mark.size dots across inside a margin, and a cell takes a dot when the
- * frame's lines cover mark.threshold of it. The lap is
- * scripts/build/armillary.json's.
+ * frame's lines cover mark.threshold of it. The lap is the axis version's in
+ * scripts/build/armillary.json.
  *
  * Chrome draws each moving frame at `SCALE` pixels a dot with no
  * antialiasing, one sample a pixel as the header samples, and reads each
@@ -50,6 +50,8 @@ helpIfAsked(import.meta.url);
 const OUT = 'public/marks/ascii';
 const H = JSON.parse(readFileSync(join(ROOT, 'scripts/build/ascii-header.json'), 'utf8'));
 const A = JSON.parse(readFileSync(join(ROOT, 'scripts/build/armillary.json'), 'utf8'));
+/** the version these dots draw */
+const V = A.versions.axis;
 /** pixels a dot Chrome draws each moving frame at: the header's samples a dot each way */
 const SCALE = H.samples;
 
@@ -64,7 +66,7 @@ const header = readFileSync(join(ROOT, OUT, 'gt-ascii-header.svg'), 'utf8');
 const headerDots = new Set([...header.matchAll(/M(\d+)\.5 (\d+)\.5h0/g)].map((m) => `${m[1]},${m[2]}`));
 const stillGrid = Array.from({ length: N }, (_, r) => Array.from({ length: N }, (_, c) => headerDots.has(`${c},${r}`)));
 
-const times = lapTimes(A);
+const times = lapTimes(V);
 const browser = await chromium.launch({ executablePath: chromePath(), headless: true });
 let grids;
 try {
@@ -92,10 +94,10 @@ try {
       },
       { svg, N, SCALE, threshold: H.mark.threshold }
     );
-  const draw = (a) => frameSvg(A, a, { view, px: [N * SCALE, N * SCALE], ground: '#000', ink: '#fff' }).replace('<svg ', '<svg shape-rendering="crispEdges" ');
+  const draw = (a) => frameSvg(A, V.motion, a, { view, px: [N * SCALE, N * SCALE], ground: '#000', ink: '#fff' }).replace('<svg ', '<svg shape-rendering="crispEdges" ');
   /* the seam: the pieces drawn at rest against the header's globe. The ring never moves, so a still dot on the
      ring that the pieces' sampling misses (a cell on the threshold) is kept in every frame */
-  const piecesAtRest = await sample(draw(angles(A, 0)));
+  const piecesAtRest = await sample(draw(angles(V, 0)));
   const ringBand = (c, r) => Math.abs(Math.hypot(view[0] + (c + 0.5) * unit - 128, view[1] + (r + 0.5) * unit - 128) - SPHERE.ring) <= SPHERE.weight / 2 + unit / 2;
   const pinned = [];
   stillGrid.forEach((row, r) => row.forEach((on, c) => on && !piecesAtRest[r][c] && ringBand(c, r) && pinned.push([c, r])));
@@ -108,7 +110,7 @@ try {
   console.log(`ascii-armillary: the pieces at rest match the header's globe (${pinned.length} ring dots pinned)`);
   grids = [];
   for (const s of times) {
-    const a = angles(A, s);
+    const a = angles(V, s);
     grids.push(atRest(a) ? stillGrid : pin(await sample(draw(a))));
   }
 } finally {
@@ -131,9 +133,9 @@ for (const [theme, [ground, ink]] of Object.entries(PALETTE)) {
   });
   const file = join(ROOT, OUT, `gt-ascii-armillary-${theme}.gif`);
   const filter = 'split[a][b];[a]palettegen=max_colors=16:stats_mode=full:reserve_transparent=0[p];[b][p]paletteuse=dither=none:diff_mode=rectangle';
-  execFileSync('ffmpeg', ['-v', 'error', '-y', '-framerate', String(A.lap.fps), '-i', join(dir, 'f%03d.png'), '-lavfi', filter, '-loop', '0', file]);
+  execFileSync('ffmpeg', ['-v', 'error', '-y', '-framerate', String(V.lap.fps), '-i', join(dir, 'f%03d.png'), '-lavfi', filter, '-loop', '0', file]);
   rmSync(dir, { recursive: true, force: true });
-  console.log(`ascii-armillary: wrote ${OUT}/gt-ascii-armillary-${theme}.gif, ${grids.length} frames at ${A.lap.fps} fps, ${N} dots a side, ${N * H.png.pitch} px, ${Math.round(statSync(file).size / 1024)} KB`);
+  console.log(`ascii-armillary: wrote ${OUT}/gt-ascii-armillary-${theme}.gif, ${grids.length} frames at ${V.lap.fps} fps, ${N} dots a side, ${N * H.png.pitch} px, ${Math.round(statSync(file).size / 1024)} KB`);
 }
 writeFileSync(join(ROOT, OUT, 'gt-ascii-armillary.txt'), dotsText(grids[0]));
 console.log(`ascii-armillary: wrote ${OUT}/gt-ascii-armillary.txt`);
