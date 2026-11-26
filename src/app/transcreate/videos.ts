@@ -1,7 +1,7 @@
 /**
  * The videos the /transcreate pages show, in page order, and the web copies
- * under public/media/transcreate: the two featured films, Introducing Profound and Introducing Canva Offline,
- * each as one file that packs its original and its Japanese version; the grid of all eight, side by side and as
+ * under public/media/transcreate: the three featured films, Introducing Profound, Introducing Canva Offline and
+ * Introducing the Visual Worksuite, each as one file that packs its original and its Japanese version; the grid of all eight, side by side and as
  * columns, and each video side by side and stacked; then the four Databricks
  * videos, with their grid and each video in Japanese and stacked; then Ramp
  * Procurement in English, Spanish and Japanese, with its grid and each
@@ -77,8 +77,27 @@ export const CANVA: PairFilm & { owner: string; seconds: number } = {
   back: '/transcreate#canva-offline',
 };
 
+/**
+ * The third featured film: Canva's Introducing the Visual Worksuite and its Japanese version. The Japanese picture
+ * is the free agent's run of 2026-11-26 with its reruns of the same day. The film has music and no speech, so the
+ * file holds the original's stereo and the film has no dub. The poster is frame 40 of the packed picture.
+ */
+export const VISUAL: PairFilm & { owner: string; seconds: number } = {
+  slug: 'visual-worksuite',
+  name: 'Introducing the Visual Worksuite',
+  owner: 'Canva',
+  file: 'visual-worksuite-pair',
+  language: 'Japanese',
+  panel: { width: 1280, height: 720 },
+  frames: 1737,
+  fps: 25,
+  seconds: 69,
+  sound: 'original',
+  back: '/transcreate#visual-worksuite',
+};
+
 /** The featured films in page order. */
-export const FEATURED: readonly (PairFilm & { owner: string; seconds: number })[] = [PROFOUND, CANVA];
+export const FEATURED: readonly (PairFilm & { owner: string; seconds: number })[] = [PROFOUND, CANVA, VISUAL];
 
 /** The grid of all eight: side by side at 2560 by 1440, or as columns at 4096 by 576; 30 seconds, no sound. */
 export const GRID = {
@@ -205,10 +224,10 @@ export const OWNERS: readonly string[] = [
   ...new Set([...FEATURED.map((film) => film.owner), ...VIDEOS.map((video) => video.owner), DATABRICKS_OWNER, RAMP.owner]),
 ];
 
-/** Every video on the pages: the two featured films, the eight, the four Databricks videos and Ramp Procurement. */
+/** Every video on the pages: the three featured films, the eight, the four Databricks videos and Ramp Procurement. */
 export const VIDEO_COUNT = FEATURED.length + VIDEOS.length + DATABRICKS.length + 1;
 
-/** Every film the compare viewer opens, by its slug: the two featured films, the eight, the four Databricks videos and the two Ramp translations. */
+/** Every film the compare viewer opens, by its slug: the three featured films, the eight, the four Databricks videos and the two Ramp translations. */
 export const PAIR_FILMS: readonly PairFilm[] = [
   ...FEATURED,
   ...VIDEOS.map((video) => ({

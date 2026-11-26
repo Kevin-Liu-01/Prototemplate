@@ -436,7 +436,7 @@ function FeatureRow({ film, n, active }: { film: (typeof FEATURED)[number]; n: n
       </div>
       <div className='gx-body'>
         <h3>{film.name}</h3>
-        <p>English to Japanese, with a Japanese dub</p>
+        <p>{film.sound === 'dub' ? 'English to Japanese, with a Japanese dub' : 'English to Japanese, with the original music'}</p>
       </div>
       <PairViewer film={film} className='tc-feature-film' />
     </article>
@@ -479,7 +479,7 @@ type TranscreateBookProps = {
 /**
  * One Transcreate page read top to bottom inside the flow sheet, in the
  * graphics book's row grammar: the head, then the page's sections under
- * their dividers. The overview holds the two featured films (PairViewer), the grid of all eight and a contents
+ * their dividers. The overview holds the three featured films (PairViewer), the grid of all eight and a contents
  * list of the five pages, the videos page each video, the Databricks page
  * its grid and each of its videos, the Ramp page its grid and each of its
  * versions, and the credits page the originals and the author's methods. The reading state is the shared read line
@@ -557,7 +557,7 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
             id='transcreate-featured'
             label='Featured films'
             fact={`${FEATURED.length} films`}
-            lead='Each launch film plays beside its Japanese version, and its speech is dubbed into Japanese.'
+            lead='Each launch film plays beside its Japanese version, and a film with speech has a Japanese dub.'
           >
             {FEATURED.map((film, i) => (
               <FeatureRow key={film.slug} film={film} n={i + 1} active={active} />
