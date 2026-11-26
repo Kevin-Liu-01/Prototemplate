@@ -47,6 +47,15 @@ An open-source post runs in this order (2026-10-04):
 - A claim Kevin said not to mention stays out.
 - The copy test and the hard rules of the skill apply to every post.
 
+## A launch week
+
+The Series A launch (2026-11-10 to 2026-11-23) set the shape for a launch that runs longer than one day.
+
+- Kevin posts from his personal accounts. The company account and Archie post the announcement, the team photo and the product film; Kevin quotes them on X and reshares them on LinkedIn (2026-11-09).
+- The week is a series: one numbered X thread a day on one part of the work (the logo, the posters, the films, the demo, the music, the website), with the LinkedIn posts spread over the days after it.
+- Each post says how a piece was made: the rounds, the votes, the numbers and the tools, with the shipped version shown first. Captions follow the picture rules in `gt-graphics` (`references/social-media.md`): no Ramp or Sierra, no design agency and nothing about an unannounced raise.
+- Every post's copy, media, alt text, date and platform live in one file that builds the preview Kevin reviews (funding-graphics `social/posts.py`).
+
 ## After Kevin posts
 
 When Kevin has edited and posted a draft, read the version he posted and
@@ -60,3 +69,4 @@ carry its register into the next channel (2026-08-14).
   thread (2026-09-21), the demo post (2026-09-24), the open-source credit
   order (2026-10-04) and reading his posted edits (2026-08-14).
 - Kevin's wiki: `skills/personal/social-draft/SKILL.md` (platform formats).
+- "A launch week": the launch-social session's notes and funding-graphics `social/PLAN.md` and `social/posts.py` (2026-11-09, Kevin's cut to one week from his personal accounts), and Kevin's launch rules relayed by that session on 2026-11-25.

@@ -124,6 +124,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   blog: 'post',
   atlas: 'book',
   graphics: 'gallery',
+  socials: 'post',
   motion: 'film',
   raise: 'film',
   transcreate: 'language',
@@ -148,6 +149,8 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   handbook:
     'wiki how kevin works operating principles quality bar done multi-session playbook lanes sessions forks product map glossary terms decisions rulings agents',
   blog: 'posts articles changelog releases devlog docs redesign rewriting fuma nama daniel white cuelume sound designing docs for humans open source grants slash credits carousel spotlight',
+  socials:
+    'social x twitter linkedin posts launch series a threads banners cards opengraph og meta alt text media sizes attention mechanics eliot',
   graphics: 'illustrations visuals covers carousel slides glyphfield exports pipeline manifest blog posts figures cuelume slash grants fumadocs',
   atlas: 'magazine atlas long writing why notes stripe press looks docs reader fumadocs printed page covers languages locator',
   motion:

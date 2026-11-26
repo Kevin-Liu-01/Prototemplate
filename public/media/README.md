@@ -158,6 +158,7 @@ kept here as proof of what the identity does off the page.
 | `transcreate/ramp-procurement-<lang>.mp4` | one version of Ramp Procurement alone, 1280x1280, 15.4 s at 60 fps, H.264 with no sound and the moov atom at the front. The versions are `en` (the original), `es` (Spanish, Spain) and `ja` (Japanese). |
 | `transcreate/ramp-procurement-<lang>-stacked.mp4` | the English original on top and the Spanish (`es`) or Japanese (`ja`) version below, 1280x2560. |
 | `transcreate/*.jpg` | each Transcreate video's poster frame, at the video's size. |
+| `socials/` | the Series A launch media shown on `/socials`, posted from 2026-11-10 to 2026-11-23: web copies made from the launch's masters. `series-a-<name>.webp` is the X cut at 16:9 (3840x2160) and `series-a-<name>-li.webp` its LinkedIn twin at 4:5 (2160x2700), webp at quality 90; `series-a-<name>-film.mp4` is H.264 at CRF 23 to 24 with AAC and the moov atom at the front, 1920x1080, beside its `-poster.jpg` frame. The films are the 10 s X film, launch b, and the comparisons of the X film's rounds, the launch film finalists and rounds, the translation demo's rounds and the music; the stills are the logo, poster, blog header, type and mosaic comparisons and the pieces that did not ship. Every comparison puts the shipped version first. |
 
 The Transcreate videos play on `/transcreate`, which holds the grid of all
 eight, on `/transcreate/videos`, which holds each video side by side or

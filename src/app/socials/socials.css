@@ -1,0 +1,228 @@
+/* Socials: the social work on the viewer shell.
+
+   The shell draws the frame; this sheet draws the rows inside the flow
+   sheet in the grammar the graphics book set: everything reads the
+   shell's --pt- tokens, the rules are --pt-hair and --pt-hair-soft, and
+   the figure frames carry the frame grammar every captured frame uses
+   (a 1px --pt-edge border, ink on hover and when the row is active). A
+   standard's facts sit in a two-column list ruled by soft hairlines. */
+
+/* ---------- the book column ----------
+   The column (.pt-book-col), the head, the contents, the band and the
+   section dividers are the shared book classes (BookHead, .pt-book-toc and
+   .pt-book-sec in BookView.css); this sheet draws the rows. */
+
+/* one section: its divider, then its rows; the rows rule themselves */
+.sx-cat {
+  display: flex;
+  flex-direction: column;
+}
+
+/* row: the number in the gutter on the title's baseline, the name, the
+   description, the figure and its meta line beside; one soft rule below
+   each; the scroll margin keeps a landed row off the edge */
+.sx-row {
+  display: grid;
+  grid-template-columns: var(--pt-gutter) minmax(0, 1fr);
+  gap: var(--pt-gutter-gap);
+  align-items: baseline;
+  padding: 24px 0 28px;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  border-image: linear-gradient(var(--pt-hair-soft) 0 0) var(--pt-bleed-bottom);
+  scroll-margin-top: 20px;
+}
+
+/* the last row of a section draws no rule: the next divider's rule, or the
+   book's end, follows it */
+.sx-cat .sx-row:last-child {
+  border-bottom: 0;
+  border-image-source: none;
+}
+
+.sx-n {
+  padding-top: 0;
+}
+
+/* the gutter number takes the size and the baseline of the title beside it */
+.sx-n b {
+  display: block;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the row being read: its number turns ink, as its row in the list does */
+.sx-row.is-active .sx-n b {
+  color: var(--pt-ink);
+}
+
+.sx-body {
+  min-width: 0;
+}
+
+.sx-body h3 {
+  margin: 0;
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-ink);
+  overflow-wrap: anywhere;
+}
+
+.sx-body > p {
+  max-width: var(--pt-measure);
+  margin: 4px 0 0;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+}
+
+/* the figure: the chosen version in a framed plate, the versions control under it */
+.sx-fig {
+  margin: 14px 0 0;
+}
+
+.sx-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-plate);
+  overflow: hidden;
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.sx-frame img,
+.sx-frame video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.sx-frame:hover {
+  border-color: var(--pt-ink);
+}
+
+.sx-frame:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.sx-row.is-active .sx-frame {
+  border-color: var(--pt-ink);
+}
+
+.sx-seg {
+  margin-top: 12px;
+}
+
+/* the meta line: the ground, the size, the count of versions */
+.sx-body .sx-line {
+  margin-top: 6px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sx-frame {
+    transition: none;
+  }
+}
+
+/* ---------- narrow ---------- */
+
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .sx-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  /* the number sits above the title at the meta step */
+  .sx-n b {
+    font-size: var(--pt-t-meta);
+    line-height: var(--pt-t-meta-lh);
+    letter-spacing: 0;
+  }
+}
+
+/* the note under a cut that shows the previous mark (src/lib/previous-mark.ts) */
+.sx-note {
+  margin-top: 8px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
+/* ---------- a standard's facts ---------- */
+
+.sx-specs {
+  max-width: var(--pt-measure);
+  margin: 12px 0 0;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.sx-specs > div {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: var(--pt-gutter-gap);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.sx-specs dt {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-titanium);
+}
+
+.sx-specs dd {
+  margin: 0;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- the path and the link under a row ---------- */
+
+.sx-body .sx-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  align-items: baseline;
+}
+
+.sx-line code {
+  overflow-wrap: anywhere;
+}
+
+.sx-link {
+  color: var(--pt-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.sx-link:hover {
+  text-decoration-color: var(--pt-ink);
+}
+
+.sx-link:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .sx-specs > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}

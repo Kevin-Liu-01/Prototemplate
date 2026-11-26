@@ -24,6 +24,7 @@ export type PageId =
   | 'ascii'
   | 'blog'
   | 'graphics'
+  | 'socials'
   | 'motion'
   | 'raise'
   | 'archive'
@@ -54,6 +55,7 @@ export const PAGE_NAMES: Readonly<Record<PageId, PageName>> = {
   ascii: { name: 'ASCII' },
   blog: { name: 'Blog' },
   graphics: { name: 'Graphics' },
+  socials: { name: 'Socials' },
   motion: { name: 'Motion' },
   raise: { name: 'Raise' },
   archive: { name: 'Archive' },

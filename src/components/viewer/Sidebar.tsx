@@ -129,6 +129,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   loading: 'sync',
   ascii: 'grid',
   blog: 'post',
+  socials: 'post',
   atlas: 'book',
   motion: 'film',
   raise: 'film',

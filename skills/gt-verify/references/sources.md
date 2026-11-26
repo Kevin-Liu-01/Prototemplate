@@ -24,3 +24,7 @@ Where every rule, number and script in `gt-verify` comes from. This list moved o
 ## Added 2026-10-10 (the New Onboarding and Dashboard session's review)
 
 - `scripts/row-diff.py`, its test `scripts/row-diff.test.py`, the Scripts table and step 3 of `references/parity-review.md`, and the third parity script in the opening paragraphs of `SKILL.md`: a copy of the docs parity audit's keeper `row-diff.py` (the `diff.py` that round 2 of the audit ran on 2026-10-09 for gt-cloud #5258 over 120 page and viewport keys), named as the stable version in the New Onboarding and Dashboard session's review of 2026-10-10 (plan item C2). The copy keeps the alignment, the threshold of 16 per channel, the crops and the noise pair, and adds `--help` and a `main()` so the test can import it. One key of the audit's shots re-read with the copy on 2026-10-10 printed the same line as the audit's pass 2 log.
+
+## Added 2026-11-25
+
+- "Cards" names `gt-graphics` (`references/social-media.md`) as the owner of the tag list and the card image as well as the design, so the tags are written down once.

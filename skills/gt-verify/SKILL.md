@@ -132,7 +132,7 @@ Work that shipped is done when production serves it. Kevin, 2026-10-01: "why doe
 - **Production runs the merged commit.** The newest Ready production deployment's `githubCommitSha` contains it (recipes, "The live deployment").
 - **The live page carries that deployment's stamp,** its longest `dpl_` id. Prototemplate's check is `gt-ship` section 8.
 - **The full-feature build is the one serving.** Spot-check one feature from each lane or build in production, in a fresh headless context.
-- **Cards.** OG and Twitter tags are read live after the deploy, the image answers `200 image/png`, and the card is opened and looked at (recipes; `gt-graphics` for the design).
+- **Cards.** OG and Twitter tags are read live after the deploy, the image answers `200 image/png`, and the card is opened and looked at (recipes; the tags and design in `gt-graphics`).
 - **Failed builds** leave the last good deployment serving, so a merged PR stays invisible (`gt-website` section 8, `gt-ship` section 8).
 
 ## 8. Fix the class

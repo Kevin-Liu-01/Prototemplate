@@ -161,6 +161,7 @@ Posts live in the `generaltranslation/content` repository, checked out in gt-clo
 - A post with new graphics is two pull requests. Merge the gt-cloud one (the images under `public/static/blogs/`, any new component) first and the content one second: every landing deploy checks out the tip of content main, so merging the content pull request publishes the post, and content first publishes it with broken images.
 - gt-website holds the rest: the components' contracts, the content preview app's stand-ins, the gitlink rule and the pull request titles (its blog section and `references/blog.md`).
 - `graphics/social/` holds the launch posts for each set (an X thread and a LinkedIn post) with the image each one carries.
+- Social pictures and films (X at 16:9, LinkedIn at 4:5, banners), what they may show, and the tags and image of a link's card are in `references/social-media.md`; `/socials` shows them with the media.
 
 ## Traps and fixes
 

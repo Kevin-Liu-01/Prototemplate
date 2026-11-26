@@ -240,6 +240,14 @@ const KNOWLEDGE: readonly Surface[] = [
     thumb('graphics')
   ),
   internal(
+    'socials',
+    pageLabel('socials'),
+    '/socials',
+    'The skills behind General Translation’s posts on X and LinkedIn, the Series A launch media, and the sizes and card tags each post follows.',
+    'Knowledge',
+    thumb('socials')
+  ),
+  internal(
     'motion',
     pageLabel('motion'),
     '/motion',

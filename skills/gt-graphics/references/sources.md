@@ -24,3 +24,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 ## Added 2026-10-31
 
 - "The hand-off to a post": Prototemplate's `content/blog/` held six posts on 2026-10-31 (`daniel-white`, `designing-docs-for-humans`, `fuma-nama`, `rewriting-our-docs`, `supporting-open-source-software`, `supporting-slash-companies`), so the line names no count. The same stale count was fixed on the SEO docs page in 077cf34e and in gt-website's `references/blog.md` in 20eb1e8b (2026-10-31).
+
+## Added 2026-11-25
+
+- `references/social-media.md` and its pointer in "The hand-off to a post": the Series A launch media in funding-graphics `social/` (`tools/render_compare.sh` for the 16:9 and 4:5 cuts, `posts.py` for the alt text), the LinkedIn banner notes of 2026-11-10 (sizes, the photo and phone safe zones), `public/media/README.md` (the X banner at 1500 by 500), `src/lib/seo/route.ts` and `src/lib/seo/card-url.ts` (the tags and the 1200 by 630 card), and gt-website `references/blog.md` (`ogImages`). The picture rules (shipped first, the logo only, Katagami Text, undithered faces, no decorative dots, the names that stay out) are Kevin's launch rules, relayed by the launch-social session on 2026-11-25. The platform limits stay in the wiki's `social-draft`, which took the lessons of Eliot's "The Mechanics of Attention" (2026-11-19) on the same day.

@@ -339,6 +339,7 @@ function pages() {
       id: '/graphics',
       paths: ['src/app/graphics', 'src/lib/graphics.ts', 'src/lib/graphics-model.ts', 'public/static/blogs', 'public/graphics'],
     },
+    { id: '/socials', paths: ['src/app/socials', 'src/lib/socials.ts', 'public/media/socials'] },
     // motion/ is the Videos session's untracked working folder: the site
     // publishes from public/media and public/motion, so those are listed
     { id: '/motion', paths: ['src/app/motion', 'src/lib/motion.ts', 'src/lib/motion-roster.ts', 'src/lib/kb-films.ts', 'public/motion', 'public/media', 'public/static/videos'] },

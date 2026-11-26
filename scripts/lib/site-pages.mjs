@@ -301,6 +301,7 @@ export function siteRoutes() {
     { id: 'handbook-decisions', path: '/docs/handbook/decisions', tools: 'check', source: handbook },
     { id: 'handbook-design', path: '/docs/handbook/design', tools: 'live', source: [...handbook, 'DESIGN.md'] },
     { id: 'graphics', path: '/graphics', tools: 'check live lines capture', source: ['src/app/graphics'] },
+    { id: 'socials', path: '/socials', tools: 'check live lines capture', source: ['src/app/socials', 'src/lib/socials.ts'] },
     { id: 'motion', path: '/motion', tools: 'check live lines capture', source: ['src/app/motion'] },
     { id: 'raise', path: '/raise', tools: 'check capture', source: ['src/app/raise', 'src/lib/raise.ts'] },
     { id: `motion-${pkg}`, path: `/motion/${pkg}`, tools: 'check live lines', source: ['src/app/motion'] },
