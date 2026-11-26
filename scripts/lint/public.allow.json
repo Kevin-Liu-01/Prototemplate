@@ -4,6 +4,7 @@
     { "path": "scripts/lint/public.mjs", "rules": ["machine-path"], "why": "its usage text names the two machine-path prefixes" },
     { "path": "scripts/lint/public.test.mjs", "rules": ["key-shape", "machine-path", "denylist"], "why": "its fixtures build each finding at runtime" },
     { "path": "src/app/transcreate/videos.ts", "rules": ["denylist"], "denylist_lines": [22], "why": "the Transcreate demo of a company's public video names that company; kept on 2026-10-28" },
-    { "path": "src/lib/search-index.ts", "rules": ["denylist"], "denylist_lines": [22], "why": "the search keywords of the same Transcreate pages" }
+    { "path": "src/lib/search-index.ts", "rules": ["denylist"], "denylist_lines": [22], "why": "the search keywords of the same Transcreate pages" },
+    { "path": "src/lib/socials.ts", "rules": ["denylist"], "denylist_lines": [70], "why": "the X film row of /socials names the announced Series A amount; Kevin kept the wording as public on 2026-11-26" }
   ]
 }
