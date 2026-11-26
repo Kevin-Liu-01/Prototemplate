@@ -16,7 +16,7 @@ import LogoSystem from './LogoSystem';
 import ProfileBanners from './ProfileBanners';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import GlyphGlobe from '@/components/shared/GlyphGlobe';
-import { byline } from '@/lib/credit';
+import { AUTHOR } from '@/lib/credit';
 import { LOCKUP, STRIP } from '@/lib/logo';
 import { CLEAR_ONE_LINE, CLEAR_STACKED, stated } from '@/lib/logo-numbers';
 import { PAGE_NAMES } from '@/lib/page-names';
@@ -201,7 +201,7 @@ const NOTE = (
       <Link href='/docs/handbook/design'>the design system</Link>, and every engine runs live
       in <Link href='/docs/handbook/libraries'>the libraries document</Link>.
     </p>
-    <p>{byline()}</p>
+    <p>{AUTHOR} made the brand on this page, and each trailer&rsquo;s post names its own authors.</p>
   </>
 );
 
