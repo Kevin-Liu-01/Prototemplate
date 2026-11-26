@@ -22,6 +22,7 @@ import { pad2 } from '@/lib/shell-data';
 import PairViewer from './PairViewer';
 import type { TranscreateRoute } from './sections';
 import {
+  AUTHOR_ROW,
   CREDITS_ROW,
   DATABRICKS_ROW,
   GRID_ROW,
@@ -363,6 +364,40 @@ function Credits() {
   );
 }
 
+/** The system's author, named in every page's head. */
+const AUTHOR = 'Kevin Liu';
+
+/** The methods Kevin Liu devised for Transcreate, each with one sentence, in the order a video meets them. */
+const METHODS: readonly { name: string; text: string }[] = [
+  { name: 'Scene loop', text: 'Each scene gets one agent worker, and a second model that sees only the source and the output names the most visible difference.' },
+  { name: 'Measured end', text: 'A scene ends only when that critic names no difference twice in a row and no measured check holds the scene.' },
+  { name: 'End by kind', text: 'A minor critic answer ends a scene only when it concerns font or colour.' },
+  { name: 'Flicker measure', text: "A claim of flicker holds only where the output changes beyond the source's own motion, read as optical flow." },
+  { name: 'Letters check', text: 'Every frame of the output is read, and no frame may show a letter of the source text.' },
+  { name: 'Wording ledger', text: 'One wording and one look of each text hold for the whole video, so every scene draws the text the same way.' },
+  { name: 'Weight search', text: "The source's words are drawn back at each weight, and the weight whose strokes match the source is kept." },
+  { name: 'Seams', text: 'A line that crosses a scene cut is drawn in order across the cut, and a check confirms that both sides agree.' },
+  { name: 'Zoom record', text: 'A zoom that spans two scenes is measured once, and both scenes draw from that one record.' },
+  { name: 'Filmed text', text: 'Text that the makers wrote, designed or staged is translated, and text filmed in the real world is kept.' },
+  { name: 'Fit ladder', text: 'A longer translation takes a shorter wording, then free room, then a size change no viewer notices, and never narrowed letters.' },
+  { name: 'Layering', text: "What covers what at a text's place is measured, so what stood in front of the text stays in front." },
+  { name: 'Images', text: 'An image that cannot be read natively is converted, and every pixel the work did not change keeps its source value.' },
+];
+
+/** Each of the author's methods with its sentence. */
+function Methods() {
+  return (
+    <dl className='tc-credits'>
+      {METHODS.map((method) => (
+        <div key={method.name}>
+          <dt>{method.name}</dt>
+          <dd>{method.text}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
 type RowProps = { id: string; n: string; active: string; children: ReactNode };
 
 function Row({ id, n, active, children }: RowProps) {
@@ -447,7 +482,7 @@ type TranscreateBookProps = {
  * their dividers. The overview holds the featured film (PairViewer), the grid of all eight and a contents
  * list of the five pages, the videos page each video, the Databricks page
  * its grid and each of its videos, the Ramp page its grid and each of its
- * versions, and the credits page the originals. The reading state is the shared read line
+ * versions, and the credits page the originals and the author's methods. The reading state is the shared read line
  * (useReadLine), with /motion's instant jumps: the row under the line is
  * selected through the shell, and a selection from anywhere else jumps the
  * sheet to its row.
@@ -472,6 +507,15 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
         lead={head.lead}
         updated={updated}
         facts={head.facts}
+        note={
+          route === 'credits' ? (
+            `${AUTHOR} designed and built Transcreate and devised the methods it runs on.`
+          ) : (
+            <p>
+              {AUTHOR} designed and built Transcreate. <Link href={`${ROUTE_PATH.credits}#${AUTHOR_ROW}`}>The credits</Link> list the methods he devised.
+            </p>
+          )
+        }
         contents={
           route === 'overview' ? (
             <nav className='gx-toc pt-book-toc' aria-label='Contents'>
@@ -568,18 +612,32 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
       ) : null}
 
       {route === 'credits' ? (
-        <Part
-          index={1}
-          id='transcreate-originals'
-          label='Original videos'
-          fact={`${VIDEO_COUNT} originals`}
-          lead='Four originals have a recorded title and address, and each title links to it.'
-        >
-          <Row id={CREDITS_ROW} n='' active={active}>
-            <h3>Sources</h3>
-            <Credits />
-          </Row>
-        </Part>
+        <>
+          <Part
+            index={1}
+            id='transcreate-originals'
+            label='Original videos'
+            fact={`${VIDEO_COUNT} originals`}
+            lead='Four originals have a recorded title and address, and each title links to it.'
+          >
+            <Row id={CREDITS_ROW} n='' active={active}>
+              <h3>Sources</h3>
+              <Credits />
+            </Row>
+          </Part>
+          <Part
+            index={2}
+            id='transcreate-author'
+            label='Author'
+            fact={`${METHODS.length} methods`}
+            lead={`${AUTHOR} designed and built Transcreate, and each method below is his.`}
+          >
+            <Row id={AUTHOR_ROW} n='' active={active}>
+              <h3>{AUTHOR}</h3>
+              <Methods />
+            </Row>
+          </Part>
+        </>
       ) : null}
     </div>
   );

@@ -10,7 +10,7 @@ import { DATABRICKS, PROFOUND, RAMP, RAMP_VERSIONS, VIDEOS } from './videos';
  * Knowledge > Transcreate in the sidebar (`under`) as the row's run: the
  * overview, the featured film on it, the videos page with its eight videos after it, the Databricks
  * page with its four videos after it, the Ramp page with its three versions
- * after it, and the credits. Each page's own row
+ * after it, and the credits with the author after them. Each page's own row
  * carries the page's path, so the sidebar marks it as the page the reader
  * is on. A video is selected in place on its own page and is a link to its
  * row there from the other pages,
@@ -37,13 +37,14 @@ export const ROUTE_PAGE: Readonly<Record<TranscreateRoute, PageId>> = {
   credits: 'transcreateCredits',
 };
 
-/** The row ids of the overview's featured film and its grid, of the videos page's head, of the Databricks and Ramp pages' grids and of the credits. */
+/** The row ids of the overview's featured film and its grid, of the videos page's head, of the Databricks and Ramp pages' grids, and of the credits page's originals and author. */
 export const PROFOUND_ROW = PROFOUND.slug;
 export const GRID_ROW = 'all-eight';
 export const VIDEOS_ROW = 'videos';
 export const DATABRICKS_ROW = 'databricks';
 export const RAMP_ROW = 'ramp';
 export const CREDITS_ROW = 'credits';
+export const AUTHOR_ROW = 'author';
 
 /** A video's row id on the videos page. */
 export function videoRow(slug: string): string {
@@ -92,6 +93,12 @@ export function transcreateSections(route: TranscreateRoute): readonly ShellSect
           ...on('ramp', `${RAMP.slug}-${version.key}`),
         })),
         { id: CREDITS_ROW, title: 'Credits', href: ROUTE_PATH.credits, desc: 'Each original video and the company it belongs to' },
+        {
+          id: AUTHOR_ROW,
+          title: 'Author',
+          desc: 'Kevin Liu designed and built Transcreate',
+          ...(route === 'credits' ? { inPlace: true as const } : { href: `${ROUTE_PATH.credits}#${AUTHOR_ROW}` }),
+        },
       ],
     },
   ];

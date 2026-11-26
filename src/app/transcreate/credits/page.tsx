@@ -10,14 +10,14 @@ const route = seoRoute({
   title: PAGE_NAMES.transcreateCredits.name,
   kind: 'page',
   description:
-    'The original of each Transcreate video and the company it belongs to, with the title and address where they are recorded.',
+    'Kevin Liu, the author of Transcreate, with the methods he devised, and the original of each Transcreate video with its company.',
   crumbs: [{ name: PAGE_NAMES.transcreate.name, path: '/transcreate' }],
   updated: requireUpdated('/transcreate/credits'),
 });
 
 export const metadata = route.metadata;
 
-/** /transcreate/credits: each original video and its company (TranscreateViewer). */
+/** /transcreate/credits: each original video and its company, and the author's methods (TranscreateViewer). */
 export default function TranscreateCreditsPage() {
   return (
     <>

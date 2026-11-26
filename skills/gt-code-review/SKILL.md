@@ -15,7 +15,7 @@ description: >-
 metadata:
   title: Code review
   areas: lints, workflow
-  updated: 2026-11-25
+  updated: 2026-11-26
   origin: prototemplate
   owner: P
 ---
@@ -207,6 +207,15 @@ build a diff for every rule from generated lines.
 - [ ] Each finding was checked against the whole stack before it was written.
 - [ ] Findings that did not hold up are listed with the reason.
 - [ ] Nothing was posted to GitHub or Slack without Kevin's word.
+
+## Authors
+
+Kevin Liu wrote this skill and owns its rules. The mechanism, cutover,
+naming and writing rules come from his rulings on the translation
+pipelines. Brian Lou's reviews and cleanups of the image and video
+translation stacks are the source of the rules that cite him, and each of
+those rules links his commit or pull request. Matt Pocock's published
+TypeScript guidance is the source of the rules that cite his pages.
 
 ## Sources
 
