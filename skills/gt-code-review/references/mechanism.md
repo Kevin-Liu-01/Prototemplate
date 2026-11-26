@@ -283,3 +283,32 @@ reach old workers) and the answer on
 [#5905](https://github.com/generaltranslation/gt-cloud/pull/5905#issuecomment-6872880985)
 (the flags stay off until every worker has the consumer). [#6189](https://github.com/generaltranslation/gt-cloud/pull/6189) callout
 on deploy order.
+
+## M10. Name the class of a problem, and fix the class once
+
+**Look for:** a fix with no stated class, such as "the headline on clip B
+broke"; a branch keyed by an input's name, id or index; three special cases
+that share a cause; a constant changed until one case passes.
+
+**Why:** a case fix holds for the case and the next input of the class
+fails. Before writing a fix, name the class it belongs to, state the
+invariant that the class breaks, and write one rule over a measured
+property. Prefer data, a table or a record, to a chain of branches, so the
+next member of the class is a row. Rule M2 covers the tuned constant itself.
+
+```python
+# Bad: one branch per clip that showed the fault.
+if clip == "promo-a": pitch = 1.3
+elif clip == "promo-b": pitch = 1.1
+elif clip == "launch": pitch = 1.45
+# Good: the class is "paragraph lines set at their own pitch", and the rule reads it.
+pitch = measured_pitch(block.lines)  # median gap between baselines over the line height
+```
+
+The `less-is-more` skill holds the rule to fix a problem's class once, and
+`codebase-design` holds where the rule's module belongs.
+
+**Sources:** Decisions log 2026-10-16, "Fixes are mechanisms, not
+band-aids", and the owner's ruling of 2026-11-26 on abstract thinking,
+relayed by the coordinator session. https://refactoring.guru/replace-conditional-with-polymorphism
+and https://refactoring.guru/smells/switch-statements.

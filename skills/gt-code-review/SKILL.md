@@ -107,6 +107,7 @@ example and source.
 | M7 | Bound the work before a paid call, and bill what was spent |
 | M8 | Code never overrides the judgement it asked a model for |
 | M9 | A new route or kind keeps the invariants of the records and queues it joins |
+| M10 | Name the class of a problem, and fix the class once |
 
 **Cutover, not compatibility:** [references/cutover.md](references/cutover.md)
 
@@ -136,6 +137,7 @@ example and source.
 | Q11 | Tests read as the spec |
 | Q12 | Logs say what happened, with ids and no secrets |
 | Q13 | Public interfaces are documented by their types first |
+| Q14 | A lifecycle is an explicit state machine |
 
 **Readability:** [references/quality.md](references/quality.md#readability)
 
@@ -143,7 +145,7 @@ example and source.
 | --- | --- |
 | R1 | The code reads top-down in call order |
 | R2 | A reader needs no history to follow the code |
-| R3 | File length, function length, nesting and complexity stay in bounds |
+| R3 | File length, function length, nesting, and cyclomatic and cognitive complexity stay in bounds |
 
 **Tests:** [references/tests.md](references/tests.md)
 
@@ -218,15 +220,17 @@ git diff <base>...<head> | node skills/gt-code-review/scripts/scan-diff.mjs
 git diff <base>...<head> | node skills/gt-code-review/scripts/scan-diff.mjs --json
 ```
 
-The scan covers M1, M2, M3, M5, Q2, Q3, C1, C2, T2, T3, TS1, TS2, TS4, P5,
-S1, S3, N3 and N6. N6 flags comment blocks over 6 lines, a proposed limit
-and the owner's to confirm. It skips test files for M1 and for the
-non-null part of TS2. On gt-cloud #6208 (133 files, 10,085 added lines)
-the rules of the first trial listed 20 candidates, and two trial reviewers
-confirmed 14 of them, in 3 findings, and found 25 more findings by
-reading. With N6, Q2 and Q3 the scan lists 53 candidates there, 24 of them
-comment blocks and 9 nested conditionals. The scan is a start and never
-the review. The other rules need reading. `node --test
+The scan covers M1, M2, M3, M5, Q2, Q3, Q14, C1, C2, T2, T3, TS1, TS2,
+TS4, P5, S1, S3, N3 and N6. N6 flags comment blocks over 6 lines, a
+proposed limit and the owner's to confirm. Q14 flags a type with 3 or more
+boolean fields as a candidate state machine, never a finding by itself. It
+skips test files for M1 and for the non-null part of TS2. On gt-cloud
+#6208 (133 files, 10,085 added lines) the rules of the first trial listed
+20 candidates, and two trial reviewers confirmed 14 of them, in 3
+findings, and found 25 more findings by reading. With N6, Q2 and Q3 the
+scan lists 53 candidates there, 24 of them comment blocks and 9 nested
+conditionals. The scan is a start and never the review. The other rules
+need reading. `node --test
 skills/gt-code-review/scripts/scan-diff.test.mjs` runs its tests, which
 build a diff for every rule from generated lines.
 
@@ -248,6 +252,7 @@ build a diff for every rule from generated lines.
 - Tests: `tdd` when the change starts from a failing test, and `test-writing` for the tests a change needs.
 - Design: `codebase-design` for module boundaries and interfaces, and `less-is-more` when a change adds more than it removes.
 - Bugs: `diagnosing-bugs` when a finding needs a reproduction before a fix.
+- State: `state-machine-dfa` when a review finds flags or a phase field that encode a lifecycle (rule Q14).
 - Performance: `perf` for a measured slowdown, and `gt-performance` for GT's visual surfaces.
 - Accessibility: `accessibility` for UI code.
 - Prototemplate: `gt-lints` for the lints and gates that hold a rule, and `gt-verify` to prove a fix is done.

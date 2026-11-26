@@ -274,6 +274,57 @@ export function route(kind: 'image' | 'video' | 'svg'): Namespace
 **Source:** https://google.github.io/styleguide/tsguide.html (JSDoc and
 type annotations).
 
+### Q14. A lifecycle is an explicit state machine
+
+**Look for:**
+- several booleans, or a status string, that together encode a lifecycle,
+  such as `isUploading`, `isDone` and `hasError`;
+- state changed in more than one place;
+- nested `if`s over combinations of flags;
+- a `phase` or `step` field that any function can set.
+
+**Why:** an implicit machine allows combinations nobody meant, such as done
+and failed at once, and every writer must know every other writer's rules.
+Name the states as a typed union, give each state only the fields it has,
+change state in one transition function or table, and test each transition.
+A combination that cannot happen then cannot be written.
+
+```ts
+// Bad: three flags, eight combinations, and any handler may set any of them.
+type Upload = { isUploading: boolean; isDone: boolean; hasError: boolean; error?: string; url?: string };
+upload.isUploading = false; upload.hasError = true; // in two handlers
+
+// Good: one union, one transition function.
+type Upload =
+  | { state: 'idle' }
+  | { state: 'uploading'; startedAt: number }
+  | { state: 'done'; url: string }
+  | { state: 'failed'; error: string };
+type UploadEvent = { type: 'start'; at: number } | { type: 'finish'; url: string } | { type: 'fail'; error: string };
+
+function next(upload: Upload, event: UploadEvent): Upload {
+  switch (upload.state) {
+    case 'idle':
+      return event.type === 'start' ? { state: 'uploading', startedAt: event.at } : upload;
+    case 'uploading':
+      if (event.type === 'finish') return { state: 'done', url: event.url };
+      if (event.type === 'fail') return { state: 'failed', error: event.error };
+      return upload;
+    case 'done':
+    case 'failed':
+      return upload;
+  }
+}
+```
+
+The `state-machine-dfa` skill finds the machines a codebase holds and draws
+their transition tables. Rule TS5 gives the union form.
+
+**Sources:** https://www.typescriptlang.org/docs/handbook/2/narrowing.html
+(discriminated unions and exhaustiveness),
+https://blog.janestreet.com/effective-ml-revisited/ ("make illegal states
+unrepresentable") and https://stately.ai/docs/state-machines-and-statecharts.
+
 ## Readability
 
 ### R1. The code reads top-down in call order
@@ -310,15 +361,53 @@ no `fit` or a flag named after a round.
 ### R3. File length, function length, nesting and complexity stay in bounds
 
 **Look for:** a new or grown file over 500 lines, a function body over 60
-lines, blocks nested more than 4 deep, and a function whose cognitive
-complexity passes 15.
+lines, blocks nested more than 4 deep, a function whose cyclomatic
+complexity passes 10, and a function whose cognitive complexity passes 15.
 
-**Why:** past these bounds a reader cannot hold the unit in mind. The bounds
-are proposed defaults and the owner's to confirm. gt-cloud's
-`.oxlintrc.json` sets `sonarjs/cognitive-complexity` to 50 today; 15 is
-SonarSource's default. A file that already passes a bound is not split in
-an unrelated change, and it does not grow.
+**Why:** past these bounds a reader cannot hold the unit in mind. The two
+complexity measures answer different questions, so both are bounded.
+Cyclomatic complexity counts the independent paths through a function: one
+plus each branch, loop and boolean operator. It says how many tests cover
+every path. Cognitive complexity counts how hard the function is to read:
+it adds a weight for each level of nesting and does not count a flat
+`switch` once per case. A flat dispatch of twelve cases has high cyclomatic
+and low cognitive complexity; three nested `if`s have the opposite.
 
-**Sources:** https://eslint.org/docs/latest/rules/max-lines,
-https://eslint.org/docs/latest/rules/max-depth and
-https://rules.sonarsource.com/typescript/RSPEC-3776/.
+The bounds are proposed defaults and the owner's to confirm. The
+cyclomatic bound of 10 is the limit the NIST structured testing report
+gives as having "significant supporting evidence", and it is ruff's
+default. Each language has its tool:
+
+| Measure | TypeScript | Python |
+| --- | --- | --- |
+| Cyclomatic | oxlint or eslint `complexity`, set to `["error", 10]` (eslint's default is 20) | ruff `C901`, with `max-complexity = 10` under `[tool.ruff.lint.mccabe]` |
+| Cognitive | `sonarjs/cognitive-complexity`, which gt-cloud's `.oxlintrc.json` sets to 50 today; SonarSource's default is 15 | no ruff rule; read it by hand against the same weights |
+
+gt-cloud sets neither cyclomatic rule today, and its image project's ruff
+selection (`F`, `E9`, `B`, `UP`, `I`) leaves `C901` out. A file that already
+passes a bound is not split in an unrelated change, and it does not grow.
+
+```python
+# Bad: eight paths, one per format, and a ninth for the rest.
+def mime_of(fmt: str) -> str:
+    if fmt == "PNG": return "image/png"
+    elif fmt == "JPEG": return "image/jpeg"
+    elif fmt == "WEBP": return "image/webp"
+    elif fmt == "TIFF": return "image/tiff"
+    ...
+    else: raise ValueError(fmt)
+# Good: one path, and the table is data a test can read.
+MIME = {"PNG": "image/png", "JPEG": "image/jpeg", "WEBP": "image/webp", "TIFF": "image/tiff"}
+def mime_of(fmt: Format) -> str:
+    return MIME[fmt]
+```
+
+**Sources:** https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication500-235.pdf
+(the limit of 10), https://eslint.org/docs/latest/rules/complexity,
+https://oxc.rs/docs/guide/usage/linter/rules/eslint/complexity,
+https://docs.astral.sh/ruff/rules/complex-structure/ and
+https://docs.astral.sh/ruff/settings/ (`max-complexity`, default 10),
+https://www.sonarsource.com/docs/CognitiveComplexity.pdf and
+https://rules.sonarsource.com/typescript/RSPEC-3776/ (cognitive),
+https://eslint.org/docs/latest/rules/max-lines and
+https://eslint.org/docs/latest/rules/max-depth.

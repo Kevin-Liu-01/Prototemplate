@@ -115,6 +115,12 @@ export const RULES = [
     },
   },
   {
+    id: 'Q14',
+    label: 'an object type with 3 or more boolean fields, a possible state machine',
+    files: TS,
+    test: (text, path) => (codeOf(text, path).match(/\??:\s*boolean\b/g) ?? []).length >= BOOLEAN_FIELDS_MIN,
+  },
+  {
     id: 'C1',
     label: 'an old path kept beside its replacement',
     files: CODE,
@@ -224,6 +230,20 @@ export const RULES = [
  */
 export const COMMENT_BLOCK_MAX = 6;
 
+/** Q14: the boolean fields in one type that make it a candidate state machine. */
+export const BOOLEAN_FIELDS_MIN = 3;
+
+/** Whether a line declares a field, and whether that field is a boolean. */
+export function fieldLine(text, path) {
+  const code = codeOf(text, path);
+  if (PY.test(path)) {
+    const field = /^\s+\w+\s*:\s*[^=(]+(=.*)?$/.test(code) && !/^\s*(def|class|return|if|for|while|with|elif|else)\b/.test(code);
+    return [field, field && /:\s*bool\b/.test(code)];
+  }
+  const field = /^\s*(readonly\s+)?[\w$]+\??\s*:\s*[^=(]+[;,]?\s*$/.test(code);
+  return [field, field && /:\s*boolean\b/.test(code)];
+}
+
 /**
  * Whether a line holds only a comment, given whether a Python docstring is
  * open before it. Returns [isComment, docstringOpenAfter].
@@ -252,6 +272,25 @@ export function scan(diff) {
     }
     block = null;
   };
+  let fields = null;
+  const endFields = () => {
+    if (fields && fields.added && fields.booleans >= BOOLEAN_FIELDS_MIN) {
+      found.push({ path: fields.path, line: fields.start, rule: 'Q14', text: `a type with ${fields.booleans} boolean fields` });
+    }
+    fields = null;
+  };
+  const trackFields = (text, added) => {
+    if (!CODE.test(path)) return;
+    if (!text.trim() || commentOf(text, path) === text.trim().replace(/^(#|\/\/)\s?/, '')) return;
+    const [isField, isBoolean] = fieldLine(text, path);
+    if (!isField) {
+      endFields();
+      return;
+    }
+    fields ??= { path, start: line, booleans: 0, added: false };
+    if (isBoolean) fields.booleans += 1;
+    fields.added ||= added;
+  };
   const track = (text, added) => {
     if (!CODE.test(path)) return;
     const [isComment, open] = commentLine(text, path, inDoc);
@@ -267,6 +306,7 @@ export function scan(diff) {
   for (const raw of diff.split('\n')) {
     if (raw.startsWith('+++ ')) {
       endBlock();
+      endFields();
       inDoc = false;
       const target = raw.slice(4).trim();
       path = target === '/dev/null' ? null : target.replace(/^b\//, '');
@@ -281,6 +321,7 @@ export function scan(diff) {
     const hunk = /^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/.exec(raw);
     if (hunk) {
       endBlock();
+      endFields();
       inDoc = false;
       line = Number(hunk[1]);
       continue;
@@ -292,13 +333,16 @@ export function scan(diff) {
         if (rule.files.test(path) && rule.test(text, path)) found.push({ path, line, rule: rule.id, text: text.trim() });
       }
       track(text, true);
+      trackFields(text, true);
       line += 1;
     } else if (raw.startsWith(' ')) {
       track(raw.slice(1), false);
+      trackFields(raw.slice(1), false);
       line += 1;
     }
   }
   endBlock();
+  endFields();
   return found;
 }
 
