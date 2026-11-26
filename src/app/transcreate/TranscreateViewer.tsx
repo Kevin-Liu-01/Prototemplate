@@ -378,7 +378,7 @@ const METHODS: readonly { name: string; text: string }[] = [
   { name: 'Weight search', text: "The source's words are drawn back at each weight, and the weight whose strokes match the source is kept." },
   { name: 'Seams', text: 'A line that crosses a scene cut is drawn in order across the cut, and a check confirms that both sides agree.' },
   { name: 'Zoom record', text: 'A zoom that spans two scenes is measured once, and both scenes draw from that one record.' },
-  { name: 'Filmed text', text: 'Text that the makers wrote, designed or staged is translated, and text filmed in the real world is kept.' },
+  { name: 'Filmed text', text: 'Every text that a viewer can read is translated by default, and a run option keeps text filmed in the real world.' },
   { name: 'Fit ladder', text: 'A longer translation takes a shorter wording, then free room, then a size change no viewer notices, and never narrowed letters.' },
   { name: 'Layering', text: "What covers what at a text's place is measured, so what stood in front of the text stays in front." },
   { name: 'Images', text: 'An image that cannot be read natively is converted, and every pixel the work did not change keeps its source value.' },
