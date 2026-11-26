@@ -30,6 +30,7 @@ const SINGLETONS = [
   `${SITE_URL}/blog`,
   `${SITE_URL}/graphics`,
   `${SITE_URL}/socials`,
+  `${SITE_URL}/ideas`,
   `${SITE_URL}/motion`,
   `${SITE_URL}/compare`,
   `${SITE_URL}/atlas`,

@@ -25,6 +25,7 @@ export type PageId =
   | 'blog'
   | 'graphics'
   | 'socials'
+  | 'ideas'
   | 'motion'
   | 'raise'
   | 'archive'
@@ -56,6 +57,7 @@ export const PAGE_NAMES: Readonly<Record<PageId, PageName>> = {
   blog: { name: 'Blog' },
   graphics: { name: 'Graphics' },
   socials: { name: 'Socials' },
+  ideas: { name: 'Ideas' },
   motion: { name: 'Motion' },
   raise: { name: 'Raise' },
   archive: { name: 'Archive' },

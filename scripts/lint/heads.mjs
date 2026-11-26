@@ -112,7 +112,7 @@ export const STANDARD = ['pt-book-head', 'pt-book-mast', 'pt-book-lead', 'pt-boo
 const BOX_TYPE = /^(margin|padding|border|gap$|row-gap$|column-gap$|grid-|display$|font|line-height$|letter-spacing$|color$|background|height$|min-height$|width$|max-width$)/;
 
 /** The book routes S3 reads, and the gallery files and the craft article it allows by name. */
-const BOOK_ROUTES = ['src/app/brand/', 'src/components/book/', 'src/app/motion/', 'src/app/raise/', 'src/app/graphics/', 'src/app/socials/', 'src/app/skills/', 'src/app/components/', 'src/app/marks/', 'src/app/directions/', 'src/app/blog/', 'src/components/viewer/BookView', 'src/components/viewer/InstallField'];
+const BOOK_ROUTES = ['src/app/brand/', 'src/components/book/', 'src/app/motion/', 'src/app/raise/', 'src/app/graphics/', 'src/app/socials/', 'src/app/ideas/', 'src/app/skills/', 'src/app/components/', 'src/app/marks/', 'src/app/directions/', 'src/app/blog/', 'src/components/viewer/BookView', 'src/components/viewer/InstallField'];
 const HATCH_ALLOWED = ['src/app/prototemplate.css', 'src/app/system-ledger.css', 'src/app/GalleryViewer.tsx', 'src/app/AnatomyWall.tsx', 'src/app/craft/'];
 
 /** S5's exception: the home page (the nameplate). */
@@ -373,7 +373,7 @@ export function lintHeads(root) {
 /* ------------------------------------------------------------------ */
 
 /** The routes live mode reads, by kind: the single pages and the first of each record (from lint-type's list). */
-const LIVE_PATHS = /^\/(brand|motion(\/[\w-]+)?|raise|graphics|socials|skills(\/[\w-]+)?|components|marks(\/(graticule|loading|ascii))?|directions\/[\w-]+|blog(\/[\w-]+)?|transcreate(\/[\w-]+)?)$/;
+const LIVE_PATHS = /^\/(brand|motion(\/[\w-]+)?|raise|graphics|socials|ideas|skills(\/[\w-]+)?|components|marks(\/(graticule|loading|ascii))?|directions\/[\w-]+|blog(\/[\w-]+)?|transcreate(\/[\w-]+)?)$/;
 
 /**
  * Runs in the page: the head's geometry and the lines around it. Every

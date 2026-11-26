@@ -248,6 +248,14 @@ const KNOWLEDGE: readonly Surface[] = [
     thumb('socials')
   ),
   internal(
+    'ideas',
+    pageLabel('ideas'),
+    '/ideas',
+    'What each General Translation surface took its ideas from: the references, then the versions made from them, with the chosen one marked.',
+    'Knowledge',
+    thumb('ideas')
+  ),
+  internal(
     'motion',
     pageLabel('motion'),
     '/motion',

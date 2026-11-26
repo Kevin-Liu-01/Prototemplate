@@ -130,6 +130,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   ascii: 'grid',
   blog: 'post',
   socials: 'post',
+  ideas: 'sparkles',
   atlas: 'book',
   motion: 'film',
   raise: 'film',

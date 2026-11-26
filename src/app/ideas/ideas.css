@@ -1,0 +1,223 @@
+/* Ideas: the references behind each surface and the versions made from
+   them, on the viewer shell. The rows follow the grammar /socials set:
+   everything reads the shell's --pt- tokens, the rules are --pt-hair-soft,
+   and the figure frames carry the frame grammar every captured frame uses
+   (a 1px --pt-edge border, ink on hover and when the row is active). The
+   column, the head, the contents and the section dividers are the shared
+   book classes in BookView.css. */
+
+.ix-cat {
+  display: flex;
+  flex-direction: column;
+}
+
+/* row: the number in the gutter on the title's baseline, then the body;
+   one soft rule below each, none under a section's last row */
+.ix-row {
+  display: grid;
+  grid-template-columns: var(--pt-gutter) minmax(0, 1fr);
+  gap: var(--pt-gutter-gap);
+  align-items: baseline;
+  padding: 24px 0 28px;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  border-image: linear-gradient(var(--pt-hair-soft) 0 0) var(--pt-bleed-bottom);
+  scroll-margin-top: 20px;
+}
+
+.ix-cat .ix-row:last-child {
+  border-bottom: 0;
+  border-image-source: none;
+}
+
+.ix-n b {
+  display: block;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+.ix-row.is-active .ix-n b {
+  color: var(--pt-ink);
+}
+
+.ix-body {
+  min-width: 0;
+}
+
+.ix-body h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0;
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-ink);
+  overflow-wrap: anywhere;
+}
+
+/* the pick: the version Kevin chose or shipped, a chip in ink beside the title */
+.ix-pick {
+  padding: 1px 6px;
+  border-radius: var(--pt-radius-chip);
+  background: var(--pt-ink);
+  color: var(--pt-paper);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  letter-spacing: 0;
+}
+
+.ix-body > p {
+  max-width: var(--pt-measure);
+  margin: 4px 0 0;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+}
+
+/* ---------- a version's figure ---------- */
+
+.ix-fig {
+  margin: 14px 0 0;
+}
+
+.ix-frame {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-plate);
+  overflow: hidden;
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.ix-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ix-frame:hover,
+.ix-row.is-active .ix-frame {
+  border-color: var(--pt-ink);
+}
+
+.ix-frame:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.ix-seg {
+  margin-top: 12px;
+}
+
+/* ---------- a reference grid ---------- */
+
+.ix-refs {
+  margin: 14px 0 0;
+}
+
+.ix-refs ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ix-ref {
+  display: block;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-plate);
+  overflow: hidden;
+}
+
+.ix-ref img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ix-ref-label {
+  display: block;
+  margin-top: 6px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.ix-refs figcaption {
+  margin-top: 12px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
+/* ---------- the meta line: the kind, the path, the links ---------- */
+
+.ix-body .ix-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  align-items: baseline;
+  margin-top: 10px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
+.ix-line code {
+  overflow-wrap: anywhere;
+}
+
+.ix-link {
+  color: var(--pt-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.ix-link:hover {
+  text-decoration-color: var(--pt-ink);
+}
+
+.ix-link:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ix-frame,
+  .ix-link {
+    transition: none;
+  }
+}
+
+/* ---------- narrow ---------- */
+
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .ix-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .ix-n b {
+    font-size: var(--pt-t-meta);
+    line-height: var(--pt-t-meta-lh);
+    letter-spacing: 0;
+  }
+
+  .ix-refs ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
