@@ -670,6 +670,7 @@ function LiveStrip({ onJump }: { onJump: (e: MouseEvent<HTMLAnchorElement>, id: 
   return (
     <div className='mk-live'>
       <p>{BOOK_NOTE}</p>
+      <p>{byline()}</p>
       <div className='mk-live-row'>
         {PRODUCTION_MARKS.map((mark) => (
           <a key={mark.id} className='mk-live-mark' href={`#${PRODUCTION_ID}`} onClick={(e) => onJump(e, PRODUCTION_ID)}>
@@ -982,12 +983,7 @@ function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }:
         skill='gt-brand'
         title={PAGE_NAMES.marks.name}
         lead={BOOK_LEAD}
-        note={
-          <>
-            <LiveStrip onJump={onContents} />
-            <p>{byline()}</p>
-          </>
-        }
+        note={<LiveStrip onJump={onContents} />}
         updated={updated}
         facts={[
           { icon: 'swatch', key: 'Marks', value: TOTAL },

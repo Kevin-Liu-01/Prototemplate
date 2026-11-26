@@ -60,8 +60,8 @@ function fileKind(file: string): string {
 }
 
 /**
- * Under the head's rule: what the skill covers, when to use it and the
- * other areas it belongs to, as ruled rows with the label in the book's
+ * Under the head's rule: what the skill covers, when to use it, the
+ * other areas it belongs to and its author, as ruled rows with the label in the book's
  * gutter. The parts come from the description (model.ts, describe()).
  */
 function About({ skill }: { skill: Skill }) {
@@ -87,6 +87,10 @@ function About({ skill }: { skill: Skill }) {
           <dd>{also.join(', ')}</dd>
         </div>
       ) : null}
+      <div>
+        <dt>Author</dt>
+        <dd>{byline()}</dd>
+      </div>
     </dl>
   );
 }
@@ -132,12 +136,7 @@ function SkillPage({ skill, body, updated }: SkillPageProps) {
       <BookHead
         title={skill.title}
         lead={summary}
-        note={
-          <>
-            <About skill={skill} />
-            <p>{byline()}</p>
-          </>
-        }
+        note={<About skill={skill} />}
         updated={updated}
         facts={[
           { icon: 'area', key: 'Area', value: areaLabel(skill.areas[0]) },

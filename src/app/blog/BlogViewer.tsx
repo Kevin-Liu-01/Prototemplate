@@ -37,7 +37,7 @@ const NOTE = (
 const NOTE_WITH_BYLINE = (
   <>
     {NOTE}
-    <p>{AUTHOR} built the blog&rsquo;s pages, and each post names its own authors.</p>
+    <p>{AUTHOR} built these pages, and each post names its own authors.</p>
   </>
 );
 

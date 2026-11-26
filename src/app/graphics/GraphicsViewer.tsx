@@ -10,7 +10,7 @@ import { usePtShell } from '@/components/viewer/shell-context';
 import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
-import { byline } from '@/lib/credit';
+import { AUTHOR } from '@/lib/credit';
 import { backgroundLabel } from '@/lib/graphics-model';
 import type { Block, Entry } from '@/lib/graphics-model';
 import { PAGE_NAMES } from '@/lib/page-names';
@@ -115,7 +115,7 @@ function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut, posts, updated }: 
         note={
           <>
             <p>{NOTE}</p>
-            <p>{byline()}</p>
+            <p>{AUTHOR} made the covers, figures and grounds on this page. A capture of another site shows that site&rsquo;s own work.</p>
           </>
         }
         updated={updated}
