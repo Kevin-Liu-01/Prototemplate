@@ -87,8 +87,8 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 
 | Command | What it does | Runs |
 | --- | --- | --- |
-| `pnpm build:armillary-gif` | Writes public/marks/ascii/gt-armillary-dark.gif and gt-armillary-light.gif, one lap of the armillary loader (GtLogoArmillary) as a seamless GIF, shot from the live component on /marks/loading. | `scripts/build/armillary-gif.mjs` |
-| `pnpm build:ascii-armillary` | Writes the ASCII armillary to public/marks/ascii: the logo's sphere as three rings set in monospace characters, shaded by how much ink each character holds, turning once a lap. | `scripts/build/ascii-armillary.mjs` |
+| `pnpm build:armillary-gif` | Writes public/marks/ascii/gt-armillary-dark.gif and gt-armillary-light.gif: the logo as an armillary sphere, its pieces each turning on its own axis (scripts/lib/armillary-pieces.mjs, numbers in scripts/build/armillary.json). | `scripts/build/armillary-gif.mjs` |
+| `pnpm build:ascii-armillary` | Writes the ASCII armillary to public/marks/ascii: the armillary GIF's own frames (scripts/lib/armillary-pieces.mjs, the logo's pieces each turning on its own axis) on the dot-matrix header's grid. | `scripts/build/ascii-armillary.mjs` |
 | `pnpm build:ascii-header` | Writes the dot-matrix header to public/marks/ascii: the General Translation globe and the name on two lines, sampled onto one grid of round dots, as the terminal header Kevin sent on 2026-11-25 draws them. | `scripts/build/ascii-header.mjs` |
 | `pnpm build:blog` | Builds src/lib/blog-posts.ts, the post and release list behind /blog, its sidebar run and the search: the frontmatter of every post in content/blog (title, summary, date, authors, tags, covers) with each author's name and avatar from content/authors, and every release of the ... | `scripts/build/blog.mjs` |
 | `pnpm build:brand-kit` | Copies the brand kit's zip, previews and small files into public/brand/kit and writes public/brand/kit/manifest.json, which the brand kit section on /brand reads for every file's name and size. | `scripts/build/brand-kit.mjs` |

@@ -3,7 +3,6 @@
 import type { CSSProperties, MouseEvent, ReactNode, RefObject } from 'react';
 import { useRef } from 'react';
 
-import { GT_LOGO_ARMILLARY as A } from '@/components/brand/GtLogoArmillary.geometry';
 import { BookHead } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
@@ -67,9 +66,6 @@ const SECTIONS: readonly ShellSection[] = [
   },
 ];
 
-/** One lap of the armillary in seconds. */
-const LAP = A.beats.rest + A.beats.open + A.beats.swing + A.beats.close;
-
 /** The download links of a set of files, each with its size. */
 function Downloads({ files }: { files: readonly AsciiFile[] }) {
   return (
@@ -126,6 +122,8 @@ type Files = {
   text: string;
   /** the header's grid in dots, from its SVG's viewBox */
   grid: { cols: number; rows: number };
+  /** one lap of the armillary in seconds, from scripts/build/armillary.json */
+  lap: number;
 };
 
 type BookProps = Files & {
@@ -135,7 +133,7 @@ type BookProps = Files & {
   updated: PageUpdated;
 };
 
-function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiArmillaryFiles, armillaryFiles, text, grid }: BookProps) {
+function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiArmillaryFiles, armillaryFiles, text, grid, lap }: BookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
@@ -171,7 +169,7 @@ function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiAr
               .filter((f) => f.file.endsWith('.gif'))
               .map((f) => (
                 <figure key={f.file} className='ax-fig'>
-                  <img className='ax-gif' src={`${FILES}/${f.file}`} width={530} height={520} alt={`The armillary set in characters, its rings turning, ${f.ground.toLowerCase()}`} loading='lazy' decoding='async' />
+                  <img className='ax-gif' src={`${FILES}/${f.file}`} width={456} height={456} alt={`The armillary in round dots, its pieces turning, ${f.ground.toLowerCase()}`} loading='lazy' decoding='async' />
                   <figcaption>
                     <h3>{f.ground}</h3>
                   </figcaption>
@@ -187,7 +185,7 @@ function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiAr
           <div className='ax-gifs'>
             {armillaryFiles.map((f) => (
               <figure key={f.file} className='ax-fig'>
-                <img className='ax-gif' src={`${FILES}/${f.file}`} width={496} height={496} alt={`The armillary loader, one lap, ${f.ground.toLowerCase()}`} loading='lazy' decoding='async' />
+                <img className='ax-gif' src={`${FILES}/${f.file}`} width={496} height={496} alt={`The logo as an armillary sphere, its pieces turning, ${f.ground.toLowerCase()}`} loading='lazy' decoding='async' />
                 <figcaption>
                   <h3>{f.ground}</h3>
                 </figcaption>
@@ -214,7 +212,7 @@ function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiAr
         updated={updated}
         facts={[
           { icon: 'globe', key: 'Grid', value: `${grid.cols} by ${grid.rows} dots` },
-          { icon: 'sync', key: 'Lap', value: `${LAP} s` },
+          { icon: 'sync', key: 'Lap', value: `${lap} s` },
           { icon: 'attachment', key: 'Files', value: headerFiles.length + asciiArmillaryFiles.length + armillaryFiles.length },
         ]}
         contents={
@@ -247,7 +245,7 @@ export type AsciiViewerProps = Files & {
  * The dot-matrix header, the ASCII armillary and the armillary GIF on the viewer shell. The list
  * hangs under Marks > ASCII; flow keys, so Space and the arrows scroll.
  */
-export default function AsciiViewer({ updated, headerFiles, asciiArmillaryFiles, armillaryFiles, text, grid }: AsciiViewerProps) {
+export default function AsciiViewer({ updated, headerFiles, asciiArmillaryFiles, armillaryFiles, text, grid, lap }: AsciiViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const activeOut = useRef<string>(HEADER_ID);
@@ -270,7 +268,7 @@ export default function AsciiViewer({ updated, headerFiles, asciiArmillaryFiles,
       }}
     >
       <Sheet variant='flow' scrollRef={sheetRef}>
-        <AsciiBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} headerFiles={headerFiles} asciiArmillaryFiles={asciiArmillaryFiles} armillaryFiles={armillaryFiles} text={text} grid={grid} />
+        <AsciiBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} headerFiles={headerFiles} asciiArmillaryFiles={asciiArmillaryFiles} armillaryFiles={armillaryFiles} text={text} grid={grid} lap={lap} />
       </Sheet>
     </ViewerShell>
   );

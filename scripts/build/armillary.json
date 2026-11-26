@@ -1,0 +1,49 @@
+{
+  "$comment": "The armillary's pieces and their lap, shared by pnpm build:armillary-gif and pnpm build:ascii-armillary through scripts/lib/armillary-pieces.mjs. Lengths are in the logo's 256 unit square (src/lib/logo-construction.json), angles in degrees, times in seconds. The meridian and the G are the logo's stretches of their rings (GtLogoArmillary.frame.ts): each runs a few degrees past the logo's own end into the line that cuts it at rest, so at rest the cut, the logo's gap, sets its end. t is the T in the logo's plane: the bar from the meridian's centre line at rest (left) to the ring's (end), the stem from the bar to the ring's, and the fillets between them, from the construction's new block. gaps are the space a line leaves where another passes over it, each the mean of the construction's pair: c where the meridian passes over the G or the T (its outer side only), meridian where the G passes over the meridian, and stem where the G and the T pass over each other or the meridian. deep is how far out of the outline, as a share of the radius, a line must stand to cut the T or be cut by it. Each piece turns once in its window, easing in and out, and the windows start half a second apart, so the three move on their own and the lap starts and ends on the still logo. step is the degrees between drawn points.",
+  "lap": {
+    "seconds": 4.5,
+    "fps": 20
+  },
+  "turns": {
+    "meridian": {
+      "from": 0.5,
+      "to": 3,
+      "turn": 360
+    },
+    "g": {
+      "from": 1,
+      "to": 3.5,
+      "turn": 360
+    },
+    "t": {
+      "from": 1.5,
+      "to": 4,
+      "turn": 360
+    }
+  },
+  "meridian": {
+    "from": 124,
+    "to": 416.5
+  },
+  "g": {
+    "from": 180,
+    "to": 496.47
+  },
+  "t": {
+    "top": 121.399,
+    "bottomLeft": 135.1359,
+    "bottomRight": 135.2398,
+    "left": 76.466,
+    "stemLeft": 120.5472,
+    "stemRight": 134.4073,
+    "fillet": 10.4338,
+    "end": 225.099
+  },
+  "gaps": {
+    "c": 5.4325,
+    "meridian": 5.839,
+    "stem": 5.9695
+  },
+  "deep": 0.3,
+  "step": 1
+}

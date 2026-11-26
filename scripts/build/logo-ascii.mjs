@@ -21,9 +21,6 @@
  * the still again. Only the glyph rows are written; the component lays the
  * dot screen in the hole's empty cells at runtime.
  *
- * The renderer is scripts/lib/ascii-sphere.mjs, which pnpm
- * build:ascii-armillary shares.
- *
  * It prints the still's agreement with the reference glyph map (glyph or no
  * glyph, inside the ring's hole and on the ring).
  *
@@ -34,7 +31,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { apply, camera, gridOf, R, shadedRows } from '../lib/ascii-sphere.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
 import { ROOT } from '../lib/root.mjs';
 
@@ -45,9 +41,31 @@ const OUT = 'src/components/brand/GtLogoAscii.frames.ts';
 const C = JSON.parse(readFileSync(join(ROOT, 'scripts/build/logo-ascii.json'), 'utf8'));
 const { SPHERE, meridianPoint, latitudePoint, easeInOut } = await import(new URL('../../src/components/brand/GtLogoArmillary.frame.ts', import.meta.url).href);
 
-const { cols: NC, rows: NR, cu, cv } = gridOf(C);
+const DEG = Math.PI / 180;
+const { cols: NC, rows: NR } = C.grid;
+const [PX, PY] = C.grid.pxPerUnit;
+const [CXP, CYP] = C.grid.centrePx;
+const [CW, CH] = C.grid.cellPx;
+const [X0, Y0] = C.grid.firstCellCentrePx;
+/** cell centres in logo units from the sphere's centre, y down */
+const cu = (c) => (X0 + CW * c - CXP) / PX;
+const cv = (r) => (Y0 + CH * r - CYP) / PY;
+const cellU = CW / PX;
+const cellV = CH / PY;
+
+/** the camera: yaw about the vertical, pitch about the horizontal, roll about the view axis (Rz Rx Ry) */
+function camera({ yaw, pitch, roll }) {
+  const [cy, sy, cp, sp, cr, sr] = [Math.cos(yaw * DEG), Math.sin(yaw * DEG), Math.cos(pitch * DEG), Math.sin(pitch * DEG), Math.cos(roll * DEG), Math.sin(roll * DEG)];
+  const Ry = [[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]];
+  const Rx = [[1, 0, 0], [0, cp, -sp], [0, sp, cp]];
+  const Rz = [[cr, -sr, 0], [sr, cr, 0], [0, 0, 1]];
+  const mul = (A, B) => A.map((row) => B[0].map((_, j) => row.reduce((s, v, k) => s + v * B[k][j], 0)));
+  return mul(Rz, mul(Rx, Ry));
+}
+const apply = (M, p) => [M[0][0] * p[0] + M[0][1] * p[1] + M[0][2] * p[2], M[1][0] * p[0] + M[1][1] * p[1] + M[1][2] * p[2], M[2][0] * p[0] + M[2][1] * p[1] + M[2][2] * p[2]];
 
 const [cx0, cy0] = SPHERE.centre;
+const R = 96.26;
 /** the drawn lines at ring angles a (meridian) and g (latitude), on the sphere, from its centre: every half degree */
 function lines(a, g) {
   const pts = [];
@@ -69,6 +87,11 @@ function lines(a, g) {
   return pts;
 }
 
+const L = (() => {
+  const v = C.light;
+  const n = Math.hypot(...v);
+  return v.map((x) => x / n);
+})();
 const BAYER = [
   [0, 8, 2, 10],
   [12, 4, 14, 6],
@@ -76,15 +99,65 @@ const BAYER = [
   [15, 7, 13, 5],
 ];
 
-/** One frame's glyph rows at ring angles a and g: the lines turned to the camera, the far side hidden. */
+/** One frame's glyph rows at ring angles a and g. */
 function frame(a, g) {
   const M = camera(C.pose);
-  return shadedRows(
-    C,
-    lines(a, g)
-      .map((p) => apply(M, p))
-      .filter((p) => p[2] >= C.depth)
-  );
+  const pts = lines(a, g)
+    .map((p) => apply(M, p))
+    .filter((p) => p[2] >= C.depth);
+  /* bucket the points by 8 units for the distance search */
+  const B = 8;
+  const grid = new Map();
+  for (const p of pts) {
+    const key = `${Math.floor(p[0] / B)},${Math.floor(p[1] / B)}`;
+    if (!grid.has(key)) grid.set(key, []);
+    grid.get(key).push(p);
+  }
+  const near = (u, v) => {
+    const i = Math.floor(u / B);
+    const j = Math.floor(v / B);
+    let best = Infinity;
+    for (let di = -1; di <= 1; di++) {
+      for (let dj = -1; dj <= 1; dj++) {
+        for (const p of grid.get(`${i + di},${j + dj}`) ?? []) best = Math.min(best, Math.hypot(u - p[0], v - p[1]));
+      }
+    }
+    return best;
+  };
+  const rows = [];
+  for (let r = 0; r < NR; r++) {
+    let row = '';
+    for (let c = 0; c < NC; c++) {
+      const x = cu(c);
+      const y = cv(r);
+      let inLine = 0;
+      let inRing = 0;
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 8; j++) {
+          const u = x + ((i + 0.5) / 4 - 0.5) * cellU * C.sample[0];
+          const v = y + ((j + 0.5) / 8 - 0.5) * cellV * C.sample[1];
+          if (near(u, v) < C.line) inLine++;
+          else if (Math.abs(Math.hypot(u, v) - C.ringR) < C.ringLine) inRing++;
+        }
+      }
+      const cov = (inLine + inRing) / 32;
+      if (cov < C.floor) {
+        row += ' ';
+        continue;
+      }
+      const rr = Math.hypot(x, y);
+      const n =
+        inLine >= inRing && rr < 96
+          ? [x / R, y / R, Math.sqrt(Math.max(R * R - rr * rr, 0)) / R]
+          : [x / Math.max(rr, 1e-6), y / Math.max(rr, 1e-6), 0];
+      const shade = Math.max(0, n[0] * L[0] + n[1] * L[1] + n[2] * L[2]);
+      const gain = inLine >= inRing ? C.gain.line : C.gain.ring;
+      const level = Math.min(1, cov * gain) * (C.ambient + (1 - C.ambient) * shade);
+      row += C.ramp[C.cuts.filter((cut) => level >= cut).length];
+    }
+    rows.push(row);
+  }
+  return rows;
 }
 
 /* the lap: the still, then the turn at fps */
