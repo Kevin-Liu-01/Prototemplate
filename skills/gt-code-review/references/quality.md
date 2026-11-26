@@ -123,9 +123,16 @@ except Exception:
 fit = fit_line(line)
 ```
 
-**Source:** https://google.github.io/styleguide/pyguide.html (exceptions:
+In a Hono app the boundary is `app.onError`, and an error that carries a
+status is an `HTTPException`, as in `apps/api/src/shared/appErrorHandler.ts`.
+One error class per message, mapped to statuses by an `instanceof` ladder,
+is the hand-written version of it.
+
+**Sources:** https://google.github.io/styleguide/pyguide.html (exceptions:
 "Never use catch-all except: statements", unless re-raising or at an
-isolation point).
+isolation point). The [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213)
+review, about ten error classes and an `instanceof` ladder in
+[index.ts:58](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216443).
 
 ### Q6. No magic numbers, and each constant names its unit
 
@@ -170,10 +177,15 @@ write_plan(job, plan(read_lines(job)))
 ### Q8. No duplication across files
 
 **Look for:** the same block, table or conversion in two files, often with
-one changed constant.
+one changed constant; one helper written two or three times under different
+names (edit distance, a hex digest, base64); two methods that differ only by
+one check; a step that a change copies into a third place; and a name, such
+as a tool's name, typed as a string in a second module.
 
 **Why:** a fix lands in one copy and not the other. Shared logic lives in one
-module that both import. Rule M4 covers duplicated facts.
+module that both import, and a function that repeats another's body calls
+it. Rule M4 covers duplicated facts, and rule Q15 covers helpers that
+already exist.
 
 ```python
 # Bad: read.py and fast.py each convert to grey.
@@ -182,7 +194,24 @@ grey = img @ [0.299, 0.587, 0.114]
 from .image import grey
 ```
 
-**Source:** https://refactoring.guru/smells/duplicate-code.
+**Sources:** https://refactoring.guru/smells/duplicate-code. The
+[#6213](https://github.com/generaltranslation/gt-cloud/pull/6213) review:
+edit distance written three times in
+[context.ts:74](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216464),
+and a hex digest and base64 written twice in
+[index.ts:392](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216472).
+[#5291](https://github.com/generaltranslation/gt-cloud/pull/5291#discussion_r4265216395)
+(blog helpers copied from the knowledge base),
+[#5428](https://github.com/generaltranslation/gt-cloud/pull/5428#discussion_r4330319307)
+(a reuse step in three places that has to match bulk exactly),
+[#5422](https://github.com/generaltranslation/gt-cloud/pull/5422#discussion_r4330312435)
+(a settle-or-release choice copied from its helper),
+[#5086](https://github.com/generaltranslation/gt-cloud/pull/5086#discussion_r4210717106)
+(two near-identical sandbox methods),
+[#6028](https://github.com/generaltranslation/gt-cloud/pull/6028#discussion_r4607555008)
+(a tool name typed in a second module) and
+[#4978](https://github.com/generaltranslation/gt-cloud/pull/4978) (call
+`open()` instead of repeating it).
 
 ### Q9. Formatting comes from the formatter only
 
@@ -321,10 +350,52 @@ function next(upload: Upload, event: UploadEvent): Upload {
 The `state-machine-dfa` skill finds the machines a codebase holds and draws
 their transition tables. Rule TS5 gives the union form.
 
+Review each event in each state, the idle, finished and failed states
+included, not only the state the change was written for. A stop sent to a
+manager that already finished cancels nothing, and a child that ends
+afterwards can still wake the manager with a new turn.
+
 **Sources:** https://www.typescriptlang.org/docs/handbook/2/narrowing.html
 (discriminated unions and exhaustiveness),
 https://blog.janestreet.com/effective-ml-revisited/ ("make illegal states
 unrepresentable") and https://stately.ai/docs/state-machines-and-statecharts.
+[#6004](https://github.com/generaltranslation/gt-cloud/pull/6004#discussion_r4595306908)
+(a stop on an idle manager), [#5401](https://github.com/generaltranslation/gt-cloud/pull/5401)
+(the same rule for failed last turns) and
+[#5402](https://github.com/generaltranslation/gt-cloud/pull/5402) (a new
+turn placed over a pending one).
+
+### Q15. Reuse before writing: the repository, the framework and the platform
+
+**Look for:** a helper that a dependency or the repository already has.
+Cookies parsed by hand when the app runs on Hono (`hono/cookie`); a JWT
+decoded with `atob` (`decode` from `hono/jwt`); an error class per message
+where `HTTPException` maps statuses (rule Q5); a focus trap where
+`@generaltranslation/ui` has `Sheet`; `window.confirm` where the dashboard
+has `ConfirmDialog`;
+a retry loop where `packages/clients` has `withRetry`; locale code where
+`@generaltranslation/locales` has it (rule M11).
+
+**Why:** each copy is code to review, test and keep current, and it misses
+the cases the shared one already handles. Before writing a helper, search
+the repository for the job (`git grep -I -F -e <name>`) and read the
+exports of the packages the app already depends on.
+
+```ts
+// Bad
+const cookies = Object.fromEntries(header.split(';').map((part) => part.trim().split('=')));
+// Good
+import { getCookie } from 'hono/cookie';
+const session = getCookie(c, 'session');
+```
+
+**Sources:** The [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213)
+review: cookies and JWTs by hand in
+[credentials.ts:64](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216474).
+[#5098](https://github.com/generaltranslation/gt-cloud/pull/5098#discussion_r4300283928)
+(use `Sheet`, which already traps focus) and
+[#4865](https://github.com/generaltranslation/gt-cloud/pull/4865#discussion_r4041959558)
+(`ConfirmDialog` instead of `window.confirm`).
 
 ## Readability
 

@@ -79,7 +79,10 @@ gives the same evidence.
 
 **Look for:** a tool nothing registers, a request path nothing sends, an
 operation the server does not serve, a standalone runner the product never
-calls, and an output field or model answer that no later step reads.
+calls, and an output field or model answer that no later step reads. Also
+a setting or environment variable that nothing sets, and a fallback for a
+case the types or the caller already rule out, such as a missing `sub` on
+a signed-in session.
 
 **Why:** dead code is read, reviewed and kept current for nothing, and it
 hides which path is live. A field that no step reads also costs tokens
@@ -98,7 +101,13 @@ and two unserved operations),
 (removes a standalone runner) and
 [26cd4d1](https://github.com/generaltranslation/gt-cloud/commit/26cd4d15b119125fce9ec5b1b2904652778102b1)
 (the critic no longer names fault kinds, "since no end reads them"). Decisions log 2026-11-24 10:24 PST, removing every unreferenced file after
-a search of the whole tree.
+a search of the whole tree. The [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213)
+review: a model variable nothing sets in
+[env.ts:19](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216487)
+and a fallback that cannot happen in
+[index.ts:388](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216494).
+[#4973](https://github.com/generaltranslation/gt-cloud/pull/4973) (a
+config made redundant by the change).
 
 ## C5. A rename or removal searches the whole tree
 
@@ -134,3 +143,28 @@ need what changes in gt-cloud and why.
 
 **Source:** Memory note `gtcloud-no-hashes-no-parity`, 2026-11-21: gt-cloud
 holds no hash or parity record of another repository.
+
+## C7. Compatibility only for callers that shipped
+
+**Look for:** a branch for an old client, message shape, URL or field that
+never existed in this repository, or that was live only for days; and code
+moved in from another repository that keeps paths for that repository's
+old clients.
+
+**Why:** compatibility code is for callers that exist. A branch for a
+caller that never shipped is never run, so it is never tested, and it tells
+the reader a second caller exists. Code moved into gt-cloud is reviewed as
+gt-cloud code (rule N6): its only callers are the ones in gt-cloud.
+
+```ts
+// Bad: handles an untagged audio frame no sender in gt-cloud writes.
+const voice = typeof frame === 'string' ? 'tab' : frame.voice;
+// Good: the one sender always tags its frames.
+const { voice } = frame;
+```
+
+**Sources:** The [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213)
+review: an untagged client that "never existed in gt-cloud" in
+[room.ts:327](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216481).
+Memory note `gt-next-reviewer-patterns` (an earlier review refused compatibility code
+for URLs that were only days old).

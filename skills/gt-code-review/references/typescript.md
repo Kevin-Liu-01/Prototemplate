@@ -9,7 +9,9 @@ gt-cloud's compiler and lint configuration with them.
 **Look for:** `JSON.parse(x) as T`, `(await res.json()) as T`, `: any` on
 a request body, a tool answer or a file read, and `as any`. A JSON column
 read from the database counts as outside data, since older rows and other
-writers may hold another shape.
+writers may hold another shape. A model's reply that code reads is outside
+data too: ask for structured output and parse it with its schema, rather
+than cutting JSON out of the text (rule M12).
 
 **Why:** a cast is a claim the compiler cannot check, and outside data
 breaks it without an error. Parse it with zod at the boundary; inside, the
@@ -105,9 +107,23 @@ type Ask =
   | { status: 'failed'; error: string; retryable: boolean };
 ```
 
-**Source:** https://www.totaltypescript.com/discriminated-unions-are-a-devs-best-friend.
+A union is for variants whose fields differ. A value that is either there
+or not is a nullable field, and two variants with the same fields are one
+type with a `kind` field.
+
+```ts
+// Bad: two variants that differ only by their tag.
+type HostedRoom = { kind: 'resume'; roomId: string; hostToken: string } | { kind: 'restart'; roomId: string; hostToken: string };
+// Good
+type HostedRoom = { kind: 'resume' | 'restart'; roomId: string; hostToken: string };
+```
+
+**Sources:** https://www.totaltypescript.com/discriminated-unions-are-a-devs-best-friend.
 The exhaustive `satisfies never` default is common TypeScript practice;
-the pages read do not show it.
+the pages read do not show it. The [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213)
+review: a nullable timestamp written as a union, and two identical
+variants, in
+[room.ts:65](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216504).
 
 ## TS6. Branded types for values that were validated
 
@@ -190,6 +206,34 @@ gt-cloud stands.
 
 **Sources:** https://www.totaltypescript.com/tsconfig-cheat-sheet and, for
 application code only, https://www.totaltypescript.com/ts-reset.
+
+## TS11. One schema per shape, and its type is inferred from it
+
+**Look for:** a request or response shape written as a type and again as a
+zod schema, joined with `satisfies`; one response shape declared inline
+more than once; and error handling that guesses between several body
+shapes of an API this repository owns.
+
+**Why:** two copies drift, and `satisfies` only checks that they still
+agree where someone remembered to add it. The schema is the one source:
+the type is `z.infer` of it. An API we own returns one error shape, so its
+client reads that shape with its schema and does not guess.
+
+```ts
+// Bad
+export type OpenRoom = { projectId: string; locales: string[] };
+const openRoomSchema = z.object({ projectId: z.string(), locales: z.array(z.string()) }) satisfies z.ZodType<OpenRoom>;
+// Good
+export const openRoomSchema = z.object({ projectId: z.string(), locales: z.array(z.string()) });
+export type OpenRoom = z.infer<typeof openRoomSchema>;
+```
+
+**Sources:** The [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213)
+review: request shapes as types and schemas in
+[requests.ts:40](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216449),
+and a project shape declared three times with a guessed error shape in
+[gt.ts:175](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216457).
+https://www.totaltypescript.com/when-should-you-use-zod.
 
 ## What gt-cloud follows and what it could adopt
 

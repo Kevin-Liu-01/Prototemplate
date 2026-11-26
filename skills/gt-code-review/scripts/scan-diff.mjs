@@ -20,6 +20,8 @@
 //
 // Last real run: 2026-11-25 on gt-cloud #6208 (be57221fc0 against its base):
 // 43 candidates before the trial's tuning, of which the reviewers confirmed 4.
+// On gt-cloud #6213 at 8e7c440ab7 (2026-11-26): M11, M12, Q15 and S1 list 21
+// candidates, on 9 of the 10 review comments a pattern could find.
 
 import { pathToFileURL } from 'node:url';
 
@@ -95,6 +97,39 @@ export const RULES = [
       /\.catch\(\s*\(\s*\w*\s*\)\s*=>\s*(undefined|null|\{\s*\}|\[\s*\])\s*\)/.test(text),
   },
   {
+    id: 'M11',
+    label: 'text logic for one language: a word list, a capital, a space or an ASCII sentence end',
+    files: CODE,
+    test: (text, path) => {
+      if (TEST.test(path)) return false;
+      const code = codeOf(text, path);
+      // A list of words by its name; a count such as MIN_WORDS = 3 is not a list.
+      const wordList = /^\s*(export\s+)?((const|let|var)\s+)?[A-Z0-9_]*(WORDS?|FILLERS?|NEGATIONS?|STOPWORDS?|GREETINGS?)\b\s*(:[^=]+)?=(?!\s*-?\d)/.test(code);
+      // A word pattern: five or more words alternated before a word boundary, such as /^(?:The|A|An|And|Or)\b/.
+      const wordAlternation = /\((\?:)?([A-Za-z]{1,12}\|){4,}[A-Za-z]{1,12}\)\\b/.test(code);
+      const codeSet = /new Set\(\[\s*(['"][a-z]{2,3}['"]\s*,\s*){3,}/.test(code);
+      const localeSplit = /\.split\(\s*['"][-_]['"]\s*\)\s*\[\s*0\s*\]/.test(code);
+      const sentenceEnd = /\/[^/\n]*\[(?=[^\]\n]*\.)(?=[^\]\n]*!)(?=[^\]\n]*\?)[^\]\n]*\][^/\n]*\//.test(code);
+      const capital = /\/\^?\[A-Z\]|\/\^?\[?\\p\{Lu\}|\[0\]\s*===\s*[\w.[\]]+\.toUpperCase\(\)|\.toUpperCase\(\)\s*===\s*[\w.[\]]+\[0\]/.test(code);
+      const textWord = '\\b\\w*(text|line|sentence|transcript|caption|phrase|utterance|words)\\w*\\s*(\\?\\.|\\.)\\s*split\\(';
+      const spaceSplit = new RegExp(`${textWord}\\s*(['"] ['"]|\\/\\\\s\\+?\\/[gu]*)\\s*\\)`, 'i').test(code);
+      const pySplit = PY.test(path) && new RegExp(`${textWord}\\s*\\)`, 'i').test(code);
+      return wordList || wordAlternation || codeSet || localeSplit || sentenceEnd || capital || spaceSplit || pySplit;
+    },
+  },
+  {
+    id: 'M12',
+    label: 'JSON or a value cut out of a string by position',
+    files: CODE,
+    test: (text, path) => {
+      if (TEST.test(path)) return false;
+      const code = codeOf(text, path);
+      const sliced = /\.(lastIndexOf|indexOf|r?find|r?index)\(\s*['"][{}[\]]['"]\s*\)/.test(code);
+      const matched = /\/\\\{\[\\s\\S\]\*\??\\\}\//.test(code) || /re\.search\(\s*r?['"]\\\{\.\*\??\\\}/.test(code);
+      return sliced || matched;
+    },
+  },
+  {
     id: 'Q2',
     label: 'a nested ternary or conditional expression',
     files: CODE,
@@ -119,6 +154,19 @@ export const RULES = [
     label: 'an object type with 3 or more boolean fields, a possible state machine',
     files: TS,
     test: (text, path) => (codeOf(text, path).match(/\??:\s*boolean\b/g) ?? []).length >= BOOLEAN_FIELDS_MIN,
+  },
+  {
+    id: 'Q15',
+    label: 'a helper the framework or the repository already has',
+    files: TS,
+    test: (text, path) => {
+      const code = codeOf(text, path);
+      const confirm = /(^|[^\w.])(window\.)?confirm\(\s*['"`]/.test(code);
+      const cookie = /\bcookies?\w*\s*(\?\.|\.)\s*split\(\s*['"];/i.test(code) || /get\(\s*['"]cookie['"]\s*\)[^;]*\.split\(\s*['"];/i.test(code);
+      const jwt = /\batob\(\s*[\w.]+\.split\(\s*['"]\.['"]\s*\)\s*\[\s*1\s*\]/.test(code);
+      const ladder = /\binstanceof\s+\w+Error\b.*\b(c\.json|c\.text|new Response|status:\s*4\d\d)/.test(code);
+      return confirm || cookie || jwt || ladder;
+    },
   },
   {
     id: 'C1',
@@ -196,8 +244,9 @@ export const RULES = [
     test: (text, path) => {
       const code = codeOf(text, path);
       const logged = /\b(print|console\.(log|info|warn|error|debug)|log(ger)?\.(info|warn|warning|error|debug))\s*\([^)]*\b\w*(api_?key|apikey|token|secret|password)\w*/i;
-      const inUrl = /[?&](api_?key|key|token|secret)=/i;
-      return logged.test(code) || inUrl.test(code);
+      const inUrl = /[?&](\w*(api_?key|token|secret)|key)=/i;
+      const setInUrl = /searchParams\.(set|append|get)\(\s*['"]\w*(api_?key|token|secret)['"]/i;
+      return logged.test(code) || inUrl.test(code) || setInUrl.test(code);
     },
   },
   {

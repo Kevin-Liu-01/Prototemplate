@@ -4,7 +4,10 @@ description: >-
   The code review General Translation applies to gt-cloud and to its
   translation pipelines. Its rules cover mechanism over patch (no regex on
   model or prompt text, no case-tuned constants, no hand-rolled parser where
-  a library exists, no silent fallback), cutover over compatibility, code
+  a library exists, no silent fallback, text logic that works in every
+  source language with no English word lists, bounded connections and
+  retries, failures classed by cause), reuse of what the repository and
+  its frameworks already have, cutover over compatibility, code
   quality and readability, tests, TypeScript, Python, naming and writing,
   and security and keys, each with what to look for, why, a bad and good
   example and its source. A diff scan lists candidate lines by rule. Use
@@ -28,9 +31,15 @@ reached it in late 2026 through
 review findings that followed are in
 [#6189](https://github.com/generaltranslation/gt-cloud/pull/6189). The
 cleanup removed regexes over prompt text, temporary workarounds and
-patches, and named a hand-rolled ICU parser for replacement. This skill
-turns those reviews into rules that an agent applies before a person has
-to.
+patches, and named a hand-rolled ICU parser for replacement. The review of
+a Cloudflare Worker stack
+([#6213](https://github.com/generaltranslation/gt-cloud/pull/6213),
+2026-11-26) and a teammate's earlier reviews of the agent, translation and
+dashboard pull requests added the rest: text logic that assumes an English
+source, helpers written again instead of reused, unbounded reconnects,
+failures put in the wrong class, and compatibility for callers that never
+shipped. This skill turns those reviews into rules that an agent applies
+before a person has to.
 
 Every rule is stated once, in the reference file of its group, with what to
 look for, why, a short bad and good example, and its source: a decisions
@@ -55,13 +64,20 @@ log row, a memory note, a pull request, a commit or a published page.
    The mechanism group comes first because it held most of the image
    stack's findings. Code that the diff moves verbatim from another file is
    reviewed like new code, and its findings are marked "carried", so the
-   author can decide whether the fix belongs in this change.
-5. **Verify each finding.** A finding names the file and line, the input
+   author can decide whether the fix belongs in this change. Where the code
+   reads or writes text, check it against a source language with no spaces
+   and no capitals (Japanese), one that capitalizes every noun (German) and
+   one written right to left (Arabic) before English (rule M11).
+5. **Read the bots' threads.** Each Greptile, Cursor or CodeQL finding on
+   the pull request is fixed or answered with the reason. A reviewer holds
+   approval while one is unanswered, and three bots flagging one line is
+   reason enough to look.
+6. **Verify each finding.** A finding names the file and line, the input
    that breaks it, and what goes wrong. Check it against the whole stack
    before it is reported, as #6189 states its findings were. A finding that
    does not hold up after the check goes to a "checked and not a finding"
    list with the reason, as #6189's "Not changed" section does.
-6. **Report.** Use the format of section 2. Post nothing to GitHub or
+7. **Report.** Use the format of section 2. Post nothing to GitHub or
    Slack unless the owner asks; the review goes to the session or person that
    asked for it.
 
@@ -85,9 +101,12 @@ Wrong: the error leaves holdForCritic, so the worker's own write fails though it
 Fix: catch every error that is not an abort, return undefined, re-read in 5 minutes.
 ```
 
-Code behind a flag that defaults to off is graded by what happens on the
-first org that turns the flag on. The report ends with the "checked and not
-a finding" list and with what the review did not read or run.
+The report lists correctness findings first and approach and style
+findings after them, and says which is which, as the #6213 review did, so
+the author fixes what is wrong before what is shaped badly. Code behind a
+flag that defaults to off is graded by what happens on the first org that
+turns the flag on. The report ends with the "checked and not a finding"
+list and with what the review did not read or run.
 
 ## 3. The rules
 
@@ -108,6 +127,10 @@ example and source.
 | M8 | Code never overrides the judgement it asked a model for |
 | M9 | A new route or kind keeps the invariants of the records and queues it joins |
 | M10 | Name the class of a problem, and fix the class once |
+| M11 | Text logic works in every source language |
+| M12 | A value the code built stays data |
+| M13 | Every connection, retry and timer is bounded |
+| M14 | A failure is classified by its cause |
 
 **Cutover, not compatibility:** [references/cutover.md](references/cutover.md)
 
@@ -119,6 +142,7 @@ example and source.
 | C4 | Dead code leaves |
 | C5 | A rename or removal searches the whole tree |
 | C6 | No bookkeeping between repositories |
+| C7 | Compatibility only for callers that shipped |
 
 **Code quality:** [references/quality.md](references/quality.md)
 
@@ -138,6 +162,7 @@ example and source.
 | Q12 | Logs say what happened, with ids and no secrets |
 | Q13 | Public interfaces are documented by their types first |
 | Q14 | A lifecycle is an explicit state machine |
+| Q15 | Reuse before writing: the repository, the framework and the platform |
 
 **Readability:** [references/quality.md](references/quality.md#readability)
 
@@ -173,6 +198,7 @@ the adoption table for gt-cloud
 | TS8 | `type` by default, readonly parameters, `Record` for dynamic keys |
 | TS9 | An exported top-level function declares its return type |
 | TS10 | The strict compiler options of the TSConfig cheat sheet |
+| TS11 | One schema per shape, and its type is inferred from it |
 
 **Python:** [references/python.md](references/python.md)
 
@@ -206,6 +232,7 @@ the adoption table for gt-cloud
 | S4 | Untrusted sizes and shapes are checked before they are read |
 | S5 | New dependencies are pinned and held back seven days |
 | S6 | Customer content goes only to paid API tiers, and services bind 127.0.0.1 |
+| S7 | Anonymous writes are throttled, and a client's ids are checked against their owner |
 
 ## 4. The candidate scan
 
@@ -220,16 +247,22 @@ git diff <base>...<head> | node skills/gt-code-review/scripts/scan-diff.mjs
 git diff <base>...<head> | node skills/gt-code-review/scripts/scan-diff.mjs --json
 ```
 
-The scan covers M1, M2, M3, M5, Q2, Q3, Q14, C1, C2, T2, T3, TS1, TS2,
-TS4, P5, S1, S3, N3 and N6. N6 flags comment blocks over 6 lines, a limit
+The scan covers M1, M2, M3, M5, M11, M12, Q2, Q3, Q14, Q15, C1, C2, T2,
+T3, TS1, TS2, TS4, P5, S1, S3, N3 and N6. M11 flags word lists by name, a
+pattern of five or more alternated words, a set of language codes,
+`split('-')[0]`, a sentence-end class, a capital-letter test and a
+whitespace split of text. N6 flags comment blocks over 6 lines, a limit
 confirmed 2026-11-26. Q14 flags a type with 3 or more boolean fields as a
 candidate state machine, never a finding by itself. It skips test files
 for M1 and for the non-null part of TS2. On gt-cloud #6208 (133 files,
 10,085 added lines) the rules of the first trial listed 20 candidates, and
 two trial reviewers confirmed 14 of them, in 3 findings, and found 25 more
 findings by reading. With N6, Q2 and Q3 the scan lists 53 candidates
-there, 24 of them comment blocks and 9 nested conditionals. The scan is a
-start and never the review. The other rules need reading. `node --test
+there, 24 of them comment blocks and 9 nested conditionals. On #6213 at
+8e7c440ab7 (the commit its 2026-11-26 review read), M11, M12, Q15 and S1
+list 21 candidates, and they sit on 9 of the 10 review comments that a
+pattern could find; the error-class ladder of rule Q5 needed reading. The
+scan is a start and never the review. The other rules need reading. `node --test
 skills/gt-code-review/scripts/scan-diff.test.mjs` runs its tests, which
 build a diff for every rule from generated lines.
 
@@ -238,6 +271,9 @@ build a diff for every rule from generated lines.
 - [ ] The base and head are named by hash, and the stack's parent is the base.
 - [ ] The scan ran, and each of its lines was read and either became a finding or was dismissed.
 - [ ] Every new or removed name was searched across the whole tree, tests and prompts included.
+- [ ] Text logic was read against Japanese, German and Arabic sources, not only English (M11).
+- [ ] Every new helper was searched for in the repository and its dependencies first (Q15).
+- [ ] Every bot thread on the pull request is fixed or answered.
 - [ ] Each finding names a file and line, an input, what goes wrong and a fix.
 - [ ] Each finding was checked against the whole stack before it was written.
 - [ ] Findings that did not hold up are listed with the reason.

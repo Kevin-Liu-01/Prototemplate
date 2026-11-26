@@ -1,6 +1,7 @@
 # Sources
 
-Every source of `gt-code-review`, read on 2026-11-25. Each rule's reference
+Every source of `gt-code-review`, read on 2026-11-25 and, for the
+teammate reviews, on 2026-11-26. Each rule's reference
 file gives the exact link or row beside the rule.
 
 ## Rulings, notes and rules
@@ -62,6 +63,41 @@ file gives the exact link or row beside the rule.
   `production-grade-before-push` lists (Greptile and Cursor Bugbot): lost
   parallel writes, failed translations that looked finished, stale critic
   approvals, and one false difference that dropped real faults.
+
+## Teammate reviews on gt-cloud
+
+Read on 2026-11-26 through the GitHub API, for rules M5, M7, M11 to M14,
+C4, C7, Q5, Q8, Q14, Q15, TS1, TS5, TS11, S1 and S7, and the order of the
+report in section 2:
+
+- The review of a Cloudflare Worker stack,
+  [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213),
+  2026-11-26: a summary that puts correctness first and approach second,
+  and 23 line comments. Its main approach finding is text logic that
+  assumes an English source.
+- Earlier line reviews of the agent, translation, sandbox, landing and
+  dashboard pull requests, each linked beside its rule:
+  [#6121](https://github.com/generaltranslation/gt-cloud/pull/6121),
+  [#6028](https://github.com/generaltranslation/gt-cloud/pull/6028),
+  [#6004](https://github.com/generaltranslation/gt-cloud/pull/6004),
+  [#5428](https://github.com/generaltranslation/gt-cloud/pull/5428),
+  [#5422](https://github.com/generaltranslation/gt-cloud/pull/5422),
+  [#5402](https://github.com/generaltranslation/gt-cloud/pull/5402),
+  [#5401](https://github.com/generaltranslation/gt-cloud/pull/5401),
+  [#5291](https://github.com/generaltranslation/gt-cloud/pull/5291),
+  [#5195](https://github.com/generaltranslation/gt-cloud/pull/5195),
+  [#5098](https://github.com/generaltranslation/gt-cloud/pull/5098),
+  [#5086](https://github.com/generaltranslation/gt-cloud/pull/5086),
+  [#5046](https://github.com/generaltranslation/gt-cloud/pull/5046),
+  [#4978](https://github.com/generaltranslation/gt-cloud/pull/4978),
+  [#4973](https://github.com/generaltranslation/gt-cloud/pull/4973),
+  [#4933](https://github.com/generaltranslation/gt-cloud/pull/4933),
+  [#4882](https://github.com/generaltranslation/gt-cloud/pull/4882),
+  [#4877](https://github.com/generaltranslation/gt-cloud/pull/4877),
+  [#4865](https://github.com/generaltranslation/gt-cloud/pull/4865) and
+  [#4798](https://github.com/generaltranslation/gt-cloud/pull/4798).
+- Memory note `gt-next-reviewer-patterns` (no compatibility code for URLs
+  only days old).
 
 ## TypeScript pages
 

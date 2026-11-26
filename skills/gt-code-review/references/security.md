@@ -4,7 +4,10 @@
 
 **Look for:** a key in code, a config file, a test, a URL query or a log
 line; `print` or `console.log` of a token, secret or password; a client
-that reads a key file itself.
+that reads a key file itself. A session or host token in a request URL
+counts: the URL is written to Worker logs, Sentry and proxies. Only a
+browser WebSocket open, which cannot set a header, carries a token in its
+query; every other request sends it in a header.
 
 **Why:** a printed key is in the transcript, the CI log or the log store
 for good. Code reads keys from the environment only. On the build Mac a
@@ -18,8 +21,11 @@ logger.info(`calling Modal with ${process.env.ERASE_GPU_PROXY_TOKEN_SECRET}`);
 logger.info('calling the media GPU server', { operation: 'erase' });
 ```
 
-**Source:** Key rules 1 and 2 of the translation pipelines'
-agent rules: "Never print, log, commit or put a key in a URL".
+**Sources:** Key rules 1 and 2 of the translation pipelines'
+agent rules: "Never print, log, commit or put a key in a URL". The
+[#6213](https://github.com/generaltranslation/gt-cloud/pull/6213) review,
+a host token in the query of normal fetches in
+[room.ts:273](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216382).
 
 ## S2. No key in the sandbox
 
@@ -98,3 +104,34 @@ listens there and every other service binds 127.0.0.1.
 **Sources:** Key rule 4 ("Customer content goes only to paid API
 tiers under business terms") and rented machine rule 1 (no service but
 ssh on a public interface), both of the translation pipelines' agent rules.
+
+## S7. Anonymous writes are throttled, and a client's ids are checked against their owner
+
+**Look for:** a write that a client with no account can reach, such as a
+message from anyone holding a public room link, with no limit per client;
+each such write that also stores a record or broadcasts to every viewer;
+and an id from a request (a session, a namespace, a project) used without a
+check that the caller's org owns it.
+
+**Why:** a public link is shared, so whoever holds it can send as fast as
+the socket allows, and each message costs a storage write and a broadcast
+to everyone in the room. Throttle per socket or per client, drop what is
+over the limit, and say so. An id that is "globally unique" is still
+checked against the caller's org, since uniqueness says nothing about who
+may use it.
+
+```ts
+// Bad: every viewer message is stored and broadcast.
+socket.addEventListener('message', (event) => this.rename(event.data));
+// Good
+socket.addEventListener('message', (event) => {
+  if (!this.viewerLimit.take(socket)) return;
+  this.rename(event.data);
+});
+```
+
+**Sources:** The [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213)
+review, viewer messages with no throttle in
+[room.ts:374](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216389).
+[#4882](https://github.com/generaltranslation/gt-cloud/pull/4882#discussion_r4087975340)
+(a session namespace used without checking the org).

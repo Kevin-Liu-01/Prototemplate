@@ -163,6 +163,11 @@ a result that looks finished passes every later gate. A step that cannot
 run refuses with a line that names why, and a job that cannot be done ends
 with its reason.
 
+The opposite mistake fails a whole batch for one bad item. One missing
+source or one failed glossary group is skipped and reported, and the rest
+of the batch goes on; only a failure that makes every result wrong ends the
+run.
+
 ```python
 # Bad: a 16-bit file is clipped to 8 bits and translated as near white.
 img = (img / 256).astype("uint8")
@@ -178,6 +183,10 @@ with a plain line). [#6189](https://github.com/generaltranslation/gt-cloud/pull/
 float and CMYK images "are refused up front instead of being clipped") and
 [eaa3b96](https://github.com/generaltranslation/gt-cloud/commit/eaa3b968997cd7b88182435cad4c74eb2972b0b5)
 (a call whose due time cannot be read fails).
+[#4798](https://github.com/generaltranslation/gt-cloud/pull/4798#discussion_r4020560726)
+and [#4798](https://github.com/generaltranslation/gt-cloud/pull/4798#discussion_r4020569679)
+(one missing source or glossary result skips that item instead of failing
+the whole context run).
 
 ## M6. A retryable failure is never stored as an answer
 
@@ -213,6 +222,9 @@ retryable model or service failure leaves its request open").
 **Look for:** a paid call made before its input's size is checked, a batch
 loop that can pass its deadline with finished work unsaved, and a path
 where spent GPU or model time is not billed because a later step failed.
+Also a spend or rate check that runs again on a resume and fails a job
+whose model work is already spent, and a usage write whose failure lets the
+job finish with nothing billed and nothing left to retry.
 
 **Why:** a refusal before the call costs nothing, while a refusal after it
 costs the call. Work that finished before a deadline is saved, and time
@@ -234,6 +246,10 @@ are written). The review on
 [#5902](https://github.com/generaltranslation/gt-cloud/pull/5902#issuecomment-6871659893)
 (a turn recorded while a call still runs bills that call as 0). [#6189](https://github.com/generaltranslation/gt-cloud/pull/6189) ("GPU time
 spent on a failed or timed-out POST is billed").
+[#5422](https://github.com/generaltranslation/gt-cloud/pull/5422#discussion_r4330312410)
+(a resumed turn's spend check fails the job after its model work is spent)
+and [#5428](https://github.com/generaltranslation/gt-cloud/pull/5428#discussion_r4330319288)
+(a failed usage write completes the job with nothing billed).
 
 ## M8. Code never overrides the judgement it asked a model for
 
@@ -312,3 +328,166 @@ The `less-is-more` skill holds the rule to fix a problem's class once, and
 band-aids", and the owner's ruling of 2026-11-26 on abstract thinking,
 relayed by the coordinator session. https://refactoring.guru/replace-conditional-with-polymorphism
 and https://refactoring.guru/smells/switch-statements.
+
+## M11. Text logic works in every source language
+
+**Look for:** a list of words in one language that picks a branch (filler
+words, negations, stop words, greetings, words a caption lowercases); a
+test of a capital letter, a space or ASCII punctuation to find a name, a
+word or a sentence end; a regex for sentence ends, written again in each
+file that needs one; `text.split(' ')` to count words; `locale.split('-')[0]`;
+a hand-typed set of language codes, such as the languages written without
+spaces; and two definitions of one text concept, such as two functions
+named `units`.
+
+**Why:** General Translation translates from any source language, so the
+text under the code can be Japanese, German or Arabic as often as English.
+A word list holds for the languages someone typed and fails silently on
+the rest: a negation list for eight languages counts "personne" as a
+negation in every French sentence and finds none at all in most languages,
+and "capitalized and not the first word" makes every German noun a name.
+Boundaries come from `Intl.Segmenter`, which segments sentences, words and
+graphemes per locale and runs in Workers; plural forms from
+`Intl.PluralRules` or CLDR data, since Japanese, Chinese and Korean never
+use `one`; locale parts from `Intl.Locale` or `@generaltranslation/locales`
+(`getBaseLanguage`, `canonicalTag`). A judgement that depends on meaning,
+such as whether a correction changes what a line says, is never read from
+a word list: it compares segmented words, or it asks the model that already
+reads the line for a typed answer (rule M8). A feature that cannot work in
+every source language is removed, not kept for English.
+
+```ts
+// Bad: English fillers, an ASCII sentence end and a hand-split locale.
+const FILLER_WORDS = new Set(['um', 'uh', 'like']);
+const ended = /[.!?]\s*$/.test(text);
+const base = locale.split('-')[0];
+// Good: boundaries per locale, and the base language from the shared helper.
+const segmenter = new Intl.Segmenter(locale, { granularity: 'word' });
+const words = [...segmenter.segment(text)].filter((s) => s.isWordLike).map((s) => s.segment);
+const base = getBaseLanguage(locale);
+```
+
+Check a change to text logic against a source language with no spaces
+between words and no capitals (Japanese), one that capitalizes every noun
+(German) and one written right to left (Arabic), before English.
+
+**Sources:** The review of [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213)
+on 2026-11-26, whose main approach finding was logic that assumes an
+English source: the English word lists in
+[voice.ts:34](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216398),
+the negation list in
+[meaning.ts:4](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216407),
+capitals as names in
+[meaning.ts:118](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216413),
+four sentence-end regexes in
+[voice.ts:29](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216419),
+two definitions of unspaced scripts in
+[voice.ts:56](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216426)
+and `split('-')[0]` five times in
+[context.ts:21](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216477).
+The plural review of [#6121](https://github.com/generaltranslation/gt-cloud/pull/6121)
+(a target that never uses `one` gets no exact branch). The `gt-components`
+skill's "Locales" section: never hand-roll locale code.
+
+## M12. A value the code built stays data
+
+**Look for:** a label, key or id assembled as a string and later read back
+with a regex or `split`; JSON cut out of a model reply with
+`indexOf('{')` and `lastIndexOf('}')`; and a second parse of a string the
+same process wrote.
+
+**Why:** the parse repeats the format by hand and breaks when the format
+changes or a value holds the separator. Keep the parts as fields and
+format them only where a person reads them. A model reply that code reads
+is requested as structured output and parsed with its schema (rule TS1),
+never cut out of prose (rule M1).
+
+```ts
+// Bad: the speaker number is written into a label, then read back out.
+const label = `Speaker ${index + 1}`;
+const index = Number(/Speaker (\d+)/.exec(label)?.[1]) - 1;
+// Good: the parts are the data, and the label is drawn from them.
+type Speaker = { index: number; name: string | null };
+```
+
+**Sources:** [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213)
+review: the speaker label regexed back into a number in
+[room.ts:739](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216431),
+and JSON sliced from a reply with `indexOf` in
+[suggest.ts:74](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216437).
+
+## M13. Every connection, retry and timer is bounded
+
+**Look for:** a reconnect on the next event with no backoff; a cooldown
+that starts when an open fails but not when the server closes the socket
+after an error (a bad key, no quota, a rate limit); a network call with no
+deadline or no retry policy; a stream or socket a client can hold open
+for ever; and a stop interval of 0 that means never.
+
+**Why:** a provider that rejects a key often accepts the open and closes
+the socket right after it. A reconnect on every audio chunk then calls it
+for the whole session, and each attempt logs an error and tells every
+viewer. A slow dependency with no deadline holds up the batch behind it.
+Each connection backs off after any close that carries an error, each call
+has a deadline and a bounded retry (`withRetry` in `packages/clients` where
+it applies), and each long-lived stream has a maximum life or an idle
+timeout.
+
+```ts
+// Bad: the cooldown starts only when the open throws.
+socket.addEventListener('close', () => (this.socket = null)); // the next chunk reconnects at once
+// Good
+socket.addEventListener('close', (event) => {
+  this.socket = null;
+  if (event.code !== 1000) this.reconnectAt = Date.now() + this.backoff.next();
+});
+```
+
+**Sources:** [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213)
+review, no backoff after an error close in
+[voice.ts:269](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216355).
+[#5422](https://github.com/generaltranslation/gt-cloud/pull/5422#discussion_r4330312420)
+(a Temporal `describe()` on the enqueue path takes the same 5 s deadline as
+the others), [#5086](https://github.com/generaltranslation/gt-cloud/pull/5086#discussion_r4202513026)
+and [#5046](https://github.com/generaltranslation/gt-cloud/pull/5046) (a
+sandbox call wrapped in a retry),
+[#4933](https://github.com/generaltranslation/gt-cloud/pull/4933#discussion_r4089348741)
+(an event stream kept open for every tab left open) and
+[#4877](https://github.com/generaltranslation/gt-cloud/pull/4877) (an
+auto-stop interval of 0).
+
+## M14. A failure is classified by its cause
+
+**Look for:** every failure of a step mapped to one status, such as every
+token refresh failure becoming a 401; a hand-kept list of retryable error
+classes; a provider's authentication or permission error that defaults to
+retryable; and a 401 or 403 from a dependency that is caught and ignored for
+the rest of a session.
+
+**Why:** the class decides what happens next. A 5xx or a network failure is
+retried. A rejected grant asks the person to sign in again. A credential
+that dies in the middle of a session ends the session, or tells the people
+it affects, and stops anything that bills. Mixing them sends a person to
+sign in after a network blip, or keeps a session transcribing, and billing,
+with no translations and no error. Classify where the failure happens, from
+its typed cause (the status, the provider's error code), not from a list of
+class names that drifts each time the SDK adds an error. Rule M6 then
+decides what is stored.
+
+```ts
+// Bad: a 503 from the token endpoint tells the host to sign in again.
+if (!res.ok) throw new HTTPException(401, { message: 'Sign in again.' });
+// Good
+if (res.status === 400 && body.error === 'invalid_grant') throw new HTTPException(401, { message: 'Sign in again.' });
+if (!res.ok) throw new RetryableError(`token refresh failed with ${res.status}`);
+```
+
+**Sources:** [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213)
+review: every refresh failure as a 401 in
+[credentials.ts:46](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216375),
+and a 401 or 403 from translate swallowed for the rest of the meeting in
+[room.ts:615](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216367).
+[#5195](https://github.com/generaltranslation/gt-cloud/pull/5195#discussion_r4209891606)
+(a list of retryable errors to keep current) and
+[#5195](https://github.com/generaltranslation/gt-cloud/pull/5195#discussion_r4209857812)
+(provider authentication errors defaulting to retryable).
