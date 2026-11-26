@@ -214,7 +214,7 @@ function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiAr
       );
     if (id === ARMILLARY_ID) return <InkGifs files={armillaryFiles} alt='The logo as an armillary sphere, its pieces turning' />;
     if (id === RINGS_ID) return <InkGifs files={ringsFiles} alt='The logo as an armillary sphere, the meridian and the G turning round their own rings' />;
-    if (id === GIMBAL_ID) return <InkGifs files={gimbalFiles} alt='The logo as a gimbal, its rings parting and swinging round the still T' />;
+    if (id === GIMBAL_ID) return <InkGifs files={gimbalFiles} alt='The logo as a gimbal, its rings parting and turning round the still T' />;
     return (
       <div className='ax-body'>
         <Terms items={BUILD_PARTS} />

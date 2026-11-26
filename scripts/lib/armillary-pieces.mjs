@@ -15,10 +15,13 @@
 // - rings: the ring and the T hold still, and the meridian and the G turn
 //   round their own rings: each ring stays where the logo draws it and the
 //   stretch slides along it, so the meridian's gap and the G's mouth travel;
-// - gimbal: the lines nest as a gimbal's rings. The outer ring turns about
-//   the vertical axis; the G, hung on the ring at its nodes, turns about the
-//   node axis the ring carries; the meridian, inside the G, turns about the
-//   vertical axis the G carries; and the T holds still at the centre.
+// - gimbal: the lines nest as a gimbal's rings. They part, the ring out and
+//   the meridian in; the ring is the frame and can turn about the vertical;
+//   the G, hung on the ring at its nodes, turns about the node axis (its bar)
+//   the ring carries; the meridian, inside the G, turns about the vertical
+//   axis the G carries; and the T holds level at the centre, its arms drawn
+//   in to stay inside the G. Crossings between the rings go by depth, as the
+//   rings stand at different depths once parted.
 //
 // At rest the pieces are the logo: drawn at the GIF's size they differ from
 // its path only in the antialiasing of 145 edge pixels. Over and under
@@ -132,7 +135,7 @@ function tPoint(axis, half, [x, y], t) {
  * outer ring as a closed polyline when it is turned (null at rest, where it
  * is drawn as the logo's circle).
  */
-export function pieces(A, motion, a, nest = { ring: 0, g: 0, meridian: 0 }) {
+export function pieces(A, motion, a, nest = { ring: 0, g: 0, meridian: 0, t: 0 }) {
   const line = (from, to, at) => {
     const n = Math.ceil((to - from) / A.step);
     return Array.from({ length: n + 1 }, (_, i) => at(from + ((to - from) * i) / n));
@@ -165,7 +168,10 @@ export function pieces(A, motion, a, nest = { ring: 0, g: 0, meridian: 0 }) {
   } else {
     throw new Error(`armillary-pieces: no motion called ${motion}`);
   }
-  const T = A.t;
+  /* in the gimbal the T is the core inside the G: as the rings part its arms draw in by up to nest.t, and the bar's left
+     end follows the meridian in, so it still meets the meridian's inner side where the logo has it */
+  const mIn = (M.r + nest.meridian * a.nest) / M.r;
+  const T = motion === 'gimbal' && a.nest ? { ...A.t, end: A.t.end + (nest.t ?? 0) * a.nest, left: M.cx + (A.t.left - M.cx) * mIn } : A.t;
   const mid = (T.top + (T.bottomLeft + T.bottomRight) / 2) / 2;
   const axis = (T.stemLeft + T.stemRight) / 2;
   const turn = (p) => tPoint(axis, (T.stemRight - T.stemLeft) / 2, p, a.t);
@@ -187,13 +193,14 @@ const f = (v) => Math.round(v * 1000) / 1000;
 
 /**
  * Path data of a polyline's runs where `keep` holds; with `overlap`, each run
- * reaches one point past each end, so two runs that meet overlap by a step.
+ * reaches two points past each end, so where it meets a run that starts at
+ * the next point the two overlap by a whole step.
  */
 function runs(points, keep, overlap = false) {
   let d = '';
   let open = false;
   for (const [i, p] of points.entries()) {
-    const beside = overlap && (keep(points[i - 1] ?? p) || keep(points[i + 1] ?? p));
+    const beside = overlap && [-2, -1, 1, 2].some((k) => keep(points[i + k] ?? p));
     if (keep(p) || beside) {
       d += `${open ? 'L' : 'M'}${f(p.x)} ${f(p.y)}`;
       open = true;
@@ -204,17 +211,20 @@ function runs(points, keep, overlap = false) {
   return d;
 }
 
-/** The depth of the point of `lines` nearest `p` on screen: where `p` crosses them, their depth at the crossing. */
-function zAt(lines, p) {
+/** The point of `lines` nearest `p` on screen: where `p` crosses them, the point it crosses. */
+function nearest(lines, p) {
   let best = Infinity;
-  let z = 0;
+  let at = p;
   for (const l of lines)
     for (const q of l) {
       const d = (q.x - p.x) ** 2 + (q.y - p.y) ** 2;
-      if (d < best) [best, z] = [d, q.z];
+      if (d < best) [best, at] = [d, q];
     }
-  return z;
+  return at;
 }
+
+/** The depth of `lines` where `p` crosses them. */
+const zAt = (lines, p) => nearest(lines, p).z;
 
 /**
  * For the straight lines `lines`: given a polyline, a test that holds at its
@@ -261,12 +271,34 @@ export function frameSvg(A, motion, a, { view, px, ground, ink, nest }) {
   const all = () => true;
   /* the cutters: the G and the T cut both sides; the meridian cuts its outer side only, as the logo's C gaps do */
   const gAll = cut(runs(P.g, all), W + 2 * A.gaps.meridian);
+  /* in the gimbal the rings stand at different depths, so where the G and the meridian cross, the one standing deep in
+     front of the other passes over it; where they stand at about one depth, as at every crossing at rest, the logo's
+     rule holds: the meridian over the G where it faces the viewer, and under it where it faces away */
+  const gimbal = motion === 'gimbal';
+  const gOverMer = (p) => {
+    const zm = zAt([P.meridian], p);
+    return p.z - zm >= deep || (Math.abs(p.z - zm) < deep && zm <= 0);
+  };
+  const merOverG = new Set(P.outer.filter((_, i) => {
+    const p = P.meridian[i];
+    const zg = zAt([P.g], p);
+    return p.z - zg >= deep || (Math.abs(p.z - zg) < deep && p.z >= 0);
+  }));
+  const gCutsMer = gimbal ? cut(runs(P.g, gOverMer), W + 2 * A.gaps.meridian) : '';
+  /* and the T cuts the meridian where the meridian passes deep behind it */
+  const merAlongT = gimbal ? across(P.tLines, W + 2 * A.gaps.stem)(P.meridian) : null;
+  const tCutsMer = gimbal
+    ? P.tLines.map((l) => cut(runs(l, (p) => {
+        const q = nearest([P.meridian], p);
+        return q.z <= -deep && merAlongT(q);
+      }), W + 2 * A.gaps.stem)).join('')
+    : '';
   /* in the gimbal a ring folds edge on onto the bar or the stem, the lines the logo builds them on; running along them,
      within a cut's width, it merges with them, so it cuts the T only where it crosses at more than 30 degrees */
   const acrossT = motion === 'gimbal' ? across(P.tLines, W + 2 * A.gaps.stem) : () => () => true;
   const [gOverT, merOverT] = [acrossT(P.g), acrossT(P.outer)];
   const gDeep = cut(runs(P.g, (p) => isDeep(p) && gOverT(p)), W + 2 * A.gaps.stem);
-  const merNearAll = cut(runs(P.outer, near), W + A.gaps.c);
+  const merNearAll = cut(runs(P.outer, gimbal ? (q) => merOverG.has(q) : near), W + A.gaps.c);
   const merNearDeep = cut(runs(P.outer, (p) => near(p) && isDeep(p) && merOverT(p)), W + A.gaps.c);
   const tDeep = P.tLines.map((l) => cut(runs(l, isDeep), W + 2 * A.gaps.stem)).join('');
   /* a turned outer ring and a line cut each other by depth: where they cross, the one standing deep in front of the other
@@ -281,10 +313,10 @@ export function frameSvg(A, motion, a, { view, px, ground, ink, nest }) {
   const rect = `<rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="#fff"/>`;
   const mask = (id, cutters) => `<mask id="${id}" maskUnits="userSpaceOnUse" x="${vx}" y="${vy}" width="${vw}" height="${vh}">${rect}${cutters}</mask>`;
   const masks =
-    mask('mf', gAll + tDeep + ringCut.meridian) +
+    mask('mf', (gimbal ? gCutsMer + tCutsMer : gAll) + tDeep + ringCut.meridian) +
     mask('mt', gDeep + merNearDeep + ringCut.t) +
     mask('mg', merNearAll + ringCut.g) +
-    (P.ring ? mask('mn', ringCut.meridian) + mask('mr', underRing) : '');
+    (P.ring || gimbal ? mask('mn', ringCut.meridian + gCutsMer) + mask('mr', underRing) : '');
 
   const stroke = (points, keep, overlap = false) => {
     const d = runs(points, keep, overlap);
@@ -306,7 +338,7 @@ export function frameSvg(A, motion, a, { view, px, ground, ink, nest }) {
     `<g mask="url(#mf)">${stroke(P.meridian, far)}</g>` +
     `<g mask="url(#mt)"><path d="${polygon(P.t)}" fill="${ink}"/></g>` +
     `<g mask="url(#mg)">${stroke(P.g, all)}</g>` +
-    (P.ring && merNear ? `<g mask="url(#mn)">${merNear}</g>` : merNear) +
+    ((P.ring || motion === 'gimbal') && merNear ? `<g mask="url(#mn)">${merNear}</g>` : merNear) +
     ring +
     `</svg>`
   );

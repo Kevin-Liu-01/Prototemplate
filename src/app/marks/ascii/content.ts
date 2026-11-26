@@ -79,7 +79,7 @@ export const RINGS_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string 
 export const GIMBAL_ID = 'gimbal';
 export const GIMBAL_TITLE = 'The gimbal';
 export const GIMBAL_LEAD =
-  'The armillary as a gimbal. The rings part, the ring outside and the meridian inside, and each swings on the one around it: the ring about the vertical, the G about the line through its nodes and the meridian about the vertical the G carries, while the T holds level at the centre. The lap starts and ends on the logo.';
+  'The armillary as a gimbal. The rings part, the ring outside as the still frame and the meridian inside, and each turns once on the one around it: the G about its bar, hung on the ring at its nodes, and the meridian about the vertical the G carries, while the T holds level at the centre. The lap starts and ends on the logo.';
 
 /** The gimbal's GIFs, on ink and on paper. */
 export const GIMBAL_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string })[] = [

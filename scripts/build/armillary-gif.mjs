@@ -10,9 +10,9 @@
  *                                          and the T about its stem
  *   gt-armillary-rings-{dark,light}.gif    rings: the meridian's gap and the
  *                                          G's mouth travel round their rings
- *   gt-armillary-gimbal-{dark,light}.gif   gimbal: the ring, the G and the
- *                                          meridian turn as a gimbal's nested
- *                                          rings round the still T
+ *   gt-armillary-gimbal-{dark,light}.gif   gimbal: the rings part, and the G
+ *                                          and the meridian turn inside the
+ *                                          still ring round the still T
  *
  * Each piece turns once in its own window, and every lap starts and ends on
  * the still logo, so each GIF loops with no seam.
