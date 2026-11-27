@@ -149,7 +149,7 @@ export const SKILLS: readonly Skill[] = [
     id: 'gt-code-review',
     name: 'gt-code-review',
     title: 'Code review',
-    description: 'The code review General Translation applies to gt-cloud and to its translation pipelines. Its rules cover mechanism over patch (no regex on model or prompt text, no case-tuned constants, no hand-rolled parser where a library exists, no silent fallback, text logic that works in every source language with no English word lists, bounded connections and retries, failures classed by cause), reuse of what the repository and its frameworks already have, cutover over compatibility, code quality and readability, tests, TypeScript, Python, naming and writing, and security and keys, each with what to look for, why, a bad and good example and its source. A diff scan lists candidate lines by rule. Use when reviewing a diff, a branch or a pull request in gt-cloud or a pipeline repository, or before any push to gt-cloud.',
+    description: 'General Translation\'s code review for gt-cloud and its pipelines: mechanism over patch, reuse, cutover, stack shape, tests, TypeScript, Python, naming, security and a diff scan. Use when reviewing a gt-cloud diff or pull request, or before a push.',
     areas: ['lints', 'workflow'],
     updated: '2026-11-26',
     files: ['references/cutover.md', 'references/mechanism.md', 'references/naming-writing.md', 'references/python.md', 'references/quality.md', 'references/security.md', 'references/sources.md', 'references/stack.md', 'references/tests.md', 'references/typescript.md', 'scripts/scan-diff.mjs', 'scripts/scan-diff.test.mjs', 'scripts/stack-shape.mjs', 'scripts/stack-shape.test.mjs'],

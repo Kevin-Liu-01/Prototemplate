@@ -40,7 +40,7 @@ The curated skills of Prototemplate, Kevin Liu's hub for General Translation wor
 | Skill | Title | What it is | Also in |
 | --- | --- | --- | --- |
 | [`gt-lints`](gt-lints/SKILL.md) | Lints and gates | Every lint and gate that holds General Translation's design and copy rules, what each catches, where it runs and how to fix a failure. |  |
-| [`gt-code-review`](gt-code-review/SKILL.md) | Code review | The code review General Translation applies to gt-cloud and to its translation pipelines. | Workflow |
+| [`gt-code-review`](gt-code-review/SKILL.md) | Code review | General Translation's code review for gt-cloud and its pipelines. | Workflow |
 
 ## Motion
 
