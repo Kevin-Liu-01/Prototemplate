@@ -44,19 +44,25 @@ log row, a memory note, a pull request, a commit or a published page.
    stack's pull requests (section 4) and read each line against the rules
    of `references/stack.md`. A stack of the wrong shape is restacked before
    its lines are reviewed.
-2. **Fix the scope.** Name the base and the head by hash, for example
+2. **Question the approach.** Before reading a line, write down what the
+   change sets out to do and the mechanism it uses. Then ask "what is wrong
+   with this approach?", and answer it in writing: which inputs break it,
+   which simpler mechanism would do, which concept already exists for it,
+   and what a reviewer would ask first. Answer the same question again of
+   each fix that the review proposes. Every answer that holds is a finding.
+3. **Fix the scope.** Name the base and the head by hash, for example
    `git diff <base>...<head>`. Read the pull request's body and the commits
    in order. A stacked pull request is reviewed against its parent branch,
    not against main.
-3. **Run the scan.** Pipe the diff into the candidate scan of section 4. It
+4. **Run the scan.** Pipe the diff into the candidate scan of section 4. It
    lists lines that may break a rule. A scan line is a lead to read and is
    never a finding by itself.
-4. **Read whole files.** For each changed file, read the functions the diff
+5. **Read whole files.** For each changed file, read the functions the diff
    touches from top to bottom, and the callers of every changed signature.
    A rule about duplication or ownership needs the whole tree, so search it
    with `git grep -I -F -e <name>` for each new or removed name, constant
    and prompt heading (rule C5).
-5. **Walk the groups.** Apply each group's rules in the order of section 3.
+6. **Walk the groups.** Apply each group's rules in the order of section 3.
    Step 1 covered the stack group. The mechanism group comes next because
    it held most of the image stack's findings. Code that the diff moves verbatim from another file is
    reviewed like new code, and its findings are marked "carried", so the
@@ -64,16 +70,16 @@ log row, a memory note, a pull request, a commit or a published page.
    reads or writes text, check it against a source language with no spaces
    and no capitals (Japanese), one that capitalizes every noun (German) and
    one written right to left (Arabic) before English (rule M11).
-6. **Read the bots' threads.** Each Greptile, Cursor or CodeQL finding on
+7. **Read the bots' threads.** Each Greptile, Cursor or CodeQL finding on
    the pull request is fixed or answered with the reason. A reviewer holds
    approval while one is unanswered, and three bots flagging one line is
    reason enough to look.
-7. **Verify each finding.** A finding names the file and line, the input
+8. **Verify each finding.** A finding names the file and line, the input
    that breaks it, and what goes wrong. Check it against the whole stack
    before it is reported, as #6189 states its findings were. A finding that
    does not hold up after the check goes to a "checked and not a finding"
    list with the reason, as #6189's "Not changed" section does.
-8. **Report.** Use the format of section 2. Post nothing to GitHub or
+9. **Report.** Use the format of section 2. Post nothing to GitHub or
    Slack unless the owner asks; the review goes to the session or person that
    asked for it.
 
@@ -290,6 +296,7 @@ skills/gt-code-review/scripts/stack-shape.test.mjs` runs its tests.
 
 ## 5. Review checklist
 
+- [ ] The approach was questioned in writing ("what is wrong with this approach?") before the lines, and again for each proposed fix.
 - [ ] The stack check ran, and each shape finding was restacked or answered (K1 to K5).
 - [ ] Every loop, state or check the stack adds was searched for in the other products' stacks (K6).
 - [ ] Every fix of a finding was asked whether the code should exist at all before a case was added (K7).
