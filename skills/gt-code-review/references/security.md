@@ -5,9 +5,14 @@
 **Look for:** a key in code, a config file, a test, a URL query or a log
 line; `print` or `console.log` of a token, secret or password; a client
 that reads a key file itself. A session or host token in a request URL
-counts: the URL is written to Worker logs, Sentry and proxies. Only a
-browser WebSocket open, which cannot set a header, carries a token in its
-query; every other request sends it in a header.
+counts: the URL is written to Worker logs, Sentry and proxies. A browser
+WebSocket cannot set a header, so it carries a one-time ticket, not the
+token. An authenticated request with the token in its Authorization header
+mints the ticket, the server stores it for 30 seconds, and the socket sends
+it once in Sec-WebSocket-Protocol. The token itself never goes in that
+header either: Cloudflare's request logs redact Authorization and keep
+Sec-WebSocket-Protocol as sent. Every other request sends its token in a
+header.
 
 **Why:** a printed key is in the transcript, the CI log or the log store
 for good. Code reads keys from the environment only. On the build Mac a
@@ -25,7 +30,8 @@ logger.info('calling the media GPU server', { operation: 'erase' });
 agent rules: "Never print, log, commit or put a key in a URL". The
 [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213) review,
 a host token in the query of normal fetches in
-[room.ts:273](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216382).
+[room.ts:273](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216382). The captions audio
+socket's ticket, from the round 4 review of the same stack.
 
 ## S2. No key in the sandbox
 
