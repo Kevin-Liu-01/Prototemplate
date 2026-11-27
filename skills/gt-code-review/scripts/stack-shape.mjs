@@ -47,14 +47,17 @@ function areaOf(path) {
 
 /** Lines a reviewer must read: not copied, not a lockfile, not a license. */
 export function readLines(files, copied) {
-  return files
-    .filter((f) => !NOT_READ.test(f.path) && !copied.some((p) => f.path.startsWith(p)))
-    .reduce((sum, f) => sum + f.added, 0);
+  return readFiles(files, copied).reduce((sum, f) => sum + f.added, 0);
 }
 
-/** The shared areas a pull request touches beside product areas. */
-export function sharedBeside(files, shared) {
-  const areas = new Set(files.map((f) => areaOf(f.path)));
+/** Files a reviewer reads: not copied, not a lockfile, not a license. */
+function readFiles(files, copied) {
+  return files.filter((f) => !NOT_READ.test(f.path) && !copied.some((p) => f.path.startsWith(p)));
+}
+
+/** The shared areas a pull request touches beside product areas, among the files a reviewer reads. */
+export function sharedBeside(files, shared, copied = []) {
+  const areas = new Set(readFiles(files, copied).map((f) => areaOf(f.path)));
   const sharedAreas = [...areas].filter((a) => shared.some((p) => `${a}/`.startsWith(p)));
   return sharedAreas.length > 0 && sharedAreas.length < areas.size ? sharedAreas : [];
 }
@@ -66,7 +69,7 @@ export function checkPr(pr, { copied = [], shared = SHARED } = {}) {
   const read = readLines(pr.files, copied);
   const copiedLines = pr.files.reduce((s, f) => s + f.added, 0) - read;
   if (ROUND_NAME.test(pr.head) || ROUND_TITLE.test(pr.title)) add('K1', `named by a review round: ${pr.head}`);
-  const beside = sharedBeside(pr.files, shared);
+  const beside = sharedBeside(pr.files, shared, copied);
   if (beside.length > 0) add('K2', `changes ${beside.join(', ')} beside product code`);
   if (copiedLines > ADDED_MAX) add('K3', `${copiedLines} added lines under copied paths`);
   if (read > ADDED_MAX) add('K4', `${read} added lines to read, over ${ADDED_MAX}: name its concepts or a reading order`);

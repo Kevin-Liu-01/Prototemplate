@@ -28,6 +28,15 @@ describe('K2: a shared package beside product code', () => {
     const files = [product, ['packages/agent-core/src/store/a.ts', 40]].map(([path, added]) => ({ path, added, removed: 0 }));
     assert.deepEqual(sharedBeside(files, SHARED), ['packages/agent-core']);
   });
+  it('passes shared packages beside a lockfile or a copied path', () => {
+    const p = pr('k/usage', 'feat: usage record', [
+      ['packages/billing/src/usage.ts', 40],
+      ['packages/node/src/record.ts', 30],
+      ['pnpm-lock.yaml', 6],
+      ['vendor/x.py', 9],
+    ]);
+    assert.ok(!rules(p, { copied: ['vendor/'] }).includes('K2'));
+  });
   it('passes a pull request that changes only the shared package', () => {
     assert.ok(!rules(pr('k/store-admit', 'feat: store admits', [['packages/agent-core/src/store/a.ts', 40]])).includes('K2'));
   });
