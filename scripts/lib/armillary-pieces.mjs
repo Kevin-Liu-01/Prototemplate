@@ -19,10 +19,12 @@
 //   the G in; the ring is the frame and holds still; the meridian, hung on
 //   it at its poles, turns about the vertical; the G, inside the meridian,
 //   turns about its node axis (its bar's line), which the meridian carries
-//   round; and the T holds level at the centre, its arms drawn in to stay
-//   inside the G. The meridian outside the G is the logo's own order: where
-//   it faces the viewer it passes over the G, so crossings between the rings
-//   go by depth once they part and agree with the logo at rest (gimbalSvg).
+//   round; and the T holds level at the centre, drawn in until it sits
+//   clear inside the G, so no ring passes through it. The meridian outside
+//   the G is the logo's own order: where it faces the viewer it passes over
+//   the G, so crossings go by depth once the rings part and agree with the
+//   logo at rest. The gimbal is drawn pixel by pixel (gimbalCoverage), its
+//   gaps opening with depth, so no crossing pops between frames.
 //
 // At rest the pieces are the logo: drawn at the GIF's size they differ from
 // its path only in the antialiasing of 145 edge pixels. Over and under
@@ -80,13 +82,6 @@ function turnY(p, deg, cx) {
   const [c, s] = [Math.cos(deg * DEG), Math.sin(deg * DEG)];
   const dx = p.x - cx;
   return { x: cx + dx * c + p.z * s, y: p.y, z: -dx * s + p.z * c };
-}
-
-/** A point turned `deg` about the horizontal axis through cy, as latitudePoint turns the latitude. */
-function turnX(p, deg, cy) {
-  const [c, s] = [Math.cos(deg * DEG), Math.sin(deg * DEG)];
-  const dy = p.y - cy;
-  return { x: p.x, y: cy + dy * c + p.z * s, z: -dy * s + p.z * c };
 }
 
 /** The T in the logo's plane: the bar and the stem with the fillets between them, as an outline. */
@@ -170,8 +165,8 @@ export function pieces(A, motion, a, nest = { ring: 0, g: 0, meridian: 0, t: 0 }
   } else {
     throw new Error(`armillary-pieces: no motion called ${motion}`);
   }
-  /* in the gimbal the T is the core inside the G: as the rings part its arms draw in by up to nest.t, and the bar's left
-     end follows the meridian in, so it still meets the meridian's inner side where the logo has it */
+  /* in the gimbal the T is the core inside the G: as the rings part its arms draw in by up to nest.t, clear of every ring,
+     and the bar's left end moves with the meridian's radius, so it meets the meridian where the logo has it */
   const mIn = (M.r + nest.meridian * a.nest) / M.r;
   const T = motion === 'gimbal' && a.nest ? { ...A.t, end: A.t.end + (nest.t ?? 0) * a.nest, left: M.cx + (A.t.left - M.cx) * mIn } : A.t;
   const mid = (T.top + (T.bottomLeft + T.bottomRight) / 2) / 2;
@@ -208,87 +203,6 @@ function runs(points, keep) {
   return d;
 }
 
-/** The point of `lines` nearest `p` on screen: where `p` crosses them, the point it crosses. */
-function nearest(lines, p) {
-  let best = Infinity;
-  let at = p;
-  for (const l of lines)
-    for (const q of l) {
-      const d = (q.x - p.x) ** 2 + (q.y - p.y) ** 2;
-      if (d < best) [best, at] = [d, q];
-    }
-  return at;
-}
-
-/** The depth of `lines` where `p` crosses them. */
-const zAt = (lines, p) => nearest(lines, p).z;
-
-/**
- * For the straight lines `lines`: given a polyline, a test that holds at its
- * points except where it runs within `reach` of one of the lines at less
- * than 30 degrees to it.
- */
-function across(lines, reach) {
-  const dirs = lines.map((l) => {
-    const [a, b] = [l[0], l[l.length - 1]];
-    const n = Math.hypot(b.x - a.x, b.y - a.y) || 1;
-    return [(b.x - a.x) / n, (b.y - a.y) / n];
-  });
-  return (points) => {
-    const along = new Set();
-    points.forEach((p, i) => {
-      const [q0, q1] = [points[Math.max(0, i - 1)], points[Math.min(points.length - 1, i + 1)]];
-      const n = Math.hypot(q1.x - q0.x, q1.y - q0.y) || 1;
-      const [ux, uy] = [(q1.x - q0.x) / n, (q1.y - q0.y) / n];
-      lines.forEach((l, k) => {
-        if (Math.abs(ux * dirs[k][0] + uy * dirs[k][1]) < Math.cos(30 * DEG)) return;
-        if (l.some((q) => Math.hypot(q.x - p.x, q.y - p.y) < reach)) along.add(p);
-      });
-    });
-    return (p) => !along.has(p);
-  };
-}
-
-/** A polyline's unit direction at its point `i`. */
-function dirAt(points, i) {
-  const [q0, q1] = [points[Math.max(0, i - 1)], points[Math.min(points.length - 1, i + 1)]];
-  const n = Math.hypot(q1.x - q0.x, q1.y - q0.y) || 1;
-  return [(q1.x - q0.x) / n, (q1.y - q0.y) / n];
-}
-
-/**
- * For a polyline running under `over`: a test that fails at its points that
- * run beside `over` at less than 30 degrees to it, within `reach` of it, where
- * `isOver` holds at the point of `over` beside them. A line passing under
- * another nearly along it is then hidden whole, so it never shows as a sliver
- * at the edge of the other's cut.
- */
-function besideUnder(points, over, isOver, reach) {
-  const hid = new Set();
-  points.forEach((p, i) => {
-    let [best, j] = [Infinity, -1];
-    over.forEach((q, k) => {
-      const d = (q.x - p.x) ** 2 + (q.y - p.y) ** 2;
-      if (d < best) [best, j] = [d, k];
-    });
-    if (j < 0 || best >= reach * reach || !isOver(over[j])) return;
-    const [u, v] = [dirAt(points, i), dirAt(over, j)];
-    if (Math.abs(u[0] * v[0] + u[1] * v[1]) >= Math.cos(30 * DEG)) hid.add(p);
-  });
-  /* a stretch left shown between two hidden ones, shorter than three line weights, would be a stub: hide it too */
-  let last = -1;
-  points.forEach((p, i) => {
-    if (!hid.has(p)) return;
-    if (last >= 0 && i - last > 1) {
-      let len = 0;
-      for (let k = last + 1; k <= i; k++) len += Math.hypot(points[k].x - points[k - 1].x, points[k].y - points[k - 1].y);
-      if (len < 3 * SPHERE.weight) for (let k = last + 1; k < i; k++) hid.add(points[k]);
-    }
-    last = i;
-  });
-  return (p) => !hid.has(p);
-}
-
 const polygon = (pts) => `M${pts.map((p) => `${f(p.x)} ${f(p.y)}`).join('L')}Z`;
 
 /**
@@ -298,8 +212,8 @@ const polygon = (pts) => `M${pts.map((p) => `${f(p.x)} ${f(p.y)}`).join('L')}Z`;
  * has no hand-off to make.
  */
 export function frameSvg(A, motion, a, { view, px, ground, ink, nest }) {
+  if (motion === 'gimbal') throw new Error('armillary-pieces: the gimbal is drawn by gimbalCoverage');
   const P = pieces(A, motion, a, nest);
-  if (motion === 'gimbal') return gimbalSvg(A, a, P, { view, px, ground, ink });
   const W = SPHERE.weight;
   const deep = A.deep * SPHERE.ring;
   const near = (p) => p.z >= 0;
@@ -325,132 +239,7 @@ export function frameSvg(A, motion, a, { view, px, ground, ink, nest }) {
   );
 }
 
-/**
- * One frame of the gimbal. Over and under between the meridian and the G go
- * by depth: once the rings part, the meridian outside the G, the nearer of
- * the two passes over wherever they cross, which at rest is the logo's own
- * rule (the meridian over the G where it faces the viewer, under it where it
- * faces away); while they are close to one sphere the logo's rule decides
- * the crossings that stand within `deep` of level, a margin that narrows to
- * nothing as they part. The T keeps the logo's crossings, cut by a ring
- * standing `deep` in front of it and cutting a ring standing `deep` behind
- * it, and a ring running along the bar or the stem merges with it. A line
- * passing under another nearly along it is hidden there whole, and a piece of
- * any line left between two cuts, or between a cut and its end, shorter than
- * a line and a half's weight is cut away with them, so no stub or sliver
- * shows.
- */
-function gimbalSvg(A, a, P, { view, px, ground, ink }) {
-  if (!off(a.ring)) throw new Error('armillary-pieces: the gimbal draws its outer ring as a still frame');
-  const W = SPHERE.weight;
-  const deep = A.deep * SPHERE.ring;
-  const level = deep * (1 - a.nest);
-  const isDeep = (p) => Math.abs(p.z) >= deep;
-  const all = () => true;
-  const band = (points, keep, w) => ({ d: runs(points, keep), pts: points.filter(keep), w });
-  /* the meridian and the G by depth where they cross, by the logo's rule where they stand level */
-  const gOverMer = (q) => {
-    const zm = zAt([P.meridian], q);
-    return Math.abs(q.z - zm) >= level ? q.z > zm : zm <= 0;
-  };
-  const merOverG = new Set(
-    P.outer.filter((_, i) => {
-      const p = P.meridian[i];
-      const zg = zAt([P.g], p);
-      return Math.abs(p.z - zg) >= level ? p.z > zg : p.z >= 0;
-    }),
-  );
-  const merShown = besideUnder(P.meridian, P.g, gOverMer, W + A.gaps.meridian);
-  const gShown = besideUnder(P.g, P.meridian, (q) => merOverG.has(P.outer[P.meridian.indexOf(q)]), W + A.gaps.c);
-  /* the T: a ring standing deep in front cuts it and one standing deep behind is cut by it, except along the bar or the stem */
-  const reach = W + 2 * A.gaps.stem;
-  const acrossT = across(P.tLines, reach);
-  const [merAlongT, gOverT, merOverT] = [acrossT(P.meridian), acrossT(P.g), acrossT(P.outer)];
-  const merAt = new Map(P.outer.map((q, i) => [q, P.meridian[i]]));
-  const [axis, mid] = [P.tLines[1][0].x, P.tLines[0][0].y];
-  const short = 1.5 * W;
-
-  /* the cuts, made only by what is drawn: a stub cut away cuts nothing, so the cuts are found again once without the stubs */
-  let gone = { mer: new Set(), g: new Set(), t: new Set() };
-  let B;
-  let S;
-  for (let pass = 0; pass < 2; pass++) {
-    const merOn = (p) => merShown(p) && !gone.mer.has(p);
-    const outerOn = (q) => merOn(merAt.get(q));
-    const gOn = (p) => gShown(p) && !gone.g.has(p);
-    const tOn = (p) => !gone.t.has(p);
-    B = {
-      gCutsMer: band(P.g, (q) => gOn(q) && gOverMer(q), W + 2 * A.gaps.meridian),
-      merCutsG: band(P.outer, (q) => outerOn(q) && merOverG.has(q), W + A.gaps.c),
-      tCutsMer: P.tLines.map((l) =>
-        band(l, (p) => {
-          const q = nearest([P.meridian], p);
-          return tOn(p) && q.z <= -deep && merAlongT(q);
-        }, reach),
-      ),
-      gCutsT: band(P.g, (p) => gOn(p) && isDeep(p) && gOverT(p), reach),
-      merCutsT: band(P.outer, (p) => outerOn(p) && p.z >= 0 && isDeep(p) && merOverT(p), W + A.gaps.c),
-    };
-    S = {
-      mer: stubs(P.meridian, merShown, () => [B.gCutsMer, ...B.tCutsMer], [true, true], short),
-      g: stubs(P.g, gShown, () => [B.merCutsG], [true, true], short),
-      bar: stubs(P.tLines[0], all, () => [B.gCutsT, B.merCutsT], [true, true], short, (p) => Math.abs(p.x - axis) < 1),
-      stem: stubs(P.tLines[1], all, () => [B.gCutsT, B.merCutsT], [false, true], short, (p) => p.y - mid < 1),
-    };
-    gone = { mer: S.mer.gone, g: S.g.gone, t: new Set([...S.bar.gone, ...S.stem.gone]) };
-  }
-  const cuts = (...bands) => bands.map((b) => cut(b.d, b.w, b.cap)).join('');
-  const masks =
-    mask(view, 'mm', cuts(B.gCutsMer, ...B.tCutsMer, S.mer)) +
-    mask(view, 'mt', cuts(B.gCutsT, B.merCutsT, S.bar, S.stem)) +
-    mask(view, 'mg', cuts(B.merCutsG, S.g));
-  const ring = P.ring
-    ? stroke(P.ring, all, ink)
-    : `<circle cx="${CX}" cy="${CY}" r="${SPHERE.ring}" fill="none" stroke="${ink}" stroke-width="${W}"/>`;
-  return (
-    svgOpen(view, px, ground, masks) +
-    /* every crossing is a cut, so the order the lines are laid in shows nowhere, and the meridian is drawn whole, its near
-       and far halves one line with no join between them */
-    `<g mask="url(#mm)">${stroke(P.meridian, merShown, ink)}</g>` +
-    `<g mask="url(#mt)"><path d="${polygon(P.t)}" fill="${ink}"/></g>` +
-    `<g mask="url(#mg)">${stroke(P.g, gShown, ink)}</g>` +
-    ring +
-    `</svg>`
-  );
-}
-
-/**
- * The pieces of a line its cuts leave too short to read, as a cutter along
- * the line with the set of its points (`gone`): the line's shown points (`shown`) not inside one of the bands
- * `bandsAt(p)` cut at them, taken run by run, where a run is shorter than
- * `short` and has a cut or one of the line's real ends (`ends`, start and
- * finish) at each side. A run holding a point where `anchored` holds joins
- * the rest of its piece and stays.
- */
-function stubs(points, shown, bandsAt, ends, short, anchored = () => false) {
-  const inBand = (p) => bandsAt(p).some((b) => b.pts.some((q) => (q.x - p.x) ** 2 + (q.y - p.y) ** 2 < (b.w / 2) ** 2));
-  const seen = points.map((p) => shown(p) && !inBand(p));
-  const gone = new Set();
-  let i = 0;
-  while (i < points.length) {
-    if (!seen[i]) {
-      i++;
-      continue;
-    }
-    let j = i;
-    while (j + 1 < points.length && seen[j + 1]) j++;
-    let len = 0;
-    for (let k = i + 1; k <= j; k++) len += Math.hypot(points[k].x - points[k - 1].x, points[k].y - points[k - 1].y);
-    const bounded = (i > 0 || ends[0]) && (j < points.length - 1 || ends[1]) && !(i === 0 && j === points.length - 1);
-    if (bounded && len < short && !points.slice(i, j + 1).some(anchored))
-      for (let k = Math.max(0, i - 1); k <= Math.min(points.length - 1, j + 1); k++) gone.add(points[k]);
-    i = j + 1;
-  }
-  /* square caps carry the cut past the line's own end, so no hairline of it is left there */
-  return { d: runs(points, (p) => gone.has(p)), pts: [], w: SPHERE.weight + 4, cap: 'square', gone };
-}
-
-const cut = (d, width, cap = 'butt') => (d ? `<path d="${d}" fill="none" stroke="#000" stroke-width="${width}" stroke-linecap="${cap}" stroke-linejoin="round"/>` : '');
+const cut = (d, width) => (d ? `<path d="${d}" fill="none" stroke="#000" stroke-width="${width}" stroke-linecap="butt" stroke-linejoin="round"/>` : '');
 
 function mask([vx, vy, vw, vh], id, cutters) {
   return `<mask id="${id}" maskUnits="userSpaceOnUse" x="${vx}" y="${vy}" width="${vw}" height="${vh}"><rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="#fff"/>${cutters}</mask>`;
@@ -468,6 +257,157 @@ function svgOpen([vx, vy, vw, vh], px, ground, masks) {
     `<rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="${ground}"/>`
   );
 }
+
+/** Hermite step from 0 at `a` to 1 at `b`. */
+function smooth(a, b, x) {
+  const u = Math.min(1, Math.max(0, (x - a) / (b - a)));
+  return u * u * (3 - 2 * u);
+}
+
+/**
+ * One frame of the gimbal as ink coverage, 0 to 1 a pixel, `size` pixels a
+ * side over `view`, each pixel sampled `ss` by `ss` times.
+ *
+ * The gimbal is drawn pixel by pixel rather than as SVG, because its lines
+ * cross at every angle and depth: a line is ink where it covers the pixel
+ * unless a line standing over it there leaves its gap round it, and how wide
+ * that gap opens follows how far the two stand apart in depth, smoothly,
+ * so a crossing never pops from one frame to the next. Which line stands
+ * over is its key: the logo's order at rest (the meridian over everything
+ * where it faces the viewer and under everything where it faces away, and
+ * the G over the T), and the lines' true depth once the rings have parted,
+ * the meridian outside the G as a gimbal nests them, so the two agree; the
+ * key moves from one to the other while the rings part and before they
+ * turn. A line and the T cut each other only where the line stands `deep`
+ * out of the T's plane, so the bar and the stem run into the rings where
+ * they meet them, as in the logo. The outer ring cuts nothing and is cut by
+ * nothing. Lines end square, as the logo's do, and join round.
+ */
+export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
+  const P = pieces(A, 'gimbal', a, nest);
+  const W = SPHERE.weight;
+  const half = W / 2;
+  const deep = A.deep * SPHERE.ring;
+  const { c: gapC, meridian: gapM, stem: gapT } = A.gaps;
+  const reach = Math.max(gapC, gapM, gapT);
+  /* 0 at rest, the logo's order; 1 once the rings have half parted, true depth, before any ring turns */
+  const lam = smooth(0, 0.5, a.nest);
+  /* the depth over which a gap opens from nothing to whole */
+  const ramp = A.ramp * SPHERE.ring;
+  const K = 2 * ramp;
+  const keyOf = (line, z) => {
+    const logo = line === MER ? (z >= 0 ? K : -K) : line === G ? 0 : -K / 2;
+    return (1 - lam) * logo + lam * (line === T ? 0 : z);
+  };
+  /* where a line meets the T it cuts it, or is cut, only as it stands deep out of the T's plane: at rest exactly at deep, as
+     the logo does, and in motion over a soft edge below it */
+  const soft = 0.5 * deep * lam;
+  const outOfPlane = (z) => (soft > 0 ? smooth(deep - soft, deep, Math.abs(z)) : Math.abs(z) >= deep ? 1 : 0);
+
+  /* the segments of the meridian and the G, binned on a grid */
+  /* each line ends square: a segment within two weights of an end draws nothing past that end's own plane */
+  const segs = [];
+  for (const [line, pts] of [[MER, P.meridian], [G, P.g]]) {
+    const n = pts.length - 1;
+    const endOf = (a, b) => {
+      const l = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+      return { x: a.x, y: a.y, dx: (a.x - b.x) / l, dy: (a.y - b.y) / l };
+    };
+    const [start, end] = [endOf(pts[0], pts[1]), endOf(pts[n], pts[n - 1])];
+    let run = 0;
+    const along = pts.map((p, i) => (run += i ? Math.hypot(p.x - pts[i - 1].x, p.y - pts[i - 1].y) : 0));
+    for (let i = 0; i < n; i++)
+      segs.push({ line, p: pts[i], q: pts[i + 1], ends: [along[i] < 2 * W && start, run - along[i + 1] < 2 * W && end].filter(Boolean) });
+  }
+  const [vx, vy, vw] = view;
+  const cell = 4;
+  const cols = Math.ceil(vw / cell) + 1;
+  const bins = new Map();
+  const R = half + reach + 1;
+  for (const s of segs) {
+    const [x0, x1] = [Math.min(s.p.x, s.q.x) - R, Math.max(s.p.x, s.q.x) + R];
+    const [y0, y1] = [Math.min(s.p.y, s.q.y) - R, Math.max(s.p.y, s.q.y) + R];
+    for (let cy = Math.floor((y0 - vy) / cell); cy <= Math.floor((y1 - vy) / cell); cy++)
+      for (let cx = Math.floor((x0 - vx) / cell); cx <= Math.floor((x1 - vx) / cell); cx++) {
+        const k = cy * cols + cx;
+        if (!bins.has(k)) bins.set(k, []);
+        bins.get(k).push(s);
+      }
+  }
+  /* the T as a polygon with its box */
+  const tp = P.t;
+  let [tx0, ty0, tx1, ty1] = [Infinity, Infinity, -Infinity, -Infinity];
+  for (const p of tp) [tx0, ty0, tx1, ty1] = [Math.min(tx0, p.x), Math.min(ty0, p.y), Math.max(tx1, p.x), Math.max(ty1, p.y)];
+  const tSigned = (x, y) => {
+    let d = Infinity;
+    let inside = false;
+    for (let i = 0, j = tp.length - 1; i < tp.length; j = i++) {
+      const [a1, b1] = [tp[j], tp[i]];
+      const [ex, ey] = [b1.x - a1.x, b1.y - a1.y];
+      const u = Math.min(1, Math.max(0, ((x - a1.x) * ex + (y - a1.y) * ey) / (ex * ex + ey * ey || 1)));
+      d = Math.min(d, Math.hypot(x - a1.x - u * ex, y - a1.y - u * ey));
+      if (a1.y > y !== b1.y > y && x < ((b1.x - a1.x) * (y - a1.y)) / (b1.y - a1.y) + a1.x) inside = !inside;
+    }
+    return inside ? -d : d;
+  };
+  const ringR = P.ring ? Math.hypot(P.ring[0].x - CX, P.ring[0].y - CY) : SPHERE.ring;
+  const [mcx, mcy] = [SPHERE.meridian.cx, SPHERE.meridian.cy];
+
+  /* the lines near (x, y): each a candidate with its edge distance (negative inside the line), its key, its depth and, for
+     the meridian, which side of it the point lies on */
+  const near = (x, y) => {
+    const out = [];
+    const list = bins.get(Math.floor((y - vy) / cell) * cols + Math.floor((x - vx) / cell));
+    if (list)
+      for (const s of list) {
+        const [ex, ey] = [s.q.x - s.p.x, s.q.y - s.p.y];
+        if (s.ends.some((e) => (x - e.x) * e.dx + (y - e.y) * e.dy > 0)) continue;
+        const u = Math.min(1, Math.max(0, ((x - s.p.x) * ex + (y - s.p.y) * ey) / (ex * ex + ey * ey || 1)));
+        const [fx, fy] = [s.p.x + u * ex, s.p.y + u * ey];
+        const e = Math.hypot(x - fx, y - fy) - half;
+        if (e > reach) continue;
+        const z = s.p.z + u * (s.q.z - s.p.z);
+        const outer = s.line === MER && (x - fx) * (fx - mcx) + (y - fy) * (fy - mcy) > 0;
+        out.push({ line: s.line, e, z, key: keyOf(s.line, z), outer });
+      }
+    if (x > tx0 - reach && x < tx1 + reach && y > ty0 - reach && y < ty1 + reach) {
+      const e = tSigned(x, y);
+      if (e <= reach) out.push({ line: T, e, z: 0, key: keyOf(T, 0), outer: false });
+    }
+    return out;
+  };
+  /* the gap line `o` leaves round itself where it stands over line `c` */
+  const gap = (o, c) => {
+    const strength = smooth(0, ramp, o.key - c.key);
+    if (strength <= 0) return -Infinity;
+    if (o.line === T) return gapT * strength * outOfPlane(c.z) * (c.line === MER ? lam : 1);
+    if (c.line === T) return (o.line === MER ? (o.outer ? gapC : gapC * lam) : gapT) * strength * outOfPlane(o.z);
+    if (o.line === MER) return (o.outer ? gapC : gapC * lam) * strength;
+    return gapM * strength;
+  };
+  const ink = (x, y) => {
+    const d = Math.hypot(x - CX, y - CY) - ringR;
+    if (Math.abs(d) <= half) return true;
+    const cs = near(x, y);
+    return cs.some((c) => c.e <= 0 && !cs.some((o) => o.line !== c.line && o.e <= gap(o, c)));
+  };
+
+  const cov = new Float32Array(size * size);
+  const px = vw / size;
+  const pad = half + reach + px;
+  for (let j = 0; j < size; j++)
+    for (let i = 0; i < size; i++) {
+      const [x, y] = [vx + (i + 0.5) * px, vy + (j + 0.5) * px];
+      /* a pixel far from every line is ground */
+      if (Math.abs(Math.hypot(x - CX, y - CY) - ringR) > pad && near(x, y).every((c) => c.e > px)) continue;
+      let n = 0;
+      for (let sj = 0; sj < ss; sj++) for (let si = 0; si < ss; si++) if (ink(vx + (i + (si + 0.5) / ss) * px, vy + (j + (sj + 0.5) / ss) * px)) n++;
+      cov[j * size + i] = n / (ss * ss);
+    }
+  return cov;
+}
+
+const [MER, G, T] = ['meridian', 'g', 't'];
 
 /** Version `V`'s lap as the times of its frames in seconds. */
 export function lapTimes(V) {

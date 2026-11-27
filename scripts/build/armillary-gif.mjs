@@ -17,9 +17,10 @@
  * Each piece turns once in its own window, and every lap starts and ends on
  * the still logo, so each GIF loops with no seam.
  *
- * Chrome draws each frame's SVG and ffmpeg encodes the lap with a 16 color
- * palette taken from the frames and no dithering, so the ground stays one
- * flat color.
+ * Chrome draws each frame's SVG, except the gimbal's, which Node draws
+ * pixel by pixel (gimbalCoverage), and ffmpeg encodes the lap with a 16
+ * color palette taken from the frames and no dithering, so the ground stays
+ * one flat color.
  *
  * Requires: the Chrome for Testing build playwright-core expects
  * (CHROME_PATH overrides it) and ffmpeg on PATH. No dev server.
@@ -35,7 +36,7 @@ import { join } from 'node:path';
 
 import { chromium } from 'playwright-core';
 
-import { angles, frameSvg, lapTimes } from '../lib/armillary-pieces.mjs';
+import { angles, frameSvg, gimbalCoverage, lapTimes } from '../lib/armillary-pieces.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
 import { chromePath, ROOT } from '../lib/site-pages.mjs';
 
@@ -55,21 +56,39 @@ const only = process.argv.includes('--only') ? process.argv[process.argv.indexOf
 if (only && !A.versions[only]) throw new Error(`armillary-gif: no version called ${only} (${Object.keys(A.versions).join(', ')})`);
 const versions = Object.entries(A.versions).filter(([name]) => !only || name === only);
 
+/** A frame's ink coverage as raw RGB, the ground mixed with the ink by each pixel's coverage. */
+function shade(cov, ground, ink) {
+  const rgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  const [g, k] = [rgb(ground), rgb(ink)];
+  const out = Buffer.alloc(cov.length * 3);
+  for (let i = 0; i < cov.length; i++) for (let c = 0; c < 3; c++) out[i * 3 + c] = Math.round(g[c] + (k[c] - g[c]) * cov[i]);
+  return out;
+}
+
 mkdirSync(join(ROOT, OUT), { recursive: true });
 const browser = await chromium.launch({ executablePath: chromePath(), headless: true });
 try {
   const page = await browser.newPage({ viewport: { width: SIZE, height: SIZE }, deviceScaleFactor: 1 });
   for (const [name, V] of versions) {
     const times = lapTimes(V);
+    /* the gimbal is drawn pixel by pixel in Node (gimbalCoverage), once for both themes */
+    const coverage = V.motion === 'gimbal' ? times.map((s) => gimbalCoverage(A, angles(V, s), V.nest, view, SIZE)) : null;
     for (const [theme, { ground, ink }] of Object.entries(PALETTE)) {
       const dir = mkdtempSync(join(tmpdir(), 'armillary-gif-'));
       for (const [i, s] of times.entries()) {
+        if (coverage) {
+          writeFileSync(join(dir, `f${String(i).padStart(3, '0')}.rgb`), shade(coverage[i], ground, ink));
+          continue;
+        }
         await page.setContent(`<style>html,body{margin:0;background:${ground}}svg{display:block}</style>${frameSvg(A, V.motion, angles(V, s), { view, px: [SIZE, SIZE], ground, ink, nest: V.nest })}`);
         writeFileSync(join(dir, `f${String(i).padStart(3, '0')}.png`), await page.screenshot({ clip: { x: 0, y: 0, width: SIZE, height: SIZE } }));
       }
       const file = join(ROOT, OUT, `${V.file}-${theme}.gif`);
       const filter = 'split[a][b];[a]palettegen=max_colors=16:stats_mode=full:reserve_transparent=0[p];[b][p]paletteuse=dither=none:diff_mode=rectangle';
-      execFileSync('ffmpeg', ['-v', 'error', '-y', '-framerate', String(V.lap.fps), '-i', join(dir, 'f%03d.png'), '-lavfi', filter, '-loop', '0', file]);
+      const input = coverage
+        ? ['-f', 'image2', '-c:v', 'rawvideo', '-pixel_format', 'rgb24', '-video_size', `${SIZE}x${SIZE}`, '-framerate', String(V.lap.fps), '-i', join(dir, 'f%03d.rgb')]
+        : ['-framerate', String(V.lap.fps), '-i', join(dir, 'f%03d.png')];
+      execFileSync('ffmpeg', ['-v', 'error', '-y', ...input, '-lavfi', filter, '-loop', '0', file]);
       rmSync(dir, { recursive: true, force: true });
       console.log(`armillary-gif: wrote ${OUT}/${V.file}-${theme}.gif (${name}), ${times.length} frames at ${V.lap.fps} fps, ${SIZE} px, ${Math.round(statSync(file).size / 1024)} KB`);
     }
