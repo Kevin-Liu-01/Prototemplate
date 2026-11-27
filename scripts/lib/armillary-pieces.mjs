@@ -252,6 +252,46 @@ function across(lines, reach) {
   };
 }
 
+/** A polyline's unit direction at its point `i`. */
+function dirAt(points, i) {
+  const [q0, q1] = [points[Math.max(0, i - 1)], points[Math.min(points.length - 1, i + 1)]];
+  const n = Math.hypot(q1.x - q0.x, q1.y - q0.y) || 1;
+  return [(q1.x - q0.x) / n, (q1.y - q0.y) / n];
+}
+
+/**
+ * For a polyline running under `over`: a test that fails at its points that
+ * run beside `over` at less than 30 degrees to it, within `reach` of it, where
+ * `isOver` holds at the point of `over` beside them. A line passing under
+ * another nearly along it is then hidden whole, so it never shows as a sliver
+ * at the edge of the other's cut.
+ */
+function besideUnder(points, over, isOver, reach) {
+  const hid = new Set();
+  points.forEach((p, i) => {
+    let [best, j] = [Infinity, -1];
+    over.forEach((q, k) => {
+      const d = (q.x - p.x) ** 2 + (q.y - p.y) ** 2;
+      if (d < best) [best, j] = [d, k];
+    });
+    if (j < 0 || best >= reach * reach || !isOver(over[j])) return;
+    const [u, v] = [dirAt(points, i), dirAt(over, j)];
+    if (Math.abs(u[0] * v[0] + u[1] * v[1]) >= Math.cos(30 * DEG)) hid.add(p);
+  });
+  /* a stretch left shown between two hidden ones, shorter than three line weights, would be a stub: hide it too */
+  let last = -1;
+  points.forEach((p, i) => {
+    if (!hid.has(p)) return;
+    if (last >= 0 && i - last > 1) {
+      let len = 0;
+      for (let k = last + 1; k <= i; k++) len += Math.hypot(points[k].x - points[k - 1].x, points[k].y - points[k - 1].y);
+      if (len < 3 * SPHERE.weight) for (let k = last + 1; k < i; k++) hid.add(points[k]);
+    }
+    last = i;
+  });
+  return (p) => !hid.has(p);
+}
+
 const polygon = (pts) => `M${pts.map((p) => `${f(p.x)} ${f(p.y)}`).join('L')}Z`;
 
 /**
@@ -285,6 +325,11 @@ export function frameSvg(A, motion, a, { view, px, ground, ink, nest }) {
     return p.z - zg >= deep || (Math.abs(p.z - zg) < deep && p.z >= 0);
   }));
   const gCutsMer = gimbal ? cut(runs(P.g, gOverMer), W + 2 * A.gaps.meridian) : '';
+  /* nested close, the rings run side by side where they tilt together: the one passing under is hidden there whole */
+  const merShown = gimbal ? besideUnder(P.meridian, P.g, gOverMer, W + A.gaps.meridian) : all;
+  const gShown = gimbal
+    ? besideUnder(P.g, P.meridian, (q) => merOverG.has(P.outer[P.meridian.indexOf(q)]), W + A.gaps.c)
+    : all;
   /* and the T cuts the meridian where the meridian passes deep behind it */
   const merAlongT = gimbal ? across(P.tLines, W + 2 * A.gaps.stem)(P.meridian) : null;
   const tCutsMer = gimbal
@@ -328,16 +373,16 @@ export function frameSvg(A, motion, a, { view, px, ground, ink, nest }) {
     : `<circle cx="${CX}" cy="${CY}" r="${SPHERE.ring}" fill="none" stroke="${ink}" stroke-width="${W}"/>`;
   const ringFar = P.ring ? `<g mask="url(#mr)">${stroke(P.ring, (p) => !ringNear(p)).replace('stroke-linecap="butt"', 'stroke-linecap="round"')}</g>` : '';
   /* in the gimbal the G carries the meridian's poles off the ring, so its near half overlaps the far one there */
-  const merNear = stroke(P.meridian, near, motion === 'gimbal');
+  const merNear = stroke(P.meridian, (p) => near(p) && merShown(p), motion === 'gimbal');
 
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${px[0]}" height="${px[1]}" viewBox="${view.join(' ')}" preserveAspectRatio="none">` +
     `<defs>${masks}</defs>` +
     `<rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="${ground}"/>` +
     ringFar +
-    `<g mask="url(#mf)">${stroke(P.meridian, far)}</g>` +
+    `<g mask="url(#mf)">${stroke(P.meridian, (p) => far(p) && merShown(p))}</g>` +
     `<g mask="url(#mt)"><path d="${polygon(P.t)}" fill="${ink}"/></g>` +
-    `<g mask="url(#mg)">${stroke(P.g, all)}</g>` +
+    `<g mask="url(#mg)">${stroke(P.g, gShown)}</g>` +
     ((P.ring || motion === 'gimbal') && merNear ? `<g mask="url(#mn)">${merNear}</g>` : merNear) +
     ring +
     `</svg>`
