@@ -1,7 +1,7 @@
 /**
  * The words and the files of /marks/ascii: the dot-matrix header first,
- * then the armillary in dots, then the armillary in ink, then its two other
- * versions, the ring turn and the gimbal, then how they are built. Every file is written by a script
+ * then the armillary in dots, then the armillary in ink, then its other
+ * versions, the ring turn and the gimbal in two sizes, then how they are built. Every file is written by a script
  * (scripts/build/ascii-header.mjs, scripts/build/ascii-armillary.mjs and
  * scripts/build/armillary-gif.mjs) into public/marks/ascii.
  */
@@ -13,7 +13,7 @@ export const FILES = '/marks/ascii';
 export type AsciiFile = { file: string; label: string; bytes: number };
 
 export const LEAD =
-  'The General Translation header as a terminal draws it, the globe and the name on one grid of round dots, then the logo as an armillary sphere whose pieces each turn on their own axis, in dots and in ink, and in two more versions, each as a GIF in both themes with its files.';
+  'The General Translation header as a terminal draws it, the globe and the name on one grid of round dots, then the logo as an armillary sphere whose pieces each turn on their own axis, in dots and in ink, and in three more versions, each as a GIF in both themes with its files.';
 
 export const HEADER_ID = 'header';
 export const HEADER_TITLE = 'The header';
@@ -87,6 +87,17 @@ export const GIMBAL_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string
   { file: 'gt-armillary-gimbal-light.gif', label: 'GIF on paper', ground: 'On paper' },
 ];
 
+export const SPHERE_ID = 'gimbal-sphere';
+export const SPHERE_TITLE = 'The gimbal on one sphere';
+export const SPHERE_LEAD =
+  'The gimbal with its rings kept at the logo’s size, all on one sphere inside the still frame. The meridian turns about the vertical and the G about its bar, and where they cross the meridian passes over the G while it faces the viewer and under it while it faces away, as in the logo. The T draws in to sit clear inside them. The lap starts and ends on the logo.';
+
+/** The one-sphere gimbal's GIFs, on ink and on paper. */
+export const SPHERE_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string })[] = [
+  { file: 'gt-armillary-gimbal-sphere-dark.gif', label: 'GIF on ink', ground: 'On ink' },
+  { file: 'gt-armillary-gimbal-sphere-light.gif', label: 'GIF on paper', ground: 'On paper' },
+];
+
 export const BUILD_ID = 'build';
 export const BUILD_TITLE = 'How it is built';
 export const BUILD_LEAD = 'Three scripts write every file on this page, and none draws anything by hand.';
@@ -102,7 +113,7 @@ export const BUILD_PARTS: readonly { term: string; body: string }[] = [
   },
   {
     term: 'pnpm build:armillary-gif',
-    body: 'Moves the logo’s pieces through each version’s lap in scripts/build/armillary.json, the axis turn, the ring turn and the gimbal, cuts each line where another passes over it as the logo does, has Chrome draw each frame, and encodes each lap with ffmpeg in 16 grays and no dithering. At rest the pieces are the logo. It needs no server.',
+    body: 'Moves the logo’s pieces through each version’s lap in scripts/build/armillary.json, the axis turn, the ring turn and the two gimbals, cuts each line where another passes over it as the logo does, has Chrome draw each frame or, for the gimbals, draws each pixel itself, and encodes each lap with ffmpeg in 16 grays and no dithering. At rest the pieces are the logo. It needs no server.',
   },
 ];
 

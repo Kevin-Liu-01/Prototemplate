@@ -6,14 +6,14 @@ import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
-import { ARMILLARY_FILES, ASCII_ARMILLARY_FILES, GIMBAL_FILES, HEADER_FILES, RINGS_FILES } from './content';
+import { ARMILLARY_FILES, ASCII_ARMILLARY_FILES, GIMBAL_FILES, HEADER_FILES, RINGS_FILES, SPHERE_FILES } from './content';
 import AsciiViewer from './AsciiViewer';
 
 const route = seoRoute({
   path: '/marks/ascii',
   title: PAGE_NAMES.ascii.name,
   kind: 'page',
-  description: 'The General Translation header in round dots and the logo as an armillary sphere turned three ways, as GIFs in both themes with their files.',
+  description: 'The General Translation header in round dots and the logo as an armillary sphere turned four ways, as GIFs in both themes with their files.',
   crumbs: [{ name: PAGE_NAMES.marks.name, path: '/marks' }],
   updated: requireUpdated('/marks/ascii'),
 });
@@ -44,6 +44,7 @@ export default function AsciiPage() {
         armillaryFiles={sized(ARMILLARY_FILES)}
         ringsFiles={sized(RINGS_FILES)}
         gimbalFiles={sized(GIMBAL_FILES)}
+        sphereFiles={sized(SPHERE_FILES)}
         text={readFileSync(join(DIR, 'gt-ascii-header.txt'), 'utf8')}
         grid={{ cols, rows }}
         laps={{ min: Math.min(...LAPS), max: Math.max(...LAPS) }}

@@ -295,9 +295,14 @@ export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
   /* the depth over which a gap opens from nothing to whole */
   const ramp = A.ramp * SPHERE.ring;
   const K = 2 * ramp;
+  /* Rings parted to different radii stand at different depths wherever they cross, so true depth can take over from the
+     logo's order. Rings kept on one sphere meet where they cross, at one depth, so there the logo's order holds through
+     the lap, the meridian over the G where it faces the viewer and under it where it faces away, turning over smoothly
+     as it passes edge on; depth then only settles the T, which lies in the sphere's middle plane. */
+  const parted = Boolean(nest.ring || nest.g || nest.meridian);
   const keyOf = (line, z) => {
-    const logo = line === MER ? (z >= 0 ? K : -K) : line === G ? 0 : -K / 2;
-    return (1 - lam) * logo + lam * (line === T ? 0 : z);
+    const logo = line === MER ? (parted ? (z >= 0 ? K : -K) : K * (2 * smooth(-ramp / 2, ramp / 2, z) - 1)) : line === G ? 0 : -K / 2;
+    return (parted ? 1 - lam : 1) * logo + lam * (line === T ? 0 : z);
   };
   /* where a line meets the T it cuts it, or is cut, only as it stands deep out of the T's plane: at rest exactly at deep, as
      the logo does, and in motion over a soft edge below it */

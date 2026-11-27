@@ -13,11 +13,14 @@
  *   gt-armillary-gimbal-{dark,light}.gif   gimbal: the rings part, and the G
  *                                          and the meridian turn inside the
  *                                          still ring round the still T
+ *   gt-armillary-gimbal-sphere-{dark,light}.gif
+ *                                          sphere: the gimbal with its rings
+ *                                          kept on the logo's one sphere
  *
  * Each piece turns once in its own window, and every lap starts and ends on
  * the still logo, so each GIF loops with no seam.
  *
- * Chrome draws each frame's SVG, except the gimbal's, which Node draws
+ * Chrome draws each frame's SVG, except the gimbals', which Node draws
  * pixel by pixel (gimbalCoverage), and ffmpeg encodes the lap with a 16
  * color palette taken from the frames and no dithering, so the ground stays
  * one flat color.
