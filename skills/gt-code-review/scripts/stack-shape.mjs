@@ -17,7 +17,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
-/** Added lines a reviewer can hold in one sitting, confirmed by Kevin on 2026-11-26. */
+/** Added lines to read past which a pull request names its concepts or its reading order (K4). */
 export const ADDED_MAX = 1500;
 /** A change this small belongs inside the pull request it completes. */
 export const TINY_MAX = 20;
@@ -64,7 +64,7 @@ export function checkPr(pr, { copied = [], shared = SHARED } = {}) {
   const beside = sharedBeside(pr.files, shared);
   if (beside.length > 0) add('K2', `changes ${beside.join(', ')} beside product code`);
   if (copiedLines > ADDED_MAX) add('K3', `${copiedLines} added lines under copied paths`);
-  if (read > ADDED_MAX) add('K4', `${read} added lines to read, over ${ADDED_MAX}`);
+  if (read > ADDED_MAX) add('K4', `${read} added lines to read, over ${ADDED_MAX}: name its concepts or a reading order`);
   const changed = pr.files.reduce((s, f) => s + f.added + f.removed, 0);
   if (changed <= TINY_MAX) add('K5', `${changed} changed lines alone`);
   if (FOREIGN_HASH.test(pr.title)) add('N6', 'the title names a commit hash');

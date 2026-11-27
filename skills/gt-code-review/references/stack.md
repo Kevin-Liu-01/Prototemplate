@@ -71,21 +71,35 @@ adds 65,928 lines, of which 46,673 are under the copied
 `packages/translation/transcreate/`, and 30,680 of them in a scene package
 that the definitive pipeline may no longer run.
 
-## K4. A pull request holds what one reviewer reads in one sitting
+## K4. A pull request over 1,500 lines to read justifies its size, and one idea is never split to fit a number
 
 **Look for:** more than 1,500 added lines that are not copied, generated, a
-lockfile or a license. Kevin confirmed this bound on 2026-11-26.
+lockfile or a license, in a pull request whose body does not name its
+concepts or give a reading order. Look also for the opposite fault: one idea
+cut into pull requests that do nothing until a later one lands, made only to
+get under the number.
 
-**Why:** review quality falls with size. Past a few hundred lines a
-reviewer skims, and past a thousand they approve on trust. Split by concept
-(K1), and move shared packages out first (K2). When a pull request cannot be
-split, its body says why and gives a reading order.
+**Why:** the number is a question, not a split order. Defect detection falls
+past a few hundred lines read at once, so 1,500 lines is already several
+hours of reading. Splitting by count costs more than it saves when the parts
+are one idea. Each extra pull request costs a rebase, a CI run, a context
+switch and approvals that do not carry, and a reviewer of a fragment cannot
+see the whole work. The reviews of 2026-11-26 found duplication, English
+word lists and unnamed failures, and none of their findings was about size.
+Split by concept first (K1), and move shared packages out first (K2). A pull
+request still over the line after that either names the concepts it would
+split into, or says why it is one idea and gives a reading order. Kevin
+confirmed this reading of the bound on 2026-11-26.
 
 **Source:** [#6161](https://github.com/generaltranslation/gt-cloud/pull/6161)
 adds 5,840 lines to read,
 [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213) adds
 7,596 and [#6221](https://github.com/generaltranslation/gt-cloud/pull/6221)
-adds 11,097. https://google.github.io/eng-practices/review/developer/small-cls.html.
+adds 11,097. A first restack of the captions stack to fit the number turned
+9 pull requests into about 24, among them seven for one browser extension.
+https://google.github.io/eng-practices/review/developer/small-cls.html, and
+SmartBear's study of code review at Cisco, which found that defect detection
+falls past 200 to 400 lines read at a time.
 
 ## K5. A change too small to stand alone joins the pull request it completes
 

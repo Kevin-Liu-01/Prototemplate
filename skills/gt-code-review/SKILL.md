@@ -124,7 +124,7 @@ example and source.
 | K1 | A stack splits by concept, not by review round |
 | K2 | A change to a shared package is its own pull request, first in the stack |
 | K3 | Copied code enters only as far as it runs, and the pull request names it |
-| K4 | A pull request holds what one reviewer reads in one sitting |
+| K4 | A pull request over 1,500 lines to read justifies its size, and one idea is never split to fit a number |
 | K5 | A change too small to stand alone joins the pull request it completes |
 | K6 | One mechanism across products |
 | K7 | A review round fixes classes, and a fix never grows the heuristic its finding questions |
