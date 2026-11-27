@@ -27,6 +27,11 @@ export const SHARED = [
   'packages/sandbox-core/',
   'packages/settings/',
   'packages/locales/',
+  'packages/billing/',
+  'packages/db/',
+  'packages/events/',
+  'packages/formats/',
+  'packages/ui/',
   'apps/api/',
   'tooling/',
 ];
