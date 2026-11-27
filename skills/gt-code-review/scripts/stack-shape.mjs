@@ -14,7 +14,7 @@
 // Requires Node 18 or later, and the gh CLI signed in for --repo. It only reads.
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, realpathSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
 /** Added lines to read past which a pull request names its concepts or its reading order (K4). */
@@ -113,4 +113,4 @@ function main(argv) {
   for (const f of found) console.log(`#${f.number}  ${f.rule}  ${f.reason}`);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) main(process.argv.slice(2));
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) main(process.argv.slice(2));

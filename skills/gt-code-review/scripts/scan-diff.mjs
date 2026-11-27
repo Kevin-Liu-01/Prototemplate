@@ -23,6 +23,7 @@
 // On gt-cloud #6213 at 8e7c440ab7 (2026-11-26): M11, M12, Q15 and S1 list 21
 // candidates, on 9 of the 10 review comments a pattern could find.
 
+import { realpathSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
 const PY = /\.py$/;
@@ -409,4 +410,4 @@ async function main() {
   console.log(`\n${found.length} candidates: ${Object.entries(counts).map(([rule, n]) => `${rule} ${n}`).join(', ') || 'none'}`);
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) await main();
