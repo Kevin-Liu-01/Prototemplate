@@ -59,12 +59,12 @@ one pull request; and a pull request body that does not name which paths
 are copied, from where and by what command.
 
 **Why:** nobody reads 46,000 copied lines, so their review is a formality.
-Measure the import closure from the commands that gt-cloud runs, and delete
-every copied module outside it (rule C4). Then ask whether copying is the
-right boundary at all. A pinned package or image, built from the source
-repository, leaves gt-cloud with only the contract it calls. That boundary
-is a system decision for the owner. The review lays out the options with
-the lines that remain under each and how an update flows.
+Measure the import closure from the commands that gt-cloud runs, and copy
+only that closure. Make the cut in the copy script of the source repository,
+because a delete made only in gt-cloud comes back with the next copy. Every
+other copied module is dead code and leaves (rule C4). gt-cloud holds no pin
+to another repository: no package, image or submodule pinned from it, as
+Kevin ruled on 2026-11-26.
 
 **Source:** [#6159](https://github.com/generaltranslation/gt-cloud/pull/6159)
 adds 65,928 lines, of which 46,673 are under the copied
