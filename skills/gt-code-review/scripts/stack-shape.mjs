@@ -67,7 +67,7 @@ export function checkPr(pr, { copied = [], shared = SHARED } = {}) {
   const found = [];
   const add = (rule, reason) => found.push({ number: pr.number, rule, reason });
   const read = readLines(pr.files, copied);
-  const copiedLines = pr.files.reduce((s, f) => s + f.added, 0) - read;
+  const copiedLines = pr.files.filter((f) => copied.some((p) => f.path.startsWith(p))).reduce((s, f) => s + f.added, 0);
   if (ROUND_NAME.test(pr.head) || ROUND_TITLE.test(pr.title)) add('K1', `named by a review round: ${pr.head}`);
   const beside = sharedBeside(pr.files, shared, copied);
   if (beside.length > 0) add('K2', `changes ${beside.join(', ')} beside product code`);

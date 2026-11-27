@@ -50,6 +50,10 @@ describe('K3 and K4: copied lines and lines to read', () => {
     assert.equal(readLines(p.files, ['vendor/']), 10);
     assert.deepEqual(rules(p, { copied: ['vendor/'] }), ['K3']);
   });
+  it('counts only --copied paths as copied, not licences or lockfiles', () => {
+    const p = pr('k/fonts', 'test: font fixtures', [['fonts/licenses/OFL.txt', ADDED_MAX + 1], ['pnpm-lock.yaml', ADDED_MAX + 1]]);
+    assert.ok(!rules(p).includes('K3'));
+  });
   it('flags a pull request with more lines to read than a reviewer holds', () => {
     assert.ok(rules(pr('k/flow', 'feat: flow', [['src/a.ts', big]])).includes('K4'));
   });
