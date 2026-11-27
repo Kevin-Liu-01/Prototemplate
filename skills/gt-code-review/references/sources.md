@@ -34,6 +34,21 @@ file gives the exact link or row beside the rule.
   and the replies on
   [#6207](https://github.com/generaltranslation/gt-cloud/pull/6207#discussion_r4688383333).
 
+## Stack shape
+
+- The gt-cloud stacks of 2026-11-26, read with `scripts/stack-shape.mjs`:
+  video [#6053](https://github.com/generaltranslation/gt-cloud/pull/6053),
+  [#6158](https://github.com/generaltranslation/gt-cloud/pull/6158) to
+  [#6161](https://github.com/generaltranslation/gt-cloud/pull/6161) and
+  [#6194](https://github.com/generaltranslation/gt-cloud/pull/6194); image
+  [#6191](https://github.com/generaltranslation/gt-cloud/pull/6191) to
+  [#6212](https://github.com/generaltranslation/gt-cloud/pull/6212); captions
+  [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213) to
+  [#6221](https://github.com/generaltranslation/gt-cloud/pull/6221).
+- The second review round of #6213 on 2026-11-26, 18:28 to 19:58 UTC, against
+  the fixes of its first round.
+- https://google.github.io/eng-practices/review/developer/small-cls.html.
+
 ## gt-cloud reviews and cleanups
 
 - A review of 2026-11-25, relayed to the coordinator: it removed regexes and

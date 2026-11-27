@@ -466,8 +466,10 @@ the rest of a session.
 
 **Why:** the class decides what happens next. A 5xx or a network failure is
 retried. A rejected grant asks the person to sign in again. A credential
-that dies in the middle of a session ends the session, or tells the people
-it affects, and stops anything that bills. Mixing them sends a person to
+that dies in the middle of a session stops the session with an error, as
+running out of credit does, and stops anything that bills. A failure is
+handled like its siblings of the same cause, so a reviewer checks the other
+members of the class. Mixing them sends a person to
 sign in after a network blip, or keeps a session transcribing, and billing,
 with no translations and no error. Classify where the failure happens, from
 its typed cause (the status, the provider's error code), not from a list of
@@ -486,7 +488,10 @@ if (!res.ok) throw new RetryableError(`token refresh failed with ${res.status}`)
 review: every refresh failure as a 401 in
 [credentials.ts:46](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216375),
 and a 401 or 403 from translate swallowed for the rest of the meeting in
-[room.ts:615](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216367).
+[room.ts:615](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216367),
+which its reviewer corrected the same day to "captions should stop with an error
+like the out of credit case does"
+([room.ts:615](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712889646)).
 [#5195](https://github.com/generaltranslation/gt-cloud/pull/5195#discussion_r4209891606)
 (a list of retryable errors to keep current) and
 [#5195](https://github.com/generaltranslation/gt-cloud/pull/5195#discussion_r4209857812)
