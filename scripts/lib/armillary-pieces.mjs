@@ -300,8 +300,11 @@ export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
      the lap, the meridian over the G where it faces the viewer and under it where it faces away, turning over smoothly
      as it passes edge on; depth then only settles the T, which lies in the sphere's middle plane. */
   const parted = Boolean(nest.ring || nest.g || nest.meridian);
+  /* with nest.over the T stands over every ring once they move, so it stays whole and still while they pass behind it */
+  const front = nest.over ? 2 * K + SPHERE.ring : 0;
   const keyOf = (line, z) => {
     const logo = line === MER ? (parted ? (z >= 0 ? K : -K) : K * (2 * smooth(-ramp / 2, ramp / 2, z) - 1)) : line === G ? 0 : -K / 2;
+    if (line === T && front) return (1 - lam) * logo + lam * front;
     return (parted ? 1 - lam : 1) * logo + lam * (line === T ? 0 : z);
   };
   /* where a line meets the T it cuts it, or is cut, only as it stands deep out of the T's plane: at rest exactly at deep, as
@@ -381,11 +384,15 @@ export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
     }
     return out;
   };
+  /* with nest.over the bar stays joined to the meridian, as in the logo, while the meridian is near where it rests, and
+     cuts it only once it has turned away */
+  const turned = Math.abs(a.meridian) % 360;
+  const away = nest.over ? smooth(0, 20, Math.min(turned, 360 - turned)) : 1;
   /* the gap line `o` leaves round itself where it stands over line `c` */
   const gap = (o, c) => {
     const strength = smooth(0, ramp, o.key - c.key);
     if (strength <= 0) return -Infinity;
-    if (o.line === T) return gapT * strength * outOfPlane(c.z) * (c.line === MER ? lam : 1);
+    if (o.line === T) return gapT * strength * outOfPlane(c.z) * (c.line === MER ? lam * away : 1);
     if (c.line === T) return (o.line === MER ? (o.outer ? gapC : gapC * lam) : gapT) * strength * outOfPlane(o.z);
     if (o.line === MER) return (o.outer ? gapC : gapC * lam) * strength;
     return gapM * strength;
