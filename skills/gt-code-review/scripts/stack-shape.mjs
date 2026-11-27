@@ -17,7 +17,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
-/** Added lines a reviewer can hold in one sitting. Proposed default, Kevin's to confirm. */
+/** Added lines a reviewer can hold in one sitting, confirmed by Kevin on 2026-11-26. */
 export const ADDED_MAX = 1500;
 /** A change this small belongs inside the pull request it completes. */
 export const TINY_MAX = 20;

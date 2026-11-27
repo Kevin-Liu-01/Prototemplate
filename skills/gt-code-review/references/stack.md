@@ -38,7 +38,10 @@ title names a product, such as translation or captions.
 change needs its own title, its own tests and a reviewer who knows that
 package. Inside a product pull request it is missed, and a revert of the
 product change reverts it too. Put it first in the stack, so the product
-pull requests build on a reviewed base.
+pull requests build on a reviewed base. A few configuration entries that
+only one feature reads, about 20 lines or fewer, go in that feature's pull
+request instead, which rule K5 asks, and its body names the shared package
+they change.
 
 **Source:** [#6158](https://github.com/generaltranslation/gt-cloud/pull/6158)
 is titled agent-core and carries image tests, `tcimg` and a `uv.lock`.
@@ -71,8 +74,7 @@ that the definitive pipeline may no longer run.
 ## K4. A pull request holds what one reviewer reads in one sitting
 
 **Look for:** more than 1,500 added lines that are not copied, generated, a
-lockfile or a license. This bound is a proposed default and is Kevin's to
-confirm.
+lockfile or a license. Kevin confirmed this bound on 2026-11-26.
 
 **Why:** review quality falls with size. Past a few hundred lines a
 reviewer skims, and past a thousand they approve on trust. Split by concept
