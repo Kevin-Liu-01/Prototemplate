@@ -16,12 +16,13 @@
 //   round their own rings: each ring stays where the logo draws it and the
 //   stretch slides along it, so the meridian's gap and the G's mouth travel;
 // - gimbal: the lines nest as a gimbal's rings. They part, the ring out and
-//   the meridian in; the ring is the frame and can turn about the vertical;
-//   the G, hung on the ring at its nodes, turns about the node axis (its bar)
-//   the ring carries; the meridian, inside the G, turns about the vertical
-//   axis the G carries; and the T holds level at the centre, its arms drawn
-//   in to stay inside the G. Crossings between the rings go by depth, as the
-//   rings stand at different depths once parted.
+//   the G in; the ring is the frame and holds still; the meridian, hung on
+//   it at its poles, turns about the vertical; the G, inside the meridian,
+//   turns about its node axis (its bar's line), which the meridian carries
+//   round; and the T holds level at the centre, its arms drawn in to stay
+//   inside the G. The meridian outside the G is the logo's own order: where
+//   it faces the viewer it passes over the G, so crossings between the rings
+//   go by depth once they part and agree with the logo at rest (gimbalSvg).
 //
 // At rest the pieces are the logo: drawn at the GIF's size they differ from
 // its path only in the antialiasing of 145 edge pixels. Over and under
@@ -153,16 +154,17 @@ export function pieces(A, motion, a, nest = { ring: 0, g: 0, meridian: 0, t: 0 }
     meridian = line(A.meridian.from, A.meridian.to, (t) => meridianPoint(t + a.meridian, M.rest));
     g = line(A.g.from, A.g.to, (t) => latitudePoint(t + a.g, L.rest));
   } else if (motion === 'gimbal') {
-    /* the ring turns about the vertical, the G inside it about the node axis, the meridian inside the G about the vertical */
-    /* the rings parted: the ring out, the G and the meridian in, each about its own centre */
+    /* the ring is the frame and turns about the vertical; the meridian, hung on it at its poles, turns about the vertical
+       inside it; the G, inside the meridian, turns about its node axis (the bar's line), which the meridian carries round */
+    /* the rings parted: the ring out and the G in, each about its own centre */
     const rr = SPHERE.ring + nest.ring * a.nest;
     const scale = (ring, by) => {
       const k = (ring.r + by * a.nest) / ring.r;
       return (p) => ({ x: ring.cx + (p.x - ring.cx) * k, y: ring.cy + (p.y - ring.cy) * k, z: p.z * k });
     };
     const [inM, inG] = [scale(M, nest.meridian), scale(L, nest.g)];
-    meridian = line(A.meridian.from, A.meridian.to, (t) => turnY(turnX(inM(meridianPoint(t, M.rest + a.meridian)), a.g, M.cy), a.ring, M.cx));
-    g = line(A.g.from, A.g.to, (t) => turnY(inG(latitudePoint(t, L.rest + a.g)), a.ring, L.cx));
+    meridian = line(A.meridian.from, A.meridian.to, (t) => turnY(inM(meridianPoint(t, M.rest + a.meridian)), a.ring, M.cx));
+    g = line(A.g.from, A.g.to, (t) => turnY(turnY(inG(latitudePoint(t, L.rest + a.g)), a.meridian, L.cx), a.ring, L.cx));
     /* a closed ring, run one step past its start so its two ends overlap and leave no seam */
     if (!off(a.ring) || a.nest) ring = line(0, 360 + A.step, (t) => turnY({ x: CX + rr * Math.sin(t * DEG), y: CY - rr * Math.cos(t * DEG), z: 0 }, a.ring, CX));
   } else {
@@ -191,17 +193,12 @@ export function pieces(A, motion, a, nest = { ring: 0, g: 0, meridian: 0, t: 0 }
 
 const f = (v) => Math.round(v * 1000) / 1000;
 
-/**
- * Path data of a polyline's runs where `keep` holds; with `overlap`, each run
- * reaches two points past each end, so where it meets a run that starts at
- * the next point the two overlap by a whole step.
- */
-function runs(points, keep, overlap = false) {
+/** Path data of a polyline's runs where `keep` holds. */
+function runs(points, keep) {
   let d = '';
   let open = false;
-  for (const [i, p] of points.entries()) {
-    const beside = overlap && [-2, -1, 1, 2].some((k) => keep(points[i + k] ?? p));
-    if (keep(p) || beside) {
+  for (const p of points) {
+    if (keep(p)) {
       d += `${open ? 'L' : 'M'}${f(p.x)} ${f(p.y)}`;
       open = true;
     } else {
@@ -302,90 +299,173 @@ const polygon = (pts) => `M${pts.map((p) => `${f(p.x)} ${f(p.y)}`).join('L')}Z`;
  */
 export function frameSvg(A, motion, a, { view, px, ground, ink, nest }) {
   const P = pieces(A, motion, a, nest);
+  if (motion === 'gimbal') return gimbalSvg(A, a, P, { view, px, ground, ink });
   const W = SPHERE.weight;
   const deep = A.deep * SPHERE.ring;
   const near = (p) => p.z >= 0;
   const far = (p) => p.z <= 0;
   const isDeep = (p) => Math.abs(p.z) >= deep;
-  const cut = (d, width) => (d ? `<path d="${d}" fill="none" stroke="#000" stroke-width="${width}" stroke-linecap="butt" stroke-linejoin="round"/>` : '');
   const all = () => true;
   /* the cutters: the G and the T cut both sides; the meridian cuts its outer side only, as the logo's C gaps do */
   const gAll = cut(runs(P.g, all), W + 2 * A.gaps.meridian);
-  /* in the gimbal the rings stand at different depths, so where the G and the meridian cross, the one standing deep in
-     front of the other passes over it; where they stand at about one depth, as at every crossing at rest, the logo's
-     rule holds: the meridian over the G where it faces the viewer, and under it where it faces away */
-  const gimbal = motion === 'gimbal';
-  const gOverMer = (p) => {
-    const zm = zAt([P.meridian], p);
-    return p.z - zm >= deep || (Math.abs(p.z - zm) < deep && zm <= 0);
-  };
-  const merOverG = new Set(P.outer.filter((_, i) => {
-    const p = P.meridian[i];
-    const zg = zAt([P.g], p);
-    return p.z - zg >= deep || (Math.abs(p.z - zg) < deep && p.z >= 0);
-  }));
-  const gCutsMer = gimbal ? cut(runs(P.g, gOverMer), W + 2 * A.gaps.meridian) : '';
-  /* nested close, the rings run side by side where they tilt together: the one passing under is hidden there whole */
-  const merShown = gimbal ? besideUnder(P.meridian, P.g, gOverMer, W + A.gaps.meridian) : all;
-  const gShown = gimbal
-    ? besideUnder(P.g, P.meridian, (q) => merOverG.has(P.outer[P.meridian.indexOf(q)]), W + A.gaps.c)
-    : all;
-  /* and the T cuts the meridian where the meridian passes deep behind it */
-  const merAlongT = gimbal ? across(P.tLines, W + 2 * A.gaps.stem)(P.meridian) : null;
-  const tCutsMer = gimbal
-    ? P.tLines.map((l) => cut(runs(l, (p) => {
-        const q = nearest([P.meridian], p);
-        return q.z <= -deep && merAlongT(q);
-      }), W + 2 * A.gaps.stem)).join('')
-    : '';
-  /* in the gimbal a ring folds edge on onto the bar or the stem, the lines the logo builds them on; running along them,
-     within a cut's width, it merges with them, so it cuts the T only where it crosses at more than 30 degrees */
-  const acrossT = motion === 'gimbal' ? across(P.tLines, W + 2 * A.gaps.stem) : () => () => true;
-  const [gOverT, merOverT] = [acrossT(P.g), acrossT(P.outer)];
-  const gDeep = cut(runs(P.g, (p) => isDeep(p) && gOverT(p)), W + 2 * A.gaps.stem);
-  const merNearAll = cut(runs(P.outer, gimbal ? (q) => merOverG.has(q) : near), W + A.gaps.c);
-  const merNearDeep = cut(runs(P.outer, (p) => near(p) && isDeep(p) && merOverT(p)), W + A.gaps.c);
+  const gDeep = cut(runs(P.g, isDeep), W + 2 * A.gaps.stem);
+  const merNearAll = cut(runs(P.outer, near), W + A.gaps.c);
+  const merNearDeep = cut(runs(P.outer, (p) => near(p) && isDeep(p)), W + A.gaps.c);
   const tDeep = P.tLines.map((l) => cut(runs(l, isDeep), W + 2 * A.gaps.stem)).join('');
-  /* a turned outer ring and a line cut each other by depth: where they cross, the one standing deep in front of the other
-     cuts it. The ring cuts only where it stands deep towards the viewer itself, so its cuts grow from nothing as it
-     tilts. All the rings lie on one sphere, so where two cross with both facing the viewer they meet and neither is cut */
-  const ringNear = (p) => p.z > -deep;
-  const ringGap = W + 2 * A.gaps.stem;
-  const ringOver = (target) => (P.ring ? cut(runs(P.ring, (p) => p.z >= deep && p.z - zAt(target, p) >= deep), ringGap) : '');
-  const ringCut = { meridian: ringOver([P.meridian]), g: ringOver([P.g]), t: ringOver(P.tLines) };
-  const underRing = P.ring ? [P.meridian, P.g, ...P.tLines].map((l) => cut(runs(l, (p) => p.z - zAt([P.ring], p) >= deep), ringGap)).join('') : '';
-  const [vx, vy, vw, vh] = view;
-  const rect = `<rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="#fff"/>`;
-  const mask = (id, cutters) => `<mask id="${id}" maskUnits="userSpaceOnUse" x="${vx}" y="${vy}" width="${vw}" height="${vh}">${rect}${cutters}</mask>`;
-  const masks =
-    mask('mf', (gimbal ? gCutsMer + tCutsMer : gAll) + tDeep + ringCut.meridian) +
-    mask('mt', gDeep + merNearDeep + ringCut.t) +
-    mask('mg', merNearAll + ringCut.g) +
-    (P.ring || gimbal ? mask('mn', ringCut.meridian + gCutsMer) + mask('mr', underRing) : '');
-
-  const stroke = (points, keep, overlap = false) => {
-    const d = runs(points, keep, overlap);
-    return d ? `<path d="${d}" fill="none" stroke="${ink}" stroke-width="${W}" stroke-linecap="butt" stroke-linejoin="round"/>` : '';
-  };
-  /* the outer ring: the logo's circle at rest; turned, its far half (round capped where it meets the near half) under every line and its near half over them */
-  const ring = P.ring
-    ? stroke(P.ring, ringNear)
-    : `<circle cx="${CX}" cy="${CY}" r="${SPHERE.ring}" fill="none" stroke="${ink}" stroke-width="${W}"/>`;
-  const ringFar = P.ring ? `<g mask="url(#mr)">${stroke(P.ring, (p) => !ringNear(p)).replace('stroke-linecap="butt"', 'stroke-linecap="round"')}</g>` : '';
-  /* in the gimbal the G carries the meridian's poles off the ring, so its near half overlaps the far one there */
-  const merNear = stroke(P.meridian, (p) => near(p) && merShown(p), motion === 'gimbal');
-
+  const masks = mask(view, 'mf', gAll + tDeep) + mask(view, 'mt', gDeep + merNearDeep) + mask(view, 'mg', merNearAll);
+  const ring = `<circle cx="${CX}" cy="${CY}" r="${SPHERE.ring}" fill="none" stroke="${ink}" stroke-width="${W}"/>`;
   return (
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${px[0]}" height="${px[1]}" viewBox="${view.join(' ')}" preserveAspectRatio="none">` +
-    `<defs>${masks}</defs>` +
-    `<rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="${ground}"/>` +
-    ringFar +
-    `<g mask="url(#mf)">${stroke(P.meridian, (p) => far(p) && merShown(p))}</g>` +
+    svgOpen(view, px, ground, masks) +
+    `<g mask="url(#mf)">${stroke(P.meridian, far, ink)}</g>` +
     `<g mask="url(#mt)"><path d="${polygon(P.t)}" fill="${ink}"/></g>` +
-    `<g mask="url(#mg)">${stroke(P.g, gShown)}</g>` +
-    ((P.ring || motion === 'gimbal') && merNear ? `<g mask="url(#mn)">${merNear}</g>` : merNear) +
+    `<g mask="url(#mg)">${stroke(P.g, all, ink)}</g>` +
+    stroke(P.meridian, near, ink) +
     ring +
     `</svg>`
+  );
+}
+
+/**
+ * One frame of the gimbal. Over and under between the meridian and the G go
+ * by depth: once the rings part, the meridian outside the G, the nearer of
+ * the two passes over wherever they cross, which at rest is the logo's own
+ * rule (the meridian over the G where it faces the viewer, under it where it
+ * faces away); while they are close to one sphere the logo's rule decides
+ * the crossings that stand within `deep` of level, a margin that narrows to
+ * nothing as they part. The T keeps the logo's crossings, cut by a ring
+ * standing `deep` in front of it and cutting a ring standing `deep` behind
+ * it, and a ring running along the bar or the stem merges with it. A line
+ * passing under another nearly along it is hidden there whole, and a piece of
+ * any line left between two cuts, or between a cut and its end, shorter than
+ * a line and a half's weight is cut away with them, so no stub or sliver
+ * shows.
+ */
+function gimbalSvg(A, a, P, { view, px, ground, ink }) {
+  if (!off(a.ring)) throw new Error('armillary-pieces: the gimbal draws its outer ring as a still frame');
+  const W = SPHERE.weight;
+  const deep = A.deep * SPHERE.ring;
+  const level = deep * (1 - a.nest);
+  const isDeep = (p) => Math.abs(p.z) >= deep;
+  const all = () => true;
+  const band = (points, keep, w) => ({ d: runs(points, keep), pts: points.filter(keep), w });
+  /* the meridian and the G by depth where they cross, by the logo's rule where they stand level */
+  const gOverMer = (q) => {
+    const zm = zAt([P.meridian], q);
+    return Math.abs(q.z - zm) >= level ? q.z > zm : zm <= 0;
+  };
+  const merOverG = new Set(
+    P.outer.filter((_, i) => {
+      const p = P.meridian[i];
+      const zg = zAt([P.g], p);
+      return Math.abs(p.z - zg) >= level ? p.z > zg : p.z >= 0;
+    }),
+  );
+  const merShown = besideUnder(P.meridian, P.g, gOverMer, W + A.gaps.meridian);
+  const gShown = besideUnder(P.g, P.meridian, (q) => merOverG.has(P.outer[P.meridian.indexOf(q)]), W + A.gaps.c);
+  /* the T: a ring standing deep in front cuts it and one standing deep behind is cut by it, except along the bar or the stem */
+  const reach = W + 2 * A.gaps.stem;
+  const acrossT = across(P.tLines, reach);
+  const [merAlongT, gOverT, merOverT] = [acrossT(P.meridian), acrossT(P.g), acrossT(P.outer)];
+  const merAt = new Map(P.outer.map((q, i) => [q, P.meridian[i]]));
+  const [axis, mid] = [P.tLines[1][0].x, P.tLines[0][0].y];
+  const short = 1.5 * W;
+
+  /* the cuts, made only by what is drawn: a stub cut away cuts nothing, so the cuts are found again once without the stubs */
+  let gone = { mer: new Set(), g: new Set(), t: new Set() };
+  let B;
+  let S;
+  for (let pass = 0; pass < 2; pass++) {
+    const merOn = (p) => merShown(p) && !gone.mer.has(p);
+    const outerOn = (q) => merOn(merAt.get(q));
+    const gOn = (p) => gShown(p) && !gone.g.has(p);
+    const tOn = (p) => !gone.t.has(p);
+    B = {
+      gCutsMer: band(P.g, (q) => gOn(q) && gOverMer(q), W + 2 * A.gaps.meridian),
+      merCutsG: band(P.outer, (q) => outerOn(q) && merOverG.has(q), W + A.gaps.c),
+      tCutsMer: P.tLines.map((l) =>
+        band(l, (p) => {
+          const q = nearest([P.meridian], p);
+          return tOn(p) && q.z <= -deep && merAlongT(q);
+        }, reach),
+      ),
+      gCutsT: band(P.g, (p) => gOn(p) && isDeep(p) && gOverT(p), reach),
+      merCutsT: band(P.outer, (p) => outerOn(p) && p.z >= 0 && isDeep(p) && merOverT(p), W + A.gaps.c),
+    };
+    S = {
+      mer: stubs(P.meridian, merShown, () => [B.gCutsMer, ...B.tCutsMer], [true, true], short),
+      g: stubs(P.g, gShown, () => [B.merCutsG], [true, true], short),
+      bar: stubs(P.tLines[0], all, () => [B.gCutsT, B.merCutsT], [true, true], short, (p) => Math.abs(p.x - axis) < 1),
+      stem: stubs(P.tLines[1], all, () => [B.gCutsT, B.merCutsT], [false, true], short, (p) => p.y - mid < 1),
+    };
+    gone = { mer: S.mer.gone, g: S.g.gone, t: new Set([...S.bar.gone, ...S.stem.gone]) };
+  }
+  const cuts = (...bands) => bands.map((b) => cut(b.d, b.w, b.cap)).join('');
+  const masks =
+    mask(view, 'mm', cuts(B.gCutsMer, ...B.tCutsMer, S.mer)) +
+    mask(view, 'mt', cuts(B.gCutsT, B.merCutsT, S.bar, S.stem)) +
+    mask(view, 'mg', cuts(B.merCutsG, S.g));
+  const ring = P.ring
+    ? stroke(P.ring, all, ink)
+    : `<circle cx="${CX}" cy="${CY}" r="${SPHERE.ring}" fill="none" stroke="${ink}" stroke-width="${W}"/>`;
+  return (
+    svgOpen(view, px, ground, masks) +
+    /* every crossing is a cut, so the order the lines are laid in shows nowhere, and the meridian is drawn whole, its near
+       and far halves one line with no join between them */
+    `<g mask="url(#mm)">${stroke(P.meridian, merShown, ink)}</g>` +
+    `<g mask="url(#mt)"><path d="${polygon(P.t)}" fill="${ink}"/></g>` +
+    `<g mask="url(#mg)">${stroke(P.g, gShown, ink)}</g>` +
+    ring +
+    `</svg>`
+  );
+}
+
+/**
+ * The pieces of a line its cuts leave too short to read, as a cutter along
+ * the line with the set of its points (`gone`): the line's shown points (`shown`) not inside one of the bands
+ * `bandsAt(p)` cut at them, taken run by run, where a run is shorter than
+ * `short` and has a cut or one of the line's real ends (`ends`, start and
+ * finish) at each side. A run holding a point where `anchored` holds joins
+ * the rest of its piece and stays.
+ */
+function stubs(points, shown, bandsAt, ends, short, anchored = () => false) {
+  const inBand = (p) => bandsAt(p).some((b) => b.pts.some((q) => (q.x - p.x) ** 2 + (q.y - p.y) ** 2 < (b.w / 2) ** 2));
+  const seen = points.map((p) => shown(p) && !inBand(p));
+  const gone = new Set();
+  let i = 0;
+  while (i < points.length) {
+    if (!seen[i]) {
+      i++;
+      continue;
+    }
+    let j = i;
+    while (j + 1 < points.length && seen[j + 1]) j++;
+    let len = 0;
+    for (let k = i + 1; k <= j; k++) len += Math.hypot(points[k].x - points[k - 1].x, points[k].y - points[k - 1].y);
+    const bounded = (i > 0 || ends[0]) && (j < points.length - 1 || ends[1]) && !(i === 0 && j === points.length - 1);
+    if (bounded && len < short && !points.slice(i, j + 1).some(anchored))
+      for (let k = Math.max(0, i - 1); k <= Math.min(points.length - 1, j + 1); k++) gone.add(points[k]);
+    i = j + 1;
+  }
+  /* square caps carry the cut past the line's own end, so no hairline of it is left there */
+  return { d: runs(points, (p) => gone.has(p)), pts: [], w: SPHERE.weight + 4, cap: 'square', gone };
+}
+
+const cut = (d, width, cap = 'butt') => (d ? `<path d="${d}" fill="none" stroke="#000" stroke-width="${width}" stroke-linecap="${cap}" stroke-linejoin="round"/>` : '');
+
+function mask([vx, vy, vw, vh], id, cutters) {
+  return `<mask id="${id}" maskUnits="userSpaceOnUse" x="${vx}" y="${vy}" width="${vw}" height="${vh}"><rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="#fff"/>${cutters}</mask>`;
+}
+
+function stroke(points, keep, ink) {
+  const d = runs(points, keep);
+  return d ? `<path d="${d}" fill="none" stroke="${ink}" stroke-width="${SPHERE.weight}" stroke-linecap="butt" stroke-linejoin="round"/>` : '';
+}
+
+function svgOpen([vx, vy, vw, vh], px, ground, masks) {
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${px[0]}" height="${px[1]}" viewBox="${vx} ${vy} ${vw} ${vh}" preserveAspectRatio="none">` +
+    `<defs>${masks}</defs>` +
+    `<rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="${ground}"/>`
   );
 }
 
