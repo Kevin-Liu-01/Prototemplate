@@ -141,3 +141,27 @@ review, viewer messages with no throttle in
 [room.ts:374](https://github.com/generaltranslation/gt-cloud/pull/6213#discussion_r4712216389).
 [#4882](https://github.com/generaltranslation/gt-cloud/pull/4882#discussion_r4087975340)
 (a session namespace used without checking the org).
+
+## S8. A credential is held only while it is in use
+
+**Look for:** a key or token stored for a session, a room or a job that is
+released only when its storage expires or when the record is replaced; a
+"stop" or "leave" path that ends the work and keeps the credential.
+
+**Why:** a stored credential is a liability for as long as it is stored. It
+is released when the work that needs it stops: on every stop, leave, close
+and timeout path, not only on the paths that replace it. A path that cannot
+know the work stopped, such as a closed tab, releases it after a stated
+bound, and refuses to use it after that.
+
+```ts
+// Bad: the key is cleared only when the room is replaced.
+if (replaced) await this.storage.delete('hostKey');
+// Good
+await this.storage.delete('hostKey'); // on stop, leave, and HOST_GONE_MS after the last host message
+```
+
+**Sources:** the
+[#6216](https://github.com/generaltranslation/gt-cloud/pull/6216#discussion_r4712750674)
+review: the key was cleared only when a room was capped or replaced.
+

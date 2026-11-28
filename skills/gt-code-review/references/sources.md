@@ -83,7 +83,9 @@ file gives the exact link or row beside the rule.
 
 Read on 2026-11-26 through the GitHub API, for rules M5, M7, M11 to M14,
 C4, C7, Q5, Q8, Q14, Q15, TS1, TS5, TS11, S1 and S7, and the order of the
-report in section 2:
+report in section 2. Read again on 2026-11-27, every comment of the two
+teammate reviewers on Kevin's pull requests, 73 in all, for rules M15, Q16
+to Q18 and S8:
 
 - The review of a Cloudflare Worker stack,
   [#6213](https://github.com/generaltranslation/gt-cloud/pull/6213),

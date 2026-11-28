@@ -397,6 +397,68 @@ review: cookies and JWTs by hand in
 [#4865](https://github.com/generaltranslation/gt-cloud/pull/4865#discussion_r4041959558)
 (`ConfirmDialog` instead of `window.confirm`).
 
+### Q16. Visible controls stay interactive and reachable
+
+**Look for:** `inert`, `aria-hidden` or `tabIndex={-1}` on an element that is
+on screen at some width or state; a control hidden from assistive technology
+while it is still drawn.
+
+**Why:** `inert` and `aria-hidden` remove an element from the keyboard and
+from screen readers. They belong only to content that is hidden. A layout
+that shows one copy of a component on mobile and another on desktop applies
+them to the copy that is hidden at that width, not to both. The
+`accessibility` skill holds the full checklist.
+
+```tsx
+// Bad: the mobile plate is on screen and cannot be focused.
+<Plate inert aria-hidden />
+// Good
+<Plate inert={!visible} aria-hidden={!visible} />
+```
+
+**Sources:** the
+[#5505](https://github.com/generaltranslation/gt-cloud/pull/5505#discussion_r4365840445)
+review: "Keep visible mobile plates interactive".
+
+### Q17. Dependencies come from the workspace catalog
+
+**Look for:** a version string in a package's `package.json` for a
+dependency that `pnpm-workspace.yaml` lists under `catalog:`; two packages
+of the monorepo on different versions of one dependency.
+
+**Why:** the catalog holds one version of each shared dependency for the
+whole monorepo. A package that writes its own version drifts from the rest,
+and an upgrade then misses it. Rule S5 decides which versions enter the
+catalog.
+
+```json
+// Bad
+"next": "15.5.6"
+// Good
+"next": "catalog:"
+```
+
+**Sources:** the
+[#5505](https://github.com/generaltranslation/gt-cloud/pull/5505#discussion_r4365047597)
+review: "pls use catalog: like the rest of the repo".
+
+### Q18. A file lives in the package that owns and runs it
+
+**Look for:** a script, tool or config in a shared top-level folder such as
+`tooling/` that only one app uses; a helper in a product package that only
+another package calls.
+
+**Why:** the package that runs a file owns its dependencies, its tests and
+its deletion. A file outside it is missed when that package changes or is
+removed, and it adds a reader to the shared folder that has no reason to be
+there. A file moves to a shared package only when a second package uses it,
+as rule K2 states.
+
+**Sources:** the
+[#5063](https://github.com/generaltranslation/gt-cloud/pull/5063#pullrequestreview-5386959307)
+review: a tool under `tooling/` that only the dashboard ran moved to
+`apps/dashboard/scripts`.
+
 ## Readability
 
 ### R1. The code reads top-down in call order

@@ -146,6 +146,7 @@ example and source.
 | M12 | A value the code built stays data |
 | M13 | Every connection, retry and timer is bounded |
 | M14 | A failure is classified by its cause |
+| M15 | Writes that must hold together commit in one transaction |
 
 **Cutover, not compatibility:** [references/cutover.md](references/cutover.md)
 
@@ -178,6 +179,9 @@ example and source.
 | Q13 | Public interfaces are documented by their types first |
 | Q14 | A lifecycle is an explicit state machine |
 | Q15 | Reuse before writing: the repository, the framework and the platform |
+| Q16 | Visible controls stay interactive and reachable |
+| Q17 | Dependencies come from the workspace catalog |
+| Q18 | A file lives in the package that owns and runs it |
 
 **Readability:** [references/quality.md](references/quality.md#readability)
 
@@ -248,6 +252,7 @@ the adoption table for gt-cloud
 | S5 | New dependencies are pinned and held back seven days |
 | S6 | Customer content goes only to paid API tiers, and services bind 127.0.0.1 |
 | S7 | Anonymous writes are throttled, and a client's ids are checked against their owner |
+| S8 | A credential is held only while it is in use |
 
 ## 4. The candidate scan
 

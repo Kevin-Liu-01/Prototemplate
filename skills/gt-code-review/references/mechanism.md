@@ -496,3 +496,34 @@ like the out of credit case does"
 (a list of retryable errors to keep current) and
 [#5195](https://github.com/generaltranslation/gt-cloud/pull/5195#discussion_r4209857812)
 (provider authentication errors defaulting to retryable).
+
+## M15. Writes that must hold together commit in one transaction
+
+**Look for:** two or more writes where a failure after the first leaves a
+record without the record it depends on, such as an organization without
+its billing alias, a job without its first task, or a reservation without
+its holder; an outside call between two database writes that it does not
+order.
+
+**Why:** a partial write is a state the code never meant to exist, and
+every later reader must handle it or break on it. The writes go in one
+database transaction, so they commit or roll back together. An outside
+call that cannot join the transaction runs last, inside it, so its failure
+rolls the rest back, or runs first with an idempotency key, so a retry
+repeats it safely.
+
+```ts
+// Bad: a failed alias leaves the org with no billing customer.
+const org = await db.org.create({ data });
+await metronome.addIngestAlias(org.id);
+// Good
+await db.$transaction(async (tx) => {
+  const org = await tx.org.create({ data });
+  await metronome.addIngestAlias(org.id);
+});
+```
+
+**Sources:** the
+[#5091](https://github.com/generaltranslation/gt-cloud/pull/5091#pullrequestreview-5397925272)
+review: "do all of the metronome ingest alias stuff in the same transaction".
+
