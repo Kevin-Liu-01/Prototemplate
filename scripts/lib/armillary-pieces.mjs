@@ -283,10 +283,14 @@ function smooth(a, b, x) {
  * turn. A line and the T cut each other only where the line stands `deep`
  * out of the T's plane, so the bar and the stem run into the rings where
  * they meet them, as in the logo. The outer ring cuts nothing and is cut by
- * nothing. Lines end square, as the logo's do, and join round.
+ * nothing. Lines end square, as the logo's do, and join round. The globe
+ * (nest.globe) keeps rules of its own, set out at globeGap and keptRuns.
  */
 function gimbalScene(A, a, nest, view, cuts = null) {
   const P = pieces(A, 'gimbal', a, nest);
+  /* A ring tilted either way about the bar's line draws the same ellipse, so the globe reads the G tilted the way that
+     sets it in front of the stem where the logo draws it over the stem, and its depth then agrees with the logo at rest */
+  if (nest.globe) P.g = P.g.map((p) => ({ ...p, z: -p.z }));
   const W = SPHERE.weight;
   const half = W / 2;
   const deep = A.deep * SPHERE.ring;
@@ -354,7 +358,14 @@ function gimbalScene(A, a, nest, view, cuts = null) {
       }
     }
     for (let i = 0; i < n; i++)
-      segs.push({ line, p: pts[i], q: pts[i + 1], ends: [along[i] < startLen && start, run - along[i + 1] < endLen && end].filter(Boolean) });
+      segs.push({
+        line,
+        p: pts[i],
+        q: pts[i + 1],
+        s0: along[i],
+        len: along[i + 1] - along[i],
+        ends: [along[i] < startLen && start, run - along[i + 1] < endLen && end].filter(Boolean),
+      });
   }
   const [vx, vy, vw] = view;
   const cell = 4;
@@ -408,11 +419,17 @@ function gimbalScene(A, a, nest, view, cuts = null) {
         const z = s.p.z + u * (s.q.z - s.p.z);
         const outer = s.line === MER && (x - fx) * (fx - mcx) + (y - fy) * (fy - mcy) > 0;
         const l = Math.hypot(ex, ey) || 1;
-        out.push({ line: s.line, e, z, key: keyOf(s.line, z), outer, dx: ex / l, dy: ey / l });
+        out.push({ line: s.line, e, z, key: keyOf(s.line, z), outer, dx: ex / l, dy: ey / l, run: s.line, s: s.s0 + u * s.len });
       }
+    if (nest.globe) {
+      const e = Math.abs(Math.hypot(x - CX, y - CY) - ringR) - half;
+      const r = Math.hypot(x - CX, y - CY) || 1;
+      if (e <= reach) out.push({ line: RING, e, z: 0, key: 0, outer: false, dx: -(y - CY) / r, dy: (x - CX) / r, run: null, s: 0 });
+    }
     if (x > tx0 - reach && x < tx1 + reach && y > ty0 - reach && y < ty1 + reach) {
       const e = tSigned(x, y);
-      if (e <= reach) out.push({ line: T, e, z: 0, key: keyOf(T, 0), outer: false, dx: y <= tBarFoot ? 1 : 0, dy: y <= tBarFoot ? 0 : 1 });
+      const bar = y <= tBarFoot || x < A.t.stemLeft - A.t.fillet || x > A.t.stemRight + A.t.fillet;
+      if (e <= reach) out.push({ line: T, e, z: 0, key: keyOf(T, 0), outer: false, dx: bar ? 1 : 0, dy: bar ? 0 : 1, run: bar ? BAR : STEM, s: bar ? x : y });
     }
     return out;
   };
@@ -425,15 +442,20 @@ function gimbalScene(A, a, nest, view, cuts = null) {
   const away = nest.t ? 1 : fromRest(a.meridian);
   /* in the globe, how far each ring has turned from rest, 0 to 1: the G rides on the meridian, so it moves with either */
   const moved = { [MER]: away, [G]: Math.max(away, fromRest(a.g)) };
+  /* how nearly a ring faces the viewer, 0 to 1: the cosine of its plane's tilt from the screen, eased over the last turns
+     before it lies on the outer ring. Near there a ring runs close along the outer ring, and the outer ring takes it
+     under itself rather than leave a hairline between them */
+  const facing = (pts) => {
+    const n = pts.length - 1;
+    const [p, q, r] = [pts[0], pts[Math.round(n / 3)], pts[Math.round((2 * n) / 3)]];
+    const [ux, uy, uz, vx2, vy2, vz] = [q.x - p.x, q.y - p.y, q.z - p.z, r.x - p.x, r.y - p.y, r.z - p.z];
+    const [nx, ny, nz] = [uy * vz - uz * vy2, uz * vx2 - ux * vz, ux * vy2 - uy * vx2];
+    return smooth(0.8, 0.93, Math.abs(nz) / (Math.hypot(nx, ny, nz) || 1));
+  };
+  const face = nest.globe ? { [MER]: facing(P.meridian), [G]: facing(P.g) } : null;
   /* the gap line `o` leaves round itself where it stands over line `c` */
   const gap = (o, c) => {
-    if (nest.globe) {
-      const g = globeGap(o, c);
-      if (g === -Infinity) return g;
-      /* two lines running nearly along each other do not cross: the gap narrows to nothing as they turn parallel, so one
-         lying along another reads as one line and is not carved */
-      return g * smooth(0.17, 0.42, Math.abs(o.dx * c.dy - o.dy * c.dx));
-    }
+    if (nest.globe) return globeGap(o, c);
     const strength = smooth(0, ramp, o.key - c.key);
     if (strength <= 0) return -Infinity;
     if (o.line === T) return gapT * strength * outOfPlane(c.z) * (c.line === MER ? lam * away : 1);
@@ -442,40 +464,128 @@ function gimbalScene(A, a, nest, view, cuts = null) {
     return gapM * strength;
   };
   const globeGap = (o, c) => {
-    /* the globe: the G passes over the T, as in the logo, and the meridian over it where it stands in front of the T's
-       plane and under it where it stands behind, which changes only where the meridian meets the outer ring; each cuts the
-       T or is cut only as it stands clear of the T's plane, so the bar and the stem run into the rings where they meet;
-       the rings cross each other in the logo's order; and the meridian's inner side, flush in the logo, opens as it turns
-       away. Every change follows a ring's turn, so nothing changes while nothing moves */
+    if (o.line === RING) return c.line === T ? -Infinity : gapT * face[c.line] || -Infinity;
+    /* the globe: a ring passes over the T where it stands in front of the T's plane and under it where it stands behind,
+       as the logo draws it at rest; each cuts the T or is cut only as it stands clear of the T's
+       plane, so the bar and the stem run into the rings where they meet; the rings cross each other in the logo's order;
+       and the meridian's inner side, flush in the logo, opens as it turns away. Every change follows a ring's turn, so
+       nothing changes while nothing moves */
     if (o.line === T || c.line === T) {
       const r = o.line === T ? c : o;
-      const front = r.line === G ? 1 : smooth(0, ramp, r.z);
+      const s = smooth(0, ramp, o.line === T ? -r.z : r.z);
+      if (s <= 0) return -Infinity;
       /* clear of the T's plane: at rest exactly at deep, as the logo cuts, and over a soft edge below it once the ring moves */
       const soft = 0.5 * deep * moved[r.line];
       const clear = soft > 0 ? smooth(deep - soft, deep, Math.abs(r.z)) : Math.abs(r.z) >= deep ? 1 : 0;
-      const s = (o.line === T ? 1 - front : front) * clear;
-      if (s <= 0) return -Infinity;
-      if (o.line === T) return gapT * s * (c.line === MER ? away : 1);
-      return (o.line === MER ? (o.outer ? gapC : gapC * away) : gapT) * s;
+      if (clear <= 0) return -Infinity;
+      if (o.line === T) return gapT * s * clear * (c.line === MER ? away : 1);
+      return (o.line === MER ? (o.outer ? gapC : gapC * away) : gapT) * s * clear;
     }
     const s = smooth(0, ramp, o.key - c.key);
     if (s <= 0) return -Infinity;
     return (o.line === MER ? (o.outer ? gapC : gapC * away) : gapM) * s;
   };
-  /* line `c` shows at (x, y): it covers the point and no line standing over it leaves its gap there */
-  const shows = (c, cs) => c.e <= 0 && !cs.some((o) => o.line !== c.line && o.e <= gap(o, c));
+  /* In the globe a line is kept in whole pieces. Along each line's centre the gaps leave stretches open; a short one is
+     kept only where it runs on into the rest of the T, so a gap never leaves a shard or a stub. Each kept stretch ends
+     where a line over it begins its gap, on a straight cut along that line, as the logo cuts, leaning at most `lean`
+     from square across so a shallow crossing ends in a blunt cut and not a long point. A line is drawn whole across its
+     width wherever its stretch is kept, so a line passing close by never bites a notch out of its edge */
+  const piece = 2 * W;
+  const lean = 40 * DEG;
+  const reachOut = half * Math.tan(lean) + 1;
+  const kept = nest.globe ? keptRuns() : null;
+  function keptRuns() {
+    const lines = { [MER]: [], [G]: [], [BAR]: [], [STEM]: [] };
+    const step = 0.5;
+    const sample = (run, line, s, x, y, z, dx, dy, gone) => {
+      if (gone) return lines[run].push({ s, gone: true });
+      const c = { line, e: -half, z, key: keyOf(line, z), outer: false, dx, dy, run, s };
+      let by = null;
+      for (const o of near(x, y)) {
+        if (o.line === line) continue;
+        const d = o.e - gap(o, c);
+        if (d <= 0 && (!by || d < by.d)) by = { d, dx: o.dx, dy: o.dy };
+      }
+      lines[run].push({ s, x, y, dx, dy, by });
+    };
+    for (const sg of segs) {
+      const k = Math.max(1, Math.ceil(sg.len / step));
+      const [ex, ey] = [sg.q.x - sg.p.x, sg.q.y - sg.p.y];
+      const l = Math.hypot(ex, ey) || 1;
+      for (let i = 0; i < k; i++) {
+        const u = i / k;
+        const [x, y] = [sg.p.x + u * ex, sg.p.y + u * ey];
+        const gone = sg.ends.some((e) => (x - e.x) * e.dx + (y - e.y) * e.dy > 0);
+        sample(sg.line, sg.line, sg.s0 + u * sg.len, x, y, sg.p.z + u * (sg.q.z - sg.p.z), ex / l, ey / l, gone);
+      }
+    }
+    const { top, bottomLeft, bottomRight, left, stemLeft, stemRight, end } = A.t;
+    const barY = (top + (bottomLeft + bottomRight) / 2) / 2;
+    for (let x = left; x <= end; x += step) sample(BAR, T, x, x, barY, 0, 1, 0, false);
+    for (let y = tBarFoot; y <= end; y += step) sample(STEM, T, y, (stemLeft + stemRight) / 2, y, 0, 0, 1, false);
+    /* the cut where a kept stretch ends at `p`, its last open point, against `q`, the first point the gap covers: a
+       plane through the point between them along the line over it, leaning at most `lean`, facing out of the stretch */
+    const cut = (p, q, at) => {
+      const [tx, ty] = [q.x - p.x, q.y - p.y];
+      const tl = Math.hypot(tx, ty) || 1;
+      const [ux, uy] = [tx / tl, ty / tl];
+      let [nx, ny] = [-q.by.dy, q.by.dx];
+      if (nx * ux + ny * uy < 0) [nx, ny] = [-nx, -ny];
+      /* the cut leans from square across as far as the crossing is from square, up to `lean`; a crossing shallower
+         than that turns its cut back towards square, all the way where the lines run along each other */
+      const off = Math.acos(Math.min(1, nx * ux + ny * uy));
+      const most = off <= lean ? off : Math.max(0, (lean * (Math.PI / 2 - off)) / (Math.PI / 2 - lean));
+      if (most < off) {
+        const side = Math.sign(ux * ny - uy * nx) || 1;
+        const [c, s2] = [Math.cos(most), side * Math.sin(most)];
+        [nx, ny] = [ux * c - uy * s2, ux * s2 + uy * c];
+      }
+      return { x: (p.x + q.x) / 2, y: (p.y + q.y) / 2, dx: nx, dy: ny, at };
+    };
+    const out = {};
+    for (const [run, list] of Object.entries(lines)) {
+      out[run] = [];
+      let from = null;
+      list.forEach((p, i) => {
+        const open = !p.gone && !p.by;
+        if (!open) return;
+        if (from === null) from = i;
+        const q = list[i + 1];
+        const last = !q || q.gone || q.by || q.s - p.s > 2 * step;
+        if (!last) return;
+        const f = list[from];
+        const b = list[from - 1];
+        const cuts = [];
+        if (b && !b.gone && b.by && f.s - b.s <= 2 * step) cuts.push(cut(f, b, f.s));
+        if (q && !q.gone && q.by && q.s - p.s <= 2 * step) cuts.push(cut(p, q, p.s));
+        /* a short stretch of a ring that a gap cuts goes; a stretch of the T runs on into the rest of the T, so it goes
+           only when it floats free, cut at both ends, and otherwise shrinks away as the gap closes on it */
+        if (p.s - f.s >= piece || cuts.length < (run === BAR || run === STEM ? 2 : 1)) out[run].push({ a: f.s, b: p.s, cuts });
+        from = null;
+      });
+    }
+    return out;
+  }
+  /* line `c` covers (x, y) and no line standing over it leaves its gap there; in the globe, it covers the point inside
+     one of its kept stretches */
+  const shows = (c, cs, x, y) => {
+    if (c.e > 0) return false;
+    if (!kept) return !cs.some((o) => o.line !== c.line && o.e <= gap(o, c));
+    if (c.line === RING) return true;
+    return kept[c.run].some((r) => c.s >= r.a - reachOut && c.s <= r.b + reachOut && r.cuts.every((k) => Math.abs(c.s - k.at) > 2 * W || (x - k.x) * k.dx + (y - k.y) * k.dy <= 0));
+  };
   const ink = (x, y) => {
     const d = Math.hypot(x - CX, y - CY) - ringR;
     if (Math.abs(d) <= half) return true;
     const cs = near(x, y);
-    return cs.some((c) => shows(c, cs));
+    return cs.some((c) => shows(c, cs, x, y));
   };
   /* whether `line` shows at (x, y) */
   const shown = (line, x, y) => {
     const cs = near(x, y);
-    return cs.some((c) => c.line === line && shows(c, cs));
+    return cs.some((c) => c.line === line && shows(c, cs, x, y));
   };
-  return { P, ink, near, shown, ringR, half, reach };
+  return { P, ink, near, shown, ringR, half, reach, kept };
 }
 
 /**
@@ -547,7 +657,7 @@ function logoCuts(A, nest, view) {
   return out;
 }
 
-const [MER, G, T] = ['meridian', 'g', 't'];
+const [MER, G, T, BAR, STEM, RING] = ['meridian', 'g', 't', 'bar', 'stem', 'ring'];
 
 /** Version `V`'s lap as the times of its frames in seconds. */
 export function lapTimes(V) {

@@ -112,7 +112,7 @@ export const STILL_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string 
 export const GLOBE_ID = 'gimbal-globe';
 export const GLOBE_TITLE = 'The gimbal as a globe';
 export const GLOBE_LEAD =
-  'The logo read as what it draws: a globe of three rings on the T as its axis. The frame and the T hold still while the meridian turns about the vertical and the G about the bar. Every crossing keeps the logo’s gap and goes by where the rings stand, so nothing changes while nothing moves, and each ring keeps the ends the logo gives it. The lap starts and ends on the logo.';
+  'The logo read as what it draws: a globe of three rings on the T as its axis. The frame and the T hold still while the meridian turns about the vertical and the G about the bar. Each ring passes in front of the T or behind it as it stands, every crossing keeps the logo’s gap, and the line underneath is cut straight across. Lines are drawn only in whole pieces, so a gap never leaves a sliver, and a ring turned to face the viewer goes under the outer ring. The lap starts and ends on the logo.';
 
 /** The globe gimbal's GIFs, on ink and on paper. */
 export const GLOBE_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string })[] = [
