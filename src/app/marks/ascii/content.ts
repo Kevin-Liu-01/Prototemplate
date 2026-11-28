@@ -13,7 +13,7 @@ export const FILES = '/marks/ascii';
 export type AsciiFile = { file: string; label: string; bytes: number };
 
 export const LEAD =
-  'The General Translation header as a terminal draws it, the globe and the name on one grid of round dots, then the logo as an armillary sphere whose pieces each turn on their own axis, in dots and in ink, and in four more versions, each as a GIF in both themes with its files.';
+  'The General Translation header as a terminal draws it, the globe and the name on one grid of round dots, then the logo as an armillary sphere whose pieces each turn on their own axis, in dots and in ink, and in five more versions, each as a GIF in both themes with its files.';
 
 export const HEADER_ID = 'header';
 export const HEADER_TITLE = 'The header';
@@ -109,6 +109,17 @@ export const STILL_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string 
   { file: 'gt-armillary-gimbal-still-light.gif', label: 'GIF on paper', ground: 'On paper' },
 ];
 
+export const SHADE_ID = 'gimbal-shade';
+export const SHADE_TITLE = 'The gimbal in shadow';
+export const SHADE_LEAD =
+  'The gimbal round the still T with no cuts while it turns. Every line stays whole, and where one passes in front of another it casts a soft shadow on the line behind in place of the logo’s gap, so the rings and the T read as one solid globe. The shadows settle into the logo’s gaps as the lap starts and ends on the logo.';
+
+/** The shaded gimbal's GIFs, on ink and on paper. */
+export const SHADE_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string })[] = [
+  { file: 'gt-armillary-gimbal-shade-dark.gif', label: 'GIF on ink', ground: 'On ink' },
+  { file: 'gt-armillary-gimbal-shade-light.gif', label: 'GIF on paper', ground: 'On paper' },
+];
+
 export const BUILD_ID = 'build';
 export const BUILD_TITLE = 'How it is built';
 export const BUILD_LEAD = 'Three scripts write every file on this page, and none draws anything by hand.';
@@ -124,7 +135,7 @@ export const BUILD_PARTS: readonly { term: string; body: string }[] = [
   },
   {
     term: 'pnpm build:armillary-gif',
-    body: 'Moves the logo’s pieces through each version’s lap in scripts/build/armillary.json, the axis turn, the ring turn and the three gimbals, cuts each line where another passes over it as the logo does, has Chrome draw each frame or, for the gimbals, draws each pixel itself, and encodes each lap with ffmpeg in 16 grays and no dithering. At rest the pieces are the logo. It needs no server.',
+    body: 'Moves the logo’s pieces through each version’s lap in scripts/build/armillary.json, the axis turn, the ring turn and the four gimbals, cuts each line where another passes over it as the logo does, has Chrome draw each frame or, for the gimbals, draws each pixel itself, shadows included, and encodes each lap with ffmpeg in 16 grays and no dithering. At rest the pieces are the logo. It needs no server.',
   },
 ];
 

@@ -384,10 +384,22 @@ export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
     }
     return out;
   };
-  /* with nest.over the bar stays joined to the meridian, as in the logo, while the meridian is near where it rests, and
-     cuts it only once it has turned away */
+  /* where the T keeps its full size (nest.t 0) its bar stays joined to the meridian, as in the logo, while the meridian is
+     near where it rests, and cuts it only once it has turned away */
   const turned = Math.abs(a.meridian) % 360;
-  const away = nest.over ? smooth(0, 20, Math.min(turned, 360 - turned)) : 1;
+  const away = nest.t ? 1 : smooth(0, 20, Math.min(turned, 360 - turned));
+  /* with nest.shade a line passing over another casts a shadow on it in place of the logo's gap once the rings move: the
+     line behind stays whole and darkens by shade under the gap, with a soft edge, so the globe reads as solid; at rest the
+     shadow is the logo's gap */
+  const dark = nest.shade ? 1 - lam * (1 - nest.shade) : 1;
+  const feather = nest.shade ? lam * (nest.feather ?? 0.5) : 0;
+  const shadowOf = (o, c) => {
+    const g = gap(o, c);
+    if (g === -Infinity) return 0;
+    if (!feather) return o.e <= g ? 1 : 0;
+    const f = feather * Math.max(g, 1);
+    return 1 - smooth(g - f, g + f, o.e);
+  };
   /* the gap line `o` leaves round itself where it stands over line `c` */
   const gap = (o, c) => {
     const strength = smooth(0, ramp, o.key - c.key);
@@ -397,11 +409,20 @@ export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
     if (o.line === MER) return (o.outer ? gapC : gapC * lam) * strength;
     return gapM * strength;
   };
+  /* the ink at (x, y), 0 to 1: the brightest line covering it, each darkened by the deepest shadow cast on it there */
   const ink = (x, y) => {
     const d = Math.hypot(x - CX, y - CY) - ringR;
-    if (Math.abs(d) <= half) return true;
+    if (Math.abs(d) <= half) return 1;
     const cs = near(x, y);
-    return cs.some((c) => c.e <= 0 && !cs.some((o) => o.line !== c.line && o.e <= gap(o, c)));
+    let best = 0;
+    for (const c of cs) {
+      if (c.e > 0) continue;
+      let s = 0;
+      for (const o of cs) if (o.line !== c.line) s = Math.max(s, shadowOf(o, c));
+      best = Math.max(best, 1 - dark * s);
+      if (best >= 1) break;
+    }
+    return best;
   };
 
   const cov = new Float32Array(size * size);
@@ -413,7 +434,7 @@ export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
       /* a pixel far from every line is ground */
       if (Math.abs(Math.hypot(x - CX, y - CY) - ringR) > pad && near(x, y).every((c) => c.e > px)) continue;
       let n = 0;
-      for (let sj = 0; sj < ss; sj++) for (let si = 0; si < ss; si++) if (ink(vx + (i + (si + 0.5) / ss) * px, vy + (j + (sj + 0.5) / ss) * px)) n++;
+      for (let sj = 0; sj < ss; sj++) for (let si = 0; si < ss; si++) n += ink(vx + (i + (si + 0.5) / ss) * px, vy + (j + (sj + 0.5) / ss) * px);
       cov[j * size + i] = n / (ss * ss);
     }
   return cov;
