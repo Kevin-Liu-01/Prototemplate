@@ -21,7 +21,7 @@ Usage:
   python3 scripts/build/press-assets.py <Katagami-Website checkout>
 
 Requires: python3 with fontTools and brotli (pip install fonttools brotli).
-Last real run: 2026-11-26, Katagami 1.5 (Katagami-Website b5a0a43, Katagami v1.5).
+Last real run: 2026-11-28, Katagami 1.6 (Katagami-Website 949ce3b, Katagami v1.6).
 """
 
 import os
