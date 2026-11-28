@@ -459,6 +459,55 @@ as rule K2 states.
 review: a tool under `tooling/` that only the dashboard ran moved to
 `apps/dashboard/scripts`.
 
+### Q19. A layer passes the deletion test
+
+**Look for:** a module, class, hook or function whose body forwards to one
+other call; a wrapper that renames parameters; an interface with one
+implementation and no second caller in sight; a folder or package that holds
+one file.
+
+**Why:** a layer earns its place only when it hides complexity. Delete it in
+your head. If the complexity disappears, the layer was the complexity, so
+delete it. If the complexity spreads to every caller, the layer is a deep
+module and stays. A shallow layer adds a name to learn, a file to open and a
+place to change, and hides nothing. This follows John Ousterhout's A
+Philosophy of Software Design: a module's interface should be much simpler
+than what it does.
+
+```ts
+// Bad: a forwarding layer with one caller
+export function loadJob(id: string) { return jobStore.load(id); }
+// Good: callers call jobStore.load
+```
+
+**Sources:** Kevin's architecture goal of 2026-11-27: "If this layer is
+deleted, does the complexity disappear, or does it spread to the callers?
+Only abstractions that truly encapsulate complexity are worth keeping."
+
+### Q20. A fixed class gets a check that keeps it out
+
+**Look for:** a pull request that fixes every instance of a class (a second
+implementation, a forbidden import, a key in a URL, a text split on spaces)
+and adds no test, lint rule, AST check or type that fails when the class
+returns.
+
+**Why:** a class fixed by hand comes back with the next change that does not
+know about it. The fix is finished when a machine refuses the class: a type
+that cannot express it, a lint rule, an AST test that scans the tree, or a
+contract test. The check names the rule it holds, so its failure tells the
+reader what to do. Rule K7 makes a round fix classes. This rule keeps them
+fixed.
+
+```python
+# Good: a test that refuses any second reader of a character's script
+def test_one_script_reader():
+    assert not grep_tree("unicodedata.name(", exclude="writing.py")
+```
+
+**Sources:** Kevin's architecture goal of 2026-11-27, "Enforceable
+Architecture"; test_copied_bounds and test_copied_names in transcreate, which
+already hold two classes this way.
+
 ## Readability
 
 ### R1. The code reads top-down in call order

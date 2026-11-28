@@ -182,6 +182,8 @@ example and source.
 | Q16 | Visible controls stay interactive and reachable |
 | Q17 | Dependencies come from the workspace catalog |
 | Q18 | A file lives in the package that owns and runs it |
+| Q19 | A layer passes the deletion test |
+| Q20 | A fixed class gets a check that keeps it out |
 
 **Readability:** [references/quality.md](references/quality.md#readability)
 
