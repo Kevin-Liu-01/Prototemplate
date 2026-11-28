@@ -105,9 +105,10 @@ function main(argv) {
   const repoAt = argv.indexOf('--repo');
   const valued = new Set(['--repo', '--copied', '--shared']);
   const numbers = argv.filter((a, i) => /^\d+$/.test(a) && !valued.has(argv[i - 1]));
-  const prs = argv.includes('--stdin')
-    ? JSON.parse(readFileSync(0, 'utf8'))
-    : numbers.map((n) => fetchPr(argv[repoAt + 1], Number(n)));
+  const input = argv.includes('--stdin') ? readFileSync(0, 'utf8') : null;
+  // Empty or blank stdin holds no pull requests, so there is nothing to report.
+  if (input !== null && !input.trim()) return;
+  const prs = input !== null ? JSON.parse(input) : numbers.map((n) => fetchPr(argv[repoAt + 1], Number(n)));
   const found = checkStack(prs, { copied: listArg(argv, '--copied') ?? [], shared: listArg(argv, '--shared') ?? SHARED });
   if (argv.includes('--json')) return console.log(JSON.stringify(found, null, 2));
   for (const f of found) console.log(`#${f.number}  ${f.rule}  ${f.reason}`);

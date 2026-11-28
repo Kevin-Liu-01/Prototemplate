@@ -2,7 +2,9 @@
 // Every pull request here is generated, and each rule has a case it must flag
 // and a case it must pass.
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { describe, it } from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { ADDED_MAX, TINY_MAX, checkPr, readLines, sharedBeside, SHARED } from './stack-shape.mjs';
 
 /** A pull request with one file per [path, added] pair. */
@@ -66,5 +68,21 @@ describe('K5 and N6', () => {
   it('flags a title that names a commit hash, and passes plain numbers', () => {
     assert.ok(rules(pr('k/folder', "feat: the folder at 13ebf5d40", [product])).includes('N6'));
     assert.ok(!rules(pr('k/fonts', 'feat: Katagami 1.5 and 20260101', [product])).includes('N6'));
+  });
+});
+
+describe('--stdin', () => {
+  const script = fileURLToPath(new URL('./stack-shape.mjs', import.meta.url));
+  const run = (input) => spawnSync(process.execPath, [script, '--stdin'], { input, encoding: 'utf8' });
+  it('prints nothing and exits 0 on empty or blank input', () => {
+    for (const input of ['', '  \n\t\n']) {
+      const out = run(input);
+      assert.deepEqual([out.status, out.stdout, out.stderr], [0, '', '']);
+    }
+  });
+  it('still reports a stack it is given', () => {
+    const out = run(JSON.stringify([pr('k/flow', 'feat: flow', [['src/a.ts', ADDED_MAX + 1]])]));
+    assert.equal(out.status, 0);
+    assert.match(out.stdout, /^#1 {2}K4 {2}/);
   });
 });
