@@ -10,7 +10,7 @@ const route = seoRoute({
   title: PAGE_NAMES.transcreate.name,
   kind: 'page',
   description:
-    'Three launch films from Profound and Canva beside their Japanese versions, then eight product videos translated from English to Japanese.',
+    'Four launch films from Profound, Canva and Databricks beside their Japanese versions, then eight product videos translated from English to Japanese.',
   updated: requireUpdated('/transcreate'),
 });
 
@@ -18,7 +18,7 @@ export const metadata = route.metadata;
 
 /**
  * /transcreate: the overview of the English to Japanese videos, with the
- * three featured films (PairViewer) and the grid of all eight. The Transcreate pages are private
+ * four featured films (PairViewer) and the grid of all eight. The Transcreate pages are private
  * (src/lib/seo/policy.ts, PRIVATE_PATHS): each answers noindex, nofollow,
  * and the sitemap and /llms.txt leave them out. The videos are web copies
  * in public/media/transcreate (videos.ts).

@@ -2,13 +2,13 @@ import type { PageId } from '@/lib/page-names';
 import type { ShellItem, ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 
-import { CANVA, DATABRICKS, PROFOUND, RAMP, RAMP_VERSIONS, VIDEOS, VISUAL } from './videos';
+import { CANVA, DATABRICKS, GENIE, PROFOUND, RAMP, RAMP_VERSIONS, VIDEOS, VISUAL } from './videos';
 
 /**
  * The five Transcreate pages and the shell's section they share, so every
  * route lists the same rows in the same order. The section opens under
  * Knowledge > Transcreate in the sidebar (`under`) as the row's run: the
- * overview, the three featured films on it, the videos page with its eight videos after it, the Databricks
+ * overview, the four featured films on it, the videos page with its eight videos after it, the Databricks
  * page with its four videos after it, the Ramp page with its three versions
  * after it, and the credits with the author after them. Each page's own row
  * carries the page's path, so the sidebar marks it as the page the reader
@@ -37,10 +37,11 @@ export const ROUTE_PAGE: Readonly<Record<TranscreateRoute, PageId>> = {
   credits: 'transcreateCredits',
 };
 
-/** The row ids of the overview's three featured films and its grid, of the videos page's head, of the Databricks and Ramp pages' grids, and of the credits page's originals and author. */
+/** The row ids of the overview's four featured films and its grid, of the videos page's head, of the Databricks and Ramp pages' grids, and of the credits page's originals and author. */
 export const PROFOUND_ROW = PROFOUND.slug;
 export const CANVA_ROW = CANVA.slug;
 export const VISUAL_ROW = VISUAL.slug;
+export const GENIE_ROW = GENIE.slug;
 export const GRID_ROW = 'all-eight';
 export const VIDEOS_ROW = 'videos';
 export const DATABRICKS_ROW = 'databricks';
@@ -81,6 +82,12 @@ export function transcreateSections(route: TranscreateRoute): readonly ShellSect
           title: VISUAL.name,
           desc: 'The third featured film in English and Japanese, with its original music',
           ...(route === 'overview' ? { inPlace: true as const } : { href: `${ROUTE_PATH.overview}#${VISUAL_ROW}` }),
+        },
+        {
+          id: GENIE_ROW,
+          title: GENIE.name,
+          desc: 'The fourth featured film in English and Japanese, with a Japanese dub',
+          ...(route === 'overview' ? { inPlace: true as const } : { href: `${ROUTE_PATH.overview}#${GENIE_ROW}` }),
         },
         { id: VIDEOS_ROW, title: 'Videos', href: ROUTE_PATH.videos, desc: 'Each video side by side or stacked' },
         ...VIDEOS.map((entry, i) => ({

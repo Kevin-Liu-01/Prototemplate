@@ -479,7 +479,7 @@ type TranscreateBookProps = {
 /**
  * One Transcreate page read top to bottom inside the flow sheet, in the
  * graphics book's row grammar: the head, then the page's sections under
- * their dividers. The overview holds the three featured films (PairViewer), the grid of all eight and a contents
+ * their dividers. The overview holds the four featured films (PairViewer), the grid of all eight and a contents
  * list of the five pages, the videos page each video, the Databricks page
  * its grid and each of its videos, the Ramp page its grid and each of its
  * versions, and the credits page the originals and the author's methods. The reading state is the shared read line

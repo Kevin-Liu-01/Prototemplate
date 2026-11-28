@@ -1,7 +1,7 @@
 /**
  * The videos the /transcreate pages show, in page order, and the web copies
- * under public/media/transcreate: the three featured films, Introducing Profound, Introducing Canva Offline and
- * Introducing the Visual Worksuite, each as one file that packs its original and its Japanese version; the grid of all eight, side by side and as
+ * under public/media/transcreate: the four featured films, Introducing Profound, Introducing Canva Offline,
+ * Introducing the Visual Worksuite and Genie Migrate for Lakehouse, each as one file that packs its original and its Japanese version; the grid of all eight, side by side and as
  * columns, and each video side by side and stacked; then the four Databricks
  * videos, with their grid and each video in Japanese and stacked; then Ramp
  * Procurement in English, Spanish and Japanese, with its grid and each
@@ -96,8 +96,27 @@ export const VISUAL: PairFilm & { owner: string; seconds: number } = {
   back: '/transcreate#visual-worksuite',
 };
 
+/**
+ * The fourth featured film: Databricks' Automate Data Warehouse Migration with AI, Genie Migrate for Lakehouse, and
+ * its Japanese version. The Japanese picture is the free agent's run of 2026-11-27, and the dub is its ElevenLabs
+ * pass. The poster is frame 90 of the packed picture.
+ */
+export const GENIE: PairFilm & { owner: string; seconds: number } = {
+  slug: 'genie-migrate',
+  name: 'Genie Migrate for Lakehouse',
+  owner: 'Databricks',
+  file: 'genie-migrate-pair',
+  language: 'Japanese',
+  panel: { width: 1280, height: 720 },
+  frames: 3525,
+  fps: 30,
+  seconds: 117,
+  sound: 'dub',
+  back: '/transcreate#genie-migrate',
+};
+
 /** The featured films in page order. */
-export const FEATURED: readonly (PairFilm & { owner: string; seconds: number })[] = [PROFOUND, CANVA, VISUAL];
+export const FEATURED: readonly (PairFilm & { owner: string; seconds: number })[] = [PROFOUND, CANVA, VISUAL, GENIE];
 
 /** The grid of all eight: side by side at 2560 by 1440, or as columns at 4096 by 576; 30 seconds, no sound. */
 export const GRID = {
@@ -224,10 +243,10 @@ export const OWNERS: readonly string[] = [
   ...new Set([...FEATURED.map((film) => film.owner), ...VIDEOS.map((video) => video.owner), DATABRICKS_OWNER, RAMP.owner]),
 ];
 
-/** Every video on the pages: the three featured films, the eight, the four Databricks videos and Ramp Procurement. */
+/** Every video on the pages: the four featured films, the eight, the four Databricks videos and Ramp Procurement. */
 export const VIDEO_COUNT = FEATURED.length + VIDEOS.length + DATABRICKS.length + 1;
 
-/** Every film the compare viewer opens, by its slug: the three featured films, the eight, the four Databricks videos and the two Ramp translations. */
+/** Every film the compare viewer opens, by its slug: the four featured films, the eight, the four Databricks videos and the two Ramp translations. */
 export const PAIR_FILMS: readonly PairFilm[] = [
   ...FEATURED,
   ...VIDEOS.map((video) => ({
