@@ -109,15 +109,15 @@ export const STILL_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string 
   { file: 'gt-armillary-gimbal-still-light.gif', label: 'GIF on paper', ground: 'On paper' },
 ];
 
-export const SHADE_ID = 'gimbal-shade';
-export const SHADE_TITLE = 'The gimbal in shadow';
-export const SHADE_LEAD =
-  'The gimbal round the still T with no cuts while it turns. Every line stays whole, and where one passes in front of another it casts a soft shadow on the line behind in place of the logo’s gap, so the rings and the T read as one solid globe. The shadows settle into the logo’s gaps as the lap starts and ends on the logo.';
+export const GLOBE_ID = 'gimbal-globe';
+export const GLOBE_TITLE = 'The gimbal as a globe';
+export const GLOBE_LEAD =
+  'The logo read as what it draws: a globe of three rings on the T as its axis. The frame and the T hold still while the meridian turns about the vertical and the G about the bar. The logo’s gaps are how a flat mark shows depth, so they close as the lap leaves the logo, and the turning rings are drawn whole, each the length the logo gives it. The gaps open again as the lap comes back to the logo.';
 
-/** The shaded gimbal's GIFs, on ink and on paper. */
-export const SHADE_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string })[] = [
-  { file: 'gt-armillary-gimbal-shade-dark.gif', label: 'GIF on ink', ground: 'On ink' },
-  { file: 'gt-armillary-gimbal-shade-light.gif', label: 'GIF on paper', ground: 'On paper' },
+/** The globe gimbal's GIFs, on ink and on paper. */
+export const GLOBE_FILES: readonly (Omit<AsciiFile, 'bytes'> & { ground: string })[] = [
+  { file: 'gt-armillary-gimbal-globe-dark.gif', label: 'GIF on ink', ground: 'On ink' },
+  { file: 'gt-armillary-gimbal-globe-light.gif', label: 'GIF on paper', ground: 'On paper' },
 ];
 
 export const BUILD_ID = 'build';
@@ -135,7 +135,7 @@ export const BUILD_PARTS: readonly { term: string; body: string }[] = [
   },
   {
     term: 'pnpm build:armillary-gif',
-    body: 'Moves the logo’s pieces through each version’s lap in scripts/build/armillary.json, the axis turn, the ring turn and the four gimbals, cuts each line where another passes over it as the logo does, has Chrome draw each frame or, for the gimbals, draws each pixel itself, shadows included, and encodes each lap with ffmpeg in 16 grays and no dithering. At rest the pieces are the logo. It needs no server.',
+    body: 'Moves the logo’s pieces through each version’s lap in scripts/build/armillary.json, the axis turn, the ring turn and the four gimbals, cuts each line where another passes over it as the logo does, has Chrome draw each frame or, for the gimbals, draws each pixel itself, and encodes each lap with ffmpeg in 16 grays and no dithering. At rest the pieces are the logo. It needs no server.',
   },
 ];
 

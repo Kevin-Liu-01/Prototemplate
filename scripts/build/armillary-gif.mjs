@@ -19,9 +19,9 @@
  *   gt-armillary-gimbal-still-{dark,light}.gif
  *                                          still: the one-sphere gimbal round
  *                                          the logo's T, held whole and still
- *   gt-armillary-gimbal-shade-{dark,light}.gif
- *                                          shade: the still-T gimbal with soft
- *                                          shadows in place of cuts
+ *   gt-armillary-gimbal-globe-{dark,light}.gif
+ *                                          globe: the rings turn whole round
+ *                                          the still T, the gaps closed
  *
  * Each piece turns once in its own window, and every lap starts and ends on
  * the still logo, so each GIF loops with no seam.

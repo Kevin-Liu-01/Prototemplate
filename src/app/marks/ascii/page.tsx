@@ -6,7 +6,7 @@ import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
-import { ARMILLARY_FILES, ASCII_ARMILLARY_FILES, GIMBAL_FILES, HEADER_FILES, RINGS_FILES, SHADE_FILES, SPHERE_FILES, STILL_FILES } from './content';
+import { ARMILLARY_FILES, ASCII_ARMILLARY_FILES, GIMBAL_FILES, GLOBE_FILES, HEADER_FILES, RINGS_FILES, SPHERE_FILES, STILL_FILES } from './content';
 import AsciiViewer from './AsciiViewer';
 
 const route = seoRoute({
@@ -46,7 +46,7 @@ export default function AsciiPage() {
         gimbalFiles={sized(GIMBAL_FILES)}
         sphereFiles={sized(SPHERE_FILES)}
         stillFiles={sized(STILL_FILES)}
-        shadeFiles={sized(SHADE_FILES)}
+        globeFiles={sized(GLOBE_FILES)}
         text={readFileSync(join(DIR, 'gt-ascii-header.txt'), 'utf8')}
         grid={{ cols, rows }}
         laps={{ min: Math.min(...LAPS), max: Math.max(...LAPS) }}

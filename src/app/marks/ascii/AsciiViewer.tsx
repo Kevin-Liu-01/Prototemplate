@@ -33,6 +33,10 @@ import {
   GIMBAL_ID,
   GIMBAL_LEAD,
   GIMBAL_TITLE,
+  GLOBE_FILES,
+  GLOBE_ID,
+  GLOBE_LEAD,
+  GLOBE_TITLE,
   GRID_ROWS,
   HEADER_FILES,
   HEADER_ID,
@@ -45,10 +49,6 @@ import {
   RINGS_LEAD,
   RINGS_TITLE,
   sectionsIn,
-  SHADE_FILES,
-  SHADE_ID,
-  SHADE_LEAD,
-  SHADE_TITLE,
   SPHERE_FILES,
   SPHERE_ID,
   SPHERE_LEAD,
@@ -77,7 +77,7 @@ const PARTS: readonly Part[] = [
   { id: GIMBAL_ID, title: GIMBAL_TITLE, lead: GIMBAL_LEAD, fact: `${GIMBAL_FILES.length} GIFs`, count: GIMBAL_FILES.length },
   { id: SPHERE_ID, title: SPHERE_TITLE, lead: SPHERE_LEAD, fact: `${SPHERE_FILES.length} GIFs`, count: SPHERE_FILES.length },
   { id: STILL_ID, title: STILL_TITLE, lead: STILL_LEAD, fact: `${STILL_FILES.length} GIFs`, count: STILL_FILES.length },
-  { id: SHADE_ID, title: SHADE_TITLE, lead: SHADE_LEAD, fact: `${SHADE_FILES.length} GIFs`, count: SHADE_FILES.length },
+  { id: GLOBE_ID, title: GLOBE_TITLE, lead: GLOBE_LEAD, fact: `${GLOBE_FILES.length} GIFs`, count: GLOBE_FILES.length },
   { id: BUILD_ID, title: BUILD_TITLE, lead: BUILD_LEAD, fact: `${BUILD_PARTS.length} scripts`, count: BUILD_PARTS.length },
 ];
 
@@ -149,7 +149,7 @@ type Files = {
   gimbalFiles: readonly GifFile[];
   sphereFiles: readonly GifFile[];
   stillFiles: readonly GifFile[];
-  shadeFiles: readonly GifFile[];
+  globeFiles: readonly GifFile[];
   /** the header as plain text */
   text: string;
   /** the header's grid in dots, from its SVG's viewBox */
@@ -184,7 +184,7 @@ function InkGifs({ files, alt }: { files: readonly GifFile[]; alt: string }) {
   );
 }
 
-function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiArmillaryFiles, armillaryFiles, ringsFiles, gimbalFiles, sphereFiles, stillFiles, shadeFiles, text, grid, laps }: BookProps) {
+function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiArmillaryFiles, armillaryFiles, ringsFiles, gimbalFiles, sphereFiles, stillFiles, globeFiles, text, grid, laps }: BookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
@@ -235,7 +235,7 @@ function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiAr
     if (id === GIMBAL_ID) return <InkGifs files={gimbalFiles} alt='The logo as a gimbal, its rings parting and turning round the still T' />;
     if (id === SPHERE_ID) return <InkGifs files={sphereFiles} alt='The logo as a gimbal, its rings turning on one sphere round the still T' />;
     if (id === STILL_ID) return <InkGifs files={stillFiles} alt='The logo as a gimbal, its rings turning behind the T held as the logo draws it' />;
-    if (id === SHADE_ID) return <InkGifs files={shadeFiles} alt='The logo as a gimbal, its rings turning round the still T and casting soft shadows where they pass' />;
+    if (id === GLOBE_ID) return <InkGifs files={globeFiles} alt='The logo as a globe of three rings on the T, the rings turning whole round the still T' />;
     return (
       <div className='ax-body'>
         <Terms items={BUILD_PARTS} />
@@ -254,7 +254,7 @@ function AsciiBook({ sheetRef, jumpRef, activeOut, updated, headerFiles, asciiAr
         facts={[
           { icon: 'globe', key: 'Grid', value: `${grid.cols} by ${grid.rows} dots` },
           { icon: 'sync', key: 'Laps', value: laps.min === laps.max ? `${laps.min} s` : `${laps.min} to ${laps.max} s` },
-          { icon: 'attachment', key: 'Files', value: headerFiles.length + asciiArmillaryFiles.length + armillaryFiles.length + ringsFiles.length + gimbalFiles.length + sphereFiles.length + stillFiles.length + shadeFiles.length },
+          { icon: 'attachment', key: 'Files', value: headerFiles.length + asciiArmillaryFiles.length + armillaryFiles.length + ringsFiles.length + gimbalFiles.length + sphereFiles.length + stillFiles.length + globeFiles.length },
         ]}
         contents={
           <nav className='pt-book-toc' aria-label='Contents'>
@@ -286,7 +286,7 @@ export type AsciiViewerProps = Files & {
  * The dot-matrix header, the ASCII armillary and the armillary GIFs on the viewer shell. The list
  * hangs under Marks > ASCII; flow keys, so Space and the arrows scroll.
  */
-export default function AsciiViewer({ updated, headerFiles, asciiArmillaryFiles, armillaryFiles, ringsFiles, gimbalFiles, sphereFiles, stillFiles, shadeFiles, text, grid, laps }: AsciiViewerProps) {
+export default function AsciiViewer({ updated, headerFiles, asciiArmillaryFiles, armillaryFiles, ringsFiles, gimbalFiles, sphereFiles, stillFiles, globeFiles, text, grid, laps }: AsciiViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const activeOut = useRef<string>(HEADER_ID);
@@ -309,7 +309,7 @@ export default function AsciiViewer({ updated, headerFiles, asciiArmillaryFiles,
       }}
     >
       <Sheet variant='flow' scrollRef={sheetRef}>
-        <AsciiBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} headerFiles={headerFiles} asciiArmillaryFiles={asciiArmillaryFiles} armillaryFiles={armillaryFiles} ringsFiles={ringsFiles} gimbalFiles={gimbalFiles} sphereFiles={sphereFiles} stillFiles={stillFiles} shadeFiles={shadeFiles} text={text} grid={grid} laps={laps} />
+        <AsciiBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} headerFiles={headerFiles} asciiArmillaryFiles={asciiArmillaryFiles} armillaryFiles={armillaryFiles} ringsFiles={ringsFiles} gimbalFiles={gimbalFiles} sphereFiles={sphereFiles} stillFiles={stillFiles} globeFiles={globeFiles} text={text} grid={grid} laps={laps} />
       </Sheet>
     </ViewerShell>
   );

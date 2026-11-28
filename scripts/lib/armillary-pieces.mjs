@@ -24,7 +24,10 @@
 //   the G is the logo's own order: where it faces the viewer it passes over
 //   the G, so crossings go by depth once the rings part and agree with the
 //   logo at rest. The gimbal is drawn pixel by pixel (gimbalCoverage), its
-//   gaps opening with depth, so no crossing pops between frames.
+//   gaps opening with depth, so no crossing pops between frames. With
+//   nest.plain the logo is read as the globe it draws, three rings on the T
+//   as its axis: the gaps close as the lap leaves the logo, and the rings
+//   turn whole, each ending where the logo ends it.
 //
 // At rest the pieces are the logo: drawn at the GIF's size they differ from
 // its path only in the antialiasing of 145 edge pixels. Over and under
@@ -283,7 +286,7 @@ function smooth(a, b, x) {
  * they meet them, as in the logo. The outer ring cuts nothing and is cut by
  * nothing. Lines end square, as the logo's do, and join round.
  */
-export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
+function gimbalScene(A, a, nest, view) {
   const P = pieces(A, 'gimbal', a, nest);
   const W = SPHERE.weight;
   const half = W / 2;
@@ -388,43 +391,44 @@ export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
      near where it rests, and cuts it only once it has turned away */
   const turned = Math.abs(a.meridian) % 360;
   const away = nest.t ? 1 : smooth(0, 20, Math.min(turned, 360 - turned));
-  /* with nest.shade a line passing over another casts a shadow on it in place of the logo's gap once the rings move: the
-     line behind stays whole and darkens by shade under the gap, with a soft edge, so the globe reads as solid; at rest the
-     shadow is the logo's gap */
-  const dark = nest.shade ? 1 - lam * (1 - nest.shade) : 1;
-  const feather = nest.shade ? lam * (nest.feather ?? 0.5) : 0;
-  const shadowOf = (o, c) => {
-    const g = gap(o, c);
-    if (g === -Infinity) return 0;
-    if (!feather) return o.e <= g ? 1 : 0;
-    const f = feather * Math.max(g, 1);
-    return 1 - smooth(g - f, g + f, o.e);
-  };
+  /* with nest.plain the gaps are the logo's way of drawing depth on a flat mark: they close as the lap leaves the logo,
+     so the turning globe is drawn as its lines alone, each whole, and open again as it comes back to rest */
+  const close = nest.plain ? 1 - lam : 1;
   /* the gap line `o` leaves round itself where it stands over line `c` */
   const gap = (o, c) => {
     const strength = smooth(0, ramp, o.key - c.key);
     if (strength <= 0) return -Infinity;
-    if (o.line === T) return gapT * strength * outOfPlane(c.z) * (c.line === MER ? lam * away : 1);
-    if (c.line === T) return (o.line === MER ? (o.outer ? gapC : gapC * lam) : gapT) * strength * outOfPlane(o.z);
-    if (o.line === MER) return (o.outer ? gapC : gapC * lam) * strength;
-    return gapM * strength;
+    if (o.line === T) return gapT * strength * outOfPlane(c.z) * (c.line === MER ? lam * away : 1) * close;
+    if (c.line === T) return (o.line === MER ? (o.outer ? gapC : gapC * lam) : gapT) * strength * outOfPlane(o.z) * close;
+    if (o.line === MER) return (o.outer ? gapC : gapC * lam) * strength * close;
+    return gapM * strength * close;
   };
-  /* the ink at (x, y), 0 to 1: the brightest line covering it, each darkened by the deepest shadow cast on it there */
+  /* line `c` shows at (x, y): it covers the point and no line standing over it leaves its gap there */
+  const shows = (c, cs) => c.e <= 0 && !cs.some((o) => o.line !== c.line && o.e <= gap(o, c));
   const ink = (x, y) => {
     const d = Math.hypot(x - CX, y - CY) - ringR;
-    if (Math.abs(d) <= half) return 1;
+    if (Math.abs(d) <= half) return true;
     const cs = near(x, y);
-    let best = 0;
-    for (const c of cs) {
-      if (c.e > 0) continue;
-      let s = 0;
-      for (const o of cs) if (o.line !== c.line) s = Math.max(s, shadowOf(o, c));
-      best = Math.max(best, 1 - dark * s);
-      if (best >= 1) break;
-    }
-    return best;
+    return cs.some((c) => shows(c, cs));
   };
+  /* whether `line` shows at (x, y) */
+  const shown = (line, x, y) => {
+    const cs = near(x, y);
+    return cs.some((c) => c.line === line && shows(c, cs));
+  };
+  return { P, ink, near, shown, ringR, half, reach };
+}
 
+/**
+ * One frame of the gimbal as ink coverage, 0 to 1 a pixel, `size` pixels a
+ * side over `view`, each pixel sampled `ss` by `ss` times. With nest.plain
+ * the meridian and the G are their logo stretches as the logo shows them,
+ * ending where the logo's gaps end them (logoEnds), so a turning line ends
+ * where the mark ends it.
+ */
+export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
+  const { ink, near, ringR, half, reach } = gimbalScene(nest.plain ? { ...A, ...logoEnds(A, nest, view) } : A, a, nest, view);
+  const [vx, vy, vw] = view;
   const cov = new Float32Array(size * size);
   const px = vw / size;
   const pad = half + reach + px;
@@ -434,10 +438,52 @@ export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
       /* a pixel far from every line is ground */
       if (Math.abs(Math.hypot(x - CX, y - CY) - ringR) > pad && near(x, y).every((c) => c.e > px)) continue;
       let n = 0;
-      for (let sj = 0; sj < ss; sj++) for (let si = 0; si < ss; si++) n += ink(vx + (i + (si + 0.5) / ss) * px, vy + (j + (sj + 0.5) / ss) * px);
+      for (let sj = 0; sj < ss; sj++) for (let si = 0; si < ss; si++) if (ink(vx + (i + (si + 0.5) / ss) * px, vy + (j + (sj + 0.5) / ss) * px)) n++;
       cov[j * size + i] = n / (ss * ss);
     }
   return cov;
+}
+
+const ends = new Map();
+
+/**
+ * The meridian's and the G's stretches as the logo shows them, in degrees
+ * along their rings. Each stretch in armillary.json runs a little past the
+ * logo's end into the line whose gap ends it at rest; this walks in from
+ * each end of the logo at rest to the first place any of the line's width
+ * shows, so with the gaps closed the line still ends where the mark does.
+ */
+function logoEnds(A, nest, view) {
+  const key = JSON.stringify([nest, view]);
+  if (ends.has(key)) return ends.get(key);
+  const rest = { ring: 0, meridian: 0, g: 0, t: 0, nest: 0 };
+  const { P, shown, half } = gimbalScene(A, rest, { ...nest, plain: false }, view);
+  const out = {};
+  for (const [line, pts, { from, to }] of [[MER, P.meridian, A.meridian], [G, P.g, A.g]]) {
+    const n = pts.length - 1;
+    /* the point and its normal `u` segments in from the start, interpolated along the polyline */
+    const at = (u) => {
+      const i = Math.min(n - 1, Math.floor(u));
+      const f = u - i;
+      const [p, q] = [pts[i], pts[i + 1]];
+      const l = Math.hypot(q.x - p.x, q.y - p.y) || 1;
+      return { x: p.x + f * (q.x - p.x), y: p.y + f * (q.y - p.y), nx: (p.y - q.y) / l, ny: (q.x - p.x) / l };
+    };
+    const shows = (u) => {
+      const p = at(u);
+      for (let k = -8; k <= 8; k++) if (shown(line, p.x + p.nx * half * (k / 8), p.y + p.ny * half * (k / 8))) return true;
+      return false;
+    };
+    const walk = (u0, du) => {
+      let u = u0;
+      while (!shows(u) && Math.abs(u - u0) < n / 2) u += du;
+      return Math.min(n, Math.max(0, u));
+    };
+    const [u0, u1] = [walk(0, 0.02), walk(n, -0.02)];
+    out[line === MER ? 'meridian' : 'g'] = { from: from + ((to - from) * u0) / n, to: from + ((to - from) * u1) / n };
+  }
+  ends.set(key, out);
+  return out;
 }
 
 const [MER, G, T] = ['meridian', 'g', 't'];
