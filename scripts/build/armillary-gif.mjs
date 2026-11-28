@@ -20,8 +20,8 @@
  *                                          still: the one-sphere gimbal round
  *                                          the logo's T, held whole and still
  *   gt-armillary-gimbal-globe-{dark,light}.gif
- *                                          globe: the rings turn whole round
- *                                          the still T, the gaps closed
+ *                                          globe: three rings turn round the
+ *                                          still T, each crossing by depth
  *
  * Each piece turns once in its own window, and every lap starts and ends on
  * the still logo, so each GIF loops with no seam.

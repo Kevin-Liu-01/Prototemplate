@@ -25,9 +25,8 @@
 //   the G, so crossings go by depth once the rings part and agree with the
 //   logo at rest. The gimbal is drawn pixel by pixel (gimbalCoverage), its
 //   gaps opening with depth, so no crossing pops between frames. With
-//   nest.plain the logo is read as the globe it draws, three rings on the T
-//   as its axis: the gaps close as the lap leaves the logo, and the rings
-//   turn whole, each ending where the logo ends it.
+//   nest.globe each line's ends are the logo's, carried with the line, so
+//   they keep their shape and place as the lines round them move.
 //
 // At rest the pieces are the logo: drawn at the GIF's size they differ from
 // its path only in the antialiasing of 145 edge pixels. Over and under
@@ -286,15 +285,16 @@ function smooth(a, b, x) {
  * they meet them, as in the logo. The outer ring cuts nothing and is cut by
  * nothing. Lines end square, as the logo's do, and join round.
  */
-function gimbalScene(A, a, nest, view) {
+function gimbalScene(A, a, nest, view, cuts = null) {
   const P = pieces(A, 'gimbal', a, nest);
   const W = SPHERE.weight;
   const half = W / 2;
   const deep = A.deep * SPHERE.ring;
   const { c: gapC, meridian: gapM, stem: gapT } = A.gaps;
   const reach = Math.max(gapC, gapM, gapT);
-  /* 0 at rest, the logo's order; 1 once the rings have half parted, true depth, before any ring turns */
-  const lam = smooth(0, 0.5, a.nest);
+  /* 0 at rest, the logo's order; 1 once the rings have half parted, true depth, before any ring turns. The globe
+     (nest.globe) keeps no such blend in time: its crossings follow only where the lines stand */
+  const lam = nest.globe ? 0 : smooth(0, 0.5, a.nest);
   /* the depth over which a gap opens from nothing to whole */
   const ramp = A.ramp * SPHERE.ring;
   const K = 2 * ramp;
@@ -316,7 +316,9 @@ function gimbalScene(A, a, nest, view) {
   const outOfPlane = (z) => (soft > 0 ? smooth(deep - soft, deep, Math.abs(z)) : Math.abs(z) >= deep ? 1 : 0);
 
   /* the segments of the meridian and the G, binned on a grid */
-  /* each line ends square: a segment within two weights of an end draws nothing past that end's own plane */
+  /* each line ends square: a segment within two weights of an end draws nothing past that end's own plane. With `cuts`
+     (logoCuts) each end is instead the cut the logo gives it at rest, carried with the line: the plane through the
+     points where its two edges end, so a line's ends keep their shape and place however the lines round it move */
   const segs = [];
   for (const [line, pts] of [[MER, P.meridian], [G, P.g]]) {
     const n = pts.length - 1;
@@ -324,11 +326,35 @@ function gimbalScene(A, a, nest, view) {
       const l = Math.hypot(b.x - a.x, b.y - a.y) || 1;
       return { x: a.x, y: a.y, dx: (a.x - b.x) / l, dy: (a.y - b.y) / l };
     };
-    const [start, end] = [endOf(pts[0], pts[1]), endOf(pts[n], pts[n - 1])];
+    let [start, end] = [endOf(pts[0], pts[1]), endOf(pts[n], pts[n - 1])];
     let run = 0;
     const along = pts.map((p, i) => (run += i ? Math.hypot(p.x - pts[i - 1].x, p.y - pts[i - 1].y) : 0));
+    let [startLen, endLen] = [2 * W, 2 * W];
+    if (cuts) {
+      const at = alongLine(pts);
+      /* the end's plane through its two edges' ends, `a` and `b` segments in from the start, facing out */
+      const plane = ({ a: ua, b: ub }, out) => {
+        const [pa, pb] = [at(ua), at(ub)];
+        const [ax, ay, bx, by] = [pa.x - pa.nx * half, pa.y - pa.ny * half, pb.x + pb.nx * half, pb.y + pb.ny * half];
+        let [dx, dy] = [by - ay, ax - bx];
+        const l = Math.hypot(dx, dy) || 1;
+        [dx, dy] = [dx / l, dy / l];
+        if (dx * out.dx + dy * out.dy < 0) [dx, dy] = [-dx, -dy];
+        return { x: ax, y: ay, dx, dy };
+      };
+      /* only an end the logo cuts across its whole width; an end with an edge showing from its tip stays square */
+      const [cs, ce] = cuts[line];
+      if (Math.min(cs.a, cs.b) > 0) {
+        start = plane(cs, start);
+        startLen = along[Math.min(n, Math.ceil(Math.max(cs.a, cs.b)))] + 2 * W;
+      }
+      if (Math.min(ce.a, ce.b) > 0) {
+        end = plane({ a: n - ce.a, b: n - ce.b }, end);
+        endLen = run - along[Math.max(0, Math.floor(n - Math.max(ce.a, ce.b)))] + 2 * W;
+      }
+    }
     for (let i = 0; i < n; i++)
-      segs.push({ line, p: pts[i], q: pts[i + 1], ends: [along[i] < 2 * W && start, run - along[i + 1] < 2 * W && end].filter(Boolean) });
+      segs.push({ line, p: pts[i], q: pts[i + 1], ends: [along[i] < startLen && start, run - along[i + 1] < endLen && end].filter(Boolean) });
   }
   const [vx, vy, vw] = view;
   const cell = 4;
@@ -361,6 +387,8 @@ function gimbalScene(A, a, nest, view) {
     }
     return inside ? -d : d;
   };
+  /* the T's direction at a point: the bar's along the bar, the stem's below it */
+  const tBarFoot = (A.t.bottomLeft + A.t.bottomRight) / 2;
   const ringR = P.ring ? Math.hypot(P.ring[0].x - CX, P.ring[0].y - CY) : SPHERE.ring;
   const [mcx, mcy] = [SPHERE.meridian.cx, SPHERE.meridian.cy];
 
@@ -379,29 +407,60 @@ function gimbalScene(A, a, nest, view) {
         if (e > reach) continue;
         const z = s.p.z + u * (s.q.z - s.p.z);
         const outer = s.line === MER && (x - fx) * (fx - mcx) + (y - fy) * (fy - mcy) > 0;
-        out.push({ line: s.line, e, z, key: keyOf(s.line, z), outer });
+        const l = Math.hypot(ex, ey) || 1;
+        out.push({ line: s.line, e, z, key: keyOf(s.line, z), outer, dx: ex / l, dy: ey / l });
       }
     if (x > tx0 - reach && x < tx1 + reach && y > ty0 - reach && y < ty1 + reach) {
       const e = tSigned(x, y);
-      if (e <= reach) out.push({ line: T, e, z: 0, key: keyOf(T, 0), outer: false });
+      if (e <= reach) out.push({ line: T, e, z: 0, key: keyOf(T, 0), outer: false, dx: y <= tBarFoot ? 1 : 0, dy: y <= tBarFoot ? 0 : 1 });
     }
     return out;
   };
   /* where the T keeps its full size (nest.t 0) its bar stays joined to the meridian, as in the logo, while the meridian is
      near where it rests, and cuts it only once it has turned away */
-  const turned = Math.abs(a.meridian) % 360;
-  const away = nest.t ? 1 : smooth(0, 20, Math.min(turned, 360 - turned));
-  /* with nest.plain the gaps are the logo's way of drawing depth on a flat mark: they close as the lap leaves the logo,
-     so the turning globe is drawn as its lines alone, each whole, and open again as it comes back to rest */
-  const close = nest.plain ? 1 - lam : 1;
+  const fromRest = (deg) => {
+    const d = Math.abs(deg) % 360;
+    return smooth(0, 20, Math.min(d, 360 - d));
+  };
+  const away = nest.t ? 1 : fromRest(a.meridian);
+  /* in the globe, how far each ring has turned from rest, 0 to 1: the G rides on the meridian, so it moves with either */
+  const moved = { [MER]: away, [G]: Math.max(away, fromRest(a.g)) };
   /* the gap line `o` leaves round itself where it stands over line `c` */
   const gap = (o, c) => {
+    if (nest.globe) {
+      const g = globeGap(o, c);
+      if (g === -Infinity) return g;
+      /* two lines running nearly along each other do not cross: the gap narrows to nothing as they turn parallel, so one
+         lying along another reads as one line and is not carved */
+      return g * smooth(0.17, 0.42, Math.abs(o.dx * c.dy - o.dy * c.dx));
+    }
     const strength = smooth(0, ramp, o.key - c.key);
     if (strength <= 0) return -Infinity;
-    if (o.line === T) return gapT * strength * outOfPlane(c.z) * (c.line === MER ? lam * away : 1) * close;
-    if (c.line === T) return (o.line === MER ? (o.outer ? gapC : gapC * lam) : gapT) * strength * outOfPlane(o.z) * close;
-    if (o.line === MER) return (o.outer ? gapC : gapC * lam) * strength * close;
-    return gapM * strength * close;
+    if (o.line === T) return gapT * strength * outOfPlane(c.z) * (c.line === MER ? lam * away : 1);
+    if (c.line === T) return (o.line === MER ? (o.outer ? gapC : gapC * lam) : gapT) * strength * outOfPlane(o.z);
+    if (o.line === MER) return (o.outer ? gapC : gapC * lam) * strength;
+    return gapM * strength;
+  };
+  const globeGap = (o, c) => {
+    /* the globe: the G passes over the T, as in the logo, and the meridian over it where it stands in front of the T's
+       plane and under it where it stands behind, which changes only where the meridian meets the outer ring; each cuts the
+       T or is cut only as it stands clear of the T's plane, so the bar and the stem run into the rings where they meet;
+       the rings cross each other in the logo's order; and the meridian's inner side, flush in the logo, opens as it turns
+       away. Every change follows a ring's turn, so nothing changes while nothing moves */
+    if (o.line === T || c.line === T) {
+      const r = o.line === T ? c : o;
+      const front = r.line === G ? 1 : smooth(0, ramp, r.z);
+      /* clear of the T's plane: at rest exactly at deep, as the logo cuts, and over a soft edge below it once the ring moves */
+      const soft = 0.5 * deep * moved[r.line];
+      const clear = soft > 0 ? smooth(deep - soft, deep, Math.abs(r.z)) : Math.abs(r.z) >= deep ? 1 : 0;
+      const s = (o.line === T ? 1 - front : front) * clear;
+      if (s <= 0) return -Infinity;
+      if (o.line === T) return gapT * s * (c.line === MER ? away : 1);
+      return (o.line === MER ? (o.outer ? gapC : gapC * away) : gapT) * s;
+    }
+    const s = smooth(0, ramp, o.key - c.key);
+    if (s <= 0) return -Infinity;
+    return (o.line === MER ? (o.outer ? gapC : gapC * away) : gapM) * s;
   };
   /* line `c` shows at (x, y): it covers the point and no line standing over it leaves its gap there */
   const shows = (c, cs) => c.e <= 0 && !cs.some((o) => o.line !== c.line && o.e <= gap(o, c));
@@ -421,13 +480,13 @@ function gimbalScene(A, a, nest, view) {
 
 /**
  * One frame of the gimbal as ink coverage, 0 to 1 a pixel, `size` pixels a
- * side over `view`, each pixel sampled `ss` by `ss` times. With nest.plain
- * the meridian and the G are their logo stretches as the logo shows them,
- * ending where the logo's gaps end them (logoEnds), so a turning line ends
- * where the mark ends it.
+ * side over `view`, each pixel sampled `ss` by `ss` times. With nest.globe
+ * the meridian's and the G's ends are the logo's, carried with each line
+ * (logoCuts), so an end keeps its shape and place as the lines round it
+ * move away.
  */
 export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
-  const { ink, near, ringR, half, reach } = gimbalScene(nest.plain ? { ...A, ...logoEnds(A, nest, view) } : A, a, nest, view);
+  const { ink, near, ringR, half, reach } = gimbalScene(A, a, nest, view, nest.globe ? logoCuts(A, nest, view) : null);
   const [vx, vy, vw] = view;
   const cov = new Float32Array(size * size);
   const px = vw / size;
@@ -444,45 +503,47 @@ export function gimbalCoverage(A, a, nest, view, size, ss = 3) {
   return cov;
 }
 
-const ends = new Map();
+/** The point `u` segments along polyline `pts`, interpolated, with its unit normal (left of the line's run). */
+function alongLine(pts) {
+  const n = pts.length - 1;
+  return (u) => {
+    const i = Math.min(n - 1, Math.max(0, Math.floor(u)));
+    const f = u - i;
+    const [p, q] = [pts[i], pts[i + 1]];
+    const l = Math.hypot(q.x - p.x, q.y - p.y) || 1;
+    return { x: p.x + f * (q.x - p.x), y: p.y + f * (q.y - p.y), nx: (p.y - q.y) / l, ny: (q.x - p.x) / l };
+  };
+}
+
+const cutsSeen = new Map();
 
 /**
- * The meridian's and the G's stretches as the logo shows them, in degrees
- * along their rings. Each stretch in armillary.json runs a little past the
- * logo's end into the line whose gap ends it at rest; this walks in from
- * each end of the logo at rest to the first place any of the line's width
- * shows, so with the gaps closed the line still ends where the mark does.
+ * Where the logo ends the meridian and the G: for each end of each line,
+ * how many segments in from its stretch's end each of its two edges first
+ * shows at rest. The stretches in armillary.json run on a little under the
+ * gaps that end them at rest, so the logo's end is the gap's cut, slanted
+ * as the line it runs into; gimbalScene carries that cut with the line.
  */
-function logoEnds(A, nest, view) {
+function logoCuts(A, nest, view) {
   const key = JSON.stringify([nest, view]);
-  if (ends.has(key)) return ends.get(key);
+  if (cutsSeen.has(key)) return cutsSeen.get(key);
   const rest = { ring: 0, meridian: 0, g: 0, t: 0, nest: 0 };
-  const { P, shown, half } = gimbalScene(A, rest, { ...nest, plain: false }, view);
+  const { P, shown, half } = gimbalScene(A, rest, nest, view);
   const out = {};
-  for (const [line, pts, { from, to }] of [[MER, P.meridian, A.meridian], [G, P.g, A.g]]) {
+  for (const [line, pts] of [[MER, P.meridian], [G, P.g]]) {
     const n = pts.length - 1;
-    /* the point and its normal `u` segments in from the start, interpolated along the polyline */
-    const at = (u) => {
-      const i = Math.min(n - 1, Math.floor(u));
-      const f = u - i;
-      const [p, q] = [pts[i], pts[i + 1]];
-      const l = Math.hypot(q.x - p.x, q.y - p.y) || 1;
-      return { x: p.x + f * (q.x - p.x), y: p.y + f * (q.y - p.y), nx: (p.y - q.y) / l, ny: (q.x - p.x) / l };
+    const at = alongLine(pts);
+    /* from one end (`dir` 1 from the start, -1 from the end), the first place the edge on `side` shows */
+    const walk = (dir, side) => {
+      for (let k = 0; k < n * 25; k++) {
+        const p = at(dir > 0 ? k * 0.02 : n - k * 0.02);
+        if (shown(line, p.x + side * p.nx * half * 0.995, p.y + side * p.ny * half * 0.995)) return k * 0.02;
+      }
+      return 0;
     };
-    const shows = (u) => {
-      const p = at(u);
-      for (let k = -8; k <= 8; k++) if (shown(line, p.x + p.nx * half * (k / 8), p.y + p.ny * half * (k / 8))) return true;
-      return false;
-    };
-    const walk = (u0, du) => {
-      let u = u0;
-      while (!shows(u) && Math.abs(u - u0) < n / 2) u += du;
-      return Math.min(n, Math.max(0, u));
-    };
-    const [u0, u1] = [walk(0, 0.02), walk(n, -0.02)];
-    out[line === MER ? 'meridian' : 'g'] = { from: from + ((to - from) * u0) / n, to: from + ((to - from) * u1) / n };
+    out[line] = [{ a: walk(1, -1), b: walk(1, 1) }, { a: walk(-1, -1), b: walk(-1, 1) }];
   }
-  ends.set(key, out);
+  cutsSeen.set(key, out);
   return out;
 }
 
